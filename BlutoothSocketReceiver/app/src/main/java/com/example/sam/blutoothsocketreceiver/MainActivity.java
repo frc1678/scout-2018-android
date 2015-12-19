@@ -30,11 +30,10 @@ public class MainActivity extends ActionBarActivity {
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket socket;
     BluetoothDevice device;
-    String Text;
+    String text;
     String uuid;
     Context context;
     String byteSize;
-    String appendString;
     String data;
 
     @Override
@@ -49,17 +48,13 @@ public class MainActivity extends ActionBarActivity {
     public class AcceptThread extends Thread {
 
         public AcceptThread() {
-            // Use a temporary object that is later assigned to mmServerSocket,
-            // because mmServerSocket is final
             tmp = null;
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Test_Connection", UUID.fromString(uuid));
-            } catch (IOException e) {
-
-            }
+            } catch (IOException e) {}
             mmServerSocket = tmp;
         }
 
@@ -70,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
                 try {
                     if (mmServerSocket.equals(null)) {
 
-                        Log.e("asdf", "is null");
+                        Log.e("serverSocket", "is null");
                     }
                     System.out.println("accepting...");
                     socket = mmServerSocket.accept();
@@ -89,31 +84,31 @@ public class MainActivity extends ActionBarActivity {
                         PrintWriter file = null;
                         try {
                             File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MassStringText");
-//                            if (!dir.mkdir()) {
-//                                Log.e("File Error", "Failed to make directory");
-//                                throw new IOException();
-//                            }
+                            //can delete when doing the actual thing
                             file = new PrintWriter(new FileOutputStream(new File(dir, "Send-Data.txt")));
                         } catch (IOException IOE){
                             Log.e("File error", "Failed to open File");
                             return;
                         }
-                        String text = "";
+                        text = "";
                         byteSize = reader.readLine();
                         int size = Integer.parseInt(byteSize);
+                        data = "";
                         while (true) {
                            text = reader.readLine();
-                            data = data.concat(text);
                             if (text.equals("\0")) {
                                 break;
                             }
+                            data = data.concat(text);
                         }
                         if (size != data.length()) {
                             //send error message to scout.
                             //0 = no error, 1 = ERROR!
                             out.println("1");
                             out.flush();
+                            Log.e("Error", "Error message sent");
                         } else if (size == data.length()){
+                            //can delete when doing actual thing
                             file.println(text);
                             System.out.println(text);
                             out.println("0");
@@ -123,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
                         System.out.println("AfterReadLine");
                         file.close();
                         socket.close();
-                    } catch (IOException e) {
+                        } catch (IOException e) {
                         System.out.println("Failed to receive Data..");
                         Log.getStackTraceString(e);
                     }
