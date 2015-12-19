@@ -29,7 +29,6 @@ public class MainActivity extends ActionBarActivity {
     BluetoothServerSocket mmServerSocket;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothSocket socket;
-    BluetoothDevice device;
     String text;
     String uuid;
     Context context;
@@ -86,43 +85,47 @@ public class MainActivity extends ActionBarActivity {
                             File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MassStringText");
                             //can delete when doing the actual thing
                             file = new PrintWriter(new FileOutputStream(new File(dir, "Send-Data.txt")));
-                        } catch (IOException IOE){
+                        } catch (IOException IOE) {
                             Log.e("File error", "Failed to open File");
                             return;
                         }
                         text = "";
                         byteSize = reader.readLine();
                         int size = Integer.parseInt(byteSize);
-                        data = "";
-                        while (true) {
-                           text = reader.readLine();
-                            if (text.equals("\0")) {
+                        while (socket != null) {
+                            data = "";
+                            while (true) {
+                                text = reader.readLine();
+                                if (text.equals("\0")) {
+                                    break;
+                                }
+                                data = data.concat(text);
+                            }
+                                //data = data.concat("asdf");
+                            if (size != data.length()) {
+                                //send error message to scout.
+                                //0 = no error, 1 = ERROR!
+                                out.println("1");
+                                out.flush();
+                                Log.e("Error", "Error message sent");
+                            } else if (size == data.length()) {
+                                //can delete when doing actual thing
+                                file.println(text);
+                                System.out.println(text);
+                                out.println("0");
+                                out.flush();
+                                Log.e("success", "right byte size");
                                 break;
                             }
-                            data = data.concat(text);
+                            System.out.println("AfterReadLine");
                         }
-                        if (size != data.length()) {
-                            //send error message to scout.
-                            //0 = no error, 1 = ERROR!
-                            out.println("1");
-                            out.flush();
-                            Log.e("Error", "Error message sent");
-                        } else if (size == data.length()){
-                            //can delete when doing actual thing
-                            file.println(text);
-                            System.out.println(text);
-                            out.println("0");
-                            out.flush();
-                            Log.e("success","right byte size");
-                        }
-                        System.out.println("AfterReadLine");
                         file.close();
                         socket.close();
-                        } catch (IOException e) {
+                    } catch (IOException e) {
                         System.out.println("Failed to receive Data..");
                         Log.getStackTraceString(e);
+                        return;
                     }
-
                     break;
                 }
             }
