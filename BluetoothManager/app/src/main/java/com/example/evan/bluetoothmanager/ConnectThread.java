@@ -1,9 +1,10 @@
 package com.example.evan.bluetoothmanager;
 
-
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,11 +18,21 @@ import java.util.UUID;
 public class ConnectThread extends Thread {
     private static BluetoothDevice device = null;
     private static final Object lock = new Object();
-    private MainActivity context;
+    private Activity context;
+    private String matchName;
     private String data;
 
 
 
+    public ConnectThread(Activity context, String matchName, String data) {
+        this.context = context;
+        this.matchName = matchName;
+        this.data = data;
+    }
+
+
+
+    //called once before use to set up bluetooth
     public static void initBluetooth(final MainActivity context) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
@@ -55,22 +66,6 @@ public class ConnectThread extends Thread {
 
 
 
-    private static void toastText(final String text, final MainActivity context) {
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-
-    public ConnectThread(MainActivity context, String data) {
-        this.context = context;
-        this.data = data;
-    }
-
-
     @Override
     public void run() {
         PrintWriter out = null;
@@ -78,6 +73,7 @@ public class ConnectThread extends Thread {
         BluetoothSocket socket = null;
         boolean complete = false;
         int counter = 0;
+        //we loop until a connection is made
         while (!complete) {
             try {
                 synchronized (lock) {
@@ -94,6 +90,8 @@ public class ConnectThread extends Thread {
                 toastText("Failed To Connect To Super", context);
                 complete = false;
                 counter++;
+                //first two times it fails, we immediately try again.  Next two we wait 30 seconds before trying again.
+                //On the 5th failure we terminate the thread and notify the user
                 if ((counter >= 2) && (counter <= 3)) {
                     try {
                         Thread.sleep(30000);
@@ -110,19 +108,36 @@ public class ConnectThread extends Thread {
         }
 
 
+
+        try {
+            PrintWriter file = new PrintWriter(context.openFileOutput(matchName, Context.MODE_PRIVATE));
+            file.println(data);
+            file.close();
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Open File");
+            toastText("Failed To Open File", context);
+            return;
+        }
+
+
+
         Log.i("Communications Info", "Starting To Communicate");
         counter = 0;
         complete = false;
+        //we loop until the data is sent without io error or error code from super
         while (!complete) {
             try {
+                //we print the length of the data before we print the data so the super can identify corrupted data
                 out.println(data.length());
                 out.println(data);
+                //we print '\0' at end of data to signify the end
                 out.println("\0");
                 out.flush();
                 if (out.checkError()) {
                     throw new IOException();
                 }
                 int ackCode = Integer.parseInt(in.readLine());
+                //super will send 0 if the data sizes match up, 1 if they don't
                 if (ackCode == 1) {
                     throw new IOException();
                 }
@@ -132,6 +147,7 @@ public class ConnectThread extends Thread {
                 toastText("Failed To Send Match Data To Super", context);
                 complete = false;
                 counter++;
+                //after the third failure, we terminate thread and notify user
                 if (counter == 3) {
                     Log.e("Communications Error", "Repeated Data Send Failure");
                     toastText("Repeated Data Send Failure. Get A Programmer", context);
@@ -142,15 +158,27 @@ public class ConnectThread extends Thread {
 
 
 
+
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", context);
         try {
-            //we print this at end of connection to prevent IOException from being thrown server-side
+            in.close();
             out.close();
             socket.close();
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
             toastText("Failed To Close Connection To Super", context);
         }
+    }
+
+
+
+    private static void toastText(final String text, final Activity context) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
