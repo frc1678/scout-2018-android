@@ -1,6 +1,7 @@
 package com.example.evan.bluetoothmanager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -101,7 +102,16 @@ public class ConnectThread extends Thread {
                     }
                 } else if (counter > 3) {
                     Log.e("Socket Error", "Repeated Socket Open Failure");
-                    toastText("Repeated Connection Error. Get A Programmer", context);
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Repeated Connection Failure")
+                                    .setMessage("Please contact an app programmer immediately.")
+                                    .setNeutralButton("Dismiss", null)
+                                    .show();
+                        }
+                    });
                     return;
                 }
             }
@@ -150,7 +160,16 @@ public class ConnectThread extends Thread {
                 //after the third failure, we terminate thread and notify user
                 if (counter == 3) {
                     Log.e("Communications Error", "Repeated Data Send Failure");
-                    toastText("Repeated Data Send Failure. Get A Programmer", context);
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Repeated Data Send Failure")
+                                    .setMessage("Please contact an app programmer immediately.")
+                                    .setNeutralButton("Dismiss", null)
+                                    .show();
+                        }
+                    });
                     return;
                 }
             }
