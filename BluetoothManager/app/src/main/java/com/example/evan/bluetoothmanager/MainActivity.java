@@ -10,7 +10,6 @@ import android.widget.Toast;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    //TODO provide automatic resend of data on startup
     private Thread runningThread;
 
     @Override
@@ -24,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //'send' button on the ui
     public void sendData(View view) {
         String data = "";
         for (int i = 0; i < 100; i++) {
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //'file viewer' button on the iu
     public void openFileViewer(View view) {
         //This is done to be sure that the communications with the super are not ended early
         if (runningThread != null) {

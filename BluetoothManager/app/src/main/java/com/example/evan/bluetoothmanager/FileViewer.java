@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import java.io.File;
 
 public class FileViewer extends AppCompatActivity {
+    //TODO provide a resend all button
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,17 @@ public class FileViewer extends AppCompatActivity {
             }
         });
     }
+
+
+
+    //'back' button on ui
     public void backToMain(View view) {
         startActivity(new Intent(this, MainActivity.class));
     }
+
+
+
+    //'delete all' button on ui
     public void deleteAllFiles(View view) {
         final Context context = this;
         new AlertDialog.Builder(this)
@@ -50,6 +60,7 @@ public class FileViewer extends AppCompatActivity {
                         File[] files = getFilesDir().listFiles();
                         for (File tmpFile : files) {
                             if (!tmpFile.delete()) {
+                                Log.e("File Error", "Failed To Delete File");
                                 Toast.makeText(context, "Failed To Delete File", Toast.LENGTH_LONG).show();
                             }
                         }

@@ -54,7 +54,10 @@ public class ConnectThread extends Thread {
         }
         adapter.cancelDiscovery();
         for (BluetoothDevice tmpDevice : devices) {
-            if (tmpDevice.getName().equals("red super")) {
+            //red super:
+            //if (tmpDevice.getName().equals("red super")) {
+            //sam's tablet:
+            if (tmpDevice.getName().equals("GT-P5113")) {
                 synchronized (lock) {
                     device = tmpDevice;
                 }

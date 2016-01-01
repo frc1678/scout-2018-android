@@ -3,6 +3,7 @@ package com.example.evan.bluetoothmanager;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,9 +26,14 @@ public class FileOptions extends AppCompatActivity {
         if (name != null) {
             textView.setText(name);
         } else {
+            Log.e("File Error", "Failed To Open File");
             Toast.makeText(this, "Failed To Open File", Toast.LENGTH_LONG).show();
         }
     }
+
+
+
+    //'back' button on ui
     public void backToViewer(View view) {
         //This is done to be sure that the communications with the super are not ended early
         if (runningThread != null) {
@@ -38,17 +44,27 @@ public class FileOptions extends AppCompatActivity {
         }
         startActivity(new Intent(this, FileViewer.class));
     }
+
+
+
+    //'delete' button on ui
     public void deleteFile(View view) {
         File file = new File(this.getFilesDir(), name);
         if (!file.delete()) {
+            Log.e("File Error", "Failed To Delete File");
             Toast.makeText(this, "Failed To Delete File", Toast.LENGTH_LONG).show();
         }
     }
+
+
+
+    //'resend' button on ui
     public void resendFile(View view) {
         BufferedReader file;
         try {
             file = new BufferedReader(new InputStreamReader(this.openFileInput(name)));
         } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Open File");
             Toast.makeText(this, "Failed To Open File", Toast.LENGTH_LONG).show();
             return;
         }
@@ -59,7 +75,9 @@ public class FileOptions extends AppCompatActivity {
                 text = text.concat(buf);
             }
         } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Read From File");
             Toast.makeText(this, "Failed To Read From File", Toast.LENGTH_LONG).show();
+            return;
         }
         runningThread = new ConnectThread(this, name, text);
         runningThread.start();
