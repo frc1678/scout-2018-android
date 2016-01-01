@@ -1,5 +1,6 @@
 package com.example.sam.blutoothsocketreceiver;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
@@ -9,9 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -26,11 +26,12 @@ public class MainActivity extends ActionBarActivity {
     BluetoothSocket socket;
     String text;
     String uuid;
-    Context context;
+    Activity context;
     String byteSize;
     String data;
     DataSnapshot snapshot;
     String key_value;
+    TextView changing;
 
 
     @Override
@@ -41,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
         Firebase.setAndroidContext(this);
         AcceptThread thread = new AcceptThread();
         thread.start();
+        changing = (TextView)findViewById(R.id.text);
     }
 
     public class AcceptThread extends Thread {
@@ -56,7 +58,6 @@ public class MainActivity extends ActionBarActivity {
             } catch (IOException e) {}
             mmServerSocket = tmp;
         }
-
         public void run() {
             //While socket is null....
             socket = null;
@@ -65,11 +66,13 @@ public class MainActivity extends ActionBarActivity {
                 try {
                     //If the connection from the scout is null
                     if (mmServerSocket.equals(null)) {
-
+                        System.out.println("Trying to connect...");
+                        text("Trying to connect...");
                         Log.e("serverSocket", "is null");
                     }
                     //otherwise accept the connection and print out 'accepting'
                     System.out.println("accepting...");
+                    text("accepting connection...");
                     //socket now calls accept() which returns bluetooth socket
                     socket = mmServerSocket.accept();
 
@@ -84,7 +87,6 @@ public class MainActivity extends ActionBarActivity {
                         PrintWriter out;
                         out = new PrintWriter(socket.getOutputStream(), true);
                         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                        System.out.println("received data");
                         PrintWriter file = null;
                         /*try {
                             File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MassStringText");
@@ -94,9 +96,14 @@ public class MainActivity extends ActionBarActivity {
                             Log.e("File error", "Failed to open File");
                             return;
                         }*/
-                        text = "";
-                        //get the bytesize from the first line of the data
-                        byteSize = reader.readLine();
+                        try {
+                            text = "";
+                            //get the bytesize from the first line of the data
+                            byteSize = reader.readLine();
+                        }catch(IOException e){
+                            text("Failed to read data");
+                            System.out.println("Failed to read Data");
+                        }
                         int size = Integer.parseInt(byteSize);
                         while (socket != null) {
                             data = "";
@@ -107,10 +114,11 @@ public class MainActivity extends ActionBarActivity {
                                     break;
                                 }
                                 //append data to the variable "data"
-                                data = data.concat(text);
+                                data = data.concat(text + "\n");
                                 System.out.println(data);
+                                //text(Integer.toString(size));
                             }
-                                //data = data.concat("asdf");
+                            //data = data.concat("asdf");
                             //if the actual byte size is different from the byte size received..
                             if (size != data.length()){
                                 //send error message to scout.
@@ -118,31 +126,37 @@ public class MainActivity extends ActionBarActivity {
                                 out.println("1");
                                 out.flush();
                                 out.flush();
+                                text("Error Message Sent " + "\n" + "Byte size: " +  Integer.toString(size) + "\n"
+                                        + "Length size: " + Integer.toString(data.length()));
                                 Log.e("Error", "Error message sent");
                                 //I the byte size of actual is equal to the byte size received
                             } else if (size == data.length()) {
                                 //can delete when doing actual thing
-                                file.println(text);
+                                //file.println(text);
                                 System.out.println(text);
                                 out.println("0");
                                 out.flush();
-                                out.flush();
-                                Firebase myFirebaseRef = new Firebase("https://popping-torch-4659.firebaseio.com");
+                                /*Firebase myFirebaseRef = new Firebase("https://popping-torch-4659.firebaseio.com");
                                 myFirebaseRef.child("Mass String Data").setValue(text);
                                 key_value = snapshot.child("Mass String Data").getValue().toString();
                                 if(key_value == null){
                                     System.out.println("Failed to send to FireBase");
+                                    text("Failed to send to FireBase");
                                 }
                                 Log.e("success", "right byte size");
                                 System.out.println("Sent to FireBase!");
-                                break;
+                                text("Sent to Firebase");
+                                */
                             }
                             System.out.println("end");
+                            text("end");
+                            return;
                         }
-                        file.close();
-                        socket.close();
+                        //file.close();
+                        // socket.close();
                     } catch (IOException e) {
                         System.out.println("Failed to handle data");
+                        text("Failed to handle data");
                         Log.getStackTraceString(e);
                         return;
                     }
@@ -153,6 +167,15 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public void text(final String change_text){
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                changing.setText(change_text);
+            }
+        });
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
