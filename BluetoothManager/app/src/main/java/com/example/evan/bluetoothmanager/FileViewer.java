@@ -17,6 +17,7 @@ import java.io.File;
 
 public class FileViewer extends AppCompatActivity {
     //TODO provide a resend all button
+    //TODO update FileViewer for external storage
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

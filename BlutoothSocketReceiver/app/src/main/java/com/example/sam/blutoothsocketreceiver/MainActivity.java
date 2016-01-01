@@ -86,14 +86,14 @@ public class MainActivity extends ActionBarActivity {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         System.out.println("received data");
                         PrintWriter file = null;
-                        try {
+                        /*try {
                             File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MassStringText");
                             //can delete when doing the actual thing
                             file = new PrintWriter(new FileOutputStream(new File(dir, "Send-Data.txt")));
                         } catch (IOException IOE) {
                             Log.e("File error", "Failed to open File");
                             return;
-                        }
+                        }*/
                         text = "";
                         //get the bytesize from the first line of the data
                         byteSize = reader.readLine();

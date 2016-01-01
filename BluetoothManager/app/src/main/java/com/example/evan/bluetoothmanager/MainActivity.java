@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
     public void sendData(View view) {
         String data = "";
         for (int i = 0; i < 100; i++) {
-            data = data.concat(UUID.randomUUID().toString());
+            data = data.concat(UUID.randomUUID().toString() + "\n");
         }
-        runningThread = new ConnectThread(this, data, "Test-Data.txt");
+        runningThread = new ConnectThread(this,"Test-Data.txt", data);
         runningThread.start();
     }
 

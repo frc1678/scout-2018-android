@@ -6,10 +6,13 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -57,7 +60,9 @@ public class ConnectThread extends Thread {
             //red super:
             //if (tmpDevice.getName().equals("red super")) {
             //sam's tablet:
-            if (tmpDevice.getName().equals("GT-P5113")) {
+            //if (tmpDevice.getName().equals("GT-P5113")) {
+            //sam's phone:
+            if (tmpDevice.getName().equals("Samuel Chung's LG-D415")) {
                 synchronized (lock) {
                     device = tmpDevice;
                 }
@@ -122,13 +127,42 @@ public class ConnectThread extends Thread {
 
 
 
-        try {
+        /*try {
             PrintWriter file = new PrintWriter(context.openFileOutput(matchName, Context.MODE_PRIVATE));
             file.println(data);
             file.close();
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Open File");
             toastText("Failed To Open File", context);
+            return;
+        }*/
+
+
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            Log.e("File Error", "External Storage not Mounted");
+            toastText("External Storage Not Mounted", context);
+            return;
+        }
+        PrintWriter file;
+        try {
+            File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
+            if (!dir.mkdir()) {
+                Log.i("File Error", "Failed to make Directory.  Unimportant");
+            }
+            file = new PrintWriter(new File(dir, matchName));
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed to open file");
+            toastText("Failed To Open File", context);
+            return;
+        }
+
+
+        file.println(data.length());
+        file.print(data);
+        file.close();
+        if (file.checkError()) {
+            Log.e("File Error", "Failed to Write to File");
+            toastText("Failed To Save Match Data To File", context);
             return;
         }
 
@@ -142,7 +176,7 @@ public class ConnectThread extends Thread {
             try {
                 //we print the length of the data before we print the data so the super can identify corrupted data
                 out.println(data.length());
-                out.println(data);
+                out.print(data);
                 //we print '\0' at end of data to signify the end
                 out.println("\0");
                 out.flush();
