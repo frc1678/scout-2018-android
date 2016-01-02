@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -49,11 +50,13 @@ public class FileOptions extends AppCompatActivity {
 
     //'delete' button on ui
     public void deleteFile(View view) {
-        File file = new File(this.getFilesDir(), name);
+        File file = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData/" + name);
         if (!file.delete()) {
             Log.e("File Error", "Failed To Delete File");
             Toast.makeText(this, "Failed To Delete File", Toast.LENGTH_LONG).show();
+            return;
         }
+        (findViewById(R.id.backButton2)).performClick();
     }
 
 
@@ -62,7 +65,7 @@ public class FileOptions extends AppCompatActivity {
     public void resendFile(View view) {
         BufferedReader file;
         try {
-            file = new BufferedReader(new InputStreamReader(this.openFileInput(name)));
+            file = new BufferedReader(new InputStreamReader(new FileInputStream(new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData/" + name))));
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Open File");
             Toast.makeText(this, "Failed To Open File", Toast.LENGTH_LONG).show();
@@ -72,7 +75,7 @@ public class FileOptions extends AppCompatActivity {
         String buf;
         try {
             while ((buf = file.readLine()) != null) {
-                text = text.concat(buf);
+                text = text.concat(buf + "\n");
             }
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Read From File");

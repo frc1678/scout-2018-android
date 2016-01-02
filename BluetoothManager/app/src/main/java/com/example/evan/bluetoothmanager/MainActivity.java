@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 100; i++) {
             data = data.concat(UUID.randomUUID().toString() + "\n");
         }
-        runningThread = new ConnectThread(this,"Test-Data.txt", data);
+        //Asigns random variable for match number
+        Random random = new Random();
+        runningThread = new ConnectThread(this,"Test-Data-" + Integer.toString(random.nextInt(50)) + ".txt", data);
         runningThread.start();
     }
 

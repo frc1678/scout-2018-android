@@ -5,14 +5,12 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -30,6 +28,9 @@ public class ConnectThread extends Thread {
 
     public ConnectThread(Activity context, String matchName, String data) {
         this.context = context;
+        if (matchName.contains("UNSENT_")) {
+            matchName = matchName.replaceFirst("UNSENT_", "");
+        }
         this.matchName = matchName;
         this.data = data;
     }
@@ -62,7 +63,9 @@ public class ConnectThread extends Thread {
             //sam's tablet:
             //if (tmpDevice.getName().equals("GT-P5113")) {
             //sam's phone:
-            if (tmpDevice.getName().equals("Samuel Chung's LG-D415")) {
+            //if (tmpDevice.getName().equals("Samuel Chung's LG-D415")) {
+            //evan's android tablet:
+            if (tmpDevice.getName().equals("G Pad 7.0 LTE")) {
                 synchronized (lock) {
                     device = tmpDevice;
                 }
@@ -115,7 +118,7 @@ public class ConnectThread extends Thread {
                         public void run() {
                             new AlertDialog.Builder(context)
                                     .setTitle("Repeated Connection Failure")
-                                    .setMessage("Please contact an app programmer immediately.")
+                                    .setMessage("Please resend this data when successful data transfer is made.")
                                     .setNeutralButton("Dismiss", null)
                                     .show();
                         }
@@ -143,13 +146,16 @@ public class ConnectThread extends Thread {
             toastText("External Storage Not Mounted", context);
             return;
         }
-        PrintWriter file;
+        File dir;
+        File file;
+        PrintWriter fileWriter;
         try {
-            File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
+            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
             if (!dir.mkdir()) {
-                Log.i("File Error", "Failed to make Directory.  Unimportant");
+                Log.i("File Info", "Failed to make Directory.  Unimportant");
             }
-            file = new PrintWriter(new File(dir, matchName));
+            file = new File(dir, "UNSENT_" + matchName);
+            fileWriter = new PrintWriter(file);
         } catch (IOException ioe) {
             Log.e("File Error", "Failed to open file");
             toastText("Failed To Open File", context);
@@ -157,10 +163,10 @@ public class ConnectThread extends Thread {
         }
 
 
-        file.println(data.length());
-        file.print(data);
-        file.close();
-        if (file.checkError()) {
+        fileWriter.println(data.length());
+        fileWriter.print(data);
+        fileWriter.close();
+        if (fileWriter.checkError()) {
             Log.e("File Error", "Failed to Write to File");
             toastText("Failed To Save Match Data To File", context);
             return;
@@ -202,7 +208,7 @@ public class ConnectThread extends Thread {
                         public void run() {
                             new AlertDialog.Builder(context)
                                     .setTitle("Repeated Data Send Failure")
-                                    .setMessage("Please contact an app programmer immediately.")
+                                    .setMessage("Please resend this data when successful data transfer is made.")
                                     .setNeutralButton("Dismiss", null)
                                     .show();
                         }
@@ -218,6 +224,9 @@ public class ConnectThread extends Thread {
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", context);
         try {
+            if (!file.renameTo(new File(dir, matchName))) {
+                Log.e("File Error", "Failed to Rename File");
+            }
             in.close();
             out.close();
             socket.close();

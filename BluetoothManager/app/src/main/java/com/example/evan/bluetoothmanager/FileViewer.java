@@ -23,7 +23,11 @@ public class FileViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_viewer);
-        File[] files = getFilesDir().listFiles();
+        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
+        if (!dir.mkdir()) {
+            Log.i("File Info", "Failed to make Directory. Unimportant");
+        }
+        File[] files = dir.listFiles();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         for (File tmpFile : files) {
             adapter.add(tmpFile.getName());
@@ -58,13 +62,18 @@ public class FileViewer extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File[] files = getFilesDir().listFiles();
+                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
+                        if (!dir.mkdir()) {
+                            Log.i("File Info", "Failed to make Directory. Unimportant");
+                        }
+                        File[] files = dir.listFiles();
                         for (File tmpFile : files) {
                             if (!tmpFile.delete()) {
                                 Log.e("File Error", "Failed To Delete File");
                                 Toast.makeText(context, "Failed To Delete File", Toast.LENGTH_LONG).show();
                             }
                         }
+                        recreate();
                     }
                 })
                 .setNegativeButton("No", null)
