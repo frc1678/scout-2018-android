@@ -19,7 +19,9 @@ import java.util.UUID;
 
 public class ConnectThread extends Thread {
     private static BluetoothDevice device = null;
-    private static final Object lock = new Object();
+    private static boolean isInit = false;
+    private static final Object isInitLock = new Object();
+    private static final Object deviceLock = new Object();
     private Activity context;
     private String matchName;
     private String data;
@@ -37,51 +39,61 @@ public class ConnectThread extends Thread {
 
 
 
-    //called once before use to set up bluetooth
-    public static void initBluetooth(final MainActivity context) {
+    private static boolean initBluetooth(final Activity context) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
             Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
             toastText("Device Not Configured With Bluetooth", context);
-            return;
+            return false;
         }
         if (!adapter.isEnabled()) {
             Log.e("Bluetooth Error", "Bluetooth Not Enabled");
             toastText("Bluetooth Not Enabled", context);
-            return;
+            return false;
         }
         Set<BluetoothDevice> devices = adapter.getBondedDevices();
         if (devices.size() < 1) {
             Log.e("Bluetooth Error", "No Paired Devices");
             toastText("No Paired Devices", context);
-            return;
+            return false;
         }
         adapter.cancelDiscovery();
         for (BluetoothDevice tmpDevice : devices) {
             //red super:
-            //if (tmpDevice.getName().equals("red super")) {
+            if (tmpDevice.getName().equals("red super")) {
             //sam's tablet:
             //if (tmpDevice.getName().equals("GT-P5113")) {
             //sam's phone:
             //if (tmpDevice.getName().equals("Samuel Chung's LG-D415")) {
             //evan's android tablet:
-            if (tmpDevice.getName().equals("G Pad 7.0 LTE")) {
-                synchronized (lock) {
+            //if (tmpDevice.getName().equals("G Pad 7.0 LTE")) {
+                synchronized (deviceLock) {
                     device = tmpDevice;
                 }
-                return;
+                return true;
             }
         }
         Log.e("Bluetooth Error", "No Paired Device With Name: \"red super\"");
         toastText("No Paired Device With Name: \"red super\"", context);
+        return false;
     }
 
 
 
     @Override
     public void run() {
+        //if bluetooth has not been initialized, initialize it
+        synchronized (isInitLock) {
+            if (!isInit) {
+                if(!initBluetooth(context)) {
+                    return;
+                } else {
+                    isInit = true;
+                }
+            }
+        }
         //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
-        //storage path: /sdcard/Documents/MatchData
+        //storage path: /sdcard/Android/MatchData
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
             toastText("External Storage Not Mounted", context);
@@ -91,7 +103,7 @@ public class ConnectThread extends Thread {
         File file;
         PrintWriter fileWriter;
         try {
-            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData");
+            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
             if (!dir.mkdir()) {
                 Log.i("File Info", "Failed to make Directory.  Unimportant");
             }
@@ -125,7 +137,7 @@ public class ConnectThread extends Thread {
         //we loop until a connection is made
         while (!complete) {
             try {
-                synchronized (lock) {
+                synchronized (deviceLock) {
                     socket = device.createRfcommSocketToServiceRecord(UUID.fromString("f8212682-9a34-11e5-8994-feff819cdc9f"));
                 }
                 Log.i("Socket Info", "Attempting To Start Connection...");
@@ -141,14 +153,7 @@ public class ConnectThread extends Thread {
                 counter++;
                 //first two times it fails, we immediately try again.  Next two we wait 30 seconds before trying again.
                 //On the 5th failure we terminate the thread and notify the user
-                if ((counter >= 2) && (counter <= 3)) {
-                    try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException ie) {
-                        Log.wtf("Sleeping Error", "Interrupted During Sleep");
-                        return;
-                    }
-                } else if (counter > 3) {
+                if (counter == 3) {
                     Log.e("Socket Error", "Repeated Socket Open Failure");
                     context.runOnUiThread(new Runnable() {
                         @Override

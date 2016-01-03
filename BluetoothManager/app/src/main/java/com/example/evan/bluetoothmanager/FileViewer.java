@@ -24,7 +24,7 @@ public class FileViewer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_viewer);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/");
+        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/");
         if (!dir.mkdir()) {
             Log.i("File Info", "Failed to make Directory. Unimportant");
         }
@@ -63,7 +63,7 @@ public class FileViewer extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData");
+                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
                         if (!dir.mkdir()) {
                             Log.i("File Info", "Failed to make Directory. Unimportant");
                         }

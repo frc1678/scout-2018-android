@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 
 public class FileOptions extends AppCompatActivity {
     private String name;
-    private Thread runningThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +37,6 @@ public class FileOptions extends AppCompatActivity {
 
     //'back' button on ui
     public void backToViewer(View view) {
-        //This is done to be sure that the communications with the super are not ended early
-        if (runningThread != null) {
-            if (runningThread.isAlive()) {
-                Toast.makeText(this, "Communications With Super Still In Progress...", Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
         startActivity(new Intent(this, FileViewer.class));
     }
 
@@ -52,7 +44,7 @@ public class FileOptions extends AppCompatActivity {
 
     //'delete' button on ui
     public void deleteFile(View view) {
-        File file = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/" + name);
+        File file = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name);
         if (!file.delete()) {
             Log.e("File Error", "Failed To Delete File");
             Toast.makeText(this, "Failed To Delete File", Toast.LENGTH_LONG).show();
@@ -68,7 +60,7 @@ public class FileOptions extends AppCompatActivity {
         BufferedReader file;
         try {
             file = new BufferedReader(new InputStreamReader(new FileInputStream(
-                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/" + name))));
+                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name))));
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Open File");
             Toast.makeText(this, "Failed To Open File", Toast.LENGTH_LONG).show();
@@ -85,7 +77,6 @@ public class FileOptions extends AppCompatActivity {
             Toast.makeText(this, "Failed To Read From File", Toast.LENGTH_LONG).show();
             return;
         }
-        runningThread = new ConnectThread(this, name, text);
-        runningThread.start();
+        new ConnectThread(this, name, text).start();
     }
 }
