@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-
+// NOTE: I don't really care about viewing files right now, because we are working on Bluetooth. Just letting you know im not looking over this file.
 public class FileViewer extends AppCompatActivity {
     //TODO provide a resend all button?
 

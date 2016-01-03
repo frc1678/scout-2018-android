@@ -28,7 +28,7 @@ public class ConnectThread extends Thread {
 
     public ConnectThread(Activity context, String matchName, String data) {
         this.context = context;
-        if (matchName.contains("UNSENT_")) {
+        if (matchName.contains("UNSENT_")) { // NOTE: Explain using comments
             matchName = matchName.replaceFirst("UNSENT_", "");
         }
         this.matchName = matchName;
@@ -37,11 +37,11 @@ public class ConnectThread extends Thread {
 
 
 
-    //called once before use to set up bluetooth
+    // called once before use to set up bluetooth
     public static void initBluetooth(final MainActivity context) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
-            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
+            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth"); // NOTE: what is Log.wtf?
             toastText("Device Not Configured With Bluetooth", context);
             return;
         }
@@ -57,7 +57,7 @@ public class ConnectThread extends Thread {
             return;
         }
         adapter.cancelDiscovery();
-        for (BluetoothDevice tmpDevice : devices) {
+        for (BluetoothDevice tmpDevice : devices) { // NOTE: We can pair manually and not deal with this code right? Needing the device name is annoying.
             //red super:
             //if (tmpDevice.getName().equals("red super")) {
             //sam's tablet:
@@ -82,6 +82,7 @@ public class ConnectThread extends Thread {
     public void run() {
         //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
         //storage path: /sdcard/Documents/MatchData
+        // NOTE: if you are going to retain data over app reinstalls, you need a way to clear it. Maybe a button in the app. It is VERY IMPORTANT that this button works and actually clears all the data.
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
             toastText("External Storage Not Mounted", context);
@@ -96,6 +97,7 @@ public class ConnectThread extends Thread {
                 Log.i("File Info", "Failed to make Directory.  Unimportant");
             }
             //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
+            // NOTE: Nice job on the above system!!!!
             file = new File(dir, "UNSENT_" + matchName);
             fileWriter = new PrintWriter(file);
         } catch (IOException ioe) {
@@ -126,7 +128,7 @@ public class ConnectThread extends Thread {
         while (!complete) {
             try {
                 synchronized (lock) {
-                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString("f8212682-9a34-11e5-8994-feff819cdc9f"));
+                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString("f8212682-9a34-11e5-8994-feff819cdc9f")); // NOTE: Should this be hardcoded?
                 }
                 Log.i("Socket Info", "Attempting To Start Connection...");
                 socket.connect();
@@ -222,7 +224,7 @@ public class ConnectThread extends Thread {
             }
             in.close();
             out.close();
-            socket.close();
+            socket.close(); // NOTE: I imagine there is a good reason, but note the reason that you need to close the socket. Does it not close it's self at any point?
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
             toastText("Failed To Close Connection To Super", context);

@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity {
             tmp = null;
             System.out.println("debug");
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
+            uuid = "f8212682-9a34-11e5-8994-feff819cdc9f"; // NOTE: Why am I deeing the UUID in 3 different files?
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Test_Connection", UUID.fromString(uuid));
@@ -99,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
                         try {
                             text = "";
                             //get the bytesize from the first line of the data
-                            byteSize = reader.readLine();
+                            byteSize = reader.readLine(); // NOTE: This seems wrong? Doesnt readLine() return a string?
                         }catch(IOException e){
                             text("Failed to read data");
                             System.out.println("Failed to read Data");
@@ -161,7 +161,7 @@ public class MainActivity extends ActionBarActivity {
                         return;
                     }
                     //you don't want to send the data infinite amount of times!
-                    break;
+                    break; // NOTE: Cheers to finite looping!
                 }
             }
         }
