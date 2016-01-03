@@ -5,14 +5,12 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -30,17 +28,20 @@ public class ConnectThread extends Thread {
 
     public ConnectThread(Activity context, String matchName, String data) {
         this.context = context;
+        if (matchName.contains("UNSENT_")) { // NOTE: Explain using comments
+            matchName = matchName.replaceFirst("UNSENT_", "");
+        }
         this.matchName = matchName;
         this.data = data;
     }
 
 
 
-    //called once before use to set up bluetooth
+    // called once before use to set up bluetooth
     public static void initBluetooth(final MainActivity context) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
-            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
+            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth"); // NOTE: what is Log.wtf?
             toastText("Device Not Configured With Bluetooth", context);
             return;
         }
@@ -56,13 +57,15 @@ public class ConnectThread extends Thread {
             return;
         }
         adapter.cancelDiscovery();
-        for (BluetoothDevice tmpDevice : devices) {
+        for (BluetoothDevice tmpDevice : devices) { // NOTE: We can pair manually and not deal with this code right? Needing the device name is annoying.
             //red super:
             //if (tmpDevice.getName().equals("red super")) {
             //sam's tablet:
             //if (tmpDevice.getName().equals("GT-P5113")) {
             //sam's phone:
-            if (tmpDevice.getName().equals("Samuel Chung's LG-D415")) {
+            //if (tmpDevice.getName().equals("Samuel Chung's LG-D415")) {
+            //evan's android tablet:
+            if (tmpDevice.getName().equals("G Pad 7.0 LTE")) {
                 synchronized (lock) {
                     device = tmpDevice;
                 }
@@ -77,6 +80,45 @@ public class ConnectThread extends Thread {
 
     @Override
     public void run() {
+        //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
+        //storage path: /sdcard/Documents/MatchData
+        // NOTE: if you are going to retain data over app reinstalls, you need a way to clear it. Maybe a button in the app. It is VERY IMPORTANT that this button works and actually clears all the data.
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            Log.e("File Error", "External Storage not Mounted");
+            toastText("External Storage Not Mounted", context);
+            return;
+        }
+        File dir;
+        File file;
+        PrintWriter fileWriter;
+        try {
+            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData");
+            if (!dir.mkdir()) {
+                Log.i("File Info", "Failed to make Directory.  Unimportant");
+            }
+            //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
+            // NOTE: Nice job on the above system!!!!
+            file = new File(dir, "UNSENT_" + matchName);
+            fileWriter = new PrintWriter(file);
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed to open file");
+            toastText("Failed To Open File", context);
+            return;
+        }
+
+
+
+        fileWriter.println(data.length());
+        fileWriter.print(data);
+        fileWriter.close();
+        if (fileWriter.checkError()) {
+            Log.e("File Error", "Failed to Write to File");
+            toastText("Failed To Save Match Data To File", context);
+            return;
+        }
+
+
+
         PrintWriter out = null;
         BufferedReader in = null;
         BluetoothSocket socket = null;
@@ -86,7 +128,7 @@ public class ConnectThread extends Thread {
         while (!complete) {
             try {
                 synchronized (lock) {
-                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString("f8212682-9a34-11e5-8994-feff819cdc9f"));
+                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString("f8212682-9a34-11e5-8994-feff819cdc9f")); // NOTE: Should this be hardcoded?
                 }
                 Log.i("Socket Info", "Attempting To Start Connection...");
                 socket.connect();
@@ -115,7 +157,7 @@ public class ConnectThread extends Thread {
                         public void run() {
                             new AlertDialog.Builder(context)
                                     .setTitle("Repeated Connection Failure")
-                                    .setMessage("Please contact an app programmer immediately.")
+                                    .setMessage("Please resend this data when successful data transfer is made.")
                                     .setNeutralButton("Dismiss", null)
                                     .show();
                         }
@@ -123,47 +165,6 @@ public class ConnectThread extends Thread {
                     return;
                 }
             }
-        }
-
-
-
-        /*try {
-            PrintWriter file = new PrintWriter(context.openFileOutput(matchName, Context.MODE_PRIVATE));
-            file.println(data);
-            file.close();
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed To Open File");
-            toastText("Failed To Open File", context);
-            return;
-        }*/
-
-
-        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            Log.e("File Error", "External Storage not Mounted");
-            toastText("External Storage Not Mounted", context);
-            return;
-        }
-        PrintWriter file;
-        try {
-            File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
-            if (!dir.mkdir()) {
-                Log.i("File Error", "Failed to make Directory.  Unimportant");
-            }
-            file = new PrintWriter(new File(dir, matchName));
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed to open file");
-            toastText("Failed To Open File", context);
-            return;
-        }
-
-
-        file.println(data.length());
-        file.print(data);
-        file.close();
-        if (file.checkError()) {
-            Log.e("File Error", "Failed to Write to File");
-            toastText("Failed To Save Match Data To File", context);
-            return;
         }
 
 
@@ -202,7 +203,7 @@ public class ConnectThread extends Thread {
                         public void run() {
                             new AlertDialog.Builder(context)
                                     .setTitle("Repeated Data Send Failure")
-                                    .setMessage("Please contact an app programmer immediately.")
+                                    .setMessage("Please resend this data when successful data transfer is made.")
                                     .setNeutralButton("Dismiss", null)
                                     .show();
                         }
@@ -218,9 +219,12 @@ public class ConnectThread extends Thread {
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", context);
         try {
+            if (!file.renameTo(new File(dir, matchName))) {
+                Log.e("File Error", "Failed to Rename File");
+            }
             in.close();
             out.close();
-            socket.close();
+            socket.close(); // NOTE: I imagine there is a good reason, but note the reason that you need to close the socket. Does it not close it's self at any point?
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
             toastText("Failed To Close Connection To Super", context);

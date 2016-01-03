@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +15,20 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-
+// NOTE: I don't really care about viewing files right now, because we are working on Bluetooth. Just letting you know im not looking over this file.
 public class FileViewer extends AppCompatActivity {
-    //TODO provide a resend all button
-    //TODO update FileViewer for external storage
+    //TODO provide a resend all button?
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_viewer);
-        File[] files = getFilesDir().listFiles();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/");
+        if (!dir.mkdir()) {
+            Log.i("File Info", "Failed to make Directory. Unimportant");
+        }
+        File[] files = dir.listFiles();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         for (File tmpFile : files) {
             adapter.add(tmpFile.getName());
@@ -58,13 +63,18 @@ public class FileViewer extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File[] files = getFilesDir().listFiles();
+                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData");
+                        if (!dir.mkdir()) {
+                            Log.i("File Info", "Failed to make Directory. Unimportant");
+                        }
+                        File[] files = dir.listFiles();
                         for (File tmpFile : files) {
                             if (!tmpFile.delete()) {
                                 Log.e("File Error", "Failed To Delete File");
                                 Toast.makeText(context, "Failed To Delete File", Toast.LENGTH_LONG).show();
                             }
                         }
+                        recreate();
                     }
                 })
                 .setNegativeButton("No", null)
