@@ -30,7 +30,7 @@ public class ConnectThread extends Thread {
 
     public ConnectThread(Activity context, String matchName, String data) {
         this.context = context;
-        if (matchName.contains("UNSENT_")) {
+        if (matchName.contains("UNSENT_")) { // NOTE: Explain using comments
             matchName = matchName.replaceFirst("UNSENT_", "");
         }
         this.matchName = matchName;
@@ -42,7 +42,7 @@ public class ConnectThread extends Thread {
     private static boolean initBluetooth(final Activity context) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
-            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
+            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth"); // NOTE: what is Log.wtf?
             toastText("Device Not Configured With Bluetooth", context);
             return false;
         }
@@ -58,7 +58,7 @@ public class ConnectThread extends Thread {
             return false;
         }
         adapter.cancelDiscovery();
-        for (BluetoothDevice tmpDevice : devices) {
+        for (BluetoothDevice tmpDevice : devices) { // NOTE: We can pair manually and not deal with this code right? Needing the device name is annoying.
             //red super:
             if (tmpDevice.getName().equals("red super")) {
             //sam's tablet:
@@ -108,6 +108,7 @@ public class ConnectThread extends Thread {
                 Log.i("File Info", "Failed to make Directory.  Unimportant");
             }
             //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
+            // NOTE: Nice job on the above system!!!!
             file = new File(dir, "UNSENT_" + matchName);
             fileWriter = new PrintWriter(file);
         } catch (IOException ioe) {
@@ -227,7 +228,7 @@ public class ConnectThread extends Thread {
             }
             in.close();
             out.close();
-            socket.close();
+            socket.close(); // NOTE: I imagine there is a good reason, but note the reason that you need to close the socket. Does it not close it's self at any point?
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
             toastText("Failed To Close Connection To Super", context);

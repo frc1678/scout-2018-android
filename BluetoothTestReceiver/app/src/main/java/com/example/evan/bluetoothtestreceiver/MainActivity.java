@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // NOTE: comment the reason for this line here (like you did in the other file)
         Switch s = (Switch) findViewById(R.id.Accept);
         final Activity context = this;
         s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
                 if (!dir.mkdir()) {
-                    Log.e("Blah", "No one cares");
+                    Log.e("Blah", "No one cares"); //NOTE: what is this?
                 }
                 file = new PrintWriter(new File(dir, "Test-Data-Two.txt"));
             } catch (IOException ioe) {
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
             Switch accept = (Switch) Context.findViewById(R.id.Response);
             if (accept.isChecked()) {
-                out.println("0");
+                out.println("0"); // NOTE: comment on the significance of 0 and 1
             } else {
                 out.println("1");
             }

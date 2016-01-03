@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+// NOTE: I don't really care about viewing files right now, because we are working on Bluetooth. Just letting you know im not looking over this file.
+
 public class FileOptions extends AppCompatActivity {
     private String name;
 

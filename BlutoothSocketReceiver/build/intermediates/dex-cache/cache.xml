@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/evan/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="61a0ff5c29295ec56d7e0bd3d25d95dbf71b4b2b">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.1-71a21e213e5378d2eb2be62da9196bbb995f95e4.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/libs/firebase-client-android-2.5.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3a97e2865335003f603ccf5c4deecab43962feae">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/pre-dexed/debug/firebase-client-android-2.5.0-d92037ad49d0f0949272596ed1db9ef9afec538b.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4486e953d1f35f8ccab098b1dd67146366d5f731">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/pre-dexed/debug/classes-7d6b2444c557f90e0bb08a31ff4d0ced6441682c.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f8efd0096475e0daf054267b61544e10dc776503">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/pre-dexed/debug/classes-b44f9bdd6c6411f236be0f46c25554253a3a980f.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars/libs/internal_impl-22.2.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c471eaaba13ff64f6e0383d1c30a9cdc9a97efeb">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/BlutoothSocketReceiver/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.1-2cc4ae6655c52785490983a529f10f8f3fbe8704.jar" />
+    </item>
+
+</items>
