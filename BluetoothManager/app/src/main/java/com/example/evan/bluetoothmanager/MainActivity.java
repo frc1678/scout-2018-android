@@ -1,5 +1,10 @@
 package com.example.evan.bluetoothmanager;
 
+//Main Activity is just for testing purposes and allows users to send random strings
+//ConnectThread is a class that will send any string as the 'data' argument over bluetooth and saves it to a file with the 'matchName' argument
+//FileViewer is an activity that displays files in the /sdcard/Documents/MatchData directory, which is where ConnectThread will save it's data
+//FileOptions is an activity called by FileViewer that gives users options to delete or resend files
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //'send' button on the ui
+    //This is just for testing purposes
     public void sendData(View view) {
         String data = "";
         for (int i = 0; i < 100; i++) {

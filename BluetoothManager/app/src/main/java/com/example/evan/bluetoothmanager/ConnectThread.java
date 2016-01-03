@@ -80,6 +80,43 @@ public class ConnectThread extends Thread {
 
     @Override
     public void run() {
+        //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
+        //storage path: /sdcard/Documents/MatchData
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            Log.e("File Error", "External Storage not Mounted");
+            toastText("External Storage Not Mounted", context);
+            return;
+        }
+        File dir;
+        File file;
+        PrintWriter fileWriter;
+        try {
+            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData");
+            if (!dir.mkdir()) {
+                Log.i("File Info", "Failed to make Directory.  Unimportant");
+            }
+            //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
+            file = new File(dir, "UNSENT_" + matchName);
+            fileWriter = new PrintWriter(file);
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed to open file");
+            toastText("Failed To Open File", context);
+            return;
+        }
+
+
+
+        fileWriter.println(data.length());
+        fileWriter.print(data);
+        fileWriter.close();
+        if (fileWriter.checkError()) {
+            Log.e("File Error", "Failed to Write to File");
+            toastText("Failed To Save Match Data To File", context);
+            return;
+        }
+
+
+
         PrintWriter out = null;
         BufferedReader in = null;
         BluetoothSocket socket = null;
@@ -126,50 +163,6 @@ public class ConnectThread extends Thread {
                     return;
                 }
             }
-        }
-
-
-
-        /*try {
-            PrintWriter file = new PrintWriter(context.openFileOutput(matchName, Context.MODE_PRIVATE));
-            file.println(data);
-            file.close();
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed To Open File");
-            toastText("Failed To Open File", context);
-            return;
-        }*/
-
-
-        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            Log.e("File Error", "External Storage not Mounted");
-            toastText("External Storage Not Mounted", context);
-            return;
-        }
-        File dir;
-        File file;
-        PrintWriter fileWriter;
-        try {
-            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
-            if (!dir.mkdir()) {
-                Log.i("File Info", "Failed to make Directory.  Unimportant");
-            }
-            file = new File(dir, "UNSENT_" + matchName);
-            fileWriter = new PrintWriter(file);
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed to open file");
-            toastText("Failed To Open File", context);
-            return;
-        }
-
-
-        fileWriter.println(data.length());
-        fileWriter.print(data);
-        fileWriter.close();
-        if (fileWriter.checkError()) {
-            Log.e("File Error", "Failed to Write to File");
-            toastText("Failed To Save Match Data To File", context);
-            return;
         }
 
 

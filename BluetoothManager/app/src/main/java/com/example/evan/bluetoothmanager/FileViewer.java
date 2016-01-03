@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,14 +17,14 @@ import android.widget.Toast;
 import java.io.File;
 
 public class FileViewer extends AppCompatActivity {
-    //TODO provide a resend all button
-    //TODO update FileViewer for external storage
+    //TODO provide a resend all button?
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_viewer);
-        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/");
         if (!dir.mkdir()) {
             Log.i("File Info", "Failed to make Directory. Unimportant");
         }
@@ -62,7 +63,7 @@ public class FileViewer extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData");
+                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData");
                         if (!dir.mkdir()) {
                             Log.i("File Info", "Failed to make Directory. Unimportant");
                         }

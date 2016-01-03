@@ -1,6 +1,7 @@
 package com.example.evan.bluetoothmanager;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class FileOptions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_options);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         TextView textView = (TextView) findViewById(R.id.fileTitle);
         name = getIntent().getStringExtra("matchName");
         if (name != null) {
@@ -50,7 +52,7 @@ public class FileOptions extends AppCompatActivity {
 
     //'delete' button on ui
     public void deleteFile(View view) {
-        File file = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData/" + name);
+        File file = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/" + name);
         if (!file.delete()) {
             Log.e("File Error", "Failed To Delete File");
             Toast.makeText(this, "Failed To Delete File", Toast.LENGTH_LONG).show();
@@ -65,7 +67,8 @@ public class FileOptions extends AppCompatActivity {
     public void resendFile(View view) {
         BufferedReader file;
         try {
-            file = new BufferedReader(new InputStreamReader(new FileInputStream(new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/MatchData/" + name))));
+            file = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/MatchData/" + name))));
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Open File");
             Toast.makeText(this, "Failed To Open File", Toast.LENGTH_LONG).show();
