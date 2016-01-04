@@ -19,17 +19,21 @@ import java.util.UUID;
 
 public class ConnectThread extends Thread {
     private static BluetoothDevice device = null;
+    private static final Object deviceLock = new Object();
     private static boolean isInit = false;
     private static final Object isInitLock = new Object();
-    private static final Object deviceLock = new Object();
     private Activity context;
+    private String superName;
+    private String uuid;
     private String matchName;
     private String data;
 
 
 
-    public ConnectThread(Activity context, String matchName, String data) {
+    public ConnectThread(Activity context, String superName, String uuid, String matchName, String data) {
         this.context = context;
+        this.superName = superName;
+        this.uuid = uuid;
         if (matchName.contains("UNSENT_")) { // NOTE: Explain using comments
             matchName = matchName.replaceFirst("UNSENT_", "");
         }
@@ -39,7 +43,7 @@ public class ConnectThread extends Thread {
 
 
 
-    private static boolean initBluetooth(final Activity context) {
+    private static boolean initBluetooth(final Activity context, String superName) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
             Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth"); // NOTE: what is Log.wtf?
@@ -60,7 +64,7 @@ public class ConnectThread extends Thread {
         adapter.cancelDiscovery();
         for (BluetoothDevice tmpDevice : devices) { // NOTE: We can pair manually and not deal with this code right? Needing the device name is annoying.
             //red super:
-            if (tmpDevice.getName().equals("red super")) {
+            if (tmpDevice.getName().equals(superName)) {
             //sam's tablet:
             //if (tmpDevice.getName().equals("GT-P5113")) {
             //sam's phone:
@@ -85,7 +89,7 @@ public class ConnectThread extends Thread {
         //if bluetooth has not been initialized, initialize it
         synchronized (isInitLock) {
             if (!isInit) {
-                if(!initBluetooth(context)) {
+                if(!initBluetooth(context, superName)) {
                     return;
                 } else {
                     isInit = true;
@@ -139,7 +143,7 @@ public class ConnectThread extends Thread {
         while (!complete) {
             try {
                 synchronized (deviceLock) {
-                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString("f8212682-9a34-11e5-8994-feff819cdc9f"));
+                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid)); // make this a constant somewhere nice
                 }
                 Log.i("Socket Info", "Attempting To Start Connection...");
                 socket.connect();

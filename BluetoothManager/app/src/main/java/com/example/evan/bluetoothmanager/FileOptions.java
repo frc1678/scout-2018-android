@@ -18,6 +18,8 @@ import java.io.InputStreamReader;
 // NOTE: I don't really care about viewing files right now, because we are working on Bluetooth. Just letting you know im not looking over this file.
 
 public class FileOptions extends AppCompatActivity {
+    private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
+    private static final String superName = "red super";
     private String name;
 
     @Override
@@ -79,6 +81,6 @@ public class FileOptions extends AppCompatActivity {
             Toast.makeText(this, "Failed To Read From File", Toast.LENGTH_LONG).show();
             return;
         }
-        new ConnectThread(this, name, text).start();
+        new ConnectThread(this, superName, uuid, name, text).start();
     }
 }
