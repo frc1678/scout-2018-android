@@ -1,4 +1,4 @@
-package com.example.evan.bluetoothmanager;
+package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,10 +27,18 @@ public class ConnectThread extends Thread {
     private String uuid;
     private String matchName;
     private String data;
+    private Runnable onFinish;
 
 
 
     public ConnectThread(Activity context, String superName, String uuid, String matchName, String data) {
+        this(context, superName, uuid, matchName, data, null);
+    }
+
+
+
+    //the runnable onFinish is called when the thread exits, whether the data sended successfully or not
+    public ConnectThread(Activity context, String superName, String uuid, String matchName, String data, Runnable onFinish) {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
@@ -39,6 +47,7 @@ public class ConnectThread extends Thread {
         }
         this.matchName = matchName;
         this.data = data;
+        this.onFinish = onFinish;
     }
 
 
@@ -83,6 +92,9 @@ public class ConnectThread extends Thread {
         synchronized (isInitLock) {
             if (!isInit) {
                 if(!initBluetooth(context, superName)) {
+                    if (onFinish != null) {
+                        context.runOnUiThread(onFinish);
+                    }
                     return;
                 } else {
                     isInit = true;
@@ -94,13 +106,16 @@ public class ConnectThread extends Thread {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
             toastText("External Storage Not Mounted", context);
+            if (onFinish != null) {
+                context.runOnUiThread(onFinish);
+            }
             return;
         }
         File dir;
         File file;
         PrintWriter fileWriter;
         try {
-            dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
+            dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
             if (!dir.mkdir()) {
                 Log.i("File Info", "Failed to make Directory.  Unimportant");
             }
@@ -110,6 +125,9 @@ public class ConnectThread extends Thread {
         } catch (IOException ioe) {
             Log.e("File Error", "Failed to open file");
             toastText("Failed To Open File", context);
+            if (onFinish != null) {
+                context.runOnUiThread(onFinish);
+            }
             return;
         }
 
@@ -121,6 +139,9 @@ public class ConnectThread extends Thread {
         if (fileWriter.checkError()) {
             Log.e("File Error", "Failed to Write to File");
             toastText("Failed To Save Match Data To File", context);
+            if (onFinish != null) {
+                context.runOnUiThread(onFinish);
+            }
             return;
         }
 
@@ -162,6 +183,9 @@ public class ConnectThread extends Thread {
                                     .show();
                         }
                     });
+                    if (onFinish != null) {
+                        context.runOnUiThread(onFinish);
+                    }
                     return;
                 }
             }
@@ -208,6 +232,9 @@ public class ConnectThread extends Thread {
                                     .show();
                         }
                     });
+                    if (onFinish != null) {
+                        context.runOnUiThread(onFinish);
+                    }
                     return;
                 }
             }
@@ -228,6 +255,11 @@ public class ConnectThread extends Thread {
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
             toastText("Failed To Close Connection To Super", context);
+        }
+
+
+        if (onFinish != null) {
+            context.runOnUiThread(onFinish);
         }
     }
 

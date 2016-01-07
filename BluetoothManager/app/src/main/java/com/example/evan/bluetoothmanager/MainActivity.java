@@ -20,6 +20,13 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
+    //evan's android tablet:
+    //private static final String superName = "G Pad 7.0 LTE";
+    //sam's phone:
+    //private static final String superName = "Samuel Chung's LG-D415";
+    //sam's tablet:
+    //private static final String superName = "GT-P5113";
+    //red super:
     private static final String superName = "red super";
 
     @Override
