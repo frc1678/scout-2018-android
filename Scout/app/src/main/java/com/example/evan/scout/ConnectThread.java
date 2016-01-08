@@ -27,18 +27,10 @@ public class ConnectThread extends Thread {
     private String uuid;
     private String matchName;
     private String data;
-    private Runnable onFinish;
 
 
 
     public ConnectThread(Activity context, String superName, String uuid, String matchName, String data) {
-        this(context, superName, uuid, matchName, data, null);
-    }
-
-
-
-    //the runnable onFinish is called when the thread exits, whether the data sended successfully or not
-    public ConnectThread(Activity context, String superName, String uuid, String matchName, String data, Runnable onFinish) {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
@@ -47,8 +39,8 @@ public class ConnectThread extends Thread {
         }
         this.matchName = matchName;
         this.data = data;
-        this.onFinish = onFinish;
     }
+
 
 
 
@@ -56,18 +48,18 @@ public class ConnectThread extends Thread {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
             Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
-            toastText("Device Not Configured With Bluetooth", context);
+            toastText("Device Not Configured With Bluetooth", Toast.LENGTH_LONG, context);
             return false;
         }
         if (!adapter.isEnabled()) {
             Log.e("Bluetooth Error", "Bluetooth Not Enabled");
-            toastText("Bluetooth Not Enabled", context);
+            toastText("Bluetooth Not Enabled", Toast.LENGTH_LONG, context);
             return false;
         }
         Set<BluetoothDevice> devices = adapter.getBondedDevices();
         if (devices.size() < 1) {
             Log.e("Bluetooth Error", "No Paired Devices");
-            toastText("No Paired Devices", context);
+            toastText("No Paired Devices", Toast.LENGTH_LONG, context);
             return false;
         }
         adapter.cancelDiscovery();
@@ -80,7 +72,7 @@ public class ConnectThread extends Thread {
             }
         }
         Log.e("Bluetooth Error", "No Paired Device With Name: \"red super\"");
-        toastText("No Paired Device With Name: \"red super\"", context);
+        toastText("No Paired Device With Name: \"" + superName + "\"", Toast.LENGTH_LONG, context);
         return false;
     }
 
@@ -92,9 +84,7 @@ public class ConnectThread extends Thread {
         synchronized (isInitLock) {
             if (!isInit) {
                 if(!initBluetooth(context, superName)) {
-                    if (onFinish != null) {
-                        context.runOnUiThread(onFinish);
-                    }
+                    onFinish(true);
                     return;
                 } else {
                     isInit = true;
@@ -105,10 +95,8 @@ public class ConnectThread extends Thread {
         //storage path: /sdcard/Android/MatchData
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
-            toastText("External Storage Not Mounted", context);
-            if (onFinish != null) {
-                context.runOnUiThread(onFinish);
-            }
+            toastText("External Storage Not Mounted", Toast.LENGTH_LONG, context);
+            onFinish(true);
             return;
         }
         File dir;
@@ -124,10 +112,8 @@ public class ConnectThread extends Thread {
             fileWriter = new PrintWriter(file);
         } catch (IOException ioe) {
             Log.e("File Error", "Failed to open file");
-            toastText("Failed To Open File", context);
-            if (onFinish != null) {
-                context.runOnUiThread(onFinish);
-            }
+            toastText("Failed To Open File", Toast.LENGTH_LONG, context);
+            onFinish(true);
             return;
         }
 
@@ -138,10 +124,8 @@ public class ConnectThread extends Thread {
         fileWriter.close();
         if (fileWriter.checkError()) {
             Log.e("File Error", "Failed to Write to File");
-            toastText("Failed To Save Match Data To File", context);
-            if (onFinish != null) {
-                context.runOnUiThread(onFinish);
-            }
+            toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
+            onFinish(true);
             return;
         }
 
@@ -166,7 +150,7 @@ public class ConnectThread extends Thread {
                 complete = true;
             } catch (IOException ioe) {
                 Log.e("Socket Error", "Failed To Open Socket");
-                toastText("Failed To Connect To Super", context);
+                toastText("Failed To Connect To Super", Toast.LENGTH_SHORT, context);
                 complete = false;
                 counter++;
                 //first two times it fails, we immediately try again.  Next two we wait 30 seconds before trying again.
@@ -183,9 +167,7 @@ public class ConnectThread extends Thread {
                                     .show();
                         }
                     });
-                    if (onFinish != null) {
-                        context.runOnUiThread(onFinish);
-                    }
+                    onFinish(true);
                     return;
                 }
             }
@@ -216,7 +198,7 @@ public class ConnectThread extends Thread {
                 complete = true;
             } catch (IOException ioe) {
                 Log.e("Communications Error", "Failed To Send Data");
-                toastText("Failed To Send Match Data To Super", context);
+                toastText("Failed To Send Match Data To Super", Toast.LENGTH_SHORT, context);
                 complete = false;
                 counter++;
                 //after the third failure, we terminate thread and notify user
@@ -232,9 +214,7 @@ public class ConnectThread extends Thread {
                                     .show();
                         }
                     });
-                    if (onFinish != null) {
-                        context.runOnUiThread(onFinish);
-                    }
+                    onFinish(true);
                     return;
                 }
             }
@@ -244,7 +224,7 @@ public class ConnectThread extends Thread {
 
 
         Log.i("Communications Info", "Done");
-        toastText("Data Send Success", context);
+        toastText("Data Send Success", Toast.LENGTH_LONG, context);
         try {
             if (!file.renameTo(new File(dir, matchName))) {
                 Log.e("File Error", "Failed to Rename File");
@@ -254,23 +234,28 @@ public class ConnectThread extends Thread {
             socket.close();
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
-            toastText("Failed To Close Connection To Super", context);
+            toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+            onFinish(true);
+            return;
         }
 
 
-        if (onFinish != null) {
-            context.runOnUiThread(onFinish);
-        }
+        onFinish(false);
     }
 
 
 
-    private static void toastText(final String text, final Activity context) {
+    private static void toastText(final String text, final int duration, final Activity context) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, text, duration).show();
             }
         });
+    }
+
+    //override this method if you would like to perform a task just before the thread terminates
+    public void onFinish(boolean error) {
+
     }
 }
