@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.FileObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,17 +26,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
-    //private static final String superName = "red super";
-    private static final String superName = "G Pad 7.0 LTE";
-    private boolean canClick = true;
-    private static final Object canClickLock = new Object();
+    private static final String superName = "red super";
+    //private static final String superName = "G Pad 7.0 LTE";
+    private FileObserver fileObserver;
 
 
 
@@ -44,18 +43,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        final Activity context = this;
         updateListView();
         ListView listView = (ListView) findViewById(R.id.infoList);
-        final Context context = this;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                fileObserver.stopWatching();
                 startActivity(new Intent(context, FileOptions.class)
                         .putExtra("uuid", uuid)
                         .putExtra("superName", superName)
                         .putExtra("matchName", parent.getItemAtPosition(position).toString()));
             }
         });
+        fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
+            @Override
+            public void onEvent(int event, String path) {
+                if (event == FileObserver.MOVED_TO) {
+                    Log.i("File Observer", "detected file close");
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateListView();
+                        }
+                    });
+                }
+            }
+        };
+        fileObserver.startWatching();
     }
 
 
@@ -88,58 +103,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //'send' button on ui
-    public void sendData (View view) {
-        //this is just a fancy way to prevent the user from spamming the send button.  we set the global variable canClick to false, meaning if they click the button
-        //nothing will happen, and set a timer for 5 seconds when they can click it again
-        if (canClick) {
-            synchronized (canClickLock) {
-                canClick = false;
-            }
-            ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-            timer.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (canClickLock) {
-                        canClick = true;
-                    }
-                }
-            }, 5, TimeUnit.SECONDS);
-            Map<String, Integer> edits = new HashMap<>();
-            edits.put("Name", R.id.nameEdit);
-            edits.put("Team", R.id.teamEdit);
-            edits.put("Score", R.id.scoreEdit);
-            JSONObject data = new JSONObject();
-            String tmp;
-            for (Map.Entry<String, Integer> entry : edits.entrySet()) {
-                EditText editText = (EditText) findViewById(entry.getValue());
-                tmp = editText.getText().toString();
-                if (tmp.equals("")) {
-                    Toast.makeText(this, "Please Enter All Data", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                try {
-                    data.put(entry.getKey(), tmp);
-                } catch (JSONException jsone) {
-                    Log.e("JSON Error", "Failed to write to JSONObject");
-                    Toast.makeText(this, "Incorrect Data Format", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-            final Activity context = this;
-            new ConnectThread(this, superName, uuid, "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt", data.toString() + "\n") {
-                @Override
-                public void onFinish(boolean error) {
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateListView();
-                        }
-                    });
-                }
-            }.start();
-        }
+
+
+
+    public void startScout (View view) {
+        fileObserver.stopWatching();
+        startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName));
     }
+
+
 
 
 

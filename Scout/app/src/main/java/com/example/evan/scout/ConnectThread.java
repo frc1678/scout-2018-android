@@ -128,6 +128,7 @@ public class ConnectThread extends Thread {
             onFinish(true);
             return;
         }
+        onFileWriteFinish();
 
 
 
@@ -256,6 +257,10 @@ public class ConnectThread extends Thread {
 
     //override this method if you would like to perform a task just before the thread terminates
     public void onFinish(boolean error) {
+
+    }
+    //override this method if you would like to perform a task just after it saves data to file
+    public void onFileWriteFinish() {
 
     }
 }
