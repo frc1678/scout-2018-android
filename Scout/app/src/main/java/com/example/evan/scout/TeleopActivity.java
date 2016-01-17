@@ -1,8 +1,6 @@
 package com.example.evan.scout;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -138,9 +136,7 @@ public class TeleopActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             int prevNum = Integer.parseInt(currentTextViews.get(plusCounterButtons.indexOf(plus)).getText().toString());
-                            if (prevNum < 3) {
-                                prevNum++;
-                            }
+                            prevNum++;
                             currentTextViews.get(minusCounterButtons.indexOf(minus)).setText(Integer.toString(prevNum));
                         }
                     });
@@ -210,7 +206,7 @@ public class TeleopActivity extends AppCompatActivity {
                 data.put("autoData", autoJSON);
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Error in auto data?");
-                Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG);
+                Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG).show();
                 return false;
             }
 
@@ -227,6 +223,7 @@ public class TeleopActivity extends AppCompatActivity {
                     });
                 }
             }.start();
+            Log.i("JSON data", data.toString());
         }
         return true;
     }

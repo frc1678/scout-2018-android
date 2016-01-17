@@ -1,6 +1,5 @@
 package com.example.evan.scout;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -16,12 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.Toolbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,9 +118,7 @@ public class AutoActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             int prevNum = Integer.parseInt(currentTextViews.get(plusCounterButtons.indexOf(plus)).getText().toString());
-                            if (prevNum < 3) {
-                                prevNum++;
-                            }
+                            prevNum++;
                             currentTextViews.get(minusCounterButtons.indexOf(minus)).setText(Integer.toString(prevNum));
                         }
                     });
