@@ -7,10 +7,14 @@ import android.os.FileObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -23,10 +27,12 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
-    //private static final String superName = "red super";
-    private static final String superName = "G Pad 7.0 LTE";
+    private static final String superName = "red super";
+    //private static final String superName = "G Pad 7.0 LTE";
     private FileObserver fileObserver;
     private ArrayAdapter<String> fileListAdapter;
+    private int matchNumber;
+    private boolean overridden = false;
 
 
 
@@ -35,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+
+        matchNumber = getIntent().getIntExtra("matchNumber", 1);
+        EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
+        matchNumberText.setText("Q" + Integer.toString(matchNumber));
+        overridden = getIntent().getBooleanExtra("overridden", false);
+        if (overridden) {
+            matchNumberText.setFocusableInTouchMode(true);
+            invalidateOptionsMenu();
+        } else {
+            matchNumberText.setFocusable(false);
+        }
 
 
         //set up list of files
@@ -126,7 +144,14 @@ public class MainActivity extends AppCompatActivity {
     //scout button on ui
     public void startScout (View view) {
         fileObserver.stopWatching();
-        startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName));
+        if (overridden) {
+            EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
+            String current = matchNumberText.getText().toString();
+            current = current.replaceAll("Q", "");
+            matchNumber = Integer.parseInt(current);
+        }
+        startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName)
+                .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden));
     }
 
 
@@ -147,5 +172,39 @@ public class MainActivity extends AppCompatActivity {
             fileListAdapter.add(tmpFile.getName());
         }
         fileListAdapter.notifyDataSetChanged();
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!overridden) {
+            getMenuInflater().inflate(R.menu.main_menu, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.main_menu2, menu);
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.mainOverride) {
+            EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
+            matchNumberText.setFocusableInTouchMode(true);
+            overridden = true;
+            invalidateOptionsMenu();
+        } else if (item.getItemId() == R.id.mainAutomate) {
+            EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
+            String current = matchNumberText.getText().toString();
+            current = current.replaceAll("Q", "");
+            matchNumber = Integer.parseInt(current);
+            current = "Q" + current;
+            matchNumberText.setText(current);
+            matchNumberText.setFocusable(false);
+            overridden = false;
+            invalidateOptionsMenu();
+        }
+        return true;
     }
 }

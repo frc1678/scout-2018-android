@@ -12,6 +12,7 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
+//class that creates all the ui components I need like togglebuttons, etc.  Also stores all buttons in list to be accessed later
 public class UIComponentCreator {
     private List<View> componentViews;
     private List<String> componentNames;

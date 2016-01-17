@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +34,8 @@ public class TeleopActivity extends AppCompatActivity {
     private String autoJSON;
     private UIComponentCreator counterCreator;
     private UIComponentCreator toggleCreator;
+    private int matchNumber;
+    private boolean overridden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +45,11 @@ public class TeleopActivity extends AppCompatActivity {
         uuid = getIntent().getStringExtra("uuid");
         superName = getIntent().getStringExtra("superName");
         autoJSON = getIntent().getStringExtra("autoJSON");
+        matchNumber = getIntent().getIntExtra("matchNumber", 1);
+        overridden = getIntent().getBooleanExtra("overridden", false);
 
 
-
+        //populate toggles
         toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Challenge",
                 "Scale", "Disabled", "Incap.")));
         LinearLayout toggleLayout = (LinearLayout) findViewById(R.id.teleopToggleLinear);
@@ -54,6 +59,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+        //populate counters
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.teleopCounterLinear);
         counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Crossed Defense 1", "Ground Intakes",
                 "Crossed Defense 2", "High Shots Made", "Crossed Defense 3", "High Shots Missed", "Crossed Defense 4", "Low Shots Made",
@@ -67,6 +73,7 @@ public class TeleopActivity extends AppCompatActivity {
     }
 
 
+    //add action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.teleop_menu, menu);
@@ -74,17 +81,15 @@ public class TeleopActivity extends AppCompatActivity {
     }
 
 
+    //send data when action bar button clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.teleopSendButton) {
             JSONObject data = new JSONObject();
 
 
-            List<String> toggleVariableNames = new ArrayList<>();
-            toggleVariableNames.add("didChallenge");
-            toggleVariableNames.add("didScale");
-            toggleVariableNames.add("wasDisabled");
-            toggleVariableNames.add("wasIncap");
+            List<String> toggleVariableNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
+                    "didGetDisabled", "didGetIncapacitated"));
             List<View> toggleList = toggleCreator.getComponentViews();
             for (int i = 0; i < toggleList.size(); i++) {
                 ToggleButton toggleButton = (ToggleButton) toggleList.get(i);
@@ -99,23 +104,36 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
-            List<String> counterVarNames = new ArrayList<>();
-            counterVarNames.add("numDefense1Crossed");
-            counterVarNames.add("numGroundIntakes");
-            counterVarNames.add("numDefense2Crossed");
-            counterVarNames.add("numHighShotsMade");
-            counterVarNames.add("numDefense3Crossed");
-            counterVarNames.add("numHighShotsMissed");
-            counterVarNames.add("numDefense4Crossed");
-            counterVarNames.add("numLowShotsMade");
-            counterVarNames.add("numDefense5Crossed");
-            counterVarNames.add("numLowShotsMissed");
-            counterVarNames.add("numShotsBlocked");
             List<View> currentTextViews = counterCreator.getComponentViews();
-            for (int i = 0; i < currentTextViews.size(); i++) {
-                TextView numCounter = (TextView) currentTextViews.get(i);
+            JSONArray timesDefensesCrossedTele = new JSONArray();
+            for (int i = 0; i < currentTextViews.size()-1; i++) {
                 try {
-                    data.put(counterVarNames.get(i), Integer.parseInt(numCounter.getText().toString()));
+                    Log.i("Current TextViews", ((TextView)currentTextViews.get(i)).getText().toString());
+                    timesDefensesCrossedTele.put(i, Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+                    currentTextViews.remove(i);
+                } catch (JSONException jsone) {
+                    Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
+                    Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            }
+
+            try {
+                data.put("timesDefensesCrossedTele", timesDefensesCrossedTele);
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add defense crossed counters to JSON");
+                Toast.makeText(this, "Error in Defense counters", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+
+            List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakedsTele",
+                    "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
+                    "numShotsBlockedTele"));
+            for (int i = 0; i < currentTextViews.size(); i++) {
+                try {
+                    Log.i("Current TextViews", ((TextView)currentTextViews.get(i)).getText().toString()+ ">>>>>>" + Integer.toString(currentTextViews.size()));
+                    data.put(counterVarNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
                 } catch (JSONException jsone) {
                     Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
                     Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
@@ -127,7 +145,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
             try {
-                data.put("autoData", autoJSON);
+                data.put("autoData", new JSONObject(autoJSON));
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Error in auto data?");
                 Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG).show();
@@ -144,7 +162,9 @@ public class TeleopActivity extends AppCompatActivity {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            startActivity(new Intent(context, MainActivity.class));
+                            matchNumber++;
+                            startActivity(new Intent(context, MainActivity.class).putExtra("matchNumber", matchNumber)
+                            .putExtra("overridden", overridden));
                         }
                     });
                 }
@@ -152,5 +172,11 @@ public class TeleopActivity extends AppCompatActivity {
             Log.i("JSON data", data.toString());
         }
         return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden));
     }
 }
