@@ -23,8 +23,8 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
-    private static final String superName = "red super";
-    //private static final String superName = "G Pad 7.0 LTE";
+    //private static final String superName = "red super";
+    private static final String superName = "G Pad 7.0 LTE";
     private FileObserver fileObserver;
     private ArrayAdapter<String> fileListAdapter;
 

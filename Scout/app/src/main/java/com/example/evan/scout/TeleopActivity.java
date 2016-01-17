@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -30,10 +31,8 @@ public class TeleopActivity extends AppCompatActivity {
     private String uuid;
     private String superName;
     private String autoJSON;
-    private List<ToggleButton> toggleList;
-    private List<Button> plusCounterButtons;
-    private List<TextView> currentTextViews;
-    private List<Button> minusCounterButtons;
+    private UIComponentCreator counterCreator;
+    private UIComponentCreator toggleCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,109 +42,28 @@ public class TeleopActivity extends AppCompatActivity {
         uuid = getIntent().getStringExtra("uuid");
         superName = getIntent().getStringExtra("superName");
         autoJSON = getIntent().getStringExtra("autoJSON");
-        toggleList = new ArrayList<>();
-        plusCounterButtons = new ArrayList<>();
-        currentTextViews = new ArrayList<>();
-        minusCounterButtons = new ArrayList<>();
 
-        List<String> toggleNames = new ArrayList<>();
-        toggleNames.add("Challenge");
-        toggleNames.add("Scale");
-        toggleNames.add("Disabled");
-        toggleNames.add("Incap.");
+
+
+        toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Challenge",
+                "Scale", "Disabled", "Incap.")));
         LinearLayout toggleLayout = (LinearLayout) findViewById(R.id.teleopToggleLinear);
         for (int i = 0; i < 4; i++) {
-            ToggleButton toggleButton = new ToggleButton(this);
-            toggleButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-            toggleButton.setText(toggleNames.get(i));
-            toggleButton.setTextOn(toggleNames.get(i));
-            toggleButton.setTextOff(toggleNames.get(i));
-            toggleLayout.addView(toggleButton);
-            toggleList.add(toggleButton);
+            toggleLayout.addView(toggleCreator.getNextToggleButton());
         }
 
-        List<String> counterNames = new ArrayList<>();
-        counterNames.add("Crossed Defense 1");
-        counterNames.add("Ground Intakes");
-        counterNames.add("Crossed Defense 2");
-        counterNames.add("High Shots Made");
-        counterNames.add("Crossed Defense 3");
-        counterNames.add("High Shots Missed");
-        counterNames.add("Crossed Defense 4");
-        counterNames.add("Low Shots Made");
-        counterNames.add("Crossed Defense 5");
-        counterNames.add("Low Shots Missed");
-        counterNames.add("Shots Blocked");
+
+
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.teleopCounterLinear);
-        int nameOfCurrentCounter = 0;
-
-        for (int i = 0; i < 12; i++) {
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            if ((i % 2) == 0) {
-                int limit;
-                if (i == 10) {
-                    limit = 1;
-                } else {
-                    limit = 2;
-                }
-                for (int j = 0; j < limit; j++) {
-                    TextView name = new TextView(this);
-                    name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    name.setGravity(Gravity.CENTER);
-                    name.setText(counterNames.get(nameOfCurrentCounter));
-                    nameOfCurrentCounter++;
-                    row.addView(name);
-                }
-            } else {
-                int limit;
-                if (i == 11) {
-                    limit = 1;
-                } else {
-                    limit = 2;
-                }
-                for (int j = 0; j < limit; j++) {
-                    final Button minus = new Button(this);
-                    minus.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    minus.setText("-");
-                    minus.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int prevNum = Integer.parseInt(currentTextViews.get(minusCounterButtons.indexOf(minus)).getText().toString());
-                            if (prevNum > 0) {
-                                prevNum--;
-                            }
-                            currentTextViews.get(minusCounterButtons.indexOf(minus)).setText(Integer.toString(prevNum));
-                        }
-                    });
-                    row.addView(minus);
-                    minusCounterButtons.add(minus);
-
-                    TextView currentCount = new TextView(this);
-                    currentCount.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    currentCount.setText("0");
-                    currentCount.setGravity(Gravity.CENTER);
-                    row.addView(currentCount);
-                    currentTextViews.add(currentCount);
-
-                    final Button plus = new Button(this);
-                    plus.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    plus.setText("+");
-                    plus.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int prevNum = Integer.parseInt(currentTextViews.get(plusCounterButtons.indexOf(plus)).getText().toString());
-                            prevNum++;
-                            currentTextViews.get(minusCounterButtons.indexOf(minus)).setText(Integer.toString(prevNum));
-                        }
-                    });
-                    row.addView(plus);
-                    plusCounterButtons.add(plus);
-                }
-            }
-            rowLayout.addView(row);
+        counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Crossed Defense 1", "Ground Intakes",
+                "Crossed Defense 2", "High Shots Made", "Crossed Defense 3", "High Shots Missed", "Crossed Defense 4", "Low Shots Made",
+                "Crossed Defense 5", "Low Shots Missed", "Shots Blocked")));
+        for (int i = 0; i < 5; i++) {
+            rowLayout.addView(counterCreator.getNextTitleRow(2));
+            rowLayout.addView(counterCreator.getNextCounterRow(2));
         }
+        rowLayout.addView(counterCreator.getNextTitleRow(1));
+        rowLayout.addView(counterCreator.getNextCounterRow(1));
     }
 
 
@@ -167,8 +85,9 @@ public class TeleopActivity extends AppCompatActivity {
             toggleVariableNames.add("didScale");
             toggleVariableNames.add("wasDisabled");
             toggleVariableNames.add("wasIncap");
+            List<View> toggleList = toggleCreator.getComponentViews();
             for (int i = 0; i < toggleList.size(); i++) {
-                ToggleButton toggleButton = toggleList.get(i);
+                ToggleButton toggleButton = (ToggleButton) toggleList.get(i);
                 try {
                     data.put(toggleVariableNames.get(i), toggleButton.isChecked());
                 } catch (JSONException jsone) {
@@ -177,6 +96,8 @@ public class TeleopActivity extends AppCompatActivity {
                     return false;
                 }
             }
+
+
 
             List<String> counterVarNames = new ArrayList<>();
             counterVarNames.add("numDefense1Crossed");
@@ -190,8 +111,9 @@ public class TeleopActivity extends AppCompatActivity {
             counterVarNames.add("numDefense5Crossed");
             counterVarNames.add("numLowShotsMissed");
             counterVarNames.add("numShotsBlocked");
+            List<View> currentTextViews = counterCreator.getComponentViews();
             for (int i = 0; i < currentTextViews.size(); i++) {
-                TextView numCounter = currentTextViews.get(i);
+                TextView numCounter = (TextView) currentTextViews.get(i);
                 try {
                     data.put(counterVarNames.get(i), Integer.parseInt(numCounter.getText().toString()));
                 } catch (JSONException jsone) {
@@ -200,6 +122,8 @@ public class TeleopActivity extends AppCompatActivity {
                     return false;
                 }
             }
+
+
 
 
             try {
@@ -211,6 +135,8 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
+
+
             final Activity context = this;
             new ConnectThread(this, superName, uuid, "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt", data.toString() + "\n") {
                 @Override
@@ -218,7 +144,7 @@ public class TeleopActivity extends AppCompatActivity {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            startActivity(new Intent(context, MainActivity.class)/*.putExtra("FromTeleop", true)*/);
+                            startActivity(new Intent(context, MainActivity.class));
                         }
                     });
                 }

@@ -20,15 +20,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AutoActivity extends AppCompatActivity {
     private String uuid;
     private String superName;
-    private List<ToggleButton> intakeButtonList;
-    private List<Button> plusCounterButtons;
-    private List<Button> minusCounterButtons;
-    private List<TextView> currentTextViews;
+    private UIComponentCreator toggleCreator;
+    private UIComponentCreator counterCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,96 +36,28 @@ public class AutoActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         uuid = getIntent().getStringExtra("uuid");
         superName = getIntent().getStringExtra("superName");
-        intakeButtonList = new ArrayList<>();
-        plusCounterButtons = new ArrayList<>();
-        minusCounterButtons = new ArrayList<>();
-        currentTextViews = new ArrayList<>();
 
 
 
         //populate the row of toggle buttons for ball intakes on midline
         LinearLayout intakeLayout = (LinearLayout) findViewById(R.id.autoIntakeButtonLinearLayout);
+        toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("1 Intaked", "2 Intaked",
+                "3 Intaked", "4 Intaked", "5 Intaked", "6 Intaked")));
         for (int i = 0; i < 6; i++) {
-            ToggleButton intakeButton = new ToggleButton(this);
-            intakeButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-            intakeButton.setText(Integer.toString(i + 1) + " Intaked");
-            intakeButton.setTextOn(Integer.toString(i + 1) + " Intaked");
-            intakeButton.setTextOff(Integer.toString(i + 1) + " Intaked");
-            intakeLayout.addView(intakeButton);
-            intakeButtonList.add(intakeButton);
+            intakeLayout.addView(toggleCreator.getNextToggleButton());
         }
 
 
 
         //populate counters for everything
-        List<String> counterNames = new ArrayList<>();
-        counterNames.add("Crossed Defense 1");
-        counterNames.add("Balls Knocked Off Mid");
-        counterNames.add("Crossed Defense 2");
-        counterNames.add("High Shots Made");
-        counterNames.add("Crossed Defense 3");
-        counterNames.add("High Shots Missed");
-        counterNames.add("Crossed Defense 4");
-        counterNames.add("Low Shots Made");
-        counterNames.add("Crossed Defense 5");
-        counterNames.add("Low Shots Missed");
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.autoCounterLinearLayout);
-        int nameOfCurrentCounter = 0;
+        counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Crossed Defense 1", "Balls Knocked Off Mid",
+                "Crossed Defense 2", "High Shots Made", "Crossed Defense 3", "High Shots Missed", "Crossed Defense 4", "Low Shots Made",
+                "Crossed Defense 5", "Low Shots Missed")));
 
-        for (int i = 0; i < 10; i++) {
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            if ((i % 2) == 0) {
-                for (int j = 0; j < 2; j++) {
-                    TextView name = new TextView(this);
-                    name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    name.setGravity(Gravity.CENTER);
-                    name.setText(counterNames.get(nameOfCurrentCounter));
-                    nameOfCurrentCounter++;
-                    row.addView(name);
-                }
-            } else {
-                for (int j = 0; j < 2; j++) {
-                    final Button minus = new Button(this);
-                    minus.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    minus.setText("-");
-                    minus.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int prevNum = Integer.parseInt(currentTextViews.get(minusCounterButtons.indexOf(minus)).getText().toString());
-                            if (prevNum > 0) {
-                                prevNum--;
-                            }
-                            currentTextViews.get(minusCounterButtons.indexOf(minus)).setText(Integer.toString(prevNum));
-                        }
-                    });
-                    row.addView(minus);
-                    minusCounterButtons.add(minus);
-
-                    TextView currentCount = new TextView(this);
-                    currentCount.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    currentCount.setText("0");
-                    currentCount.setGravity(Gravity.CENTER);
-                    row.addView(currentCount);
-                    currentTextViews.add(currentCount);
-
-                    final Button plus = new Button(this);
-                    plus.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                    plus.setText("+");
-                    plus.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int prevNum = Integer.parseInt(currentTextViews.get(plusCounterButtons.indexOf(plus)).getText().toString());
-                            prevNum++;
-                            currentTextViews.get(minusCounterButtons.indexOf(minus)).setText(Integer.toString(prevNum));
-                        }
-                    });
-                    row.addView(plus);
-                    plusCounterButtons.add(plus);
-                }
-            }
-            rowLayout.addView(row);
+        for (int i = 0; i < 5; i++) {
+            rowLayout.addView(counterCreator.getNextTitleRow(2));
+            rowLayout.addView(counterCreator.getNextCounterRow(2));
         }
     }
 
@@ -150,8 +81,9 @@ public class AutoActivity extends AppCompatActivity {
                 return false;
             }
 
+            List<View> intakeButtonList = toggleCreator.getComponentViews();
             for (int i = 0; i < intakeButtonList.size(); i++) {
-                ToggleButton hasIntakedToggle = intakeButtonList.get(i);
+                ToggleButton hasIntakedToggle = (ToggleButton) intakeButtonList.get(i);
                 try {
                     data.put("intakedBall" + Integer.toString((i+1)), hasIntakedToggle.isChecked());
                 } catch (JSONException jsone) {
@@ -173,8 +105,9 @@ public class AutoActivity extends AppCompatActivity {
             JsonCounterNames.add("numDefense5Crossed");
             JsonCounterNames.add("numLowShotsMissed");
 
+            List<View> currentTextViews = counterCreator.getComponentViews();
             for (int i = 0; i < currentTextViews.size(); i++) {
-                TextView numCounter = currentTextViews.get(i);
+                TextView numCounter = (TextView) currentTextViews.get(i);
                 try {
                     data.put(JsonCounterNames.get(i), Integer.parseInt(numCounter.getText().toString()));
                 } catch (JSONException jsone) {
