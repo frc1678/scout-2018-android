@@ -156,20 +156,13 @@ public class TeleopActivity extends AppCompatActivity {
 
 
             final Activity context = this;
-            new ConnectThread(this, superName, uuid, "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt", data.toString() + "\n") {
-                @Override
-                public void onFileWriteFinish() {
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            matchNumber++;
-                            startActivity(new Intent(context, MainActivity.class).putExtra("matchNumber", matchNumber)
-                            .putExtra("overridden", overridden));
-                        }
-                    });
-                }
-            }.start();
+            new ConnectThread(this, superName, uuid,
+                    "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
+                    data.toString() + "\n") .start();
             Log.i("JSON data", data.toString());
+            matchNumber++;
+            startActivity(new Intent(context, MainActivity.class).putExtra("matchNumber", matchNumber)
+                    .putExtra("overridden", overridden));
         }
         return true;
     }

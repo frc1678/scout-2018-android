@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -204,6 +206,13 @@ public class MainActivity extends AppCompatActivity {
             matchNumberText.setFocusable(false);
             overridden = false;
             invalidateOptionsMenu();
+        } else if (item.getItemId() == R.id.scheduleButton) {
+            new ScheduleReceiver(this, superName, uuid) {
+                @Override
+                public void onReceive(JSONObject schedule) {
+                    Log.i("Schedule", schedule.toString());
+                }
+            }.start();
         }
         return true;
     }

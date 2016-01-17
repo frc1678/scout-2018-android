@@ -84,7 +84,6 @@ public class ConnectThread extends Thread {
         synchronized (isInitLock) {
             if (!isInit) {
                 if(!initBluetooth(context, superName)) {
-                    onFinish(true);
                     return;
                 } else {
                     isInit = true;
@@ -96,7 +95,6 @@ public class ConnectThread extends Thread {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
             toastText("External Storage Not Mounted", Toast.LENGTH_LONG, context);
-            onFinish(true);
             return;
         }
         File dir;
@@ -113,7 +111,6 @@ public class ConnectThread extends Thread {
         } catch (IOException ioe) {
             Log.e("File Error", "Failed to open file");
             toastText("Failed To Open File", Toast.LENGTH_LONG, context);
-            onFinish(true);
             return;
         }
 
@@ -125,10 +122,8 @@ public class ConnectThread extends Thread {
         if (fileWriter.checkError()) {
             Log.e("File Error", "Failed to Write to File");
             toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
-            onFinish(true);
             return;
         }
-        onFileWriteFinish();
 
 
 
@@ -168,7 +163,6 @@ public class ConnectThread extends Thread {
                                     .show();
                         }
                     });
-                    onFinish(true);
                     return;
                 }
             }
@@ -215,7 +209,6 @@ public class ConnectThread extends Thread {
                                     .show();
                         }
                     });
-                    onFinish(true);
                     return;
                 }
             }
@@ -236,12 +229,10 @@ public class ConnectThread extends Thread {
         } catch (IOException ioe) {
             Log.e("Socket Error", "Failed To End Socket");
             toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
-            onFinish(true);
             return;
         }
 
 
-        onFinish(false);
     }
 
 
@@ -253,14 +244,5 @@ public class ConnectThread extends Thread {
                 Toast.makeText(context, text, duration).show();
             }
         });
-    }
-
-    //override this method if you would like to perform a task just before the thread terminates
-    public void onFinish(boolean error) {
-
-    }
-    //override this method if you would like to perform a task just after it saves data to file
-    public void onFileWriteFinish() {
-
     }
 }
