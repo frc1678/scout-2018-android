@@ -3,6 +3,7 @@ package com.example.evan.scout;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Environment;
 import android.os.FileObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> fileListAdapter;
     private int matchNumber;
     private boolean overridden = false;
+    private boolean canAutomate = true;
 
 
 
@@ -49,11 +53,63 @@ public class MainActivity extends AppCompatActivity {
         EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
         matchNumberText.setText("Q" + Integer.toString(matchNumber));
         overridden = getIntent().getBooleanExtra("overridden", false);
+
+
+
+        boolean scheduleAvailable = true;
+
+
+
+        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
+        if (!dir.mkdir()) {
+            Log.i("File Info", "Failed to make Directory. Unimportant");
+        }
+        File scheduleFile = new File(dir, "Schedule.txt");
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(scheduleFile)));
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed to open schedule file");
+            Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
+            scheduleAvailable = false;
+        }
+
+
+
+
+        String scheduleString = "";
+        if (scheduleAvailable) {
+            try {
+                String tmp;
+                while ((tmp = in.readLine()) != null) {
+                    scheduleString = scheduleString.concat(tmp);
+                }
+            } catch (IOException ioe) {
+                Log.e("File Error", "Failed to read from schedule file");
+                Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
+                scheduleAvailable = false;
+            }
+        }
+
+
+
+        JSONObject schedule;
+        if (scheduleAvailable) {
+            try {
+                schedule = new JSONObject(scheduleString);
+            } catch (JSONException jsone) {
+                Log.e("File Error", "Failed to parse JSON from schedule file");
+                Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
+                scheduleAvailable = false;
+            }
+        }
+
+        Log.i("Schedule Available", Boolean.toString(scheduleAvailable));
+
         if (overridden) {
-            matchNumberText.setFocusableInTouchMode(true);
-            invalidateOptionsMenu();
+            override();
         } else {
-            matchNumberText.setFocusable(false);
+            automate();
         }
 
 
@@ -192,28 +248,70 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.mainOverride) {
-            EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
-            matchNumberText.setFocusableInTouchMode(true);
-            overridden = true;
-            invalidateOptionsMenu();
+            override();
         } else if (item.getItemId() == R.id.mainAutomate) {
-            EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
-            String current = matchNumberText.getText().toString();
-            current = current.replaceAll("Q", "");
-            matchNumber = Integer.parseInt(current);
-            current = "Q" + current;
-            matchNumberText.setText(current);
-            matchNumberText.setFocusable(false);
-            overridden = false;
-            invalidateOptionsMenu();
+            automate();
         } else if (item.getItemId() == R.id.scheduleButton) {
+            final Activity context = this;
             new ScheduleReceiver(this, superName, uuid) {
                 @Override
                 public void onReceive(JSONObject schedule) {
                     Log.i("Schedule", schedule.toString());
+                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
+                    if (!dir.mkdir()) {
+                        Log.i("File Info", "Failed to make Directory. Unimportant");
+                    }
+                    File scheduleFile = new File(dir, "Schedule.txt");
+                    PrintWriter out;
+                    try {
+                         out = new PrintWriter(scheduleFile);
+                    } catch (IOException ioe) {
+                        Log.e("File Error", "Failed to save schedule data to file");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return;
+                    }
+                    try {
+                        out.println(schedule.toString());
+                        if (out.checkError()) {
+                            throw new IOException();
+                        }
+                    } catch (IOException ioe) {
+                        Log.e("File Error", "Failed to save schedule data to file");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
             }.start();
         }
         return true;
+    }
+
+
+
+    private void override () {
+        EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
+        matchNumberText.setFocusableInTouchMode(true);
+        overridden = true;
+        invalidateOptionsMenu();
+    }
+    private void automate() {
+        EditText matchNumberText = (EditText) findViewById(R.id.matchNumberText);
+        String current = matchNumberText.getText().toString();
+        current = current.replaceAll("Q", "");
+        matchNumber = Integer.parseInt(current);
+        current = "Q" + current;
+        matchNumberText.setText(current);
+        matchNumberText.setFocusable(false);
+        overridden = false;
+        invalidateOptionsMenu();
     }
 }

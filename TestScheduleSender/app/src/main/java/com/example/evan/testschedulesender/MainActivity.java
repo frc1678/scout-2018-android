@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
         schedule = new JSONObject();
         try {
-            JSONArray red = new JSONArray();
-            JSONArray blue = new JSONArray();
-            JSONObject qx = new JSONObject();
             Random random = new Random();
             for (int i = 0; i < 30; i++) {
+                JSONObject qx = new JSONObject();
+                JSONArray red = new JSONArray();
+                JSONArray blue = new JSONArray();
                 for (int j = 0; j < 3; j++) {
                     red.put(random.nextInt()%1000);
                     blue.put(random.nextInt()%1000);

@@ -20,13 +20,38 @@
             android:textSize="40dp"
             android:textColor="#000000"
             android:inputType="number"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/editID"
+            android:orientation="vertical"
+
+            android:layout_below="@+id/matchNumberText"
+            android:layout_above="@+id/scoutButton">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/teamNumber1Edit"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/teamNumber2Edit"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/teamNumber3Edit"/>
+        </LinearLayout>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Scout"
             android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
             android:onClick="startScout"
-            android:layout_below="@+id/matchNumberText"/>
+            android:id="@+id/scoutButton"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="0dp"
