@@ -19,30 +19,54 @@
             android:text="Q1"
             android:textSize="40dp"
             android:textColor="#000000"
-            android:inputType="number"/>
+            android:editable="false"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/editID"
             android:orientation="vertical"
-
             android:layout_below="@+id/matchNumberText"
             android:layout_above="@+id/scoutButton">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.25">
+            </RelativeLayout>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:id="@+id/teamNumber1Edit"/>
+                android:layout_weight="0.16"
+                android:id="@+id/teamNumber1Edit"
+                android:onClick="editTeamNumber"
+                android:gravity="center_vertical"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:editable="false"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:id="@+id/teamNumber2Edit"/>
+                android:layout_weight="0.16"
+                android:id="@+id/teamNumber2Edit"
+                android:onClick="editTeamNumber"
+                android:gravity="center_vertical"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:editable="false"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:id="@+id/teamNumber3Edit"/>
+                android:layout_weight="0.16"
+                android:id="@+id/teamNumber3Edit"
+                android:onClick="editTeamNumber"
+                android:gravity="center_vertical"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:editable="false"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.25">
+            </RelativeLayout>
         </LinearLayout>
         <Button
             android:layout_width="wrap_content"

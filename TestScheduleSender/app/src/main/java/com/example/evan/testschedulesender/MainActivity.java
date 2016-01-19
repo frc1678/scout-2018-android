@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray red = new JSONArray();
                 JSONArray blue = new JSONArray();
                 for (int j = 0; j < 3; j++) {
-                    red.put(random.nextInt()%1000);
-                    blue.put(random.nextInt()%1000);
+                    red.put(random.nextInt(1001));
+                    blue.put(random.nextInt(1001));
                 }
                 qx.put("red", red);
                 qx.put("blue", blue);
@@ -137,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
             try {
                 int ackCode = Integer.parseInt(in.readLine());
                 if (ackCode == -1) {
+                    Switch sendSchedule = (Switch) Context.findViewById(R.id.sendSchedule);
+                    if (!sendSchedule.isChecked()) {
+                        socket.close();
+                        return;
+                    }
                     Log.i("Scout info", "requested schedule");
                     PrintWriter out;
                     try {
@@ -156,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException ioe) {
                         Log.e("Bluetooth Error", "Failed to send schedule");
                     }
+                    return;
                 }
             } catch (IOException ioe) {
                 Log.e("Bluetooth Error", "Failed to receive ackCode");

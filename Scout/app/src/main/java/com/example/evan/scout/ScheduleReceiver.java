@@ -191,6 +191,15 @@ public class ScheduleReceiver extends Thread {
                     Log.e("Bluetooth Info", "Schedule receive success");
                     toastText("Schedule Receive Success", Toast.LENGTH_LONG, context);
                     onReceive(schedule);
+                    try {
+                        in.close();
+                        out.close();
+                        socket.close();
+                    } catch (IOException ioe) {
+                        Log.e("Socket Error", "Failed To End Socket");
+                        toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                        return;
+                    }
                     return;
                 }
             }

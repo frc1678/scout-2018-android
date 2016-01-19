@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class TeleopActivity extends AppCompatActivity {
     private UIComponentCreator toggleCreator;
     private int matchNumber;
     private boolean overridden;
+    private int teamNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class TeleopActivity extends AppCompatActivity {
         autoJSON = getIntent().getStringExtra("autoJSON");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
+        teamNumber = getIntent().getIntExtra("teamNumber", -1);
 
 
         //populate toggles
@@ -86,6 +89,15 @@ public class TeleopActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.teleopSendButton) {
             JSONObject data = new JSONObject();
+
+
+            try {
+                data.put("teamNumber", teamNumber);
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add team number to JSON");
+                Toast.makeText(this, "Invalid data in team number", Toast.LENGTH_LONG).show();
+                return false;
+            }
 
 
             List<String> toggleVariableNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
@@ -154,12 +166,22 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            JSONObject finalData = new JSONObject();
+            try {
+                finalData.put("Q" + Integer.toString(matchNumber), data);
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Error data");
+                Toast.makeText(this, "Error in data", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+
 
             final Activity context = this;
             new ConnectThread(this, superName, uuid,
                     "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
-                    data.toString() + "\n") .start();
-            Log.i("JSON data", data.toString());
+                    finalData.toString() + "\n") .start();
+            Log.i("JSON data", finalData.toString());
             matchNumber++;
             startActivity(new Intent(context, MainActivity.class).putExtra("matchNumber", matchNumber)
                     .putExtra("overridden", overridden));

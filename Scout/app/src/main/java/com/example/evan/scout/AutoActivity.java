@@ -32,6 +32,7 @@ public class AutoActivity extends AppCompatActivity {
     private UIComponentCreator counterCreator;
     private int matchNumber;
     private boolean overridden;
+    private int teamNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class AutoActivity extends AppCompatActivity {
         superName = getIntent().getStringExtra("superName");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
+        teamNumber = getIntent().getIntExtra("teamNumber", -1);
 
 
 
@@ -146,7 +148,7 @@ public class AutoActivity extends AppCompatActivity {
             }
 
             startActivity(new Intent(this, TeleopActivity.class).putExtra("uuid", uuid).putExtra("superName", superName).putExtra("autoJSON", data.toString())
-            .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden));
+            .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber));
         }
         return true;
     }
@@ -154,6 +156,7 @@ public class AutoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.i("matchNumber", Integer.toString(matchNumber));
         startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden));
     }
 }

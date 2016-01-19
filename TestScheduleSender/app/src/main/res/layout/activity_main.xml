@@ -9,6 +9,15 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textOff="no"
+        android:textOn="yes"
+        android:showText="true"
+        android:layout_above="@+id/Accept"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/sendSchedule"/>
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textOff="1"
         android:textOn="0"
         android:layout_centerHorizontal="true"
