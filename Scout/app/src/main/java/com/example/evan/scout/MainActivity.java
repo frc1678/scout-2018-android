@@ -6,14 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,12 +33,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-//TODO pass team nums and add them along with match num to json
 //TODO get device name and display teams, highlight edittexts accordingly
+//TODO use shared preferences
+
 public class MainActivity extends AppCompatActivity {
     //uuid for bluetooth connection
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
@@ -118,14 +113,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
+        //set the match number edittext's onclick to open a dialog.  We do this so the screen does not shrink and the user can see what he/she types
         final EditText matchNumberTextView = (EditText) findViewById(R.id.matchNumberText);
         matchNumberTextView.setText("Q" + Integer.toString(matchNumber));
         final Activity context = this;
         matchNumberTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //display dialog if overridden
                 if (overridden) {
                     final EditText editText = new EditText(context);
                     editText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -137,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    //when they click done, we get the matchnumber from what they put
                                     try {
                                         matchNumber = Integer.parseInt(editText.getText().toString());
                                     } catch (NumberFormatException nfe) {
@@ -154,14 +150,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
         //TODO change this according to scout number
         TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
         scoutTeamText.setBackgroundColor(Color.parseColor("#64FF64"));
-
-
 
 
 
@@ -173,13 +164,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             automate();
         }
-
-
-
-
-
-
-
 
 
 
@@ -218,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
                     new ConnectThread(context, superName, uuid, name, text).start();
                 }
         });
+
+
+
         //update list view when something is renamed
         fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
             @Override
@@ -235,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
         };
         fileObserver.startWatching();
     }
+
 
 
     //'delete all' button on ui
@@ -266,29 +254,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-    //scout button on ui
-    public void startScout (View view) {
-        int teamNumber;
-        try {
-            //TODO change this according to scout number
-            EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
-            teamNumber = Integer.parseInt(teamNumber1Edit.getText().toString());
-        } catch (NumberFormatException nfe) {
-            Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG);
-            return;
-        }
-        fileObserver.stopWatching();
-        startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName)
-                .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                .putExtra("teamNumber", teamNumber));
-    }
-
-
-
-
-
     //update the list of sent files
     private void updateListView() {
         File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/");
@@ -308,6 +273,48 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public void updateTeamNumbers() {
+        if (schedule != null) {
+            EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
+            EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
+            EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
+            try {
+                JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
+                //TODO change this according to scout color
+                teamNumber1Edit.setText(red.getString(0));
+                teamNumber2Edit.setText(red.getString(1));
+                teamNumber3Edit.setText(red.getString(2));
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to read JSON");
+                teamNumber1Edit.setText("");
+                teamNumber2Edit.setText("");
+                teamNumber3Edit.setText("");
+            }
+        }
+    }
+
+
+
+    //override the schedule
+    private void override () {
+        overridden = true;
+        invalidateOptionsMenu();
+    }
+
+
+
+    //automate the schedule
+    private void automate() {
+        if (schedule != null) {
+            overridden = false;
+            invalidateOptionsMenu();
+        } else {
+            Toast.makeText(this, "Schedule not available. Please get schedule", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+
     //update the menu at top of screen, either giving them the option to override or automate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -318,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
 
 
     //buttons at menu at top of screen:
@@ -332,7 +340,6 @@ public class MainActivity extends AppCompatActivity {
             //automate button
         } else if (item.getItemId() == R.id.mainAutomate) {
             automate();
-
 
 
 
@@ -392,33 +399,27 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //override the schedule
-    private void override () {
-        overridden = true;
-        invalidateOptionsMenu();
-    }
-    //automate the schedule
-    private void automate() {
-        if (schedule != null) {
-            overridden = false;
-            invalidateOptionsMenu();
-        } else {
-            Toast.makeText(this, "Schedule not available. Please get schedule", Toast.LENGTH_LONG).show();
+    //scout button on ui
+    public void startScout (View view) {
+        int teamNumber;
+        try {
+            //TODO change this according to scout number
+            EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
+            teamNumber = Integer.parseInt(teamNumber1Edit.getText().toString());
+        } catch (NumberFormatException nfe) {
+            Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG).show();
+            return;
         }
-    }
-
-
-
-    //make sure the fileobserver gets stopped if the user presses back
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
         fileObserver.stopWatching();
+        startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName)
+                .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
+                .putExtra("teamNumber", teamNumber));
     }
 
 
 
-
+    //onclick for edittexts containing team numbers
+    //again, we display dialogs to prevent screen shrinking
     public void editTeamNumber(final View view) {
         final Activity context = this;
         if (overridden) {
@@ -435,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
                             TextView textView = (TextView) view;
                             int teamNum;
                             try {
-                                 teamNum = Integer.parseInt(editText.getText().toString());
+                                teamNum = Integer.parseInt(editText.getText().toString());
                             } catch (NumberFormatException nfe) {
                                 return;
                             }
@@ -443,29 +444,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     })
                     .show();
-        }
-    }
-
-
-
-
-    public void updateTeamNumbers() {
-        if (schedule != null) {
-            EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
-            EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
-            EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
-            try {
-                JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
-                //TODO change this according to scout color
-                teamNumber1Edit.setText(red.getString(0));
-                teamNumber2Edit.setText(red.getString(1));
-                teamNumber3Edit.setText(red.getString(2));
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to read JSON");
-                teamNumber1Edit.setText("");
-                teamNumber2Edit.setText("");
-                teamNumber3Edit.setText("");
-            }
         }
     }
 }

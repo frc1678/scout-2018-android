@@ -1,17 +1,13 @@
 package com.example.evan.scout;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,9 +83,11 @@ public class TeleopActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.teleopSendButton) {
+            //json object to store everything
             JSONObject data = new JSONObject();
 
 
+            //add team number
             try {
                 data.put("teamNumber", teamNumber);
             } catch (JSONException jsone) {
@@ -100,6 +97,7 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
+            //add data in toggles
             List<String> toggleVariableNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
                     "didGetDisabled", "didGetIncapacitated"));
             List<View> toggleList = toggleCreator.getComponentViews();
@@ -116,6 +114,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            //add defenses crossed counters
             List<View> currentTextViews = counterCreator.getComponentViews();
             JSONArray timesDefensesCrossedTele = new JSONArray();
             for (int i = 0; i < currentTextViews.size()-1; i++) {
@@ -139,6 +138,7 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
+            //add data in other counters
             List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakedsTele",
                     "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
                     "numShotsBlockedTele"));
@@ -156,6 +156,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            //add auto data from previous activity
             try {
                 data.put("autoData", new JSONObject(autoJSON));
             } catch (JSONException jsone) {
@@ -166,6 +167,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            //wrap all the data with match number
             JSONObject finalData = new JSONObject();
             try {
                 finalData.put("Q" + Integer.toString(matchNumber), data);
@@ -177,13 +179,14 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
-            final Activity context = this;
+            //send data to bluetooth
             new ConnectThread(this, superName, uuid,
                     "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
-                    finalData.toString() + "\n") .start();
+                    finalData.toString() + "\n").start();
             Log.i("JSON data", finalData.toString());
+            //move on to next match and restart main activity
             matchNumber++;
-            startActivity(new Intent(context, MainActivity.class).putExtra("matchNumber", matchNumber)
+            startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber)
                     .putExtra("overridden", overridden));
         }
         return true;

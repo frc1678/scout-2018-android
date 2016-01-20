@@ -5,12 +5,9 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,6 +65,8 @@ public class AutoActivity extends AppCompatActivity {
         }
     }
 
+
+
     //add button to action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,12 +74,17 @@ public class AutoActivity extends AppCompatActivity {
         return true;
     }
 
+
+
     //move on to teleop when action bar button clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.buttonNext) {
 
+            //json object to store auto data
             JSONObject data = new JSONObject();
+
+            //add reach toggle
             ToggleButton hasReachedToggle = (ToggleButton) findViewById(R.id.autoReachedDefenseToggle);
             try {
                 data.put("didReachAuto", hasReachedToggle.isChecked());
@@ -91,6 +94,7 @@ public class AutoActivity extends AppCompatActivity {
                 return false;
             }
 
+            //add ball intake toggles
             List<View> intakeButtonList = toggleCreator.getComponentViews();
             JSONArray ballsIntakedAuto = new JSONArray();
             for (int i = 0; i < intakeButtonList.size(); i++) {
@@ -113,11 +117,13 @@ public class AutoActivity extends AppCompatActivity {
             }
 
 
+            //add all the defense crossed counters
             List<View> currentTextViews = counterCreator.getComponentViews();
             JSONArray timesDefensesCrossedAuto = new JSONArray();
-            for (int i = 0; i < currentTextViews.size(); i+=2) {
+            for (int i = 0; i < currentTextViews.size(); i++) {
                 try {
-                    timesDefensesCrossedAuto.put(i / 2, Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+                    timesDefensesCrossedAuto.put(i, Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+                    currentTextViews.remove(i);
                 } catch (JSONException jsone) {
                     Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
                     Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
@@ -135,9 +141,10 @@ public class AutoActivity extends AppCompatActivity {
 
 
 
+            //add all the data in other counters
             List<String> JsonCounterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
                     "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
-            for (int i = 1; i < currentTextViews.size(); i+=2) {
+            for (int i = 0; i < currentTextViews.size(); i++) {
                 try {
                     data.put(JsonCounterNames.get(i/2), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
                 } catch (JSONException jsone) {
@@ -147,11 +154,14 @@ public class AutoActivity extends AppCompatActivity {
                 }
             }
 
+            //send it all to teleop activity
             startActivity(new Intent(this, TeleopActivity.class).putExtra("uuid", uuid).putExtra("superName", superName).putExtra("autoJSON", data.toString())
             .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber));
         }
         return true;
     }
+
+
 
 
     @Override
