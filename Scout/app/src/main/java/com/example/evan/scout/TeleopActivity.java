@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,16 +88,6 @@ public class TeleopActivity extends AppCompatActivity {
             JSONObject data = new JSONObject();
 
 
-            //add team number
-            try {
-                data.put("teamNumber", teamNumber);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add team number to JSON");
-                Toast.makeText(this, "Invalid data in team number", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
             //add data in toggles
             List<String> toggleVariableNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
                     "didGetDisabled", "didGetIncapacitated"));
@@ -154,11 +145,9 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
-
-
-            //add auto data from previous activity
+            JSONObject autoData;
             try {
-                data.put("autoData", new JSONObject(autoJSON));
+                autoData = new JSONObject(autoJSON);
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Error in auto data?");
                 Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG).show();
@@ -167,10 +156,24 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            Iterator<String> autoKeys = autoData.keys();
+            while (autoKeys.hasNext()) {
+                String key = autoKeys.next();
+                try {
+                    data.put(key, autoData.get(key));
+                } catch (JSONException jsone) {
+                    Log.e("JSON error", "Error in auto data?");
+                    Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            }
+
+
+
             //wrap all the data with match number
             JSONObject finalData = new JSONObject();
             try {
-                finalData.put("Q" + Integer.toString(matchNumber), data);
+                finalData.put(Integer.toString(teamNumber) + "Q" + Integer.toString(matchNumber), data);
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Error data");
                 Toast.makeText(this, "Error in data", Toast.LENGTH_LONG).show();

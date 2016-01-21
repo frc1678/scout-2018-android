@@ -9,5 +9,9 @@
         android:title="Get Schedule"
         android:id="@+id/scheduleButton"
         app:showAsAction = "ifRoom" />
+    <item
+        android:id="@+id/setScoutIDButton"
+        android:title="Set Scout ID"
+        app:showAsAction="collapseActionView"/>
 
 </menu>

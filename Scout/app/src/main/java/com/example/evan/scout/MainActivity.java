@@ -2,10 +2,13 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.support.v7.app.AppCompatActivity;
@@ -34,15 +37,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-//TODO get device name and display teams, highlight edittexts accordingly
-//TODO use shared preferences
+//TODO send JSONObject data from teleopactivity and receive it here, to get errors
+//TODO set scout ID according to bluetooth name?
+//TODO change actionbar color according to color?
+//TODO provide resend all button
+//TODO provide dialog on onbackpressed
+//TODO collect scout initials
 
 public class MainActivity extends AppCompatActivity {
     //uuid for bluetooth connection
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
     //paired device to connect to as super:
-    //private static final String superName = "red super";
-    private static final String superName = "G Pad 7.0 LTE";
+    private String superName;
+    //private static final String redSuperName = "red super";
+    //private static final String blueSuperName = "blue super";
+    private static final String redSuperName = "G Pad 7.0 LTE";
+    private static final String blueSuperName = "G Pad 7.0 LTE";
     //used to update list of sent files when they are modified
     private FileObserver fileObserver;
     //current list of sent files
@@ -53,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean overridden = false;
     //schedule of matches
     private JSONObject schedule = null;
+    private SharedPreferences preferences;
+    private static final String PREFERENCES_FILE = "com.example.evan.scout";
+    private int scoutNumber;
+    private Drawable originalEditTextDrawable;
 
 
 
@@ -62,9 +76,64 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //lock screen horizontal
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
+        preferences = getSharedPreferences(PREFERENCES_FILE, 0);
         //get any values received from other activities
-        matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
+        matchNumber = getIntent().getIntExtra("matchNumber", -1);
+        //if matchNumber was not passed from a previous activity, load it from hard disk
+        if (matchNumber == -1) {
+            matchNumber = preferences.getInt("matchNumber", 1);
+            //otherwise, save it to hard disk
+        } else {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt("matchNumber", matchNumber);
+            editor.commit();
+        }
+        final Activity context = this;
+        //get scout number
+        scoutNumber = preferences.getInt("scoutNumber", -1);
+        //if we dont have it, get it
+        if (scoutNumber == -1) {
+            setScoutNumber();
+            //if we have it, change edittexts accordingly
+        } else {
+            highlightTeamNumberTexts();
+        }
+
+
+        //get bluetooth name i.e. 'red 1' to use for
+        /*BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter == null) {
+            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
+            Toast.makeText(this, "Device Not Configured With Bluetooth", Toast.LENGTH_LONG);
+        } else {
+            String name = adapter.getName();
+            if (name == null) {
+                Log.e("Device Name Error", "No name set");
+                Toast.makeText(this, "No Device Name Set", Toast.LENGTH_LONG);
+            } else {
+                if (name.contains("red")) {
+                    scoutColor = "red";
+                    try {
+                        scoutNumber = Integer.parseInt(name.replaceAll("red ", ""));
+                    } catch (NumberFormatException nfe) {
+                        scoutColor = null;
+                    }
+                }
+                if (name.contains("blue")) {
+                    scoutColor = "blue";
+                    try {
+                        scoutNumber = Integer.parseInt(name.replaceAll("blue ", ""))%3;
+                    } catch (NumberFormatException nfe) {
+                        scoutColor = null;
+                    }
+                }
+            }
+        }
+        if (scoutColor != null) {
+            Log.i("device stuff", scoutColor + " " + Integer.toString(scoutNumber));
+        }*/
 
 
 
@@ -116,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
         //set the match number edittext's onclick to open a dialog.  We do this so the screen does not shrink and the user can see what he/she types
         final EditText matchNumberTextView = (EditText) findViewById(R.id.matchNumberText);
         matchNumberTextView.setText("Q" + Integer.toString(matchNumber));
-        final Activity context = this;
         matchNumberTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +206,9 @@ public class MainActivity extends AppCompatActivity {
                                     } catch (NumberFormatException nfe) {
                                         matchNumber = 1;
                                     }
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putInt("matchNumber", matchNumber);
+                                    editor.commit();
                                     matchNumberTextView.setText("Q" + Integer.toString(matchNumber));
                                     updateTeamNumbers();
                                 }
@@ -147,12 +218,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         updateTeamNumbers();
-
-
-
-        //TODO change this according to scout number
-        TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
-        scoutTeamText.setBackgroundColor(Color.parseColor("#64FF64"));
 
 
 
@@ -279,11 +344,18 @@ public class MainActivity extends AppCompatActivity {
             EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
             EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
             try {
-                JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
-                //TODO change this according to scout color
-                teamNumber1Edit.setText(red.getString(0));
-                teamNumber2Edit.setText(red.getString(1));
-                teamNumber3Edit.setText(red.getString(2));
+                //TODO JSONArray red = schedule.getJSONObject(Integer.toString(matchNumber)).getJSONArray("redAllianceTeamNumbers");
+                if (scoutNumber < 3) {
+                    JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
+                    teamNumber1Edit.setText(red.getString(0));
+                    teamNumber2Edit.setText(red.getString(1));
+                    teamNumber3Edit.setText(red.getString(2));
+                } else {
+                    JSONArray blue = schedule.getJSONObject("Q" + matchNumber).getJSONArray("blue");
+                    teamNumber1Edit.setText(blue.getString(0));
+                    teamNumber2Edit.setText(blue.getString(1));
+                    teamNumber3Edit.setText(blue.getString(2));
+                }
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Failed to read JSON");
                 teamNumber1Edit.setText("");
@@ -342,6 +414,8 @@ public class MainActivity extends AppCompatActivity {
             automate();
 
 
+        } else if (item.getItemId() == R.id.setScoutIDButton) {
+            setScoutNumber();
 
             //get schedule button
         } else if (item.getItemId() == R.id.scheduleButton) {
@@ -403,9 +477,18 @@ public class MainActivity extends AppCompatActivity {
     public void startScout (View view) {
         int teamNumber;
         try {
-            //TODO change this according to scout number
-            EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
-            teamNumber = Integer.parseInt(teamNumber1Edit.getText().toString());
+                if (scoutNumber%3 == 1) {
+                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
+                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+                } else if (scoutNumber%3 == 2) {
+                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber2Edit);
+                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+                } else if (scoutNumber%3 == 0) {
+                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber3Edit);
+                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+                } else {
+                    throw new NumberFormatException();
+                }
         } catch (NumberFormatException nfe) {
             Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG).show();
             return;
@@ -445,5 +528,62 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+
+
+
+    //display dialog to set scout number
+    private void setScoutNumber() {
+        final EditText editText = new EditText(this);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setHint("Scout ID");
+        new AlertDialog.Builder(this)
+                .setTitle("Set Scout ID")
+                .setView(editText)
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            scoutNumber = Integer.parseInt(editText.getText().toString());
+                            if ((scoutNumber < 0) || (scoutNumber > 6)) {
+                                throw new NumberFormatException();
+                            }
+                        } catch (NumberFormatException nfe) {
+                            setScoutNumber();
+                        }
+                        highlightTeamNumberTexts();
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putInt("scoutNumber", scoutNumber);
+                        editor.commit();
+                    }
+                })
+                .show();
+    }
+
+
+
+    private void highlightTeamNumberTexts() {
+        TextView scoutTeamText1 = (TextView) this.findViewById(R.id.teamNumber1Edit);
+        TextView scoutTeamText2 = (TextView) this.findViewById(R.id.teamNumber2Edit);
+        TextView scoutTeamText3 = (TextView) this.findViewById(R.id.teamNumber3Edit);
+        if (scoutNumber%3 == 1) {
+            scoutTeamText1.setBackgroundColor(Color.parseColor("#64FF64"));
+            scoutTeamText2.setBackground(originalEditTextDrawable);
+            scoutTeamText3.setBackground(originalEditTextDrawable);
+        } else if (scoutNumber%3 == 2) {
+            scoutTeamText2.setBackgroundColor(Color.parseColor("#64FF64"));
+            scoutTeamText1.setBackground(originalEditTextDrawable);
+            scoutTeamText3.setBackground(originalEditTextDrawable);
+        } else if (scoutNumber%3 == 0) {
+            scoutTeamText3.setBackgroundColor(Color.parseColor("#64FF64"));
+            scoutTeamText1.setBackground(originalEditTextDrawable);
+            scoutTeamText2.setBackground(originalEditTextDrawable);
+        }
+        if (scoutNumber < 3) {
+            superName = redSuperName;
+        } else {
+            superName = blueSuperName;
+        }
+        updateTeamNumbers();
     }
 }
