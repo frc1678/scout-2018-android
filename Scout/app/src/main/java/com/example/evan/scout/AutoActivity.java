@@ -29,17 +29,21 @@ public class AutoActivity extends AppCompatActivity {
     private int matchNumber;
     private boolean overridden;
     private int teamNumber;
+    private String scoutName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        //get fields from previous activity
         uuid = getIntent().getStringExtra("uuid");
         superName = getIntent().getStringExtra("superName");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
         teamNumber = getIntent().getIntExtra("teamNumber", -1);
+        scoutName = getIntent().getStringExtra("scoutName");
 
 
 
@@ -156,7 +160,7 @@ public class AutoActivity extends AppCompatActivity {
 
             //send it all to teleop activity
             startActivity(new Intent(this, TeleopActivity.class).putExtra("uuid", uuid).putExtra("superName", superName).putExtra("autoJSON", data.toString())
-            .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber));
+            .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName));
         }
         return true;
     }
@@ -167,6 +171,6 @@ public class AutoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.i("matchNumber", Integer.toString(matchNumber));
-        startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden));
+        startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName));
     }
 }

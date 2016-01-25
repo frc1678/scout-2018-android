@@ -2,15 +2,16 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.FileObserver;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -38,35 +39,54 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 //TODO send JSONObject data from teleopactivity and receive it here, to get errors
-//TODO set scout ID according to bluetooth name?
-//TODO change actionbar color according to color?
 //TODO provide resend all button
 //TODO provide dialog on onbackpressed
-//TODO collect scout initials
 
 public class MainActivity extends AppCompatActivity {
     //uuid for bluetooth connection
     private static final String uuid = "f8212682-9a34-11e5-8994-feff819cdc9f";
+
     //paired device to connect to as super:
     private String superName;
     //private static final String redSuperName = "red super";
     //private static final String blueSuperName = "blue super";
     private static final String redSuperName = "G Pad 7.0 LTE";
     private static final String blueSuperName = "G Pad 7.0 LTE";
+
     //used to update list of sent files when they are modified
     private FileObserver fileObserver;
+
     //current list of sent files
     private ArrayAdapter<String> fileListAdapter;
+
     //current match the scout is on
     private int matchNumber;
+
     //whether the automatic match progression is overridden or not
     private boolean overridden = false;
+
     //schedule of matches
     private JSONObject schedule = null;
+
+    //shared preferences to receive previous matchNumber, scoutNumber
     private SharedPreferences preferences;
     private static final String PREFERENCES_FILE = "com.example.evan.scout";
+
+    //the id of the scout.  1-3 is red, 4-6 is blue
     private int scoutNumber;
+
+    //we highlight the edittext that has the team number that this scout needs to scout, but if they change their id we need to reset it
+    //this is the original background that was with the edittext
     private Drawable originalEditTextDrawable;
+
+    //initials of scout scouting
+    private String scoutName;
+
+    //number of team this scout needs to scout
+    private int teamNumber;
+
+    //save a reference to this activity for subclasses
+    final Activity context = this;
 
 
 
@@ -76,10 +96,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //lock screen horizontal
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        //see comment on this variable above
         originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
-        preferences = getSharedPreferences(PREFERENCES_FILE, 0);
+
         //get any values received from other activities
+        preferences = getSharedPreferences(PREFERENCES_FILE, 0);
+        //overridden
         overridden = getIntent().getBooleanExtra("overridden", false);
+        //match number
         matchNumber = getIntent().getIntExtra("matchNumber", -1);
         //if matchNumber was not passed from a previous activity, load it from hard disk
         if (matchNumber == -1) {
@@ -90,50 +115,17 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("matchNumber", matchNumber);
             editor.commit();
         }
-        final Activity context = this;
-        //get scout number
+        //scout id
         scoutNumber = preferences.getInt("scoutNumber", -1);
-        //if we dont have it, get it
+        //if we don't have it, get it
         if (scoutNumber == -1) {
             setScoutNumber();
             //if we have it, change edittexts accordingly
         } else {
             highlightTeamNumberTexts();
         }
-
-
-        //get bluetooth name i.e. 'red 1' to use for
-        /*BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        if (adapter == null) {
-            Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
-            Toast.makeText(this, "Device Not Configured With Bluetooth", Toast.LENGTH_LONG);
-        } else {
-            String name = adapter.getName();
-            if (name == null) {
-                Log.e("Device Name Error", "No name set");
-                Toast.makeText(this, "No Device Name Set", Toast.LENGTH_LONG);
-            } else {
-                if (name.contains("red")) {
-                    scoutColor = "red";
-                    try {
-                        scoutNumber = Integer.parseInt(name.replaceAll("red ", ""));
-                    } catch (NumberFormatException nfe) {
-                        scoutColor = null;
-                    }
-                }
-                if (name.contains("blue")) {
-                    scoutColor = "blue";
-                    try {
-                        scoutNumber = Integer.parseInt(name.replaceAll("blue ", ""))%3;
-                    } catch (NumberFormatException nfe) {
-                        scoutColor = null;
-                    }
-                }
-            }
-        }
-        if (scoutColor != null) {
-            Log.i("device stuff", scoutColor + " " + Integer.toString(scoutNumber));
-        }*/
+        //scout initials
+        scoutName = getIntent().getStringExtra("scoutName");
 
 
 
@@ -154,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
             scheduleAvailable = false;
         }
+
         //next read from it
         String scheduleString = "";
         if (scheduleAvailable) {
@@ -168,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 scheduleAvailable = false;
             }
         }
+
         //finally parse it to json format
         if (scheduleAvailable) {
             try {
@@ -290,35 +284,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //'delete all' button on ui
-    /*public void deleteAllFiles(View view) {
-        final Context context = this;
-        new AlertDialog.Builder(this)
-                .setTitle("Delete All Files")
-                .setMessage("Are you sure you want to delete all the files on this device?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
-                        if (!dir.mkdir()) {
-                            Log.i("File Info", "Failed to make Directory. Unimportant");
-                        }
-                        File[] files = dir.listFiles();
-                        for (File tmpFile : files) {
-                            if (!tmpFile.delete()) {
-                                Log.e("File Error", "Failed To Delete File");
-                                Toast.makeText(context, "Failed To Delete File", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        updateListView();
-                    }
-                })
-                .setNegativeButton("No", null)
-                .show();
-    }*/
-
-
-
     //update the list of sent files
     private void updateListView() {
         File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/");
@@ -338,6 +303,53 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //highlight the edittext with the team number of the team that this scout will be scouting
+    private void highlightTeamNumberTexts() {
+        TextView scoutTeamText1 = (TextView) this.findViewById(R.id.teamNumber1Edit);
+        TextView scoutTeamText2 = (TextView) this.findViewById(R.id.teamNumber2Edit);
+        TextView scoutTeamText3 = (TextView) this.findViewById(R.id.teamNumber3Edit);
+        if (scoutNumber%3 == 1) {
+            scoutTeamText1.setBackgroundColor(Color.parseColor("#64FF64"));
+            scoutTeamText2.setBackground(originalEditTextDrawable);
+            scoutTeamText3.setBackground(originalEditTextDrawable);
+        } else if (scoutNumber%3 == 2) {
+            scoutTeamText2.setBackgroundColor(Color.parseColor("#64FF64"));
+            scoutTeamText1.setBackground(originalEditTextDrawable);
+            scoutTeamText3.setBackground(originalEditTextDrawable);
+        } else if (scoutNumber%3 == 0) {
+            scoutTeamText3.setBackgroundColor(Color.parseColor("#64FF64"));
+            scoutTeamText1.setBackground(originalEditTextDrawable);
+            scoutTeamText2.setBackground(originalEditTextDrawable);
+        }
+
+
+
+        //change ui depending on color
+        if (scoutNumber < 3) {
+            //update paired device name
+            superName = redSuperName;
+
+            //change actionbar color
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C40000")));
+            }
+        } else {
+            //update paired device name
+            superName = blueSuperName;
+
+            //change actionbar color
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4169e1")));
+            }
+        }
+        updateTeamNumbers();
+    }
+
+
+
+    //fill in the edittexts with the team numbers found in the schedule
     public void updateTeamNumbers() {
         if (schedule != null) {
             EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
@@ -387,151 +399,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //update the menu at top of screen, either giving them the option to override or automate
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!overridden) {
-            getMenuInflater().inflate(R.menu.main_menu, menu);
-        } else {
-            getMenuInflater().inflate(R.menu.main_menu2, menu);
-        }
-        return true;
-    }
-
-
-
-    //buttons at menu at top of screen:
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //override button
-        if (item.getItemId() == R.id.mainOverride) {
-            override();
-
-
-
-            //automate button
-        } else if (item.getItemId() == R.id.mainAutomate) {
-            automate();
-
-
-        } else if (item.getItemId() == R.id.setScoutIDButton) {
-            setScoutNumber();
-
-            //get schedule button
-        } else if (item.getItemId() == R.id.scheduleButton) {
-            final Activity context = this;
-            new ScheduleReceiver(this, superName, uuid) {
-                @Override
-                public void onReceive(JSONObject receivedSchedule) {
-                    //handle the JSONObject received from super:
-                    Log.i("Schedule", receivedSchedule.toString());
-                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
-                    if (!dir.mkdir()) {
-                        Log.i("File Info", "Failed to make Directory. Unimportant");
-                    }
-                    File scheduleFile = new File(dir, "Schedule.txt");
-                    PrintWriter out;
-                    try {
-                         out = new PrintWriter(scheduleFile);
-                    } catch (IOException ioe) {
-                        Log.e("File Error", "Failed to save schedule data to file");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        return;
-                    }
-                    try {
-                        out.println(receivedSchedule.toString());
-                        if (out.checkError()) {
-                            throw new IOException();
-                        }
-                    } catch (IOException ioe) {
-                        Log.e("File Error", "Failed to save schedule data to file");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        return;
-                    }
-                    schedule = receivedSchedule;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateTeamNumbers();
-                        }
-                    });
-                }
-            }.start();
-        }
-        return true;
-    }
-
-
-
-    //scout button on ui
-    public void startScout (View view) {
-        int teamNumber;
-        try {
-                if (scoutNumber%3 == 1) {
-                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
-                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
-                } else if (scoutNumber%3 == 2) {
-                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber2Edit);
-                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
-                } else if (scoutNumber%3 == 0) {
-                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber3Edit);
-                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
-                } else {
-                    throw new NumberFormatException();
-                }
-        } catch (NumberFormatException nfe) {
-            Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG).show();
-            return;
-        }
-        fileObserver.stopWatching();
-        startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName)
-                .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                .putExtra("teamNumber", teamNumber));
-    }
-
-
-
-    //onclick for edittexts containing team numbers
-    //again, we display dialogs to prevent screen shrinking
-    public void editTeamNumber(final View view) {
-        final Activity context = this;
-        if (overridden) {
-            final EditText editText = new EditText(context);
-            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-            editText.setHint("Team Number");
-            new AlertDialog.Builder(context)
-                    .setTitle("Set Team Number")
-                    .setView(editText)
-                    .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            TextView textView = (TextView) view;
-                            int teamNum;
-                            try {
-                                teamNum = Integer.parseInt(editText.getText().toString());
-                            } catch (NumberFormatException nfe) {
-                                return;
-                            }
-                            textView.setText(Integer.toString(teamNum));
-                        }
-                    })
-                    .show();
-        }
-    }
-
-
-
     //display dialog to set scout number
     private void setScoutNumber() {
         final EditText editText = new EditText(this);
@@ -562,28 +429,184 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void highlightTeamNumberTexts() {
-        TextView scoutTeamText1 = (TextView) this.findViewById(R.id.teamNumber1Edit);
-        TextView scoutTeamText2 = (TextView) this.findViewById(R.id.teamNumber2Edit);
-        TextView scoutTeamText3 = (TextView) this.findViewById(R.id.teamNumber3Edit);
-        if (scoutNumber%3 == 1) {
-            scoutTeamText1.setBackgroundColor(Color.parseColor("#64FF64"));
-            scoutTeamText2.setBackground(originalEditTextDrawable);
-            scoutTeamText3.setBackground(originalEditTextDrawable);
-        } else if (scoutNumber%3 == 2) {
-            scoutTeamText2.setBackgroundColor(Color.parseColor("#64FF64"));
-            scoutTeamText1.setBackground(originalEditTextDrawable);
-            scoutTeamText3.setBackground(originalEditTextDrawable);
-        } else if (scoutNumber%3 == 0) {
-            scoutTeamText3.setBackgroundColor(Color.parseColor("#64FF64"));
-            scoutTeamText1.setBackground(originalEditTextDrawable);
-            scoutTeamText2.setBackground(originalEditTextDrawable);
-        }
-        if (scoutNumber < 3) {
-            superName = redSuperName;
+    //update actionbar at top of screen, either giving them the option to override or automate
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!overridden) {
+            //this is a menu with override as a button
+            getMenuInflater().inflate(R.menu.main_menu, menu);
         } else {
-            superName = blueSuperName;
+            //this is a menu with automate as a button
+            getMenuInflater().inflate(R.menu.main_menu2, menu);
         }
-        updateTeamNumbers();
+        return true;
+    }
+
+
+
+    //onclicks for buttons on actionbar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //override button
+        if (item.getItemId() == R.id.mainOverride) {
+            override();
+
+
+
+            //automate button
+        } else if (item.getItemId() == R.id.mainAutomate) {
+            automate();
+
+
+
+            //set scout id button
+        } else if (item.getItemId() == R.id.setScoutIDButton) {
+            setScoutNumber();
+
+
+
+            //get schedule button
+        } else if (item.getItemId() == R.id.scheduleButton) {
+            //start new thread to receive schedule
+            new ScheduleReceiver(this, superName, uuid) {
+                @Override
+                public void onReceive(JSONObject receivedSchedule) {
+                    //handle the JSONObject received from super:
+                    Log.i("Schedule", receivedSchedule.toString());
+                    //open file
+                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
+                    if (!dir.mkdir()) {
+                        Log.i("File Info", "Failed to make Directory. Unimportant");
+                    }
+                    File scheduleFile = new File(dir, "Schedule.txt");
+                    PrintWriter out;
+                    try {
+                         out = new PrintWriter(scheduleFile);
+                    } catch (IOException ioe) {
+                        Log.e("File Error", "Failed to save schedule data to file");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return;
+                    }
+
+                    //write to file
+                    try {
+                        out.println(receivedSchedule.toString());
+                        if (out.checkError()) {
+                            throw new IOException();
+                        }
+                    } catch (IOException ioe) {
+                        Log.e("File Error", "Failed to save schedule data to file");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return;
+                    }
+
+                    //save reference to schedule
+                    schedule = receivedSchedule;
+
+                    //update ui with schedule
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateTeamNumbers();
+                        }
+                    });
+                }
+            }.start();
+        }
+        return true;
+    }
+
+
+
+    //onclick for edittexts containing team numbers
+    //again, we display dialogs to prevent screen shrinking
+    public void editTeamNumber(final View view) {
+        if (overridden) {
+            final EditText editText = new EditText(this);
+            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            editText.setHint("Team Number");
+            new AlertDialog.Builder(this)
+                    .setTitle("Set Team Number")
+                    .setView(editText)
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            TextView textView = (TextView) view;
+                            int teamNum;
+                            try {
+                                teamNum = Integer.parseInt(editText.getText().toString());
+                            } catch (NumberFormatException nfe) {
+                                return;
+                            }
+                            textView.setText(Integer.toString(teamNum));
+                        }
+                    })
+                    .show();
+        }
+    }
+
+
+
+    //scout button on ui
+    public void startScout (View view) {
+        //collect the team number
+        try {
+            if (scoutNumber%3 == 1) {
+                TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
+                teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+            } else if (scoutNumber%3 == 2) {
+                TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber2Edit);
+                teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+            } else if (scoutNumber%3 == 0) {
+                TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber3Edit);
+                teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+            } else {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException nfe) {
+            Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG).show();
+            return;
+        }
+        fileObserver.stopWatching();
+        startAutoActivity();
+    }
+
+
+
+    //in order to redisplay the dialog to ask for scout initials, we start a new method, and recursively call the method if the input is wrong
+    public void startAutoActivity() {
+        if (scoutName == null) {
+            final EditText editText = new EditText(this);
+            editText.setHint("Scout Initials");
+            new AlertDialog.Builder(this)
+                    .setTitle("Set Scout Initials")
+                    .setView(editText)
+                    .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            scoutName = editText.getText().toString();
+                            if (scoutName.equals("")) {
+                                scoutName = null;
+                            }
+                            startAutoActivity();
+                        }
+                    })
+                    .show();
+        } else {
+            startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName)
+                    .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
+                    .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName));
+        }
     }
 }

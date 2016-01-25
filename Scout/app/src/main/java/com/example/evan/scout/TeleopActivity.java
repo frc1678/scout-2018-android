@@ -34,18 +34,22 @@ public class TeleopActivity extends AppCompatActivity {
     private int matchNumber;
     private boolean overridden;
     private int teamNumber;
+    private String scoutName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teleop);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        //get fields from previous activity
         uuid = getIntent().getStringExtra("uuid");
         superName = getIntent().getStringExtra("superName");
         autoJSON = getIntent().getStringExtra("autoJSON");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
         teamNumber = getIntent().getIntExtra("teamNumber", -1);
+        scoutName = getIntent().getStringExtra("scoutName");
 
 
         //populate toggles
@@ -86,6 +90,16 @@ public class TeleopActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.teleopSendButton) {
             //json object to store everything
             JSONObject data = new JSONObject();
+
+
+
+            try {
+                data.put("scoutName", scoutName);
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add scout name to JSON");
+                Toast.makeText(this, "Invalid data in scout name", Toast.LENGTH_LONG).show();
+                return false;
+            }
 
 
             //add data in toggles
@@ -130,7 +144,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
             //add data in other counters
-            List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakedsTele",
+            List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
                     "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
                     "numShotsBlockedTele"));
             for (int i = 0; i < currentTextViews.size(); i++) {
@@ -190,7 +204,7 @@ public class TeleopActivity extends AppCompatActivity {
             //move on to next match and restart main activity
             matchNumber++;
             startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber)
-                    .putExtra("overridden", overridden));
+                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName));
         }
         return true;
     }
@@ -198,6 +212,6 @@ public class TeleopActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden));
+        startActivity(new Intent(this, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName));
     }
 }
