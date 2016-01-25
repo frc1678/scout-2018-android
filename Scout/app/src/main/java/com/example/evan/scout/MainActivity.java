@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,10 +38,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-//TODO send JSONObject data from teleopactivity and receive it here, to get errors
-//TODO provide resend all button
-//TODO provide dialog on onbackpressed
 
 public class MainActivity extends AppCompatActivity {
     //uuid for bluetooth connection
@@ -88,10 +94,20 @@ public class MainActivity extends AppCompatActivity {
     //save a reference to this activity for subclasses
     final Activity context = this;
 
+    //when resending files, indicates whether the user pressed the 'cancel resend' button or not
+    private boolean continueResend = true;
+
+    //an onclicklistener for the 'resend all' button, declared globally to be reused
+    private View.OnClickListener originalResendAllOnClick;
+
+    //list of unsent file names, only updated when 'resend all' button is pressed
+    private List<String> unsentFileNames;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("test", "at 1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //lock screen horizontal
@@ -99,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
 
         //see comment on this variable above
         originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
+
+        unsentFileNames = new ArrayList<>();
 
         //get any values received from other activities
         preferences = getSharedPreferences(PREFERENCES_FILE, 0);
@@ -214,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
         updateTeamNumbers();
 
 
-
         //if we don't have the schedule, they must enter the team numbers and it must be overridden.  If not, give them the choice
         if (!scheduleAvailable) {
             override();
@@ -237,28 +254,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String name = parent.getItemAtPosition(position).toString();
                     //read data from file
-                    BufferedReader file;
-                    try {
-                        file = new BufferedReader(new InputStreamReader(new FileInputStream(
-                                new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name))));
-                    } catch (IOException ioe) {
-                        Log.e("File Error", "Failed To Open File");
-                        Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    String text = "";
-                    String buf;
-                    try {
-                        while ((buf = file.readLine()) != null) {
-                            text = text.concat(buf + "\n");
-                        }
-                    } catch (IOException ioe) {
-                        Log.e("File Error", "Failed To Read From File");
-                        Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    //send it to super
-                    new ConnectThread(context, superName, uuid, name, text).start();
+                    sendFile(name);
                 }
         });
 
@@ -268,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
             @Override
             public void onEvent(int event, String path) {
-                if ((event == FileObserver.MOVED_TO)) {
+                if ((event == FileObserver.MOVED_TO) || (event == FileObserver.CREATE)) {
                     Log.i("File Observer", "detected file close");
                     context.runOnUiThread(new Runnable() {
                         @Override
@@ -280,6 +276,48 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         fileObserver.startWatching();
+
+
+        //initialize 'resend all' button
+        final Button resendAllButton = (Button) findViewById(R.id.resendAll);
+        originalResendAllOnClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //when clicked, update unsent file list
+                for (int i = 0; i < fileListAdapter.getCount(); i++) {
+                    String name = fileListAdapter.getItem(i);
+                    if (name.contains("UNSENT_")) {
+                        unsentFileNames.add(name);
+                    }
+                }
+                //set the button to cancel the resend process
+                resendAllButton.setText("cancel resend");
+                resendAllButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        continueResend = false;
+                        cancelResend();
+                    }
+                });
+                //and then resend all the files
+                resendAllFiles();
+            }
+        };
+        resendAllButton.setOnClickListener(originalResendAllOnClick);
+
+        Log.i("test", "at 2");
+
+
+
+        //if there is data to send from teleop activity, send it.
+        //we send it in this activity so all error dialogs will appear here
+        //we send it at the end of oncreate because sometimes android will call oncreate twice, so if we put it at the end this will not happen
+        String matchData = getIntent().getStringExtra("matchData");
+        if (matchData != null) {
+            new ConnectThread(this, superName, uuid,
+                    "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
+                    matchData + "\n").start();
+        }
     }
 
 
@@ -332,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
             //change actionbar color
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
+                //red
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C40000")));
             }
         } else {
@@ -341,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
             //change actionbar color
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
+                //blue
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4169e1")));
             }
         }
@@ -554,6 +594,81 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+
+
+
+    //resend all button on ui
+    public void resendAllFiles() {
+        //if the 'cancel resend' button has not been clicked
+        if (continueResend) {
+            Log.i("test", "here");
+            ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+            String name;
+            //get the first unsent file in the list, and remove it
+            try {
+                name = unsentFileNames.remove(0);
+            } catch (IndexOutOfBoundsException ioobe) {
+                cancelResend();
+                return;
+            }
+            //send it to super
+            sendFile(name);
+            if (unsentFileNames.size() != 0) {
+                //finally if there is another file in the list, wait 5 seconds before sending it again
+                timer.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        resendAllFiles();
+                    }
+                }, 5, TimeUnit.SECONDS);
+                return;
+            }
+            //if there is not another file in the list, stop the resend process
+            cancelResend();
+        } else {
+            //if the user did click the 'cancel resend' button, reset the flag
+            continueResend = true;
+        }
+    }
+
+
+
+    public void cancelResend() {
+        //clear list of unsent files
+        unsentFileNames.clear();
+        //reset button
+        Button resendAllButton = (Button) findViewById(R.id.resendAll);
+        resendAllButton.setText("resend all");
+        resendAllButton.setOnClickListener(originalResendAllOnClick);
+    }
+
+
+
+    //read file from hard disk and send it to super
+    private void sendFile (String name) {
+        BufferedReader file;
+        try {
+            file = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name))));
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Open File");
+            Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
+            return;
+        }
+        String text = "";
+        String buf;
+        try {
+            while ((buf = file.readLine()) != null) {
+                text = text.concat(buf + "\n");
+            }
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Read From File");
+            Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
+            return;
+        }
+        //send it to super
+        new ConnectThread(context, superName, uuid, name, text).start();
     }
 
 

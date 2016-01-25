@@ -1,5 +1,8 @@
 package com.example.evan.scout;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -197,14 +200,14 @@ public class TeleopActivity extends AppCompatActivity {
 
 
             //send data to bluetooth
-            new ConnectThread(this, superName, uuid,
+            /*new ConnectThread(this, superName, uuid,
                     "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
-                    finalData.toString() + "\n").start();
+                    finalData.toString() + "\n").start();*/
             Log.i("JSON data", finalData.toString());
             //move on to next match and restart main activity
             matchNumber++;
             startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber)
-                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName));
+                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName).putExtra("matchData", finalData.toString()));
         }
         return true;
     }
@@ -212,6 +215,17 @@ public class TeleopActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName));
+        final Activity context = this;
+        new AlertDialog.Builder(this)
+                .setTitle("Stop Scouting")
+                .setMessage("If you go back now, all data will be lost.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(context, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName));
+                    }
+                })
+                .show();
     }
 }
