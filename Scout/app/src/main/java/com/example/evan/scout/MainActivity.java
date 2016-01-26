@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("test", "at 1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //lock screen horizontal
@@ -264,8 +263,7 @@ public class MainActivity extends AppCompatActivity {
         fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
             @Override
             public void onEvent(int event, String path) {
-                if ((event == FileObserver.MOVED_TO) || (event == FileObserver.CREATE)) {
-                    Log.i("File Observer", "detected file close");
+                if ((event == FileObserver.MOVED_TO) || (event == FileObserver.CREATE) || (event == FileObserver.DELETE)) {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -305,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
         };
         resendAllButton.setOnClickListener(originalResendAllOnClick);
 
-        Log.i("test", "at 2");
 
 
 
@@ -621,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         resendAllFiles();
                     }
-                }, 5, TimeUnit.SECONDS);
+                }, 3, TimeUnit.SECONDS);
                 return;
             }
             //if there is not another file in the list, stop the resend process

@@ -123,7 +123,6 @@ public class TeleopActivity extends AppCompatActivity {
             JSONArray timesDefensesCrossedTele = new JSONArray();
             for (int i = 0; i < currentTextViews.size()-1; i++) {
                 try {
-                    Log.i("Current TextViews", ((TextView)currentTextViews.get(i)).getText().toString());
                     timesDefensesCrossedTele.put(i, Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
                     currentTextViews.remove(i);
                 } catch (JSONException jsone) {
@@ -148,7 +147,6 @@ public class TeleopActivity extends AppCompatActivity {
                     "numShotsBlockedTele"));
             for (int i = 0; i < currentTextViews.size(); i++) {
                 try {
-                    Log.i("Current TextViews", ((TextView)currentTextViews.get(i)).getText().toString()+ ">>>>>>" + Integer.toString(currentTextViews.size()));
                     data.put(counterVarNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
                 } catch (JSONException jsone) {
                     Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");

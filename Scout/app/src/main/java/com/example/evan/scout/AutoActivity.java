@@ -149,7 +149,7 @@ public class AutoActivity extends AppCompatActivity {
                     "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
             for (int i = 0; i < currentTextViews.size(); i++) {
                 try {
-                    data.put(JsonCounterNames.get(i/2), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+                    data.put(JsonCounterNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
                 } catch (JSONException jsone) {
                     Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
                     Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
