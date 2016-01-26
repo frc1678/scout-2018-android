@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class TeleopActivity extends AppCompatActivity {
-    private String uuid;
-    private String superName;
     private String autoJSON;
     private UIComponentCreator counterCreator;
     private UIComponentCreator toggleCreator;
@@ -46,8 +44,6 @@ public class TeleopActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         //get fields from previous activity
-        uuid = getIntent().getStringExtra("uuid");
-        superName = getIntent().getStringExtra("superName");
         autoJSON = getIntent().getStringExtra("autoJSON");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);

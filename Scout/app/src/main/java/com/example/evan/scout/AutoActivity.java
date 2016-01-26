@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AutoActivity extends AppCompatActivity {
-    private String uuid;
-    private String superName;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator counterCreator;
     private int matchNumber;
@@ -41,8 +39,6 @@ public class AutoActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         //get fields from previous activity
-        uuid = getIntent().getStringExtra("uuid");
-        superName = getIntent().getStringExtra("superName");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
         teamNumber = getIntent().getIntExtra("teamNumber", -1);
@@ -162,7 +158,7 @@ public class AutoActivity extends AppCompatActivity {
             }
 
             //send it all to teleop activity
-            startActivity(new Intent(this, TeleopActivity.class).putExtra("uuid", uuid).putExtra("superName", superName).putExtra("autoJSON", data.toString())
+            startActivity(new Intent(this, TeleopActivity.class).putExtra("autoJSON", data.toString())
             .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName));
         }
         return true;

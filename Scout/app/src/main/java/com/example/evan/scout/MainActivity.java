@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //change ui depending on color
-        if (scoutNumber < 3) {
+        if (scoutNumber < 4) {
             //update paired device name
             superName = redSuperName;
 
@@ -625,7 +625,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             //if there is not another file in the list, stop the resend process
-            cancelResend();
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    cancelResend();
+                }
+            });
         } else {
             //if the user did click the 'cancel resend' button, reset the flag
             continueResend = true;
@@ -719,7 +724,7 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .show();
         } else {
-            startActivity(new Intent(this, AutoActivity.class).putExtra("uuid", uuid).putExtra("superName", superName)
+            startActivity(new Intent(this, AutoActivity.class)
                     .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                     .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName));
         }
