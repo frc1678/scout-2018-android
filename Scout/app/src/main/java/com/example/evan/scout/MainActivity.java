@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private int teamNumber;
 
     //save a reference to this activity for subclasses
-    final Activity context = this;
+    private final Activity context = this;
 
     //when resending files, indicates whether the user pressed the 'cancel resend' button or not
     private boolean continueResend = true;
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
             @Override
             public void onEvent(int event, String path) {
-                if ((event == FileObserver.MOVED_TO) || (event == FileObserver.CREATE) || (event == FileObserver.DELETE)) {
+                if ((event == FileObserver.MOVED_TO) || (event == FileObserver.CREATE)) {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -387,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //fill in the edittexts with the team numbers found in the schedule
-    public void updateTeamNumbers() {
+    private void updateTeamNumbers() {
         if (schedule != null) {
             EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
             EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
@@ -596,10 +596,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     //resend all button on ui
-    public void resendAllFiles() {
+    private void resendAllFiles() {
         //if the 'cancel resend' button has not been clicked
         if (continueResend) {
-            Log.i("test", "here");
             ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
             String name;
             //get the first unsent file in the list, and remove it
@@ -618,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         resendAllFiles();
                     }
-                }, 3, TimeUnit.SECONDS);
+                }, 5, TimeUnit.SECONDS);
                 return;
             }
             //if there is not another file in the list, stop the resend process
@@ -636,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void cancelResend() {
+    private void cancelResend() {
         //clear list of unsent files
         unsentFileNames.clear();
         //reset button
@@ -702,7 +701,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //in order to redisplay the dialog to ask for scout initials, we start a new method, and recursively call the method if the input is wrong
-    public void startAutoActivity() {
+    private void startAutoActivity() {
         if (scoutName == null) {
             final EditText editText = new EditText(this);
             editText.setHint("Scout Initials");
