@@ -1,6 +1,8 @@
 package com.example.evan.scout;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,14 +98,23 @@ public class UIComponentCreator {
     }
 
 
-    public ToggleButton getNextToggleButton () {
+    public ToggleButton getNextToggleButton (int width) {
         ToggleButton toggleButton = new ToggleButton(context);
-        toggleButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        toggleButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
         toggleButton.setText(componentNames.get(currentComponent));
         toggleButton.setTextOn(componentNames.get(currentComponent));
         toggleButton.setTextOff(componentNames.get(currentComponent));
         currentComponent++;
         componentViews.add(toggleButton);
         return toggleButton;
+    }
+
+    public Button getNextDefenseButton() {
+        Button button = new Button(context);
+        button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
+        button.setText(componentNames.get(currentComponent));
+        button.setTextSize(button.getTextSize() * 0.4f);
+        currentComponent++;
+        return button;
     }
 }

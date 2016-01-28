@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
     //paired device to connect to as super:
     private String superName;
-    //private static final String redSuperName = "red super";
-    //private static final String blueSuperName = "blue super";
-    private static final String redSuperName = "G Pad 7.0 LTE";
-    private static final String blueSuperName = "G Pad 7.0 LTE";
+    private static final String redSuperName = "red super";
+    private static final String blueSuperName = "blue super";
+    //private static final String redSuperName = "G Pad 7.0 LTE";
+    //private static final String blueSuperName = "G Pad 7.0 LTE";
 
     //used to update list of sent files when they are modified
     private FileObserver fileObserver;
@@ -309,12 +309,12 @@ public class MainActivity extends AppCompatActivity {
         //if there is data to send from teleop activity, send it.
         //we send it in this activity so all error dialogs will appear here
         //we send it at the end of oncreate because sometimes android will call oncreate twice, so if we put it at the end this will not happen
-        String matchData = getIntent().getStringExtra("matchData");
+        /*String matchData = getIntent().getStringExtra("matchData");
         if (matchData != null) {
             new ConnectThread(this, superName, uuid,
                     "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
                     matchData + "\n").start();
-        }
+        }*/
     }
 
 
@@ -393,14 +393,15 @@ public class MainActivity extends AppCompatActivity {
             EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
             EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
             try {
-                //TODO JSONArray red = schedule.getJSONObject(Integer.toString(matchNumber)).getJSONArray("redAllianceTeamNumbers");
-                if (scoutNumber < 3) {
-                    JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
+                if (scoutNumber < 4) {
+                    //JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
+                    JSONArray red = schedule.getJSONObject("redTeamNumbers").getJSONArray(Integer.toString(matchNumber));
                     teamNumber1Edit.setText(red.getString(0));
                     teamNumber2Edit.setText(red.getString(1));
                     teamNumber3Edit.setText(red.getString(2));
                 } else {
-                    JSONArray blue = schedule.getJSONObject("Q" + matchNumber).getJSONArray("blue");
+                    //JSONArray blue = schedule.getJSONObject("Q" + matchNumber).getJSONArray("blue");
+                    JSONArray blue = schedule.getJSONObject("blueTeamNumbers").getJSONArray(Integer.toString(matchNumber));
                     teamNumber1Edit.setText(blue.getString(0));
                     teamNumber2Edit.setText(blue.getString(1));
                     teamNumber3Edit.setText(blue.getString(2));
@@ -410,6 +411,8 @@ public class MainActivity extends AppCompatActivity {
                 teamNumber1Edit.setText("");
                 teamNumber2Edit.setText("");
                 teamNumber3Edit.setText("");
+            } catch (NumberFormatException nfe) {
+                Log.e("test", "here");
             }
         }
     }
@@ -722,7 +725,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startActivity(new Intent(this, AutoActivity.class)
                     .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                    .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName));
+                    .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("uuid", uuid)
+                    .putExtra("superName", superName));
         }
     }
 }

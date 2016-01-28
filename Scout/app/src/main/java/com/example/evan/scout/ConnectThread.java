@@ -147,6 +147,7 @@ public class ConnectThread extends Thread {
                 break;
             } catch (IOException ioe) {
                 Log.e("Socket Error", "Failed To Open Socket");
+                toastText("Failed To Connect To Super", Toast.LENGTH_SHORT, context);
                 counter++;
                 //we try three times before giving up
                 if (counter == 3) {
@@ -190,6 +191,7 @@ public class ConnectThread extends Thread {
                 break;
             } catch (IOException ioe) {
                 Log.e("Communications Error", "Failed To Send Data");
+                toastText("Failed To Send Match Data To Super", Toast.LENGTH_SHORT, context);
                 counter++;
                 //after the third failure, we terminate thread and notify user
                 if (counter == 3) {
