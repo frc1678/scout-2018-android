@@ -87,15 +87,22 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/infoList"
-            android:layout_above="@+id/resendAll">
+            android:layout_above="@+id/resendAllUnsent">
 
         </ListView>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="resend all unsent"
+            android:id="@+id/resendAllUnsent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="resend all"
             android:id="@+id/resendAll"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 </LinearLayout>

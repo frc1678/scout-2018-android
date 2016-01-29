@@ -12,5 +12,5 @@
     <item
         android:id="@+id/setScoutIDButton"
         android:title="Set Scout ID"
-        app:showAsAction="collapseActionView"/>
+        app:showAsAction="ifRoom"/>
 </menu>

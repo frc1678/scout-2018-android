@@ -25,8 +25,8 @@ public class ConnectThread extends Thread {
     protected Activity context;
     protected String superName;
     protected String uuid;
-    protected String matchName;
-    protected String data;
+    private String matchName;
+    private String data;
 
 
 

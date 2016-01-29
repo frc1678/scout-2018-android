@@ -1,8 +1,6 @@
 package com.example.evan.scout;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +14,12 @@ import java.util.List;
 
 //class that creates all the ui components I need like togglebuttons, etc.  Also stores all buttons in list to be accessed later
 public class UIComponentCreator {
+    //list of views that hold data that I need to access later
     private List<View> componentViews;
+    //list of names of buttons, textviews, etc
     private List<String> componentNames;
     private Activity context;
+    //counter for list
     private int currentComponent;
 
 

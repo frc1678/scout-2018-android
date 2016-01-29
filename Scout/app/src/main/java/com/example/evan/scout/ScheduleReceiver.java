@@ -25,6 +25,7 @@ public class ScheduleReceiver extends ConnectThread {
 
     @Override
     public void run() {
+        //if not initialized, init bluetooth
         synchronized (isInitLock) {
             if (!isInit) {
                 if(!initBluetooth(context, superName)) {
