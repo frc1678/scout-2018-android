@@ -118,7 +118,6 @@ public class ConnectThread extends Thread {
 
 
 
-        fileWriter.println(data.length());
         fileWriter.print(data);
         fileWriter.close();
         if (fileWriter.checkError()) {

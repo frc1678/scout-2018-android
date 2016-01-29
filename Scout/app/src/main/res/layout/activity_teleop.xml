@@ -38,18 +38,4 @@
             android:gravity="end">
         </LinearLayout>
     </LinearLayout>
-    <!--<LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/teleopToggleLinear"
-        android:orientation="vertical"
-        android:layout_alignParentLeft="true">
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/teleopCounterLinear"
-        android:orientation="vertical"
-        android:layout_toRightOf="@+id/teleopToggleLinear">
-    </LinearLayout>-->
 </RelativeLayout>

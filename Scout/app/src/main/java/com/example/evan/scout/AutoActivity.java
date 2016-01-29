@@ -29,10 +29,13 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AutoActivity extends AppCompatActivity {
+    //class to get toggle buttons and save values to access later
     private UIComponentCreator toggleCreator;
+    //class to get and save counters
     private UIComponentCreator counterCreator;
-    private UIComponentCreator buttonCreator;
+    //list of successful cross times for each defense
     private List<List<Long>> successCrossTimes;
+    //list of failed cross times for each defense
     private List<List<Long>> failCrossTimes;
     private int matchNumber;
     private boolean overridden;
@@ -56,6 +59,7 @@ public class AutoActivity extends AppCompatActivity {
         superName = getIntent().getStringExtra("superName");
 
 
+        //init lists
         successCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             successCrossTimes.add(i, new ArrayList<Long>());
@@ -76,25 +80,31 @@ public class AutoActivity extends AppCompatActivity {
         }
 
 
+        //fill row of defense buttons
         final Activity context = this;
         LinearLayout defenseLayout = (LinearLayout) findViewById(R.id.autoDefenseButtonLinearLayout);
-        buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
+        UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
+        //empty relative layout to space out buttons
         RelativeLayout fillerSpace = new RelativeLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
         defenseLayout.addView(fillerSpace);
         for (int i = 0; i < 5; i++) {
             Button button = buttonCreator.getNextDefenseButton();
+            //on click for buttons
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //first find out what button was clicked, based on the name of the button
                     final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
+                    //next get the time in milliseconds
                     final Long startTime = Calendar.getInstance().getTimeInMillis();
                     new AlertDialog.Builder(context)
                             .setTitle("Attempt Defense Cross")
                             .setPositiveButton("success", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    //if they click success, add the time since they clicked the defense button to the list
                                     successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
                                 }
                             })
@@ -102,6 +112,7 @@ public class AutoActivity extends AppCompatActivity {
                             .setNegativeButton("failure", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    //if they clicked failure, add it to the fail list
                                     failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
                                 }
                             })
@@ -118,9 +129,6 @@ public class AutoActivity extends AppCompatActivity {
 
         //populate counters for everything
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.autoCounterLinearLayout);
-        /*counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Crossed Defense 1", "Balls Knocked Off Mid",
-                "Crossed Defense 2", "High Shots Made", "Crossed Defense 3", "High Shots Missed", "Crossed Defense 4", "Low Shots Made",
-                "Crossed Defense 5", "Low Shots Missed")));*/
         counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Balls Knocked Off Mid",
                  "High Shots Made",  "High Shots Missed",  "Low Shots Made",
                  "Low Shots Missed")));
@@ -183,8 +191,7 @@ public class AutoActivity extends AppCompatActivity {
             }
 
 
-            //add all the defense crossed counters
-            List<View> currentTextViews = counterCreator.getComponentViews();
+            //add successful defense cross times to JSON
             JSONArray successDefenseTimes = new JSONArray();
             for (int i = 0; i < successCrossTimes.size(); i++) {
                 JSONArray tmp = new JSONArray();
@@ -204,6 +211,7 @@ public class AutoActivity extends AppCompatActivity {
             }
 
 
+            //add successful defense fail times to JSON
             JSONArray failDefenseTimes = new JSONArray();
             for (int i = 0; i < failCrossTimes.size(); i++) {
                 JSONArray tmp = new JSONArray();
@@ -221,29 +229,11 @@ public class AutoActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
                 return false;
             }
-            /*JSONArray timesDefensesCrossedAuto = new JSONArray();
-            for (int i = 0; i < currentTextViews.size(); i++) {
-                try {
-                    timesDefensesCrossedAuto.put(i, Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
-                    currentTextViews.remove(i);
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
-                    Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-
-            try {
-                data.put("timesDefensesCrossedAuto", timesDefensesCrossedAuto);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add defense crossed counters to JSON");
-                Toast.makeText(this, "Error in Defense counters", Toast.LENGTH_LONG).show();
-                return false;
-            }*/
 
 
 
             //add all the data in other counters
+            List<View> currentTextViews = counterCreator.getComponentViews();
             List<String> JsonCounterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
                     "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
             for (int i = 0; i < currentTextViews.size(); i++) {

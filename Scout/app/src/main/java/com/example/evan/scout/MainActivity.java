@@ -119,9 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         //get any values received from other activities
         preferences = getSharedPreferences(PREFERENCES_FILE, 0);
-        //overridden
         overridden = getIntent().getBooleanExtra("overridden", false);
-        //match number
         matchNumber = getIntent().getIntExtra("matchNumber", -1);
         //if matchNumber was not passed from a previous activity, load it from hard disk
         if (matchNumber == -1) {
@@ -132,9 +130,8 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("matchNumber", matchNumber);
             editor.commit();
         }
-        //scout id
         scoutNumber = preferences.getInt("scoutNumber", -1);
-        //if we don't have it, get it
+        //if we don't have scout id, get it
         if (scoutNumber == -1) {
             setScoutNumber();
             //if we have it, change edittexts accordingly
@@ -259,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //update list view when something is renamed
+        //update list view when something is renamed or created
         fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
             @Override
             public void onEvent(int event, String path) {
@@ -306,9 +303,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //if there is data to send from teleop activity, send it.
-        //we send it in this activity so all error dialogs will appear here
-        //we send it at the end of oncreate because sometimes android will call oncreate twice, so if we put it at the end this will not happen
+        //we don't send it in oncreate anymore, despite the benefits, because if the oncreate is called twice it will cause errors. It sends it in the teleop activity
         /*String matchData = getIntent().getStringExtra("matchData");
         if (matchData != null) {
             new ConnectThread(this, superName, uuid,
@@ -394,13 +389,11 @@ public class MainActivity extends AppCompatActivity {
             EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
             try {
                 if (scoutNumber < 4) {
-                    //JSONArray red = schedule.getJSONObject("Q" + matchNumber).getJSONArray("red");
                     JSONArray red = schedule.getJSONObject("redTeamNumbers").getJSONArray(Integer.toString(matchNumber));
                     teamNumber1Edit.setText(red.getString(0));
                     teamNumber2Edit.setText(red.getString(1));
                     teamNumber3Edit.setText(red.getString(2));
                 } else {
-                    //JSONArray blue = schedule.getJSONObject("Q" + matchNumber).getJSONArray("blue");
                     JSONArray blue = schedule.getJSONObject("blueTeamNumbers").getJSONArray(Integer.toString(matchNumber));
                     teamNumber1Edit.setText(blue.getString(0));
                     teamNumber2Edit.setText(blue.getString(1));

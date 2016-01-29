@@ -33,12 +33,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class TeleopActivity extends AppCompatActivity {
+    //data, in JSON format in a string, from auto activity
     private String autoJSON;
+    //list of successful cross times for each defense
     private List<List<Long>> successCrossTimes;
+    //list of failed cross times for each defense
     private List<List<Long>> failCrossTimes;
+    //class to get and save counters
     private UIComponentCreator counterCreator;
+    //class to get toggle buttons and save values to access later
     private UIComponentCreator toggleCreator;
-    private UIComponentCreator buttonCreator;
     private int matchNumber;
     private boolean overridden;
     private int teamNumber;
@@ -64,6 +68,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+        //init lists
         successCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             successCrossTimes.add(i, new ArrayList<Long>());
@@ -78,6 +83,7 @@ public class TeleopActivity extends AppCompatActivity {
         toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Challenge",
                 "Scale", "Disabled", "Incap.")));
         LinearLayout toggleLayout = (LinearLayout) findViewById(R.id.teleToggleButtonLinearLayout);
+        //empty relative layout to space out buttons
         RelativeLayout fillerSpace = new RelativeLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
         toggleLayout.addView(fillerSpace);
@@ -90,25 +96,30 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+        //fill row of defense buttons
         final Activity context = this;
         LinearLayout defenseLayout = (LinearLayout) findViewById(R.id.teleDefenseButtonLinearLayout);
-        buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
+        UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
         fillerSpace = new RelativeLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
         defenseLayout.addView(fillerSpace);
         for (int i = 0; i < 5; i++) {
             Button button = buttonCreator.getNextDefenseButton();
+            //on click for buttons
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //first find out what button was clicked, based on the name of the button
                     final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
+                    //next get the time in milliseconds
                     final Long startTime = Calendar.getInstance().getTimeInMillis();
                     new AlertDialog.Builder(context)
                             .setTitle("Attempt Defense Cross")
                             .setPositiveButton("success", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    //if they click success, add the time since they clicked the defense button to the list
                                     successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
                                 }
                             })
@@ -116,6 +127,7 @@ public class TeleopActivity extends AppCompatActivity {
                             .setNegativeButton("failure", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    //if they clicked failure, add it to the fail list
                                     failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
                                 }
                             })
@@ -133,9 +145,6 @@ public class TeleopActivity extends AppCompatActivity {
 
         //populate counters
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.teleCounterLinearLayout);
-        /*counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Crossed Defense 1", "Ground Intakes",
-                "Crossed Defense 2", "High Shots Made", "Crossed Defense 3", "High Shots Missed", "Crossed Defense 4", "Low Shots Made",
-                "Crossed Defense 5", "Low Shots Missed", "Shots Blocked")));*/
         counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList( "Ground Intakes",
                  "High Shots Made",  "High Shots Missed",  "Low Shots Made",
                  "Low Shots Missed", "Shots Blocked")));
@@ -143,8 +152,6 @@ public class TeleopActivity extends AppCompatActivity {
             rowLayout.addView(counterCreator.getNextTitleRow(1));
             rowLayout.addView(counterCreator.getNextCounterRow(1));
         }
-        /*rowLayout.addView(counterCreator.getNextTitleRow(1));
-        rowLayout.addView(counterCreator.getNextCounterRow(1));*/
     }
 
 
@@ -192,8 +199,6 @@ public class TeleopActivity extends AppCompatActivity {
 
 
             //add defenses crossed counters
-            List<View> currentTextViews = counterCreator.getComponentViews();
-
             JSONArray successDefenseTimes = new JSONArray();
             for (int i = 0; i < successCrossTimes.size(); i++) {
                 JSONArray tmp = new JSONArray();
@@ -204,6 +209,8 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
+
+            //add successful defense cross times to JSON
             try {
                 data.put("successfulDefenseCrossTimesTele", successDefenseTimes);
             } catch (JSONException jsone) {
@@ -223,6 +230,8 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
+
+            //add successful defense fail times to JSON
             try {
                 data.put("failedDefenseCrossTimesTele", failDefenseTimes);
             } catch (JSONException jsone) {
@@ -230,28 +239,10 @@ public class TeleopActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
                 return false;
             }
-            /*JSONArray timesDefensesCrossedTele = new JSONArray();
-            for (int i = 0; i < currentTextViews.size()-1; i++) {
-                try {
-                    timesDefensesCrossedTele.put(i, Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
-                    currentTextViews.remove(i);
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
-                    Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-
-            try {
-                data.put("timesDefensesCrossedTele", timesDefensesCrossedTele);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add defense crossed counters to JSON");
-                Toast.makeText(this, "Error in Defense counters", Toast.LENGTH_LONG).show();
-                return false;
-            }*/
 
 
             //add data in other counters
+            List<View> currentTextViews = counterCreator.getComponentViews();
             List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
                     "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
                     "numShotsBlockedTele"));
@@ -266,6 +257,7 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
+            //add auto data to JSON
             JSONObject autoData;
             try {
                 autoData = new JSONObject(autoJSON);
