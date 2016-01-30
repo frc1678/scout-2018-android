@@ -40,6 +40,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -93,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
     //save a reference to this activity for subclasses
     private final Activity context = this;
+
+    //lock for continueResend
+    private static final Object continueResendLock = new Object();
 
     //when resending files, indicates whether the user pressed the 'cancel resend' button or not
     private boolean continueResend = true;
@@ -217,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
                 resendAllUnsentButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        continueResend = false;
+                        synchronized (continueResendLock) {
+                            continueResend = false;
+                        }
                         cancelUnsentResend();
                     }
                 });
@@ -252,7 +259,9 @@ public class MainActivity extends AppCompatActivity {
                 resendAllButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        continueResend = false;
+                        synchronized (continueResendLock) {
+                            continueResend = false;
+                        }
                         cancelResend();
                     }
                 });
@@ -385,6 +394,51 @@ public class MainActivity extends AppCompatActivity {
         for (File tmpFile : files) {
             fileListAdapter.add(tmpFile.getName());
         }
+
+        fileListAdapter.sort(new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                if (lhs.startsWith("UNSENT_")) {
+                    if (rhs.startsWith("UNSENT_")) {
+                        //both unsent, continue
+                        rhs = rhs.replaceFirst("UNSENT_", "");
+                        lhs = lhs.replaceFirst("UNSENT_", "");
+                    } else {
+                        //lhs greater, return
+                        return -1;
+                    }
+                } else if (rhs.startsWith("UNSENT_")) {
+                    //rhs greater, return
+                    return 1;
+                }
+                int lhsNum;
+                int rhsNum;
+                try {
+                    List<String> tmp = new ArrayList<>(Arrays.asList(lhs.split("\\|\\|")));
+                    lhsNum = Integer.parseInt(tmp.get(0).replaceAll("Q", ""));
+                    tmp = new ArrayList<>(Arrays.asList(rhs.split("\\|\\|")));
+                    rhsNum = Integer.parseInt(tmp.get(0).replaceAll("Q", ""));
+                } catch (NumberFormatException nfe) {
+                    return 0;
+                }
+                if (lhsNum > rhsNum) {
+                    //lhs greater, return
+                    return 1;
+                } else if (lhsNum == rhsNum) {
+                    //equal, return
+                    return 0;
+                } else {
+                    //rhs greater, return
+                    return -1;
+                }
+            }
+        });
+
+        for (int i = 0; i < fileListAdapter.getCount(); i++) {
+            Log.i("fileListAdapter", fileListAdapter.getItem(i));
+        }
+
+
         fileListAdapter.notifyDataSetChanged();
     }
 
@@ -472,6 +526,10 @@ public class MainActivity extends AppCompatActivity {
     //names is a list of filenames in the directory /sdcard/Android/ that need to be resent
     //cancel is a runnable that will be called to cancel the resend process
     private void resendAllFiles(final Runnable cancel, List<String> names) {
+        boolean continueResend;
+        synchronized (continueResendLock) {
+            continueResend = this.continueResend;
+        }
         //if the cancel button has not been clicked
         if (continueResend) {
             ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
@@ -505,7 +563,9 @@ public class MainActivity extends AppCompatActivity {
             });
         } else {
             //if the user did click the 'cancel resend' button, reset the flag before quitting
-            continueResend = true;
+            synchronized (continueResendLock) {
+                this.continueResend = true;
+            }
         }
     }
 

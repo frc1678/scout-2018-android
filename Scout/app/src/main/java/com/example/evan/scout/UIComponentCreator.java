@@ -105,6 +105,7 @@ public class UIComponentCreator {
         toggleButton.setText(componentNames.get(currentComponent));
         toggleButton.setTextOn(componentNames.get(currentComponent));
         toggleButton.setTextOff(componentNames.get(currentComponent));
+        toggleButton.setTextSize(toggleButton.getTextSize() * 0.4f);
         currentComponent++;
         componentViews.add(toggleButton);
         return toggleButton;
