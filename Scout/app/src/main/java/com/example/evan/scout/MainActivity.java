@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             new ConnectThread(this, superName, uuid,
-                    "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
+                    "Q" + Integer.toString(matchNumber - 1) + "||" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt",
                     matchData + "\n").start();
         }
     }
