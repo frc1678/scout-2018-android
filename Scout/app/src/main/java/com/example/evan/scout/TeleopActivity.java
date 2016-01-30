@@ -49,6 +49,7 @@ public class TeleopActivity extends AppCompatActivity {
     private String scoutName;
     private String uuid;
     private String superName;
+    private int scoutNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class TeleopActivity extends AppCompatActivity {
         overridden = getIntent().getBooleanExtra("overridden", false);
         teamNumber = getIntent().getIntExtra("teamNumber", -1);
         scoutName = getIntent().getStringExtra("scoutName");
+        scoutNumber = getIntent().getIntExtra("scoutNumber", 1);
 
 
 
@@ -283,6 +285,20 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            try {
+                if (scoutNumber < 4) {
+                    data.put("alliance", "red");
+                } else {
+                    data.put("alliance", "blue");
+                }
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Error in scoutNumber");
+                Toast.makeText(this, "Failure in Scout Number", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+
+
             //wrap all the data with match number
             JSONObject finalData = new JSONObject();
             try {
@@ -295,15 +311,16 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+            //we now send data in mainactivity, so errors appear there
             //send data to bluetooth
-            new ConnectThread(this, superName, uuid,
+            /*new ConnectThread(this, superName, uuid,
                     "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
-                    finalData.toString() + "\n").start();
+                    finalData.toString() + "\n").start();*/
             Log.i("JSON data", finalData.toString());
             //move on to next match and restart main activity
             matchNumber++;
             startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber)
-                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName));
+                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName).putExtra("matchData", finalData.toString()));
         }
         return true;
     }

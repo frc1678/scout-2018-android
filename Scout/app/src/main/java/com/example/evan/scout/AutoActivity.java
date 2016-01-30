@@ -43,6 +43,7 @@ public class AutoActivity extends AppCompatActivity {
     private String scoutName;
     private String uuid;
     private String superName;
+    private int scoutNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class AutoActivity extends AppCompatActivity {
         scoutName = getIntent().getStringExtra("scoutName");
         uuid = getIntent().getStringExtra("uuid");
         superName = getIntent().getStringExtra("superName");
+        scoutNumber = getIntent().getIntExtra("scoutNumber", 1);
 
 
         //init lists
@@ -249,7 +251,7 @@ public class AutoActivity extends AppCompatActivity {
             //send it all to teleop activity
             startActivity(new Intent(this, TeleopActivity.class).putExtra("autoJSON", data.toString())
             .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName)
-            .putExtra("uuid", uuid).putExtra("superName", superName));
+            .putExtra("uuid", uuid).putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
         }
         return true;
     }

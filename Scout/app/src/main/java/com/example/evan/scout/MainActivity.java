@@ -38,8 +38,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -94,9 +97,10 @@ public class MainActivity extends AppCompatActivity {
     //when resending files, indicates whether the user pressed the 'cancel resend' button or not
     private boolean continueResend = true;
 
-    //an onclicklistener for the 'resend all' button, declared globally to be reused
+    //an onclicklistener for the 'resend all unsent' button, declared globally to be reused
     private View.OnClickListener originalResendAllUnsentOnClick;
 
+    //onclick for 'resend all' button
     private View.OnClickListener originalResendAllOnClick;
 
 
@@ -192,14 +196,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //initialize 'resend all' button
+        //initialize 'resend all unsent' button
         final Button resendAllUnsentButton = (Button) findViewById(R.id.resendAllUnsent);
         originalResendAllUnsentOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //first disable the resend all button (the other one)
                 Button resendAll = (Button) findViewById(R.id.resendAll);
                 resendAll.setClickable(false);
-                //when clicked, update unsent file list
+                //then add all the unsent file names to a list
                 List<String> unsentFileNames = new ArrayList<>();
                 for (int i = 0; i < fileListAdapter.getCount(); i++) {
                     String name = fileListAdapter.getItem(i);
@@ -228,13 +233,15 @@ public class MainActivity extends AppCompatActivity {
         resendAllUnsentButton.setOnClickListener(originalResendAllUnsentOnClick);
 
 
+        //intialize 'resend all' button
         final Button resendAllButton = (Button) findViewById(R.id.resendAll);
         originalResendAllOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //first disable other button
                 Button resendAllUnsent = (Button) findViewById(R.id.resendAllUnsent);
                 resendAllUnsent.setClickable(false);
-                //when clicked, update unsent file list
+                //when clicked, make a list of files
                 List<String> tmpFileNames = new ArrayList<>();
                 for (int i = 0; i < fileListAdapter.getCount(); i++) {
                     String name = fileListAdapter.getItem(i);
@@ -263,13 +270,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //we don't send it in oncreate anymore, despite the benefits, because if the oncreate is called twice it will cause errors. It sends it in the teleop activity
-        /*String matchData = getIntent().getStringExtra("matchData");
+
+        //teleop activity will send data here so errors show up on this screen
+        String matchData = getIntent().getStringExtra("matchData");
+        //if we have data from teleop activity
         if (matchData != null) {
+            //if savedInstanceState is not null, it means that the onCreate has already been called for this activity.  We don't want to resend data
+            if (savedInstanceState != null) {
+                return;
+            }
             new ConnectThread(this, superName, uuid,
                     "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
                     matchData + "\n").start();
-        }*/
+        }
     }
 
 
@@ -449,17 +462,17 @@ public class MainActivity extends AppCompatActivity {
                 teamNumber1Edit.setText("");
                 teamNumber2Edit.setText("");
                 teamNumber3Edit.setText("");
-            } catch (NumberFormatException nfe) {
-                Log.e("test", "here");
             }
         }
     }
 
 
 
-    //resend all button on ui
+    //recursive function to resend all the files in the list names, at a 5 second interval, while there are still files left and the user has not canceled the process
+    //names is a list of filenames in the directory /sdcard/Android/ that need to be resent
+    //cancel is a runnable that will be called to cancel the resend process
     private void resendAllFiles(final Runnable cancel, List<String> names) {
-        //if the 'cancel resend' button has not been clicked
+        //if the cancel button has not been clicked
         if (continueResend) {
             ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
             String name;
@@ -491,21 +504,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            //if the user did click the 'cancel resend' button, reset the flag
+            //if the user did click the 'cancel resend' button, reset the flag before quitting
             continueResend = true;
         }
     }
 
 
 
+    //cancel the 'resend all unsent' button
     private void cancelUnsentResend() {
-        //reset button
         Button resendAllButton = (Button) findViewById(R.id.resendAllUnsent);
         resendAllButton.setText("resend all unsent");
         resendAllButton.setOnClickListener(originalResendAllUnsentOnClick);
         Button resendAll = (Button) findViewById(R.id.resendAll);
         resendAll.setClickable(true);
     }
+    //cancel the 'resend all' button
     private void cancelResend() {
         Button resendAllButton = (Button) findViewById(R.id.resendAll);
         resendAllButton.setText("resend all");
@@ -773,7 +787,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, AutoActivity.class)
                     .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                     .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("uuid", uuid)
-                    .putExtra("superName", superName));
+                    .putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
         }
     }
 }
