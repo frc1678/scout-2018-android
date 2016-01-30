@@ -233,7 +233,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
-            //add successful defense fail times to JSON
+            //add failed defense cross times to JSON
             try {
                 data.put("failedDefenseCrossTimesTele", failDefenseTimes);
             } catch (JSONException jsone) {
