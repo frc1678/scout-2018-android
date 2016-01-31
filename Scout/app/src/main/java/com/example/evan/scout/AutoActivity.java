@@ -2,6 +2,7 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -101,7 +102,40 @@ public class AutoActivity extends AppCompatActivity {
                     final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
                     //next get the time in milliseconds
                     final Long startTime = Calendar.getInstance().getTimeInMillis();
-                    new AlertDialog.Builder(context)
+
+
+                    final Dialog dialog = new Dialog(context);
+                    dialog.setTitle("Attempt Defense" + Integer.toString(buttonNum+1));
+                    RelativeLayout dialogLayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog, null);
+                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
+                    success.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
+                            dialog.dismiss();
+                        }
+                    });
+                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                    failure.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
+                            dialog.dismiss();
+                        }
+                    });
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(dialogLayout);
+                    dialog.show();
+
+
+
+                    /*new AlertDialog.Builder(context)
                             .setTitle("Attempt Defense Cross")
                             .setPositiveButton("success", new DialogInterface.OnClickListener() {
                                 @Override
@@ -118,7 +152,7 @@ public class AutoActivity extends AppCompatActivity {
                                     failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
                                 }
                             })
-                            .show();
+                            .show();*/
                 }
             });
             defenseLayout.addView(button);
