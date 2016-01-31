@@ -421,22 +421,18 @@ public class MainActivity extends AppCompatActivity {
                 } catch (NumberFormatException nfe) {
                     return 0;
                 }
-                if (lhsNum > rhsNum) {
+                if (lhsNum < rhsNum) {
                     //lhs greater, return
-                    return 1;
+                    return -1;
                 } else if (lhsNum == rhsNum) {
                     //equal, return
                     return 0;
                 } else {
                     //rhs greater, return
-                    return -1;
+                    return 1;
                 }
             }
         });
-
-        for (int i = 0; i < fileListAdapter.getCount(); i++) {
-            Log.i("fileListAdapter", fileListAdapter.getItem(i));
-        }
 
 
         fileListAdapter.notifyDataSetChanged();
