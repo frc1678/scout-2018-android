@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
     //onclick for 'resend all' button
     private View.OnClickListener originalResendAllOnClick;
 
+    private List<String> searchFileNames;
+
 
 
     @Override
@@ -122,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         //see comment on this variable above
         originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
+        searchFileNames = new ArrayList<>();
 
 
 
@@ -203,6 +206,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         updateTeamNumbers();
+
+        final EditText searchBar = (EditText) findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = searchBar.getText().toString();
+                updateListView();
+                if (!text.equals("")) {
+                    searchFileNames.clear();
+                    for (int i = 0; i < fileListAdapter.getCount(); i++) {
+                        if (fileListAdapter.getItem(i).startsWith(text)) {
+                            searchFileNames.add(fileListAdapter.getItem(i));
+                        }
+                    }
+                    filterListView();
+                }
+            }
+        });
 
 
 
@@ -440,6 +467,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        fileListAdapter.notifyDataSetChanged();
+    }
+
+
+    private void filterListView() {
+        for (int i = 0; i < fileListAdapter.getCount();) {
+            if (searchFileNames.indexOf(fileListAdapter.getItem(i)) == -1) {
+                fileListAdapter.remove(fileListAdapter.getItem(i));
+            } else {
+                i++;
+            }
+        }
         fileListAdapter.notifyDataSetChanged();
     }
 
