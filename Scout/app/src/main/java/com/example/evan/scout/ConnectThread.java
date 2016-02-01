@@ -82,16 +82,6 @@ public class ConnectThread extends Thread {
 
     @Override
     public void run() {
-        //if bluetooth has not been initialized, initialize it
-        synchronized (isInitLock) {
-            if (!isInit) {
-                if(!initBluetooth(context, superName)) {
-                    return;
-                } else {
-                    isInit = true;
-                }
-            }
-        }
         //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
         //storage path: /sdcard/Android/MatchData
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -124,6 +114,19 @@ public class ConnectThread extends Thread {
             Log.e("File Error", "Failed to Write to File");
             toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
             return;
+        }
+
+
+
+        //if bluetooth has not been initialized, initialize it
+        synchronized (isInitLock) {
+            if (!isInit) {
+                if(!initBluetooth(context, superName)) {
+                    return;
+                } else {
+                    isInit = true;
+                }
+            }
         }
 
 

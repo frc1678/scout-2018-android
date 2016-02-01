@@ -88,7 +88,6 @@
             android:layout_height="fill_parent"
             android:id="@+id/infoList"
             android:layout_above="@+id/resendAllUnsent">
-
         </ListView>
         <Button
             android:layout_width="wrap_content"

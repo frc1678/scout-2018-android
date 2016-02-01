@@ -6,6 +6,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -70,6 +73,24 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
+        setTitle("Scout Team " + Integer.toString(teamNumber));
+        if (scoutNumber < 4) {
+            //change actionbar color
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                //red
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C40000")));
+            }
+        } else {
+            //change actionbar color
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                //blue
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4169e1")));
+            }
+        }
+
+
 
         //init lists
         successCrossTimes = new ArrayList<>();
@@ -91,7 +112,7 @@ public class TeleopActivity extends AppCompatActivity {
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
         toggleLayout.addView(fillerSpace);
         for (int i = 0; i < 4; i++) {
-            toggleLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT));
+            toggleLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, false));
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
             toggleLayout.addView(fillerSpace);
@@ -99,8 +120,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
-        //fill row of defense buttons
-        final Activity context = this;
+        //fill row of defense buttons and textview counters
         LinearLayout defenseLayout = (LinearLayout) findViewById(R.id.teleDefenseButtonLinearLayout);
         UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
@@ -108,68 +128,8 @@ public class TeleopActivity extends AppCompatActivity {
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
         defenseLayout.addView(fillerSpace);
         for (int i = 0; i < 5; i++) {
-            Button button = buttonCreator.getNextDefenseButton();
-            //on click for buttons
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //first find out what button was clicked, based on the name of the button
-                    final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
-                    //next get the time in milliseconds
-                    final Long startTime = Calendar.getInstance().getTimeInMillis();
-
-
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setTitle("Attempt Defense" + Integer.toString(buttonNum+1));
-                    RelativeLayout dialogLayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog, null);
-                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                    success.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                            dialog.dismiss();
-                        }
-                    });
-                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
-                    failure.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                            dialog.dismiss();
-                        }
-                    });
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-                    dialog.setContentView(dialogLayout);
-                    dialog.show();
-
-
-                    /*new AlertDialog.Builder(context)
-                            .setTitle("Attempt Defense Cross")
-                            .setPositiveButton("success", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //if they click success, add the time since they clicked the defense button to the list
-                                    successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                                }
-                            })
-                            .setNeutralButton("cancel", null)
-                            .setNegativeButton("failure", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //if they clicked failure, add it to the fail list
-                                    failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                                }
-                            })
-                            .show();*/
-                }
-            });
-            defenseLayout.addView(button);
+            LinearLayout buttonLayout = buttonCreator.getButtonRow(successCrossTimes, failCrossTimes, i);
+            defenseLayout.addView(buttonLayout);
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             defenseLayout.addView(fillerSpace);
@@ -185,7 +145,7 @@ public class TeleopActivity extends AppCompatActivity {
                  "Low Shots Missed", "Shots Blocked")));
         for (int i = 0; i < 6; i++) {
             rowLayout.addView(counterCreator.getNextTitleRow(1));
-            rowLayout.addView(counterCreator.getNextCounterRow(1));
+            rowLayout.addView(counterCreator.getNextCounterRow(1, 0));
         }
     }
 
@@ -344,16 +304,12 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
-            //we now send data in mainactivity, so errors appear there
-            //send data to bluetooth
-            /*new ConnectThread(this, superName, uuid,
-                    "Test-Data_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss", Locale.US).format(new Date()) + ".txt",
-                    finalData.toString() + "\n").start();*/
             Log.i("JSON data", finalData.toString());
             //move on to next match and restart main activity
             matchNumber++;
             startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber)
-                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName).putExtra("matchData", finalData.toString()));
+                    .putExtra("overridden", overridden).putExtra("scoutName", scoutName).putExtra("matchData", finalData.toString())
+                    .putExtra("matchName", "Q" + Integer.toString(matchNumber-1) + "_" + Integer.toString(teamNumber)));
         }
         return true;
     }
@@ -369,7 +325,8 @@ public class TeleopActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(context, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName));
+                        startActivity(new Intent(context, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName)
+                        .putExtra("autoJSON", autoJSON).putExtra("teamNumber", teamNumber));
                     }
                 })
                 .show();

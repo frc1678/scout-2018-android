@@ -15,11 +15,14 @@ import android.os.FileObserver;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     //onclick for 'resend all' button
     private View.OnClickListener originalResendAllOnClick;
+
 
 
     @Override
@@ -202,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         //initialize 'resend all unsent' button
         final Button resendAllUnsentButton = (Button) findViewById(R.id.resendAllUnsent);
         originalResendAllUnsentOnClick = new View.OnClickListener() {
@@ -290,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             new ConnectThread(this, superName, uuid,
-                    "Q" + Integer.toString(matchNumber - 1) + "||" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt",
+                    getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt",
                     matchData + "\n").start();
         }
     }
@@ -346,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFileList() {
         //set up list of sent files
-        fileListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        fileListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         ListView fileList = (ListView) findViewById(R.id.infoList);
         fileList.setAdapter(fileListAdapter);
         updateListView();
@@ -415,9 +420,9 @@ public class MainActivity extends AppCompatActivity {
                 int lhsNum;
                 int rhsNum;
                 try {
-                    List<String> tmp = new ArrayList<>(Arrays.asList(lhs.split("\\|\\|")));
+                    List<String> tmp = new ArrayList<>(Arrays.asList(lhs.split("_")));
                     lhsNum = Integer.parseInt(tmp.get(0).replaceAll("Q", ""));
-                    tmp = new ArrayList<>(Arrays.asList(rhs.split("\\|\\|")));
+                    tmp = new ArrayList<>(Arrays.asList(rhs.split("_")));
                     rhsNum = Integer.parseInt(tmp.get(0).replaceAll("Q", ""));
                 } catch (NumberFormatException nfe) {
                     return 0;
@@ -651,6 +656,9 @@ public class MainActivity extends AppCompatActivity {
             setScoutNumber();
 
 
+        }else if (item.getItemId() == R.id.setScoutName) {
+            setScoutName(null);
+
 
             //get schedule button
         } else if (item.getItemId() == R.id.scheduleButton) {
@@ -739,7 +747,11 @@ public class MainActivity extends AppCompatActivity {
     private void setScoutNumber() {
         final EditText editText = new EditText(this);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        editText.setHint("Scout ID");
+        if (scoutNumber == -1) {
+            editText.setHint("Scout ID");
+        } else {
+            editText.setText(Integer.toString(scoutNumber));
+        }
         new AlertDialog.Builder(this)
                 .setTitle("Set Scout ID")
                 .setView(editText)
@@ -816,35 +828,46 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         fileObserver.stopWatching();
-        startAutoActivity();
-    }
-
-
-
-    //in order to redisplay the dialog to ask for scout initials, we start a new method, and recursively call the method if the input is wrong
-    private void startAutoActivity() {
         if (scoutName == null) {
-            final EditText editText = new EditText(this);
-            editText.setHint("Scout Initials");
-            new AlertDialog.Builder(this)
-                    .setTitle("Set Scout Initials")
-                    .setView(editText)
-                    .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            scoutName = editText.getText().toString();
-                            if (scoutName.equals("")) {
-                                scoutName = null;
-                            }
-                            startAutoActivity();
-                        }
-                    })
-                    .show();
+            setScoutName(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(context, AutoActivity.class)
+                            .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
+                            .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("uuid", uuid)
+                            .putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
+                }
+            });
         } else {
             startActivity(new Intent(this, AutoActivity.class)
                     .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                     .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("uuid", uuid)
                     .putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
         }
+    }
+
+
+
+    //in order to redisplay the dialog to ask for scout initials, we start a new method, and recursively call the method if the input is wrong
+    //on Finish is what to happen on click
+    private void setScoutName(final Runnable onFinish) {
+        final EditText editText = new EditText(this);
+        editText.setHint("Scout Initials");
+        new AlertDialog.Builder(this)
+                .setTitle("Set Scout Initials")
+                .setView(editText)
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        scoutName = editText.getText().toString();
+                        if (scoutName.equals("")) {
+                            setScoutName(onFinish);
+                        }
+                        if (onFinish != null) {
+                            onFinish.run();
+                        }
+                    }
+                })
+                .show();
     }
 }

@@ -13,5 +13,9 @@
         android:id="@+id/setScoutIDButton"
         android:title="Set Scout ID"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/setScoutName"
+        android:title="Set Scout Name"
+        app:showAsAction="ifRoom"/>
 
 </menu>

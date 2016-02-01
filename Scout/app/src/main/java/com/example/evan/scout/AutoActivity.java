@@ -6,6 +6,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +65,26 @@ public class AutoActivity extends AppCompatActivity {
         scoutNumber = getIntent().getIntExtra("scoutNumber", 1);
 
 
+        //set the title to have the team number
+        setTitle("Scout Team " + Integer.toString(teamNumber));
+        //set action bar color
+        if (scoutNumber < 4) {
+            //change actionbar color
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                //red
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C40000")));
+            }
+        } else {
+            //change actionbar color
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                //blue
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4169e1")));
+            }
+        }
+
+
         //init lists
         successCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -73,18 +96,75 @@ public class AutoActivity extends AppCompatActivity {
         }
 
 
+        //the ui will look to these values for the starting values when the app starts
+        List<Boolean> toggleValues = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            toggleValues.add(false);
+        }
+
+        List<Integer> counterValues = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            counterValues.add(0);
+        }
+
+        boolean reached = false;
+
+
+        //if the user pressed 'back' from the teleop activity we have to reset the data to as it was
+        String autoJSON = getIntent().getStringExtra("autoJSON");
+        if (autoJSON != null) {
+            try {
+                //parse the JSONObject
+                JSONObject data = new JSONObject(autoJSON);
+                JSONArray toggles = data.getJSONArray("ballsIntakedAuto");
+                for (int i = 0; i < toggles.length(); i++) {
+                    toggleValues.add(i, toggles.getBoolean(i));
+                }
+
+                List<String> counterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
+                        "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
+                for (int i = 0; i < counterNames.size(); i++) {
+                    counterValues.add(i, data.getInt(counterNames.get(i)));
+                }
+
+                JSONArray successTimes = data.getJSONArray("successfulDefenseCrossTimesAuto");
+                for (int i = 0; i < successTimes.length(); i++) {
+                    for (int j = 0; j < successTimes.getJSONArray(i).length(); j++) {
+                        successCrossTimes.get(i).add(successTimes.getJSONArray(i).getLong(j));
+                        Log.i("prevs" + i + j, Long.toString(successTimes.getJSONArray(i).getLong(j)));
+                    }
+                }
+
+                JSONArray failTimes = data.getJSONArray("failedDefenseCrossTimesAuto");
+                for (int i = 0; i < failTimes.length(); i++) {
+                    for (int j = 0; j < failTimes.getJSONArray(i).length(); j++) {
+                        failCrossTimes.get(i).add(failTimes.getJSONArray(i).getLong(j));
+                        Log.i("prevf" + i + j, Long.toString(failTimes.getJSONArray(i).getLong(j)));
+                    }
+                }
+                reached = data.getBoolean("didReachAuto");
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to parse previous auto data");
+                Toast.makeText(this, "Invalid data from previous activity", Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+        ToggleButton reachButton = (ToggleButton) findViewById(R.id.autoReachedDefenseToggle);
+        reachButton.setChecked(reached);
+
+
 
         //populate the row of toggle buttons for ball intakes on midline
         LinearLayout intakeLayout = (LinearLayout) findViewById(R.id.autoIntakeButtonLinearLayout);
         toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("1 Intaked", "2 Intaked",
                 "3 Intaked", "4 Intaked", "5 Intaked", "6 Intaked")));
         for (int i = 0; i < 6; i++) {
-            intakeLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.WRAP_CONTENT));
+            intakeLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.WRAP_CONTENT, toggleValues.get(i)));
         }
 
 
-        //fill row of defense buttons
-        final Activity context = this;
+        //fill row of defense buttons with textview counters
         LinearLayout defenseLayout = (LinearLayout) findViewById(R.id.autoDefenseButtonLinearLayout);
         UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
@@ -93,69 +173,8 @@ public class AutoActivity extends AppCompatActivity {
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
         defenseLayout.addView(fillerSpace);
         for (int i = 0; i < 5; i++) {
-            Button button = buttonCreator.getNextDefenseButton();
-            //on click for buttons
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //first find out what button was clicked, based on the name of the button
-                    final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
-                    //next get the time in milliseconds
-                    final Long startTime = Calendar.getInstance().getTimeInMillis();
-
-
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setTitle("Attempt Defense" + Integer.toString(buttonNum+1));
-                    RelativeLayout dialogLayout = (RelativeLayout) getLayoutInflater().inflate(R.layout.dialog, null);
-                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                    success.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                            dialog.dismiss();
-                        }
-                    });
-                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
-                    failure.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                            dialog.dismiss();
-                        }
-                    });
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-                    dialog.setContentView(dialogLayout);
-                    dialog.show();
-
-
-
-                    /*new AlertDialog.Builder(context)
-                            .setTitle("Attempt Defense Cross")
-                            .setPositiveButton("success", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //if they click success, add the time since they clicked the defense button to the list
-                                    successCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                                }
-                            })
-                            .setNeutralButton("cancel", null)
-                            .setNegativeButton("failure", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //if they clicked failure, add it to the fail list
-                                    failCrossTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
-                                }
-                            })
-                            .show();*/
-                }
-            });
-            defenseLayout.addView(button);
+            LinearLayout buttonLayout = buttonCreator.getButtonRow(successCrossTimes, failCrossTimes, i);
+            defenseLayout.addView(buttonLayout);
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             defenseLayout.addView(fillerSpace);
@@ -171,7 +190,7 @@ public class AutoActivity extends AppCompatActivity {
 
         for (int i = 0; i < 5; i++) {
             rowLayout.addView(counterCreator.getNextTitleRow(1));
-            rowLayout.addView(counterCreator.getNextCounterRow(1));
+            rowLayout.addView(counterCreator.getNextCounterRow(1, counterValues.get(i)));
         }
     }
 
