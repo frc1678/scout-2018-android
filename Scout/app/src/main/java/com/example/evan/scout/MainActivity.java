@@ -206,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         //initialize 'resend all unsent' button
         final Button resendAllUnsentButton = (Button) findViewById(R.id.resendAllUnsent);
         originalResendAllUnsentOnClick = new View.OnClickListener() {

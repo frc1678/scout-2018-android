@@ -226,9 +226,13 @@ public class AutoActivity extends AppCompatActivity {
             //add ball intake toggles
             List<View> intakeButtonList = toggleCreator.getComponentViews();
             JSONArray ballsIntakedAuto = new JSONArray();
+            int counter = 0;
             for (int i = 0; i < intakeButtonList.size(); i++) {
                 try {
-                    ballsIntakedAuto.put(i, ((ToggleButton) intakeButtonList.get(i)).isChecked());
+                    if (((ToggleButton) intakeButtonList.get(i)).isChecked()) {
+                        ballsIntakedAuto.put(counter, i);
+                        counter++;
+                    }
                 } catch (JSONException jsone) {
                     Log.e("JSON error", "Failed to add intake button state to JSON");
                     Toast.makeText(this, "Invalid data in intake toggle", Toast.LENGTH_LONG).show();
