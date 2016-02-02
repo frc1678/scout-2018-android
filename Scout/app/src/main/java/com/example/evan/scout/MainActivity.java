@@ -2,7 +2,6 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,7 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,7 +42,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -60,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
     //paired device to connect to as super:
     private String superName;
-    private static final String redSuperName = "red super";
-    private static final String blueSuperName = "blue super";
-    //private static final String redSuperName = "G Pad 7.0 LTE";
-    //private static final String blueSuperName = "G Pad 7.0 LTE";
+    //private static final String redSuperName = "red super";
+    //private static final String blueSuperName = "blue super";
+    private static final String redSuperName = "Long Family Fire";
+    private static final String blueSuperName = "G Pad 7.0 LTE";
 
     //used to update list of sent files when they are modified
     private FileObserver fileObserver;
@@ -112,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
     //onclick for 'resend all' button
     private View.OnClickListener originalResendAllOnClick;
 
-    private List<String> searchFileNames;
 
 
 
@@ -124,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         //see comment on this variable above
         originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
-        searchFileNames = new ArrayList<>();
 
 
 
@@ -207,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
         });
         updateTeamNumbers();
 
+        //text watcher for listview search bar
         final EditText searchBar = (EditText) findViewById(R.id.searchBar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -220,13 +216,9 @@ public class MainActivity extends AppCompatActivity {
                 String text = searchBar.getText().toString();
                 updateListView();
                 if (!text.equals("")) {
-                    searchFileNames.clear();
-                    for (int i = 0; i < fileListAdapter.getCount(); i++) {
-                        if (fileListAdapter.getItem(i).startsWith(text)) {
-                            searchFileNames.add(fileListAdapter.getItem(i));
-                        }
-                    }
-                    filterListView();
+                    //get list of files starting with text
+                    //pass them off to filter fileListAdapter
+                    filterListView(text);
                 }
             }
         });
@@ -427,6 +419,7 @@ public class MainActivity extends AppCompatActivity {
             fileListAdapter.add(tmpFile.getName());
         }
 
+        //sort so unsent files are at the top, and then the rest come by match number
         fileListAdapter.sort(new Comparator<String>() {
             @Override
             public int compare(String lhs, String rhs) {
@@ -446,10 +439,8 @@ public class MainActivity extends AppCompatActivity {
                 int lhsNum;
                 int rhsNum;
                 try {
-                    List<String> tmp = new ArrayList<>(Arrays.asList(lhs.split("_")));
-                    lhsNum = Integer.parseInt(tmp.get(0).replaceAll("Q", ""));
-                    tmp = new ArrayList<>(Arrays.asList(rhs.split("_")));
-                    rhsNum = Integer.parseInt(tmp.get(0).replaceAll("Q", ""));
+                    lhsNum = Integer.parseInt((lhs.split("_"))[0].replaceAll("Q", ""));
+                    rhsNum = Integer.parseInt((rhs.split("_"))[0].replaceAll("Q", ""));
                 } catch (NumberFormatException nfe) {
                     return 0;
                 }
@@ -471,12 +462,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void filterListView() {
+    //filter out entries in fileListAdapter by the key
+    private void filterListView(String key) {
         for (int i = 0; i < fileListAdapter.getCount();) {
-            if (searchFileNames.indexOf(fileListAdapter.getItem(i)) == -1) {
-                fileListAdapter.remove(fileListAdapter.getItem(i));
-            } else {
+            int tmpTeam;
+            int tmpMatch;
+            try {
+                tmpTeam = Integer.parseInt((fileListAdapter.getItem(i).split("_"))[0].replaceAll("Q", ""));
+                tmpMatch = Integer.parseInt((fileListAdapter.getItem(i).split("_"))[1]);
+            } catch (NumberFormatException nfe) {
+                tmpTeam = -1;
+                tmpMatch = -1;
+            }
+            //we only want to keep the entry if it starts with the key, the key is the teamnumber in the entry, or the key is matchnumber in the entry
+            if ((fileListAdapter.getItem(i).startsWith(key)) || (key.equals(Integer.toString(tmpMatch)))
+                    || (key.equals(Integer.toString(tmpTeam)))) {
                 i++;
+            } else {
+                fileListAdapter.remove(fileListAdapter.getItem(i));
             }
         }
         fileListAdapter.notifyDataSetChanged();
@@ -788,7 +791,7 @@ public class MainActivity extends AppCompatActivity {
         if (scoutNumber == -1) {
             editText.setHint("Scout ID");
         } else {
-            editText.setText(Integer.toString(scoutNumber));
+            editText.setHint(Integer.toString(scoutNumber));
         }
         new AlertDialog.Builder(this)
                 .setTitle("Set Scout ID")
@@ -805,6 +808,7 @@ public class MainActivity extends AppCompatActivity {
                             setScoutNumber();
                         }
                         highlightTeamNumberTexts();
+                        ConnectThread.initBluetooth(context, superName);
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putInt("scoutNumber", scoutNumber);
                         editor.commit();
@@ -879,8 +883,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startActivity(new Intent(this, AutoActivity.class)
                     .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                    .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("uuid", uuid)
-                    .putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
+                    .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber));
         }
     }
 

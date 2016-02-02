@@ -2,7 +2,6 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,14 +25,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public class TeleopActivity extends AppCompatActivity {
     //data, in JSON format in a string, from auto activity
@@ -51,8 +45,6 @@ public class TeleopActivity extends AppCompatActivity {
     private boolean overridden;
     private int teamNumber;
     private String scoutName;
-    private String uuid;
-    private String superName;
     private int scoutNumber;
 
     @Override
@@ -62,8 +54,6 @@ public class TeleopActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         //get fields from previous activity
-        uuid = getIntent().getStringExtra("uuid");
-        superName = getIntent().getStringExtra("superName");
         autoJSON = getIntent().getStringExtra("autoJSON");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
@@ -326,7 +316,7 @@ public class TeleopActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(context, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName)
-                        .putExtra("autoJSON", autoJSON).putExtra("teamNumber", teamNumber));
+                        .putExtra("autoJSON", autoJSON).putExtra("teamNumber", teamNumber).putExtra("scoutNumber", scoutNumber));
                     }
                 })
                 .show();

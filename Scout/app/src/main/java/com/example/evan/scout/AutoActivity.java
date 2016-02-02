@@ -2,7 +2,6 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +27,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 public class AutoActivity extends AppCompatActivity {
@@ -45,8 +42,6 @@ public class AutoActivity extends AppCompatActivity {
     private boolean overridden;
     private int teamNumber;
     private String scoutName;
-    private String uuid;
-    private String superName;
     private int scoutNumber;
 
     @Override
@@ -60,8 +55,6 @@ public class AutoActivity extends AppCompatActivity {
         overridden = getIntent().getBooleanExtra("overridden", false);
         teamNumber = getIntent().getIntExtra("teamNumber", -1);
         scoutName = getIntent().getStringExtra("scoutName");
-        uuid = getIntent().getStringExtra("uuid");
-        superName = getIntent().getStringExtra("superName");
         scoutNumber = getIntent().getIntExtra("scoutNumber", 1);
 
 
@@ -97,10 +90,7 @@ public class AutoActivity extends AppCompatActivity {
 
 
         //the ui will look to these values for the starting values when the app starts
-        List<Boolean> toggleValues = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            toggleValues.add(false);
-        }
+        List<Integer> toggleValues = new ArrayList<>();
 
         List<Integer> counterValues = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
@@ -118,7 +108,7 @@ public class AutoActivity extends AppCompatActivity {
                 JSONObject data = new JSONObject(autoJSON);
                 JSONArray toggles = data.getJSONArray("ballsIntakedAuto");
                 for (int i = 0; i < toggles.length(); i++) {
-                    toggleValues.add(i, toggles.getBoolean(i));
+                    toggleValues.add(i, toggles.getInt(i));
                 }
 
                 List<String> counterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
@@ -131,7 +121,6 @@ public class AutoActivity extends AppCompatActivity {
                 for (int i = 0; i < successTimes.length(); i++) {
                     for (int j = 0; j < successTimes.getJSONArray(i).length(); j++) {
                         successCrossTimes.get(i).add(successTimes.getJSONArray(i).getLong(j));
-                        Log.i("prevs" + i + j, Long.toString(successTimes.getJSONArray(i).getLong(j)));
                     }
                 }
 
@@ -139,7 +128,6 @@ public class AutoActivity extends AppCompatActivity {
                 for (int i = 0; i < failTimes.length(); i++) {
                     for (int j = 0; j < failTimes.getJSONArray(i).length(); j++) {
                         failCrossTimes.get(i).add(failTimes.getJSONArray(i).getLong(j));
-                        Log.i("prevf" + i + j, Long.toString(failTimes.getJSONArray(i).getLong(j)));
                     }
                 }
                 reached = data.getBoolean("didReachAuto");
@@ -160,7 +148,8 @@ public class AutoActivity extends AppCompatActivity {
         toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("1 Intaked", "2 Intaked",
                 "3 Intaked", "4 Intaked", "5 Intaked", "6 Intaked")));
         for (int i = 0; i < 6; i++) {
-            intakeLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.WRAP_CONTENT, toggleValues.get(i)));
+            boolean checked = (toggleValues.indexOf(i) != -1);
+            intakeLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.WRAP_CONTENT, checked));
         }
 
 
@@ -308,7 +297,7 @@ public class AutoActivity extends AppCompatActivity {
             //send it all to teleop activity
             startActivity(new Intent(this, TeleopActivity.class).putExtra("autoJSON", data.toString())
             .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName)
-            .putExtra("uuid", uuid).putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
+            .putExtra("scoutNumber", scoutNumber));
         }
         return true;
     }

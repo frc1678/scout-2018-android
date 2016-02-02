@@ -46,7 +46,7 @@ public class ConnectThread extends Thread {
 
 
 
-    protected static boolean initBluetooth(final Activity context, String superName) {
+    public static boolean initBluetooth(final Activity context, String superName) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
             Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
