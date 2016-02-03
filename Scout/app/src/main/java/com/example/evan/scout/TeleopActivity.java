@@ -114,15 +114,8 @@ public class TeleopActivity extends AppCompatActivity {
         LinearLayout defenseLayout = (LinearLayout) findViewById(R.id.teleDefenseButtonLinearLayout);
         UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
-        fillerSpace = new RelativeLayout(this);
-        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
-        defenseLayout.addView(fillerSpace);
         for (int i = 0; i < 5; i++) {
-            LinearLayout buttonLayout = buttonCreator.getButtonRow(successCrossTimes, failCrossTimes, i);
-            defenseLayout.addView(buttonLayout);
-            fillerSpace = new RelativeLayout(this);
-            fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
-            defenseLayout.addView(fillerSpace);
+            buttonCreator.addButtonRow(defenseLayout, successCrossTimes, failCrossTimes, i);
         }
 
 

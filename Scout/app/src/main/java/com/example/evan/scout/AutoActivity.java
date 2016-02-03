@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -158,15 +159,8 @@ public class AutoActivity extends AppCompatActivity {
         UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
         //empty relative layout to space out buttons
-        RelativeLayout fillerSpace = new RelativeLayout(this);
-        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
-        defenseLayout.addView(fillerSpace);
         for (int i = 0; i < 5; i++) {
-            LinearLayout buttonLayout = buttonCreator.getButtonRow(successCrossTimes, failCrossTimes, i);
-            defenseLayout.addView(buttonLayout);
-            fillerSpace = new RelativeLayout(this);
-            fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
-            defenseLayout.addView(fillerSpace);
+            buttonCreator.addButtonRow(defenseLayout, successCrossTimes, failCrossTimes, i);
         }
 
 

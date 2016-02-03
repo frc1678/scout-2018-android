@@ -2,9 +2,11 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,6 +16,8 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 //class that creates all the ui components I need like togglebuttons, etc.  Also stores all buttons in list to be accessed later
 public class UIComponentCreator {
@@ -124,26 +128,21 @@ public class UIComponentCreator {
         return button;
     }
 
-    public LinearLayout getButtonRow(final List<List<Long>> successTimes, final List<List<Long>> failTimes, int index) {
+    public void addButtonRow(LinearLayout column, final List<List<Long>> successTimes, final List<List<Long>> failTimes, int index) {
         //add textview counters to layout
         LinearLayout textViewLayout = new LinearLayout(context);
-        textViewLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.25f));
-        textViewLayout.setOrientation(LinearLayout.VERTICAL);
+        textViewLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
+        textViewLayout.setOrientation(LinearLayout.HORIZONTAL);
         final TextView successText = new TextView(context);
-        successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
+        successText.setGravity(Gravity.CENTER);
         successText.setText("S: " + Integer.toString(successTimes.get(index).size()));
         final TextView failText = new TextView(context);
-        failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
+        failText.setGravity(Gravity.CENTER);
         failText.setText("F: " + Integer.toString(failTimes.get(index).size()));
         textViewLayout.addView(successText);
         textViewLayout.addView(failText);
-
-
-        //add layout to row
-        LinearLayout row = new LinearLayout(context);
-        row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.addView(textViewLayout);
 
 
         //add button to row
@@ -159,8 +158,10 @@ public class UIComponentCreator {
 
                 //display custom dialog with big buttons
                 final Dialog dialog = new Dialog(context);
-                dialog.setTitle("Attempt Defense " + Integer.toString(buttonNum+1));
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.dialog, null);
+                TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                title.setText("Attempt Defense " + Integer.toString(buttonNum+1));
                 Button success = (Button) dialogLayout.findViewById(R.id.successButton);
                 success.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -197,7 +198,10 @@ public class UIComponentCreator {
                 dialog.show();
             }
         });
-        row.addView(defenseButton);
-        return row;
+
+
+
+        column.addView(defenseButton);
+        column.addView(textViewLayout);
     }
 }
