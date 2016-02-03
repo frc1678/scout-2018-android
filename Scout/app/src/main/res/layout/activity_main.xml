@@ -74,7 +74,7 @@
             android:text="Scout"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:onClick="startScout"
+            android:onClick="startScoutButton"
             android:id="@+id/scoutButton"/>
     </RelativeLayout>
     <RelativeLayout

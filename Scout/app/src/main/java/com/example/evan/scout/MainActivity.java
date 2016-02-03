@@ -50,6 +50,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+//TODO include correct match and team numbers when clicking 'edit' on file
 
 public class MainActivity extends AppCompatActivity {
     //uuid for bluetooth connection
@@ -91,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
     //initials of scout scouting
     private String scoutName;
 
-    //number of team this scout needs to scout
-    private int teamNumber;
-
     //save a reference to this activity for subclasses
     private final Activity context = this;
 
@@ -108,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     //onclick for 'resend all' button
     private View.OnClickListener originalResendAllOnClick;
+
 
 
 
@@ -369,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFileList() {
         //set up list of sent files
-        fileListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        fileListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         ListView fileList = (ListView) findViewById(R.id.infoList);
         fileList.setAdapter(fileListAdapter);
         updateListView();
@@ -377,9 +376,73 @@ public class MainActivity extends AppCompatActivity {
         fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("test", "at 1");
                 final String name = parent.getItemAtPosition(position).toString();
                 //read data from file
-                sendFile(name);
+                String text = readFile(name);
+                if (text != null) {
+                    new ConnectThread(context, superName, uuid, name, text).start();
+                }
+            }
+        });
+        //if you click and hold on a file, give some options
+        fileList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
+                Log.i("test", "at 2");
+                new AlertDialog.Builder(context)
+                        //you can resend
+                        .setTitle("File Options")
+                        .setPositiveButton("Resend", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String name = parent.getItemAtPosition(position).toString();
+                                //read data from file
+                                String text = readFile(name);
+                                if (text != null) {
+                                    new ConnectThread(context, superName, uuid, name, text).start();
+                                }
+                            }
+                        })
+                        //you can cancel
+                        .setNeutralButton("Cancel", null)
+                        //or you can edit
+                        .setNegativeButton("Edit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String name = parent.getItemAtPosition(position).toString();
+                                //first read from file
+                                String text = readFile(name);
+                                if (text != null) {
+                                    //next get team and matchnumber from filename
+                                    int tmpTeam;
+                                    int tmpMatch;
+                                    try {
+                                        tmpMatch = Integer.parseInt(name.split("_")[0].replaceAll("Q", ""));
+                                        tmpTeam = Integer.parseInt(name.split("_")[1]);
+                                    } catch (NumberFormatException nfe) {
+                                        Log.e("File Error", "failed to parse data from file name");
+                                        Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                    String editJSON;
+                                    try {
+                                        //finally parse text to JSON and remove wrapper
+                                        JSONObject data = new JSONObject(text);
+                                        editJSON = data.getJSONObject(Integer.toString(tmpTeam) + "Q" + Integer.toString(tmpMatch)).toString();
+                                    } catch (JSONException jsone) {
+                                        Log.e("JSON Error", "failed to read JSON to be edited");
+                                        Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                    //call the onclick for the 'scout' button to move on to next activity, only when it changes it will keep data
+                                    //(see startScout method)
+                                    startScout(editJSON, tmpMatch, tmpTeam);
+                                }
+                            }
+                        })
+                        .show();
+                return true;
             }
         });
 
@@ -585,7 +648,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             //send it to super
-            sendFile(name);
+            String text = readFile(name);
+            if (text != null) {
+                new ConnectThread(context, superName, uuid, name, text).start();
+            }
             if (names.size() != 0) {
                 //finally if there is another file in the list, wait 5 seconds before sending it again
                 final List<String> tmp = names;
@@ -633,8 +699,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //read file from hard disk and send it to super
-    private void sendFile (String name) {
+    //read file from hard disk
+    private String readFile (String name) {
         BufferedReader file;
         try {
             file = new BufferedReader(new InputStreamReader(new FileInputStream(
@@ -642,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Open File");
             Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
-            return;
+            return null;
         }
         String text = "";
         String buf;
@@ -653,11 +719,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Read From File");
             Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
-            return;
+            return null;
         }
         Log.i("text", text);
-        //send it to super
-        new ConnectThread(context, superName, uuid, name, text).start();
+        return text;
     }
 
 
@@ -850,40 +915,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     //scout button on ui
-    public void startScout (View view) {
+    public void startScoutButton (View view) {
+        startScout(null, matchNumber, -1);
+    }
+
+
+
+    private void startScout(String editJSON, int matchNumber, int teamNumber) {
         //collect the team number
-        try {
-            if (scoutNumber%3 == 1) {
-                TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
-                teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
-            } else if (scoutNumber%3 == 2) {
-                TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber2Edit);
-                teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
-            } else if (scoutNumber%3 == 0) {
-                TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber3Edit);
-                teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
-            } else {
-                throw new NumberFormatException();
+        if (teamNumber == -1) {
+            try {
+                if (scoutNumber % 3 == 1) {
+                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber1Edit);
+                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+                } else if (scoutNumber % 3 == 2) {
+                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber2Edit);
+                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+                } else if (scoutNumber % 3 == 0) {
+                    TextView scoutTeamText = (TextView) findViewById(R.id.teamNumber3Edit);
+                    teamNumber = Integer.parseInt(scoutTeamText.getText().toString());
+                } else {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException nfe) {
+                Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG).show();
+                return;
             }
-        } catch (NumberFormatException nfe) {
-            Toast.makeText(this, "Please enter valid team numbers", Toast.LENGTH_LONG).show();
-            return;
         }
         fileObserver.stopWatching();
+        final Intent nextActivity = new Intent(context, AutoActivity.class)
+                .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
+                .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber).putExtra("autoJSON", editJSON);
         if (scoutName == null) {
             setScoutName(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(context, AutoActivity.class)
-                            .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                            .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("uuid", uuid)
-                            .putExtra("superName", superName).putExtra("scoutNumber", scoutNumber));
+                    startActivity(nextActivity.putExtra("scoutName", scoutName));
                 }
             });
         } else {
-            startActivity(new Intent(this, AutoActivity.class)
-                    .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                    .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber));
+            startActivity(nextActivity);
         }
     }
 

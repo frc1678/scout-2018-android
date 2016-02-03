@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -25,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +42,7 @@ public class AutoActivity extends AppCompatActivity {
     private int teamNumber;
     private String scoutName;
     private int scoutNumber;
+    private JSONObject data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +105,7 @@ public class AutoActivity extends AppCompatActivity {
         if (autoJSON != null) {
             try {
                 //parse the JSONObject
-                JSONObject data = new JSONObject(autoJSON);
+                data = new JSONObject(autoJSON);
                 JSONArray toggles = data.getJSONArray("ballsIntakedAuto");
                 for (int i = 0; i < toggles.length(); i++) {
                     toggleValues.add(i, toggles.getInt(i));
@@ -135,6 +134,7 @@ public class AutoActivity extends AppCompatActivity {
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Failed to parse previous auto data");
                 Toast.makeText(this, "Invalid data from previous activity", Toast.LENGTH_LONG).show();
+                data = null;
             }
         }
 
@@ -194,7 +194,9 @@ public class AutoActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.buttonNext) {
 
             //json object to store auto data
-            JSONObject data = new JSONObject();
+            if (data == null) {
+                data = new JSONObject();
+            }
 
             //add reach toggle
             ToggleButton hasReachedToggle = (ToggleButton) findViewById(R.id.autoReachedDefenseToggle);

@@ -27,12 +27,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class TeleopActivity extends AppCompatActivity {
     //data, in JSON format in a string, from auto activity
-    private String autoJSON;
     //list of successful cross times for each defense
     private List<List<Long>> successCrossTimes;
     //list of failed cross times for each defense
@@ -46,6 +44,7 @@ public class TeleopActivity extends AppCompatActivity {
     private int teamNumber;
     private String scoutName;
     private int scoutNumber;
+    private JSONObject data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,6 @@ public class TeleopActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         //get fields from previous activity
-        autoJSON = getIntent().getStringExtra("autoJSON");
         matchNumber = getIntent().getIntExtra("matchNumber", 1);
         overridden = getIntent().getBooleanExtra("overridden", false);
         teamNumber = getIntent().getIntExtra("teamNumber", -1);
@@ -93,6 +91,52 @@ public class TeleopActivity extends AppCompatActivity {
         }
 
 
+
+        List<Boolean> toggleValues = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            toggleValues.add(false);
+        }
+
+        List<Integer> counterValues = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            counterValues.add(0);
+        }
+
+
+        String autoJSON = getIntent().getStringExtra("autoJSON");
+        try {
+            data = new JSONObject(autoJSON);
+            List<String> toggleNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
+                    "didGetDisabled", "didGetIncapacitated"));
+            for (int i = 0; i < toggleNames.size(); i++) {
+                toggleValues.add(i, data.getBoolean(toggleNames.get(i)));
+            }
+
+            List<String> counterNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
+                    "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
+                    "numShotsBlockedTele"));
+            for (int i = 0; i < counterNames.size(); i++) {
+                counterValues.add(i, data.getInt(counterNames.get(i)));
+            }
+
+            JSONArray successTimes = data.getJSONArray("successfulDefenseCrossTimesTele");
+            for (int i = 0; i < successTimes.length(); i++) {
+                for (int j = 0; j < successTimes.getJSONArray(i).length(); j++) {
+                    successCrossTimes.get(i).add(successTimes.getJSONArray(i).getLong(j));
+                }
+            }
+
+            JSONArray failTimes = data.getJSONArray("failedDefenseCrossTimesTele");
+            for (int i = 0; i < failTimes.length(); i++) {
+                for (int j = 0; j < failTimes.getJSONArray(i).length(); j++) {
+                    failCrossTimes.get(i).add(failTimes.getJSONArray(i).getLong(j));
+                }
+            }
+        } catch (JSONException jsone) {
+            Log.i("JSON info", "Failed to read teleop data.  Unimportant");
+        }
+
+
         //populate toggles
         toggleCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Challenge",
                 "Scale", "Disabled", "Incap.")));
@@ -102,7 +146,7 @@ public class TeleopActivity extends AppCompatActivity {
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
         toggleLayout.addView(fillerSpace);
         for (int i = 0; i < 4; i++) {
-            toggleLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, false));
+            toggleLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i)));
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
             toggleLayout.addView(fillerSpace);
@@ -128,7 +172,7 @@ public class TeleopActivity extends AppCompatActivity {
                  "Low Shots Missed", "Shots Blocked")));
         for (int i = 0; i < 6; i++) {
             rowLayout.addView(counterCreator.getNextTitleRow(1));
-            rowLayout.addView(counterCreator.getNextCounterRow(1, 0));
+            rowLayout.addView(counterCreator.getNextCounterRow(1, counterValues.get(i)));
         }
     }
 
@@ -146,7 +190,9 @@ public class TeleopActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.teleopSendButton) {
             //json object to store everything
-            JSONObject data = new JSONObject();
+            if (data == null) {
+                data = new JSONObject();
+            }
 
 
 
@@ -235,30 +281,6 @@ public class TeleopActivity extends AppCompatActivity {
             }
 
 
-            //add auto data to JSON
-            JSONObject autoData;
-            try {
-                autoData = new JSONObject(autoJSON);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Error in auto data?");
-                Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-
-            Iterator<String> autoKeys = autoData.keys();
-            while (autoKeys.hasNext()) {
-                String key = autoKeys.next();
-                try {
-                    data.put(key, autoData.get(key));
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Error in auto data?");
-                    Toast.makeText(this, "Failure in Auto Data", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-
 
 
             try {
@@ -309,7 +331,7 @@ public class TeleopActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(context, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName)
-                        .putExtra("autoJSON", autoJSON).putExtra("teamNumber", teamNumber).putExtra("scoutNumber", scoutNumber));
+                        .putExtra("autoJSON", data.toString()).putExtra("teamNumber", teamNumber).putExtra("scoutNumber", scoutNumber));
                     }
                 })
                 .show();
