@@ -20,9 +20,7 @@ import java.util.UUID;
 public class ConnectThread extends Thread {
     protected static BluetoothDevice device = null;
     protected static final Object deviceLock = new Object();
-    protected static boolean isInit = false;
-    protected static final Object isInitLock = new Object();
-    protected Activity context;
+    protected MainActivity context;
     protected String superName;
     protected String uuid;
     private String matchName;
@@ -30,7 +28,7 @@ public class ConnectThread extends Thread {
 
 
 
-    public ConnectThread(Activity context, String superName, String uuid, String matchName, String data) {
+    public ConnectThread(MainActivity context, String superName, String uuid, String matchName, String data) {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
@@ -73,7 +71,7 @@ public class ConnectThread extends Thread {
                 return true;
             }
         }
-        Log.e("Bluetooth Error", "No Paired Device With Name: \"red super\"");
+        Log.e("Bluetooth Error", "No Paired Device With Name: \"" + superName + "\"");
         toastText("No Paired Device With Name: \"" + superName + "\"", Toast.LENGTH_LONG, context);
         return false;
     }
@@ -118,15 +116,8 @@ public class ConnectThread extends Thread {
 
 
 
-        //if bluetooth has not been initialized, initialize it
-        synchronized (isInitLock) {
-            if (!isInit) {
-                if(!initBluetooth(context, superName)) {
-                    return;
-                } else {
-                    isInit = true;
-                }
-            }
+        if(!initBluetooth(context, superName)) {
+            return;
         }
 
 

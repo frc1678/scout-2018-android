@@ -103,6 +103,7 @@ public class AutoActivity extends AppCompatActivity {
         //if the user pressed 'back' from the teleop activity we have to reset the data to as it was
         String autoJSON = getIntent().getStringExtra("autoJSON");
         if (autoJSON != null) {
+            Log.i("JSON at auto activity", autoJSON);
             try {
                 //parse the JSONObject
                 data = new JSONObject(autoJSON);
@@ -179,6 +180,107 @@ public class AutoActivity extends AppCompatActivity {
 
 
 
+    private void updateData() {
+        //json object to store auto data
+        if (data == null) {
+            data = new JSONObject();
+        }
+
+        //add reach toggle
+        ToggleButton hasReachedToggle = (ToggleButton) findViewById(R.id.autoReachedDefenseToggle);
+        try {
+            data.put("didReachAuto", hasReachedToggle.isChecked());
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add reached button state to Json");
+            Toast.makeText(this, "Invalid data in reach toggle", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //add ball intake toggles
+        List<View> intakeButtonList = toggleCreator.getComponentViews();
+        JSONArray ballsIntakedAuto = new JSONArray();
+        int counter = 0;
+        for (int i = 0; i < intakeButtonList.size(); i++) {
+            try {
+                if (((ToggleButton) intakeButtonList.get(i)).isChecked()) {
+                    ballsIntakedAuto.put(counter, i);
+                    counter++;
+                }
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add intake button state to JSON");
+                Toast.makeText(this, "Invalid data in intake toggle", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+
+        try {
+            data.put("ballsIntakedAuto", ballsIntakedAuto);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add balls intaked toggles to JSON");
+            Toast.makeText(this, "Error in intake toggles", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        //add successful defense cross times to JSON
+        JSONArray successDefenseTimes = new JSONArray();
+        for (int i = 0; i < successCrossTimes.size(); i++) {
+            JSONArray tmp = new JSONArray();
+            for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
+                tmp.put(successCrossTimes.get(i).get(j));
+            }
+            successDefenseTimes.put(tmp);
+        }
+
+
+        try {
+            data.put("successfulDefenseCrossTimesAuto", successDefenseTimes);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add successful defense times to JSON");
+            Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        //add successful defense fail times to JSON
+        JSONArray failDefenseTimes = new JSONArray();
+        for (int i = 0; i < failCrossTimes.size(); i++) {
+            JSONArray tmp = new JSONArray();
+            for (int j = 0; j < failCrossTimes.get(i).size(); j++) {
+                tmp.put(failCrossTimes.get(i).get(j));
+            }
+            failDefenseTimes.put(tmp);
+        }
+
+
+        try {
+            data.put("failedDefenseCrossTimesAuto", failDefenseTimes);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add failed defense times to JSON");
+            Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+
+        //add all the data in other counters
+        List<View> currentTextViews = counterCreator.getComponentViews();
+        List<String> JsonCounterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
+                "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
+        for (int i = 0; i < currentTextViews.size(); i++) {
+            try {
+                data.put(JsonCounterNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
+                Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+    }
+
+
+
     //add button to action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -192,103 +294,8 @@ public class AutoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.buttonNext) {
+            updateData();
 
-            //json object to store auto data
-            if (data == null) {
-                data = new JSONObject();
-            }
-
-            //add reach toggle
-            ToggleButton hasReachedToggle = (ToggleButton) findViewById(R.id.autoReachedDefenseToggle);
-            try {
-                data.put("didReachAuto", hasReachedToggle.isChecked());
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add reached button state to Json");
-                Toast.makeText(this, "Invalid data in reach toggle", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-            //add ball intake toggles
-            List<View> intakeButtonList = toggleCreator.getComponentViews();
-            JSONArray ballsIntakedAuto = new JSONArray();
-            int counter = 0;
-            for (int i = 0; i < intakeButtonList.size(); i++) {
-                try {
-                    if (((ToggleButton) intakeButtonList.get(i)).isChecked()) {
-                        ballsIntakedAuto.put(counter, i);
-                        counter++;
-                    }
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Failed to add intake button state to JSON");
-                    Toast.makeText(this, "Invalid data in intake toggle", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-
-
-            try {
-                data.put("ballsIntakedAuto", ballsIntakedAuto);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add balls intaked toggles to JSON");
-                Toast.makeText(this, "Error in intake toggles", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-            //add successful defense cross times to JSON
-            JSONArray successDefenseTimes = new JSONArray();
-            for (int i = 0; i < successCrossTimes.size(); i++) {
-                JSONArray tmp = new JSONArray();
-                for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
-                    tmp.put(successCrossTimes.get(i).get(j));
-                }
-                successDefenseTimes.put(tmp);
-            }
-
-
-            try {
-                data.put("successfulDefenseCrossTimesAuto", successDefenseTimes);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add successful defense times to JSON");
-                Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-            //add successful defense fail times to JSON
-            JSONArray failDefenseTimes = new JSONArray();
-            for (int i = 0; i < failCrossTimes.size(); i++) {
-                JSONArray tmp = new JSONArray();
-                for (int j = 0; j < failCrossTimes.get(i).size(); j++) {
-                    tmp.put(failCrossTimes.get(i).get(j));
-                }
-                failDefenseTimes.put(tmp);
-            }
-
-
-            try {
-                data.put("failedDefenseCrossTimesAuto", failDefenseTimes);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add failed defense times to JSON");
-                Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-
-            //add all the data in other counters
-            List<View> currentTextViews = counterCreator.getComponentViews();
-            List<String> JsonCounterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
-                    "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
-            for (int i = 0; i < currentTextViews.size(); i++) {
-                try {
-                    data.put(JsonCounterNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
-                    Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
 
             //send it all to teleop activity
             startActivity(new Intent(this, TeleopActivity.class).putExtra("autoJSON", data.toString())

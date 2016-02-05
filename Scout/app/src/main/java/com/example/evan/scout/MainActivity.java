@@ -1,6 +1,5 @@
 package com.example.evan.scout;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,8 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
-import android.os.FileObserver;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,8 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -32,17 +27,8 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +36,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-//TODO include correct match and team numbers when clicking 'edit' on file
 
 public class MainActivity extends AppCompatActivity {
     //uuid for bluetooth connection
@@ -63,11 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String redSuperName = "Long Family Fire";
     private static final String blueSuperName = "G Pad 7.0 LTE";
 
-    //used to update list of sent files when they are modified
-    private FileObserver fileObserver;
-
     //current list of sent files
-    private ArrayAdapter<String> fileListAdapter;
+    private FileListAdapter fileListAdapter;
 
     //current match the scout is on
     private int matchNumber;
@@ -76,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean overridden = false;
 
     //schedule of matches
-    private JSONObject schedule = null;
+    private ScheduleHandler schedule;
 
     //shared preferences to receive previous matchNumber, scoutNumber
     private SharedPreferences preferences;
@@ -93,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private String scoutName;
 
     //save a reference to this activity for subclasses
-    private final Activity context = this;
+    private final MainActivity context = this;
 
     //lock for continueResend
     private static final Object continueResendLock = new Object();
@@ -135,6 +117,20 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("matchNumber", matchNumber);
             editor.commit();
         }
+        //scout initials
+        scoutName = getIntent().getStringExtra("scoutName");
+
+        schedule = new ScheduleHandler(this);
+        schedule.getScheduleFromDisk();
+        //if we don't have the schedule, they must enter the team numbers and it must be overridden.  If not, give them the choice
+        if (schedule.getSchedule() == null) {
+            override();
+        } else if (overridden) {
+            override();
+        } else {
+            automate();
+        }
+
         scoutNumber = preferences.getInt("scoutNumber", -1);
         //if we don't have scout id, get it
         if (scoutNumber == -1) {
@@ -143,27 +139,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             highlightTeamNumberTexts();
         }
-        //scout initials
-        scoutName = getIntent().getStringExtra("scoutName");
 
 
 
-        getScheduleFromDisk();
-        //if we don't have the schedule, they must enter the team numbers and it must be overridden.  If not, give them the choice
-        if (schedule == null) {
-            override();
-        } else if (overridden) {
-            override();
-        } else {
-            automate();
-        }
 
-
-
-        initFileList();
-
-
-
+        //implement ui stuff
         //set the match number edittext's onclick to open a dialog.  We do this so the screen does not shrink and the user can see what he/she types
         final EditText matchNumberTextView = (EditText) findViewById(R.id.matchNumberText);
         matchNumberTextView.setText("Q" + Integer.toString(matchNumber));
@@ -199,30 +179,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        updateTeamNumbers();
 
         //text watcher for listview search bar
         final EditText searchBar = (EditText) findViewById(R.id.searchBar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
                 String text = searchBar.getText().toString();
-                updateListView();
+                fileListAdapter.updateListView();
                 if (!text.equals("")) {
                     //get list of files starting with text
                     //pass them off to filter fileListAdapter
-                    filterListView(text);
+                    fileListAdapter.filterListView(text);
                 }
             }
         });
 
-
+        ListView fileList = (ListView) findViewById(R.id.infoList);
+        fileListAdapter = new FileListAdapter(this, fileList, uuid, superName);
 
         //initialize 'resend all unsent' button
         final Button resendAllUnsentButton = (Button) findViewById(R.id.resendAllUnsent);
@@ -261,7 +243,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         resendAllUnsentButton.setOnClickListener(originalResendAllUnsentOnClick);
-
 
         //intialize 'resend all' button
         final Button resendAllButton = (Button) findViewById(R.id.resendAll);
@@ -311,241 +292,11 @@ public class MainActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
+            Log.i("JSON before send", matchData);
             new ConnectThread(this, superName, uuid,
                     getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt",
                     matchData + "\n").start();
         }
-    }
-
-
-
-    private void getScheduleFromDisk() {
-        //all of the following is just getting the schedule from the hard drive:
-        //first open up file
-        boolean scheduleAvailable = true;
-        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
-        if (!dir.mkdir()) {
-            Log.i("File Info", "Failed to make Directory. Unimportant");
-        }
-        File scheduleFile = new File(dir, "Schedule.txt");
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new InputStreamReader(new FileInputStream(scheduleFile)));
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed to open schedule file");
-            Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
-            scheduleAvailable = false;
-        }
-
-        //next read from it
-        String scheduleString = "";
-        if (scheduleAvailable) {
-            try {
-                String tmp;
-                while ((tmp = in.readLine()) != null) {
-                    scheduleString = scheduleString.concat(tmp);
-                }
-            } catch (IOException ioe) {
-                Log.e("File Error", "Failed to read from schedule file");
-                Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
-                scheduleAvailable = false;
-            }
-        }
-
-        //finally parse it to json format
-        if (scheduleAvailable) {
-            try {
-                schedule = new JSONObject(scheduleString);
-            } catch (JSONException jsone) {
-                Log.e("File Error", "Failed to parse JSON from schedule file");
-                Toast.makeText(this, "Schedule not avaialble", Toast.LENGTH_LONG).show();
-                schedule = null;
-            }
-        }
-    }
-
-
-
-    private void initFileList() {
-        //set up list of sent files
-        fileListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        ListView fileList = (ListView) findViewById(R.id.infoList);
-        fileList.setAdapter(fileListAdapter);
-        updateListView();
-        //when you click on a file, it sends it
-        fileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("test", "at 1");
-                final String name = parent.getItemAtPosition(position).toString();
-                //read data from file
-                String text = readFile(name);
-                if (text != null) {
-                    new ConnectThread(context, superName, uuid, name, text).start();
-                }
-            }
-        });
-        //if you click and hold on a file, give some options
-        fileList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(final AdapterView<?> parent, View view, final int position, long id) {
-                Log.i("test", "at 2");
-                new AlertDialog.Builder(context)
-                        //you can resend
-                        .setTitle("File Options")
-                        .setPositiveButton("Resend", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final String name = parent.getItemAtPosition(position).toString();
-                                //read data from file
-                                String text = readFile(name);
-                                if (text != null) {
-                                    new ConnectThread(context, superName, uuid, name, text).start();
-                                }
-                            }
-                        })
-                        //you can cancel
-                        .setNeutralButton("Cancel", null)
-                        //or you can edit
-                        .setNegativeButton("Edit", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final String name = parent.getItemAtPosition(position).toString();
-                                //first read from file
-                                String text = readFile(name);
-                                if (text != null) {
-                                    //next get team and matchnumber from filename
-                                    int tmpTeam;
-                                    int tmpMatch;
-                                    try {
-                                        tmpMatch = Integer.parseInt(name.split("_")[0].replaceAll("Q", ""));
-                                        tmpTeam = Integer.parseInt(name.split("_")[1]);
-                                    } catch (NumberFormatException nfe) {
-                                        Log.e("File Error", "failed to parse data from file name");
-                                        Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-                                    String editJSON;
-                                    try {
-                                        //finally parse text to JSON and remove wrapper
-                                        JSONObject data = new JSONObject(text);
-                                        editJSON = data.getJSONObject(Integer.toString(tmpTeam) + "Q" + Integer.toString(tmpMatch)).toString();
-                                    } catch (JSONException jsone) {
-                                        Log.e("JSON Error", "failed to read JSON to be edited");
-                                        Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-                                    //call the onclick for the 'scout' button to move on to next activity, only when it changes it will keep data
-                                    //(see startScout method)
-                                    startScout(editJSON, tmpMatch, tmpTeam);
-                                }
-                            }
-                        })
-                        .show();
-                return true;
-            }
-        });
-
-
-
-        //update list view when something is renamed or created
-        fileObserver = new FileObserver(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData") {
-            @Override
-            public void onEvent(int event, String path) {
-                if ((event == FileObserver.MOVED_TO) || (event == FileObserver.CREATE)) {
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateListView();
-                        }
-                    });
-                }
-            }
-        };
-        fileObserver.startWatching();
-    }
-
-
-
-    //update the list of sent files
-    private void updateListView() {
-        File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/");
-        if (!dir.mkdir()) {
-            Log.i("File Info", "Failed to make Directory. Unimportant");
-        }
-        File[] files = dir.listFiles();
-        if (files == null) {
-            return;
-        }
-        fileListAdapter.clear();
-        for (File tmpFile : files) {
-            fileListAdapter.add(tmpFile.getName());
-        }
-
-        //sort so unsent files are at the top, and then the rest come by match number
-        fileListAdapter.sort(new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                if (lhs.startsWith("UNSENT_")) {
-                    if (rhs.startsWith("UNSENT_")) {
-                        //both unsent, continue
-                        rhs = rhs.replaceFirst("UNSENT_", "");
-                        lhs = lhs.replaceFirst("UNSENT_", "");
-                    } else {
-                        //lhs greater, return
-                        return -1;
-                    }
-                } else if (rhs.startsWith("UNSENT_")) {
-                    //rhs greater, return
-                    return 1;
-                }
-                int lhsNum;
-                int rhsNum;
-                try {
-                    lhsNum = Integer.parseInt((lhs.split("_"))[0].replaceAll("Q", ""));
-                    rhsNum = Integer.parseInt((rhs.split("_"))[0].replaceAll("Q", ""));
-                } catch (NumberFormatException nfe) {
-                    return 0;
-                }
-                if (lhsNum < rhsNum) {
-                    //lhs greater, return
-                    return -1;
-                } else if (lhsNum == rhsNum) {
-                    //equal, return
-                    return 0;
-                } else {
-                    //rhs greater, return
-                    return 1;
-                }
-            }
-        });
-
-
-        fileListAdapter.notifyDataSetChanged();
-    }
-
-
-    //filter out entries in fileListAdapter by the key
-    private void filterListView(String key) {
-        for (int i = 0; i < fileListAdapter.getCount();) {
-            int tmpTeam;
-            int tmpMatch;
-            try {
-                tmpTeam = Integer.parseInt((fileListAdapter.getItem(i).split("_"))[0].replaceAll("Q", ""));
-                tmpMatch = Integer.parseInt((fileListAdapter.getItem(i).split("_"))[1]);
-            } catch (NumberFormatException nfe) {
-                tmpTeam = -1;
-                tmpMatch = -1;
-            }
-            //we only want to keep the entry if it starts with the key, the key is the teamnumber in the entry, or the key is matchnumber in the entry
-            if ((fileListAdapter.getItem(i).startsWith(key)) || (key.equals(Integer.toString(tmpMatch)))
-                    || (key.equals(Integer.toString(tmpTeam)))) {
-                i++;
-            } else {
-                fileListAdapter.remove(fileListAdapter.getItem(i));
-            }
-        }
-        fileListAdapter.notifyDataSetChanged();
     }
 
 
@@ -600,19 +351,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     //fill in the edittexts with the team numbers found in the schedule
-    private void updateTeamNumbers() {
-        if (schedule != null) {
+    public void updateTeamNumbers() {
+        if (schedule.getSchedule() != null) {
             EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
             EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
             EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
+            Log.i("Schedule before display", schedule.getSchedule().toString());
             try {
                 if (scoutNumber < 4) {
-                    JSONArray red = schedule.getJSONObject("redTeamNumbers").getJSONArray(Integer.toString(matchNumber));
+                    JSONArray red = schedule.getSchedule().getJSONObject("redTeamNumbers").getJSONArray(Integer.toString(matchNumber));
                     teamNumber1Edit.setText(red.getString(0));
                     teamNumber2Edit.setText(red.getString(1));
                     teamNumber3Edit.setText(red.getString(2));
                 } else {
-                    JSONArray blue = schedule.getJSONObject("blueTeamNumbers").getJSONArray(Integer.toString(matchNumber));
+                    JSONArray blue = schedule.getSchedule().getJSONObject("blueTeamNumbers").getJSONArray(Integer.toString(matchNumber));
                     teamNumber1Edit.setText(blue.getString(0));
                     teamNumber2Edit.setText(blue.getString(1));
                     teamNumber3Edit.setText(blue.getString(2));
@@ -648,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             //send it to super
-            String text = readFile(name);
+            String text = fileListAdapter.readFile(name);
             if (text != null) {
                 new ConnectThread(context, superName, uuid, name, text).start();
             }
@@ -699,34 +451,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //read file from hard disk
-    private String readFile (String name) {
-        BufferedReader file;
-        try {
-            file = new BufferedReader(new InputStreamReader(new FileInputStream(
-                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name))));
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed To Open File");
-            Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        String text = "";
-        String buf;
-        try {
-            while ((buf = file.readLine()) != null) {
-                text = text.concat(buf + "\n");
-            }
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed To Read From File");
-            Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        Log.i("text", text);
-        return text;
-    }
-
-
-
     //update actionbar at top of screen, either giving them the option to override or automate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -768,61 +492,7 @@ public class MainActivity extends AppCompatActivity {
 
             //get schedule button
         } else if (item.getItemId() == R.id.scheduleButton) {
-            //start new thread to receive schedule
-            new ScheduleReceiver(this, superName, uuid) {
-                @Override
-                public void onReceive(JSONObject receivedSchedule) {
-                    //handle the JSONObject received from super:
-                    Log.i("Schedule", receivedSchedule.toString());
-                    //open file
-                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
-                    if (!dir.mkdir()) {
-                        Log.i("File Info", "Failed to make Directory. Unimportant");
-                    }
-                    File scheduleFile = new File(dir, "Schedule.txt");
-                    PrintWriter out;
-                    try {
-                         out = new PrintWriter(scheduleFile);
-                    } catch (IOException ioe) {
-                        Log.e("File Error", "Failed to save schedule data to file");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        return;
-                    }
-
-                    //write to file
-                    try {
-                        out.println(receivedSchedule.toString());
-                        if (out.checkError()) {
-                            throw new IOException();
-                        }
-                    } catch (IOException ioe) {
-                        Log.e("File Error", "Failed to save schedule data to file");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Failed to save schedule to file", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        return;
-                    }
-
-                    //save reference to schedule
-                    schedule = receivedSchedule;
-
-                    //update ui with schedule
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateTeamNumbers();
-                        }
-                    });
-                }
-            }.start();
+            schedule.getScheduleFromSuper(superName, uuid);
         }
         return true;
     }
@@ -839,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
 
     //automate the schedule
     private void automate() {
-        if (schedule != null) {
+        if (schedule.getSchedule() != null) {
             overridden = false;
             invalidateOptionsMenu();
         } else {
@@ -921,7 +591,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void startScout(String editJSON, int matchNumber, int teamNumber) {
+    public void startScout(String editJSON, int matchNumber, int teamNumber) {
         //collect the team number
         if (teamNumber == -1) {
             try {
@@ -942,7 +612,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
-        fileObserver.stopWatching();
+        fileListAdapter.stopFileObserver();
         final Intent nextActivity = new Intent(context, AutoActivity.class)
                 .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                 .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber).putExtra("autoJSON", editJSON);
@@ -974,9 +644,10 @@ public class MainActivity extends AppCompatActivity {
                         scoutName = editText.getText().toString();
                         if (scoutName.equals("")) {
                             setScoutName(onFinish);
-                        }
-                        if (onFinish != null) {
-                            onFinish.run();
+                        } else {
+                            if (onFinish != null) {
+                                onFinish.run();
+                            }
                         }
                     }
                 })

@@ -104,6 +104,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
         String autoJSON = getIntent().getStringExtra("autoJSON");
+        Log.i("JSON at teleop activity", autoJSON);
         try {
             data = new JSONObject(autoJSON);
             List<String> toggleNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
@@ -177,6 +178,115 @@ public class TeleopActivity extends AppCompatActivity {
     }
 
 
+
+    public void updateData() {
+        //json object to store everything
+        if (data == null) {
+            data = new JSONObject();
+        }
+
+
+
+        try {
+            data.put("scoutName", scoutName);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add scout name to JSON");
+            Toast.makeText(this, "Invalid data in scout name", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        //add data in toggles
+        List<String> toggleVariableNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
+                "didGetDisabled", "didGetIncapacitated"));
+        List<View> toggleList = toggleCreator.getComponentViews();
+        for (int i = 0; i < toggleList.size(); i++) {
+            ToggleButton toggleButton = (ToggleButton) toggleList.get(i);
+            try {
+                data.put(toggleVariableNames.get(i), toggleButton.isChecked());
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add toggle " + Integer.toString(i) + " to JSON");
+                Toast.makeText(this, "Invalid data in counter" + Integer.toString(i), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+
+
+        //add defenses crossed counters
+        JSONArray successDefenseTimes = new JSONArray();
+        for (int i = 0; i < successCrossTimes.size(); i++) {
+            JSONArray tmp = new JSONArray();
+            for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
+                tmp.put(successCrossTimes.get(i).get(j));
+            }
+            successDefenseTimes.put(tmp);
+        }
+
+
+
+        //add successful defense cross times to JSON
+        try {
+            data.put("successfulDefenseCrossTimesTele", successDefenseTimes);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add successful defense times to JSON");
+            Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        JSONArray failDefenseTimes = new JSONArray();
+        for (int i = 0; i < failCrossTimes.size(); i++) {
+            JSONArray tmp = new JSONArray();
+            for (int j = 0; j < failCrossTimes.get(i).size(); j++) {
+                tmp.put(failCrossTimes.get(i).get(j));
+            }
+            failDefenseTimes.put(tmp);
+        }
+
+
+
+        //add failed defense cross times to JSON
+        try {
+            data.put("failedDefenseCrossTimesTele", failDefenseTimes);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add failed defense times to JSON");
+            Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        //add data in other counters
+        List<View> currentTextViews = counterCreator.getComponentViews();
+        List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
+                "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
+                "numShotsBlockedTele"));
+        for (int i = 0; i < currentTextViews.size(); i++) {
+            try {
+                data.put(counterVarNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
+                Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+
+
+
+        try {
+            if (scoutNumber < 4) {
+                data.put("alliance", "red");
+            } else {
+                data.put("alliance", "blue");
+            }
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Error in scoutNumber");
+            Toast.makeText(this, "Failure in Scout Number", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
     //add action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -189,111 +299,7 @@ public class TeleopActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.teleopSendButton) {
-            //json object to store everything
-            if (data == null) {
-                data = new JSONObject();
-            }
-
-
-
-            try {
-                data.put("scoutName", scoutName);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add scout name to JSON");
-                Toast.makeText(this, "Invalid data in scout name", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-            //add data in toggles
-            List<String> toggleVariableNames = new ArrayList<>(Arrays.asList("didChallengeTele", "didScaleTele",
-                    "didGetDisabled", "didGetIncapacitated"));
-            List<View> toggleList = toggleCreator.getComponentViews();
-            for (int i = 0; i < toggleList.size(); i++) {
-                ToggleButton toggleButton = (ToggleButton) toggleList.get(i);
-                try {
-                    data.put(toggleVariableNames.get(i), toggleButton.isChecked());
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Failed to add toggle " + Integer.toString(i) + " to JSON");
-                    Toast.makeText(this, "Invalid data in counter" + Integer.toString(i), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-
-
-
-            //add defenses crossed counters
-            JSONArray successDefenseTimes = new JSONArray();
-            for (int i = 0; i < successCrossTimes.size(); i++) {
-                JSONArray tmp = new JSONArray();
-                for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
-                    tmp.put(successCrossTimes.get(i).get(j));
-                }
-                successDefenseTimes.put(tmp);
-            }
-
-
-
-            //add successful defense cross times to JSON
-            try {
-                data.put("successfulDefenseCrossTimesTele", successDefenseTimes);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add successful defense times to JSON");
-                Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-            JSONArray failDefenseTimes = new JSONArray();
-            for (int i = 0; i < failCrossTimes.size(); i++) {
-                JSONArray tmp = new JSONArray();
-                for (int j = 0; j < failCrossTimes.get(i).size(); j++) {
-                    tmp.put(failCrossTimes.get(i).get(j));
-                }
-                failDefenseTimes.put(tmp);
-            }
-
-
-
-            //add failed defense cross times to JSON
-            try {
-                data.put("failedDefenseCrossTimesTele", failDefenseTimes);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Failed to add failed defense times to JSON");
-                Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
-                return false;
-            }
-
-
-            //add data in other counters
-            List<View> currentTextViews = counterCreator.getComponentViews();
-            List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
-                    "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
-                    "numShotsBlockedTele"));
-            for (int i = 0; i < currentTextViews.size(); i++) {
-                try {
-                    data.put(counterVarNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
-                    Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-
-
-
-
-            try {
-                if (scoutNumber < 4) {
-                    data.put("alliance", "red");
-                } else {
-                    data.put("alliance", "blue");
-                }
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Error in scoutNumber");
-                Toast.makeText(this, "Failure in Scout Number", Toast.LENGTH_LONG).show();
-                return false;
-            }
+            updateData();
 
 
 
@@ -309,7 +315,6 @@ public class TeleopActivity extends AppCompatActivity {
 
 
 
-            Log.i("JSON data", finalData.toString());
             //move on to next match and restart main activity
             matchNumber++;
             startActivity(new Intent(this, MainActivity.class).putExtra("matchNumber", matchNumber)
@@ -330,6 +335,7 @@ public class TeleopActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        updateData();
                         startActivity(new Intent(context, AutoActivity.class).putExtra("matchNumber", matchNumber).putExtra("overridden", overridden).putExtra("scoutName", scoutName)
                         .putExtra("autoJSON", data.toString()).putExtra("teamNumber", teamNumber).putExtra("scoutNumber", scoutNumber));
                     }
