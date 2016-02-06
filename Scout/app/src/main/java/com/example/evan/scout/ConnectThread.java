@@ -14,6 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,8 +27,7 @@ public class ConnectThread extends Thread {
     protected MainActivity context;
     protected String superName;
     protected String uuid;
-    private String matchName;
-    private String data;
+    private Map<String, String> dataPoints;
 
 
 
@@ -32,13 +35,18 @@ public class ConnectThread extends Thread {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
-        if (matchName != null) {
-            if (matchName.contains("UNSENT_")) {
-                matchName = matchName.replaceFirst("UNSENT_", "");
-            }
+        dataPoints = new HashMap<>();
+        dataPoints.put(matchName.replaceAll("UNSENT_", ""), data);
+    }
+
+    public ConnectThread(MainActivity context, String superName, String uuid, Map<String, String> dataPoints) {
+        this.context = context;
+        this.superName = superName;
+        this.uuid = uuid;
+        this.dataPoints = new HashMap<>();
+        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+            this.dataPoints.put(entry.getKey().replaceFirst("UNSENT_", ""), entry.getValue());
         }
-        this.matchName = matchName;
-        this.data = data;
     }
 
 
@@ -87,31 +95,37 @@ public class ConnectThread extends Thread {
             toastText("External Storage Not Mounted", Toast.LENGTH_LONG, context);
             return;
         }
-        File dir;
-        File file;
-        PrintWriter fileWriter;
-        try {
-            dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
-            if (!dir.mkdir()) {
-                Log.i("File Info", "Failed to make Directory.  Unimportant");
+
+        List<File> files = new ArrayList<>();
+        List<File> dirs = new ArrayList<>();
+        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+            File dir;
+            File file;
+            PrintWriter fileWriter;
+            try {
+                dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
+                if (!dir.mkdir()) {
+                    Log.i("File Info", "Failed to make Directory.  Unimportant");
+                }
+                //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
+                file = new File(dir, "UNSENT_" + entry.getKey());
+                fileWriter = new PrintWriter(file);
+            } catch (IOException ioe) {
+                Log.e("File Error", "Failed to open file");
+                toastText("Failed To Open File", Toast.LENGTH_LONG, context);
+                return;
             }
-            //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
-            file = new File(dir, "UNSENT_" + matchName);
-            fileWriter = new PrintWriter(file);
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed to open file");
-            toastText("Failed To Open File", Toast.LENGTH_LONG, context);
-            return;
-        }
 
 
-
-        fileWriter.print(data);
-        fileWriter.close();
-        if (fileWriter.checkError()) {
-            Log.e("File Error", "Failed to Write to File");
-            toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
-            return;
+            fileWriter.print(entry.getValue());
+            fileWriter.close();
+            if (fileWriter.checkError()) {
+                Log.e("File Error", "Failed to Write to File");
+                toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
+                return;
+            }
+            dirs.add(dir);
+            files.add(file);
         }
 
 
@@ -162,11 +176,16 @@ public class ConnectThread extends Thread {
 
 
 
+        String data = "";
+        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+            data = data.concat(entry.getValue() + "\n");
+        }
         Log.i("Communications Info", "Starting To Communicate");
         counter = 0;
         //we loop until the data is sent without io error or error code from super
         while (true) {
             try {
+                Log.i("JSON during send", data);
                 //we print the length of the data before we print the data so the super can identify corrupted data
                 out.println(data.length());
                 out.print(data);
@@ -180,6 +199,11 @@ public class ConnectThread extends Thread {
                 //super will send 0 if the data sizes match up, 1 if they don't
                 if (ackCode == 1) {
                     throw new IOException();
+                } else if (ackCode == 2) {
+                    //data is invalid JSON, notify user and return
+                    Log.e("Communications Error", "Data not in valid format");
+                    Toast.makeText(context, "Data not in valid format", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 break;
             } catch (IOException ioe) {
@@ -210,8 +234,12 @@ public class ConnectThread extends Thread {
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", Toast.LENGTH_LONG, context);
         try {
-            if (!file.renameTo(new File(dir, matchName))) {
-                Log.e("File Error", "Failed to Rename File");
+            int i = 0;
+            for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+                if (!files.get(i).renameTo(new File(dirs.get(i), entry.getKey()))) {
+                    Log.e("File Error", "Failed to Rename File");
+                }
+                i++;
             }
             in.close();
             out.close();

@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,14 +26,13 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     //paired device to connect to as super:
     private String superName;
-    //private static final String redSuperName = "red super";
-    //private static final String blueSuperName = "blue super";
-    private static final String redSuperName = "Long Family Fire";
-    private static final String blueSuperName = "G Pad 7.0 LTE";
+    private static final String redSuperName = "red super";
+    private static final String blueSuperName = "blue super";
+    //private static final String redSuperName = "Long Family Fire";
+    //private static final String blueSuperName = "G Pad 7.0 LTE";
 
     //current list of sent files
     private FileListAdapter fileListAdapter;
@@ -76,18 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     //save a reference to this activity for subclasses
     private final MainActivity context = this;
-
-    //lock for continueResend
-    private static final Object continueResendLock = new Object();
-
-    //when resending files, indicates whether the user pressed the 'cancel resend' button or not
-    private boolean continueResend = true;
-
-    //an onclicklistener for the 'resend all unsent' button, declared globally to be reused
-    private View.OnClickListener originalResendAllUnsentOnClick;
-
-    //onclick for 'resend all' button
-    private View.OnClickListener originalResendAllOnClick;
 
 
 
@@ -120,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         //scout initials
         scoutName = getIntent().getStringExtra("scoutName");
 
+        //set up schedule
         schedule = new ScheduleHandler(this);
         schedule.getScheduleFromDisk();
         //if we don't have the schedule, they must enter the team numbers and it must be overridden.  If not, give them the choice
@@ -203,82 +190,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //set up list of files
         ListView fileList = (ListView) findViewById(R.id.infoList);
         fileListAdapter = new FileListAdapter(this, fileList, uuid, superName);
-
-        //initialize 'resend all unsent' button
-        final Button resendAllUnsentButton = (Button) findViewById(R.id.resendAllUnsent);
-        originalResendAllUnsentOnClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //first disable the resend all button (the other one)
-                Button resendAll = (Button) findViewById(R.id.resendAll);
-                resendAll.setClickable(false);
-                //then add all the unsent file names to a list
-                List<String> unsentFileNames = new ArrayList<>();
-                for (int i = 0; i < fileListAdapter.getCount(); i++) {
-                    String name = fileListAdapter.getItem(i);
-                    if (name.contains("UNSENT_")) {
-                        unsentFileNames.add(name);
-                    }
-                }
-                //set the button to cancel the resend process
-                resendAllUnsentButton.setText("cancel resend");
-                resendAllUnsentButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        synchronized (continueResendLock) {
-                            continueResend = false;
-                        }
-                        cancelUnsentResend();
-                    }
-                });
-                //and then resend all the files
-                resendAllFiles(new Runnable() {
-                    @Override
-                    public void run() {
-                        cancelUnsentResend();
-                    }
-                }, unsentFileNames);
-            }
-        };
-        resendAllUnsentButton.setOnClickListener(originalResendAllUnsentOnClick);
-
-        //intialize 'resend all' button
-        final Button resendAllButton = (Button) findViewById(R.id.resendAll);
-        originalResendAllOnClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //first disable other button
-                Button resendAllUnsent = (Button) findViewById(R.id.resendAllUnsent);
-                resendAllUnsent.setClickable(false);
-                //when clicked, make a list of files
-                List<String> tmpFileNames = new ArrayList<>();
-                for (int i = 0; i < fileListAdapter.getCount(); i++) {
-                    String name = fileListAdapter.getItem(i);
-                    tmpFileNames.add(i, name);
-                }
-                //set the button to cancel the resend process
-                resendAllButton.setText("cancel resend");
-                resendAllButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        synchronized (continueResendLock) {
-                            continueResend = false;
-                        }
-                        cancelResend();
-                    }
-                });
-                //and then resend all the files
-                resendAllFiles(new Runnable() {
-                    @Override
-                    public void run() {
-                        cancelResend();
-                    }
-                }, tmpFileNames);
-            }
-        };
-        resendAllButton.setOnClickListener(originalResendAllOnClick);
 
 
 
@@ -295,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("JSON before send", matchData);
             new ConnectThread(this, superName, uuid,
                     getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt",
-                    matchData + "\n").start();
+                    matchData).start();
         }
     }
 
@@ -376,77 +290,6 @@ public class MainActivity extends AppCompatActivity {
                 teamNumber3Edit.setText("");
             }
         }
-    }
-
-
-
-    //recursive function to resend all the files in the list names, at a 5 second interval, while there are still files left and the user has not canceled the process
-    //names is a list of filenames in the directory /sdcard/Android/ that need to be resent
-    //cancel is a runnable that will be called to cancel the resend process
-    private void resendAllFiles(final Runnable cancel, List<String> names) {
-        boolean continueResend;
-        synchronized (continueResendLock) {
-            continueResend = this.continueResend;
-        }
-        //if the cancel button has not been clicked
-        if (continueResend) {
-            ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-            String name;
-            //get the first unsent file in the list, and remove it
-            try {
-                name = names.remove(0);
-            } catch (IndexOutOfBoundsException ioobe) {
-                cancel.run();
-                return;
-            }
-            //send it to super
-            String text = fileListAdapter.readFile(name);
-            if (text != null) {
-                new ConnectThread(context, superName, uuid, name, text).start();
-            }
-            if (names.size() != 0) {
-                //finally if there is another file in the list, wait 5 seconds before sending it again
-                final List<String> tmp = names;
-                timer.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        resendAllFiles(cancel, tmp);
-                    }
-                }, 5, TimeUnit.SECONDS);
-                return;
-            }
-            //if there is not another file in the list, stop the resend process
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    cancel.run();
-                }
-            });
-        } else {
-            //if the user did click the 'cancel resend' button, reset the flag before quitting
-            synchronized (continueResendLock) {
-                this.continueResend = true;
-            }
-        }
-    }
-
-
-
-    //cancel the 'resend all unsent' button
-    private void cancelUnsentResend() {
-        Button resendAllButton = (Button) findViewById(R.id.resendAllUnsent);
-        resendAllButton.setText("resend all unsent");
-        resendAllButton.setOnClickListener(originalResendAllUnsentOnClick);
-        Button resendAll = (Button) findViewById(R.id.resendAll);
-        resendAll.setClickable(true);
-    }
-    //cancel the 'resend all' button
-    private void cancelResend() {
-        Button resendAllButton = (Button) findViewById(R.id.resendAll);
-        resendAllButton.setText("resend all");
-        resendAllButton.setOnClickListener(originalResendAllOnClick);
-        Button resendAll = (Button) findViewById(R.id.resendAllUnsent);
-        resendAll.setClickable(true);
     }
 
 
@@ -587,6 +430,47 @@ public class MainActivity extends AppCompatActivity {
     //scout button on ui
     public void startScoutButton (View view) {
         startScout(null, matchNumber, -1);
+    }
+
+
+    public void resendAllUnsent(View view) {
+        Map<String, String> dataPoints = new HashMap<>();
+        for (int i = 0; i < fileListAdapter.getCount(); i++) {
+            String name = fileListAdapter.getItem(i);
+            if (name.contains("UNSENT_")) {
+                String content = FileListAdapter.readFile(context, name);
+                if (content != null) {
+                    try {
+                        JSONObject data = new JSONObject(content);
+                        dataPoints.put(name, data.toString());
+                    } catch (JSONException jsone) {
+                        Log.e("File Error", "Not a valid JSON in resend all");
+                        Toast.makeText(context, "Invalid format in file", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        }
+        new ConnectThread(context, superName, uuid, dataPoints).start();
+    }
+
+
+
+    public void resendAll(View view) {
+        Map<String, String> dataPoints = new HashMap<>();
+        for (int i = 0; i < fileListAdapter.getCount(); i++) {
+            String name = fileListAdapter.getItem(i);
+            String content = FileListAdapter.readFile(context, name);
+            if (content != null) {
+                try {
+                    JSONObject data = new JSONObject(content);
+                    dataPoints.put(name, data.toString());
+                } catch (JSONException jsone) {
+                    Log.e("File Error", "Not a valid JSON in resend all");
+                    Toast.makeText(context, "Invalid format in file", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        new ConnectThread(context, superName, uuid, dataPoints).start();
     }
 
 

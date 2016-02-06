@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.UUID;
 
+//class to manage schedule
 public class ScheduleHandler {
     private JSONObject schedule;
     private MainActivity context;
@@ -187,8 +188,8 @@ public class ScheduleHandler {
         this.context = context;
     }
 
+
     public void getScheduleFromDisk() {
-        //all of the following is just getting the schedule from the hard drive:
         //first open up file
         boolean scheduleAvailable = true;
         File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/Schedule");
@@ -287,6 +288,7 @@ public class ScheduleHandler {
             }
         }.start();
     }
+
     public JSONObject getSchedule() {
         return schedule;
     }

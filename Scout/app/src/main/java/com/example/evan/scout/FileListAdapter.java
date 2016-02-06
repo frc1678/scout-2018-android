@@ -1,5 +1,6 @@
 package com.example.evan.scout;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.FileObserver;
@@ -20,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
 
+//class to handle all interactions with the listview of sent files
 public class FileListAdapter extends ArrayAdapter<String> {
-    //private ArrayAdapter<String> fileListAdapter;
     private ListView fileList;
     private final MainActivity context;
     private FileObserver fileObserver;
@@ -31,6 +32,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
         this.fileList = fileList;
         initFileList(uuid, superName);
     }
+    //set up list view
     private void initFileList(final String uuid, final String superName) {
         fileList.setAdapter(this);
         updateListView();
@@ -40,7 +42,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final String name = parent.getItemAtPosition(position).toString();
                 //read data from file
-                String text = readFile(name);
+                String text = readFile(context, name);
                 if (text != null) {
                     new ConnectThread(context, superName, uuid, name, text).start();
                 }
@@ -58,7 +60,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = parent.getItemAtPosition(position).toString();
                                 //read data from file
-                                String text = readFile(name);
+                                String text = readFile(context, name);
                                 if (text != null) {
                                     new ConnectThread(context, superName, uuid, name, text).start();
                                 }
@@ -72,17 +74,17 @@ public class FileListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = parent.getItemAtPosition(position).toString();
                                 //first read from file
-                                String text = readFile(name);
+                                String text = readFile(context, name);
                                 if (text != null) {
                                     //next get team and matchnumber from filename
                                     int tmpTeam;
                                     int tmpMatch;
                                     try {
-                                        tmpMatch = Integer.parseInt(name.split("_")[0].replaceAll("Q", ""));
-                                        tmpTeam = Integer.parseInt(name.split("_")[1]);
+                                        tmpMatch = Integer.parseInt(name.replaceFirst("UNSENT_", "").split("_")[0].replaceAll("Q", ""));
+                                        tmpTeam = Integer.parseInt(name.replaceFirst("UNSENT_", "").split("_")[1]);
                                     } catch (NumberFormatException nfe) {
                                         Log.e("File Error", "failed to parse data from file name");
-                                        Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, "Not a valid File", Toast.LENGTH_LONG).show();
                                         return;
                                     }
                                     String editJSON;
@@ -180,6 +182,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
 
         this.notifyDataSetChanged();
     }
+    //filter list entries by string
     public void filterListView(String key) {
         for (int i = 0; i < this.getCount();) {
             int tmpTeam;
@@ -201,10 +204,13 @@ public class FileListAdapter extends ArrayAdapter<String> {
         }
         this.notifyDataSetChanged();
     }
+
     public void stopFileObserver() {
         fileObserver.stopWatching();
     }
-    public String readFile(String name) {
+
+
+    public static String readFile(Activity context, String name) {
         BufferedReader file;
         try {
             file = new BufferedReader(new InputStreamReader(new FileInputStream(
@@ -214,12 +220,9 @@ public class FileListAdapter extends ArrayAdapter<String> {
             Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
             return null;
         }
-        String text = "";
-        String buf;
+        String text;
         try {
-            while ((buf = file.readLine()) != null) {
-                text = text.concat(buf + "\n");
-            }
+            text = file.readLine();
         } catch (IOException ioe) {
             Log.e("File Error", "Failed To Read From File");
             Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();

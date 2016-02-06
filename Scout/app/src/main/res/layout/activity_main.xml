@@ -101,13 +101,15 @@
             android:text="resend all unsent"
             android:id="@+id/resendAllUnsent"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"
+            android:onClick="resendAllUnsent"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="resend all"
             android:id="@+id/resendAll"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:onClick="resendAll"/>
     </RelativeLayout>
 </LinearLayout>
