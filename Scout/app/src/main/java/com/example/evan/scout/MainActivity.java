@@ -433,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //onclick for 'resend all unsent' button
     public void resendAllUnsent(View view) {
         Map<String, String> dataPoints = new HashMap<>();
         for (int i = 0; i < fileListAdapter.getCount(); i++) {
@@ -455,6 +456,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //onclick for 'resend all' button
     public void resendAll(View view) {
         Map<String, String> dataPoints = new HashMap<>();
         for (int i = 0; i < fileListAdapter.getCount(); i++) {

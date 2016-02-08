@@ -27,17 +27,10 @@ public class ConnectThread extends Thread {
     protected MainActivity context;
     protected String superName;
     protected String uuid;
+    //dataPoints is a map of file names to string values to be sent
     private Map<String, String> dataPoints;
 
 
-
-    public ConnectThread(MainActivity context, String superName, String uuid, String matchName, String data) {
-        this.context = context;
-        this.superName = superName;
-        this.uuid = uuid;
-        dataPoints = new HashMap<>();
-        dataPoints.put(matchName.replaceAll("UNSENT_", ""), data);
-    }
 
     public ConnectThread(MainActivity context, String superName, String uuid, Map<String, String> dataPoints) {
         this.context = context;
@@ -46,6 +39,16 @@ public class ConnectThread extends Thread {
         this.dataPoints = new HashMap<>();
         for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
             this.dataPoints.put(entry.getKey().replaceFirst("UNSENT_", ""), entry.getValue());
+        }
+    }
+    //if you only want to send one value, just include matchName and data
+    public ConnectThread(MainActivity context, String superName, String uuid, String matchName, String data) {
+        this.context = context;
+        this.superName = superName;
+        this.uuid = uuid;
+        dataPoints = new HashMap<>();
+        if (matchName != null) {
+            dataPoints.put(matchName.replaceAll("UNSENT_", ""), data);
         }
     }
 
@@ -95,18 +98,16 @@ public class ConnectThread extends Thread {
             toastText("External Storage Not Mounted", Toast.LENGTH_LONG, context);
             return;
         }
-
+        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
+        if (!dir.mkdir()) {
+            Log.i("File Info", "Failed to make Directory.  Unimportant");
+        }
+        //we loop through all the data points, write them to files, and save their files to be renamed later
         List<File> files = new ArrayList<>();
-        List<File> dirs = new ArrayList<>();
         for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-            File dir;
             File file;
             PrintWriter fileWriter;
             try {
-                dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
-                if (!dir.mkdir()) {
-                    Log.i("File Info", "Failed to make Directory.  Unimportant");
-                }
                 //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
                 file = new File(dir, "UNSENT_" + entry.getKey());
                 fileWriter = new PrintWriter(file);
@@ -124,7 +125,6 @@ public class ConnectThread extends Thread {
                 toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
                 return;
             }
-            dirs.add(dir);
             files.add(file);
         }
 
@@ -135,30 +135,44 @@ public class ConnectThread extends Thread {
         }
 
 
+        //convert data to sendable string
+        String data = "";
+        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+            data = data.concat(entry.getValue() + "\n");
+        }
 
-        PrintWriter out;
-        BufferedReader in;
-        BluetoothSocket socket;
+
+        //we try the entire process of sending three times.  If it repeatedly fails, we exit
         int counter = 0;
-        //we loop until a connection is made
         while (true) {
+            PrintWriter out = null;
+            BufferedReader in;
+            BluetoothSocket socket = null;
             try {
+                //first open connection
                 synchronized (deviceLock) {
-                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid)); // make this a constant somewhere nice
+                    socket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid));
                 }
                 Log.i("Socket Info", "Attempting To Start Connection...");
                 socket.connect();
                 Log.i("Socket info", "Connection Successful!  Getting Ready To Send Data...");
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                break;
             } catch (IOException ioe) {
-                Log.e("Socket Error", "Failed To Open Socket");
-                //toastText("Failed To Connect To Super", Toast.LENGTH_SHORT, context);
-                counter++;
-                //we try three times before giving up
-                if (counter == 3) {
-                    Log.e("Socket Error", "Repeated Socket Open Failure");
+                //if it fails, close stuff and start over
+                try {
+                    if (out != null) {
+                        out.close();
+                    }
+                    if (socket != null) {
+                        socket.close();
+                    }
+                } catch (IOException ioe2) {
+                    Log.e("Socket Error", "Failed To End Socket");
+                    toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                    return;
+                }
+                if (counter == 2) {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -171,20 +185,14 @@ public class ConnectThread extends Thread {
                     });
                     return;
                 }
+                counter++;
+                continue;
             }
-        }
 
+            Log.i("Communications Info", "Starting To Communicate");
 
-
-        String data = "";
-        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-            data = data.concat(entry.getValue() + "\n");
-        }
-        Log.i("Communications Info", "Starting To Communicate");
-        counter = 0;
-        //we loop until the data is sent without io error or error code from super
-        while (true) {
             try {
+                //next send data
                 Log.i("JSON during send", data);
                 //we print the length of the data before we print the data so the super can identify corrupted data
                 out.println(data.length());
@@ -205,13 +213,17 @@ public class ConnectThread extends Thread {
                     Toast.makeText(context, "Data not in valid format", Toast.LENGTH_LONG).show();
                     return;
                 }
-                break;
             } catch (IOException ioe) {
-                Log.e("Communications Error", "Failed To Send Data");
-                //toastText("Failed To Send Match Data To Super", Toast.LENGTH_SHORT, context);
-                counter++;
-                //after the third failure, we terminate thread and notify user
-                if (counter == 3) {
+                try {
+                    out.close();
+                    in.close();
+                    socket.close();
+                } catch (IOException ioe2) {
+                    Log.e("Socket Error", "Failed To End Socket");
+                    toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                    return;
+                }
+                if (counter == 2) {
                     Log.e("Communications Error", "Repeated Data Send Failure");
                     context.runOnUiThread(new Runnable() {
                         @Override
@@ -225,7 +237,20 @@ public class ConnectThread extends Thread {
                     });
                     return;
                 }
+                counter++;
+                continue;
             }
+
+            //we succeeded, close stuff and leave
+            try {
+                in.close();
+                out.close();
+                socket.close();
+            } catch (IOException ioe) {
+                Log.e("Socket Error", "Failed To End Socket");
+                toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+            }
+            break;
         }
 
 
@@ -233,20 +258,13 @@ public class ConnectThread extends Thread {
 
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", Toast.LENGTH_LONG, context);
-        try {
-            int i = 0;
-            for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-                if (!files.get(i).renameTo(new File(dirs.get(i), entry.getKey()))) {
-                    Log.e("File Error", "Failed to Rename File");
-                }
-                i++;
+        int i = 0;
+        //rename files
+        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+            if (!files.get(i).renameTo(new File(dir, entry.getKey()))) {
+                Log.e("File Error", "Failed to Rename File");
             }
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException ioe) {
-            Log.e("Socket Error", "Failed To End Socket");
-            toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+            i++;
         }
     }
 

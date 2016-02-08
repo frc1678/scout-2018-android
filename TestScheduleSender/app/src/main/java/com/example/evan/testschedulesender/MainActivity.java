@@ -90,12 +90,14 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         socket = serverSocket.accept();
                         if (socket != null) {
+                            Log.i("Com info", "Got connection");
                             new Communicator(Context, socket).start();
                         }
                     } catch (IOException ioe) {
                         Log.e("Bluetooth Error", "Failed to Open Socket");
                     }
                 } else {
+                    Log.i("test", "here");
                     break;
                 }
             }
