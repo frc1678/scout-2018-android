@@ -109,13 +109,9 @@ public class MainActivity extends AppCompatActivity {
         //set up schedule
         schedule = new ScheduleHandler(this);
         schedule.getScheduleFromDisk();
-        //if we don't have the schedule, they must enter the team numbers and it must be overridden.  If not, give them the choice
+        //if we don't have the schedule, they must enter the team numbers and it must be overridden
         if (schedule.getSchedule() == null) {
-            override();
-        } else if (overridden) {
-            override();
-        } else {
-            automate();
+            overridden = true;
         }
 
         scoutNumber = preferences.getInt("scoutNumber", -1);
@@ -297,12 +293,10 @@ public class MainActivity extends AppCompatActivity {
     //update actionbar at top of screen, either giving them the option to override or automate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!overridden) {
-            //this is a menu with override as a button
-            getMenuInflater().inflate(R.menu.main_menu, menu);
-        } else {
-            //this is a menu with automate as a button
-            getMenuInflater().inflate(R.menu.main_menu2, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        if (overridden) {
+            MenuItem item = menu.findItem(R.id.mainOverride);
+            item.setTitle("Automate Schedule");
         }
         return true;
     }
@@ -314,14 +308,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //override button
         if (item.getItemId() == R.id.mainOverride) {
-            override();
-
-
-
-            //automate button
-        } else if (item.getItemId() == R.id.mainAutomate) {
-            automate();
-
+            if (overridden && (schedule.getSchedule() == null)) {
+                Toast.makeText(this, "Schedule not available. Please get schedule", Toast.LENGTH_LONG).show();
+                return false;
+            }
+            overridden = !overridden;
+            if (overridden) {
+                item.setTitle("Automate Schedule");
+            } else {
+                item.setTitle("Override Schedule");
+            }
 
 
             //set scout id button
@@ -338,26 +334,6 @@ public class MainActivity extends AppCompatActivity {
             schedule.getScheduleFromSuper(superName, uuid);
         }
         return true;
-    }
-
-
-
-    //override the schedule
-    private void override () {
-        overridden = true;
-        invalidateOptionsMenu();
-    }
-
-
-
-    //automate the schedule
-    private void automate() {
-        if (schedule.getSchedule() != null) {
-            overridden = false;
-            invalidateOptionsMenu();
-        } else {
-            Toast.makeText(this, "Schedule not available. Please get schedule", Toast.LENGTH_LONG).show();
-        }
     }
 
 

@@ -330,7 +330,7 @@ public class TeleopActivity extends AppCompatActivity {
         final Activity context = this;
         new AlertDialog.Builder(this)
                 .setTitle("Stop Scouting")
-                .setMessage("If you go back now, all data will be lost.")
+                .setMessage("Are you sure you want to go back? (your data will be saved)")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override

@@ -2,6 +2,7 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,8 +159,9 @@ public class UIComponentCreator {
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.dialog, null);
                 TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                title.setText("Attempt Defense " + Integer.toString(buttonNum+1));
+                title.setText("Attempt Defense " + Integer.toString(buttonNum + 1));
                 Button success = (Button) dialogLayout.findViewById(R.id.successButton);
+                success.setBackgroundColor(Color.parseColor("#C8FFC8"));
                 success.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -172,6 +174,7 @@ public class UIComponentCreator {
                     }
                 });
                 Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                failure.setBackgroundColor(Color.parseColor("#FFC8C8"));
                 failure.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
