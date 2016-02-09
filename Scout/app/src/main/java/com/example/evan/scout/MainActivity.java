@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         schedule = new ScheduleHandler(this);
         schedule.getScheduleFromDisk();
         //if we don't have the schedule, they must enter the team numbers and it must be overridden
-        if (schedule.getSchedule() == null) {
+        if (!schedule.hasSchedule()) {
             overridden = true;
         }
 
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
     //fill in the edittexts with the team numbers found in the schedule
     public void updateTeamNumbers() {
-        if (schedule.getSchedule() != null) {
+        if (schedule.hasSchedule()) {
             EditText teamNumber1Edit = (EditText) findViewById(R.id.teamNumber1Edit);
             EditText teamNumber2Edit = (EditText) findViewById(R.id.teamNumber2Edit);
             EditText teamNumber3Edit = (EditText) findViewById(R.id.teamNumber3Edit);
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //override button
         if (item.getItemId() == R.id.mainOverride) {
-            if (overridden && (schedule.getSchedule() == null)) {
+            if (overridden && (!schedule.hasSchedule())) {
                 Toast.makeText(this, "Schedule not available. Please get schedule", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -354,15 +354,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            scoutNumber = Integer.parseInt(editText.getText().toString());
-                            if ((scoutNumber < 0) || (scoutNumber > 6)) {
-                                throw new NumberFormatException();
+                            String text = editText.getText().toString();
+                            if (text.equals("")) {
+                                if (scoutNumber == -1) {
+                                    throw new NumberFormatException();
+                                }
+                            } else {
+                                scoutNumber = Integer.parseInt(text);
+                                if ((scoutNumber < 0) || (scoutNumber > 6)) {
+                                    throw new NumberFormatException();
+                                }
                             }
                         } catch (NumberFormatException nfe) {
                             setScoutNumber();
                         }
                         highlightTeamNumberTexts();
-                        ConnectThread.initBluetooth(context, superName);
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putInt("scoutNumber", scoutNumber);
                         editor.commit();
@@ -496,17 +502,20 @@ public class MainActivity extends AppCompatActivity {
     //on Finish is what to happen on click
     private void setScoutName(final Runnable onFinish) {
         final EditText editText = new EditText(this);
-        editText.setHint("Scout Initials");
+        editText.setHint(scoutName);
         new AlertDialog.Builder(this)
                 .setTitle("Set Scout Initials")
                 .setView(editText)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        scoutName = editText.getText().toString();
-                        if (scoutName.equals("")) {
-                            setScoutName(onFinish);
+                        String tmpScoutName = editText.getText().toString();
+                        if (tmpScoutName.equals("")) {
+                            if (scoutName == null) {
+                                setScoutName(onFinish);
+                            }
                         } else {
+                            scoutName = tmpScoutName;
                             if (onFinish != null) {
                                 onFinish.run();
                             }

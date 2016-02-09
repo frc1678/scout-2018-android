@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -146,18 +147,42 @@ public class TeleopActivity extends AppCompatActivity {
         RelativeLayout fillerSpace = new RelativeLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
         toggleLayout.addView(fillerSpace);
-        for (int i = 0; i < 4; i++) {
-            toggleLayout.addView(toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i)));
+        for (int i = 0; i < 2; i++) {
+            final ToggleButton button1 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i));
+            toggleLayout.addView(button1);
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
             toggleLayout.addView(fillerSpace);
+
+            final ToggleButton button2 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i));
+            toggleLayout.addView(button2);
+            fillerSpace = new RelativeLayout(this);
+            fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
+            toggleLayout.addView(fillerSpace);
+
+            button1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        button2.setChecked(false);
+                    }
+                }
+            });
+            button2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        button1.setChecked(false);
+                    }
+                }
+            });
         }
 
 
 
         //fill row of defense buttons and textview counters
         LinearLayout defenseLayout = (LinearLayout) findViewById(R.id.teleDefenseButtonLinearLayout);
-        UIComponentCreator buttonCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
+        UIComponentCreator.UIButtonCreator buttonCreator = new UIComponentCreator.UIButtonCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
         for (int i = 0; i < 5; i++) {
             buttonCreator.addButtonRow(defenseLayout, successCrossTimes, failCrossTimes, i);

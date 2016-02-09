@@ -292,4 +292,7 @@ public class ScheduleHandler {
     public JSONObject getSchedule() {
         return schedule;
     }
+    public boolean hasSchedule() {
+        return (schedule != null);
+    }
 }
