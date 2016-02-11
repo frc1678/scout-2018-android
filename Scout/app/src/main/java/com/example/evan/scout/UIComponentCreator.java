@@ -135,16 +135,16 @@ public class UIComponentCreator {
 
     //sub class specifically for creating defense buttons
     public static class UIButtonCreator extends UIComponentCreator {
-        //we keep track of the last times the user entered so we can undo them
-        private List<Long> lastTimeEntered;
         //this is to indicate whether the last time entered was a success or fail
         private List<Boolean> lastSuccessOrFail;
         private Activity context;
         public UIButtonCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
             this.context = context;
-            lastTimeEntered = new ArrayList<>();
             lastSuccessOrFail = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                lastSuccessOrFail.add(i, null);
+            }
         }
 
 
@@ -188,13 +188,11 @@ public class UIComponentCreator {
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //record the time to be undone
-                            lastTimeEntered.add(buttonNum, Calendar.getInstance().getTimeInMillis() - startTime);
                             lastSuccessOrFail.add(buttonNum, true);
                             //add time
                             successTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
                             //increment counter
-                            successText.setText("S: " + (Integer.parseInt(successText.getText().toString().replaceFirst("S: ", "")) + 1));
+                            successText.setText("S: " + successTimes.get(buttonNum).size());
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -205,13 +203,11 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             Long time = Calendar.getInstance().getTimeInMillis() - startTime;
-                            //record the time to be undone
-                            lastTimeEntered.add(buttonNum, time);
                             lastSuccessOrFail.add(buttonNum, false);
                             //add time
                             failTimes.get(buttonNum).add(time);
                             //increment counter
-                            failText.setText("F: " + (Integer.parseInt(failText.getText().toString().replaceFirst("F: ", "")) + 1));
+                            failText.setText("F: " + failTimes.get(buttonNum).size());
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -241,16 +237,20 @@ public class UIComponentCreator {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //if they click yes, redo the last change
-                                    try {
-                                        if (lastSuccessOrFail.get(buttonNum)) {
-                                            successTimes.get(buttonNum).remove(lastTimeEntered.get(buttonNum));
-                                            successText.setText("S: " + (Integer.parseInt(successText.getText().toString().replaceFirst("S: ", "")) - 1));
-                                        } else {
-                                            failTimes.get(buttonNum).remove(lastTimeEntered.get(buttonNum));
-                                            failText.setText("S: " + (Integer.parseInt(failText.getText().toString().replaceFirst("F: ", "")) - 1));
+                                    if (lastSuccessOrFail.get(buttonNum) != null) {
+                                        try {
+                                            if (lastSuccessOrFail.get(buttonNum)) {
+                                                successTimes.get(buttonNum).remove(successTimes.get(buttonNum).size() - 1);
+                                                successText.setText("S: " + successTimes.get(buttonNum).size());
+                                                lastSuccessOrFail.add(buttonNum, null);
+                                            } else {
+                                                failTimes.get(buttonNum).remove(failTimes.get(buttonNum).size() - 1);
+                                                failText.setText("F: " + failTimes.get(buttonNum).size());
+                                                lastSuccessOrFail.add(buttonNum, null);
+                                            }
+                                        } catch (IndexOutOfBoundsException ioobe) {
+                                            Log.e("User Error", "Scout tried to undo action that didn't exist. Unimportant");
                                         }
-                                    } catch (IndexOutOfBoundsException ioobe) {
-                                        Log.e("User Error", "Scout tried to undo action that didn't exist. Unimportant");
                                     }
                                 }
                             })
