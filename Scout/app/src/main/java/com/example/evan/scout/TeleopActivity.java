@@ -148,13 +148,13 @@ public class TeleopActivity extends AppCompatActivity {
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
         toggleLayout.addView(fillerSpace);
         for (int i = 0; i < 2; i++) {
-            final ToggleButton button1 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i));
+            final ToggleButton button1 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i*2));
             toggleLayout.addView(button1);
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
             toggleLayout.addView(fillerSpace);
 
-            final ToggleButton button2 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i));
+            final ToggleButton button2 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i*2+1));
             toggleLayout.addView(button2);
             fillerSpace = new RelativeLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));

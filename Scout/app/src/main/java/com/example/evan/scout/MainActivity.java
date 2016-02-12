@@ -281,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Failed to read JSON");
+                Toast.makeText(this, "Match Not Available", Toast.LENGTH_LONG).show();
                 teamNumber1Edit.setText("");
                 teamNumber2Edit.setText("");
                 teamNumber3Edit.setText("");
@@ -331,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
             //get schedule button
         } else if (item.getItemId() == R.id.scheduleButton) {
+            Toast.makeText(this, "Requesting Schedule. Please Wait...", Toast.LENGTH_LONG).show();
             schedule.getScheduleFromSuper(superName, uuid);
         }
         return true;
@@ -360,10 +362,15 @@ public class MainActivity extends AppCompatActivity {
                                     throw new NumberFormatException();
                                 }
                             } else {
-                                scoutNumber = Integer.parseInt(text);
-                                if ((scoutNumber < 0) || (scoutNumber > 6)) {
-                                    throw new NumberFormatException();
+                                int tmpScoutNumber = Integer.parseInt(text);
+                                if ((tmpScoutNumber < 1) || (tmpScoutNumber > 6)) {
+                                    Toast.makeText(context, "Invalid Number. Use numbers 1-6", Toast.LENGTH_LONG).show();
+                                    if (scoutNumber == -1) {
+                                        throw new NumberFormatException();
+                                    }
+                                    return;
                                 }
+                                scoutNumber = tmpScoutNumber;
                             }
                         } catch (NumberFormatException nfe) {
                             setScoutNumber();
@@ -433,7 +440,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        new ConnectThread(context, superName, uuid, dataPoints).start();
+        if (dataPoints.size() != 0) {
+            new ConnectThread(context, superName, uuid, dataPoints).start();
+        }
     }
 
 
@@ -454,7 +463,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        new ConnectThread(context, superName, uuid, dataPoints).start();
+        if (dataPoints.size() != 0) {
+            new ConnectThread(context, superName, uuid, dataPoints).start();
+        }
     }
 
 
@@ -510,7 +521,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String tmpScoutName = editText.getText().toString();
-                        if (tmpScoutName.equals("")) {
+                        if (tmpScoutName.equals("") || (tmpScoutName.length() > 3)) {
                             if (scoutName == null) {
                                 setScoutName(onFinish);
                             }
