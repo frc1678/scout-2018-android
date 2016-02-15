@@ -364,11 +364,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 int tmpScoutNumber = Integer.parseInt(text);
                                 if ((tmpScoutNumber < 1) || (tmpScoutNumber > 6)) {
-                                    Toast.makeText(context, "Invalid Number. Use numbers 1-6", Toast.LENGTH_LONG).show();
-                                    if (scoutNumber == -1) {
-                                        throw new NumberFormatException();
-                                    }
-                                    return;
+                                    throw new NumberFormatException();
                                 }
                                 scoutNumber = tmpScoutNumber;
                             }
@@ -521,10 +517,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String tmpScoutName = editText.getText().toString();
-                        if (tmpScoutName.equals("") || (tmpScoutName.length() > 3)) {
+                        if (tmpScoutName.equals("")) {
                             if (scoutName == null) {
                                 setScoutName(onFinish);
                             }
+                        } else if ((tmpScoutName.length() < 1) || (tmpScoutName.length() > 3) || (tmpScoutName.contains("\n")) || (tmpScoutName.contains("."))) {
+                            setScoutName(onFinish);
                         } else {
                             scoutName = tmpScoutName;
                             if (onFinish != null) {

@@ -184,6 +184,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
     }
     //filter list entries by string
     public void filterListView(String key) {
+        key = key.toUpperCase();
         for (int i = 0; i < this.getCount();) {
             int tmpTeam;
             int tmpMatch;

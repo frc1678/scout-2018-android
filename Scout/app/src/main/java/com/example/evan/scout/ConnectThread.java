@@ -139,6 +139,7 @@ public class ConnectThread extends Thread {
         String data = "";
         for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
             data = data.concat(entry.getValue() + "\n");
+            Log.i("JSON during send", entry.getValue());
         }
 
 
@@ -192,8 +193,6 @@ public class ConnectThread extends Thread {
             Log.i("Communications Info", "Starting To Communicate");
 
             try {
-                //next send data
-                Log.i("JSON during send", data);
                 //we print the length of the data before we print the data so the super can identify corrupted data
                 out.println(data.length());
                 out.print(data);
