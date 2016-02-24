@@ -26,14 +26,16 @@ public class FileListAdapter extends ArrayAdapter<String> {
     private ListView fileList;
     private final MainActivity context;
     private FileObserver fileObserver;
+    private String superName;
     public FileListAdapter(MainActivity context, ListView fileList,  String uuid, String superName) {
         super(context, android.R.layout.simple_list_item_1);
         this.context = context;
         this.fileList = fileList;
-        initFileList(uuid, superName);
+        this.superName = superName;
+        initFileList(uuid);
     }
     //set up list view
-    private void initFileList(final String uuid, final String superName) {
+    private void initFileList(final String uuid) {
         fileList.setAdapter(this);
         updateListView();
         //when you click on a file, it sends it
@@ -231,5 +233,9 @@ public class FileListAdapter extends ArrayAdapter<String> {
         }
         Log.i("JSON after read", text);
         return text;
+    }
+
+    public void setSuperName(String superName) {
+        this.superName = superName;
     }
 }

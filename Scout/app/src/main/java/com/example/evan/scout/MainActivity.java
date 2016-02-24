@@ -255,6 +255,9 @@ public class MainActivity extends AppCompatActivity {
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4169e1")));
             }
         }
+        if (fileListAdapter != null) {
+            fileListAdapter.setSuperName(superName);
+        }
         updateTeamNumbers();
     }
 
