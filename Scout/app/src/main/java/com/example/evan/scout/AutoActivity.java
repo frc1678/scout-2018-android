@@ -26,7 +26,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class AutoActivity extends AppCompatActivity {
     //class to get toggle buttons and save values to access later
@@ -34,9 +37,14 @@ public class AutoActivity extends AppCompatActivity {
     //class to get and save counters
     private UIComponentCreator counterCreator;
     //list of successful cross times for each defense
-    private List<List<Long>> successCrossTimes;
+    /*private List<List<Long>> successCrossTimes;
     //list of failed cross times for each defense
-    private List<List<Long>> failCrossTimes;
+    private List<List<Long>> failCrossTimes;*/
+
+
+    private List<List<Map<Long, Boolean>>> combinedDefenseCrosses;
+
+
     private int matchNumber;
     private boolean overridden;
     private int teamNumber;
@@ -79,13 +87,17 @@ public class AutoActivity extends AppCompatActivity {
 
 
         //init lists
-        successCrossTimes = new ArrayList<>();
+        /*successCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             successCrossTimes.add(i, new ArrayList<Long>());
         }
         failCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             failCrossTimes.add(i, new ArrayList<Long>());
+        }*/
+        combinedDefenseCrosses = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            combinedDefenseCrosses.add(i, new ArrayList<Map<Long, Boolean>>());
         }
 
 
@@ -118,7 +130,7 @@ public class AutoActivity extends AppCompatActivity {
                     counterValues.add(i, data.getInt(counterNames.get(i)));
                 }
 
-                JSONArray successTimes = data.getJSONArray("successfulDefenseCrossTimesAuto");
+                /*JSONArray successTimes = data.getJSONArray("successfulDefenseCrossTimesAuto");
                 for (int i = 0; i < successTimes.length(); i++) {
                     for (int j = 0; j < successTimes.getJSONArray(i).length(); j++) {
                         successCrossTimes.get(i).add(successTimes.getJSONArray(i).getLong(j));
@@ -129,6 +141,18 @@ public class AutoActivity extends AppCompatActivity {
                 for (int i = 0; i < failTimes.length(); i++) {
                     for (int j = 0; j < failTimes.getJSONArray(i).length(); j++) {
                         failCrossTimes.get(i).add(failTimes.getJSONArray(i).getLong(j));
+                    }
+                }*/
+
+
+
+                JSONArray defenseTimes = data.getJSONArray("defenseTimesAuto");
+                for (int i = 0; i < defenseTimes.length(); i++) {
+                    for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
+                        String key = defenseTimes.getJSONObject(i).keys().next();
+                        Map<Long, Boolean> map = new HashMap<>();
+                        map.put(Long.parseLong(key), defenseTimes.getJSONObject(i).getBoolean(key));
+                        combinedDefenseCrosses.get(i).add(map);
                     }
                 }
                 reached = data.getBoolean("didReachAuto");
