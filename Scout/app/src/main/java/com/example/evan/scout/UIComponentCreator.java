@@ -11,15 +11,20 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //class that creates all the ui components I need like togglebuttons, etc.  Also stores all buttons in list to be accessed later
 public class UIComponentCreator {
@@ -149,7 +154,7 @@ public class UIComponentCreator {
 
 
 
-        public void addButtonRow(LinearLayout column, final List<List<Long>> successTimes, final List<List<Long>> failTimes, int index) {
+        public void addButtonRow(LinearLayout column, final List<List<Map<Long, Boolean>>> defenseTimes, final int index) {
             //add textview counters to layout
             LinearLayout textViewLayout = new LinearLayout(context);
             textViewLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
@@ -157,11 +162,11 @@ public class UIComponentCreator {
             final TextView successText = new TextView(context);
             successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             successText.setGravity(Gravity.CENTER);
-            successText.setText("S: " + Integer.toString(successTimes.get(index).size()));
+            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, index, true)));
             final TextView failText = new TextView(context);
             failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             failText.setGravity(Gravity.CENTER);
-            failText.setText("F: " + Integer.toString(failTimes.get(index).size()));
+            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, index, false)));
             textViewLayout.addView(successText);
             textViewLayout.addView(failText);
 
@@ -190,9 +195,11 @@ public class UIComponentCreator {
                         public void onClick(View v) {
                             lastSuccessOrFail.add(buttonNum, true);
                             //add time
-                            successTimes.get(buttonNum).add(Calendar.getInstance().getTimeInMillis() - startTime);
+                            Map<Long, Boolean> map = new HashMap<>();
+                            map.put(Calendar.getInstance().getTimeInMillis() - startTime, true);
+                            defenseTimes.get(buttonNum).add(map);
                             //increment counter
-                            successText.setText("S: " + successTimes.get(buttonNum).size());
+                            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, buttonNum, true)));
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -205,9 +212,11 @@ public class UIComponentCreator {
                             Long time = Calendar.getInstance().getTimeInMillis() - startTime;
                             lastSuccessOrFail.add(buttonNum, false);
                             //add time
-                            failTimes.get(buttonNum).add(time);
+                            Map<Long, Boolean> map = new HashMap<>();
+                            map.put(Calendar.getInstance().getTimeInMillis() - startTime, false);
+                            defenseTimes.get(buttonNum).add(map);
                             //increment counter
-                            failText.setText("F: " + failTimes.get(buttonNum).size());
+                            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, buttonNum, false)));
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -225,7 +234,7 @@ public class UIComponentCreator {
                 }
             });
             //if they hold the button, give them a dialog to undo the last action for that button
-            defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
+            /*defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
@@ -257,12 +266,56 @@ public class UIComponentCreator {
                             .show();
                     return true;
                 }
+            });*/
+
+
+            defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final Dialog dialog = new Dialog(context);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.defense_edit_dialog, null);
+                    TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                    title.setText("Edit Defense " + Integer.toString(index + 1) + " Crossings");
+                    ListView listView = (ListView) dialogLayout.findViewById(R.id.defenseEditList);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
+                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
+                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
+                        adapter.add(Long.toString(firstEntry.getKey()));
+                    }
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Defense Cross Options")
+                                    .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            defenseTimes.get(index).remove(position);
+                                        }
+                                    })
+                                    .show();
+                        }
+                    });
+                    return true;
+                }
             });
 
 
 
             column.addView(defenseButton);
             column.addView(textViewLayout);
+        }
+        private int numOfCrosses(List<List<Map<Long, Boolean>>> defenseTimes, int defenseNum, boolean success) {
+            int counter = 0;
+            for (int i = 0; i < defenseTimes.get(defenseNum).size(); i++) {
+                Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(defenseNum).get(i).entrySet().iterator().next();
+                if (firstEntry.getValue() == success) {
+                    counter++;
+                }
+            }
+            return counter;
         }
     }
 }

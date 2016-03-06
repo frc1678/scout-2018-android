@@ -28,14 +28,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TeleopActivity extends AppCompatActivity {
     //data, in JSON format in a string, from auto activity
     //list of successful cross times for each defense
-    private List<List<Long>> successCrossTimes;
+    /*private List<List<Long>> successCrossTimes;
     //list of failed cross times for each defense
-    private List<List<Long>> failCrossTimes;
+    private List<List<Long>> failCrossTimes;*/
+
+    private List<List<Map<Long, Boolean>>> combinedDefenseCrosses;
+
     //class to get and save counters
     private UIComponentCreator counterCreator;
     //class to get toggle buttons and save values to access later
@@ -82,13 +87,19 @@ public class TeleopActivity extends AppCompatActivity {
 
 
         //init lists
-        successCrossTimes = new ArrayList<>();
+        /*successCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             successCrossTimes.add(i, new ArrayList<Long>());
         }
         failCrossTimes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             failCrossTimes.add(i, new ArrayList<Long>());
+        }*/
+
+
+        combinedDefenseCrosses = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            combinedDefenseCrosses.add(i, new ArrayList<Map<Long, Boolean>>());
         }
 
 
@@ -121,7 +132,7 @@ public class TeleopActivity extends AppCompatActivity {
                 counterValues.add(i, data.getInt(counterNames.get(i)));
             }
 
-            JSONArray successTimes = data.getJSONArray("successfulDefenseCrossTimesTele");
+            /*JSONArray successTimes = data.getJSONArray("successfulDefenseCrossTimesTele");
             for (int i = 0; i < successTimes.length(); i++) {
                 for (int j = 0; j < successTimes.getJSONArray(i).length(); j++) {
                     successCrossTimes.get(i).add(successTimes.getJSONArray(i).getLong(j));
@@ -132,6 +143,17 @@ public class TeleopActivity extends AppCompatActivity {
             for (int i = 0; i < failTimes.length(); i++) {
                 for (int j = 0; j < failTimes.getJSONArray(i).length(); j++) {
                     failCrossTimes.get(i).add(failTimes.getJSONArray(i).getLong(j));
+                }
+            }*/
+
+
+            JSONArray defenseTimes = data.getJSONArray("defenseTimesTele");
+            for (int i = 0; i < defenseTimes.length(); i++) {
+                for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
+                    String key = defenseTimes.getJSONObject(i).keys().next();
+                    Map<Long, Boolean> map = new HashMap<>();
+                    map.put(Long.parseLong(key), defenseTimes.getJSONObject(i).getBoolean(key));
+                    combinedDefenseCrosses.get(i).add(map);
                 }
             }
         } catch (JSONException jsone) {
@@ -185,7 +207,7 @@ public class TeleopActivity extends AppCompatActivity {
         UIComponentCreator.UIButtonCreator buttonCreator = new UIComponentCreator.UIButtonCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
         for (int i = 0; i < 5; i++) {
-            buttonCreator.addButtonRow(defenseLayout, successCrossTimes, failCrossTimes, i);
+            buttonCreator.addButtonRow(defenseLayout, combinedDefenseCrosses, i);
         }
 
 
@@ -239,7 +261,7 @@ public class TeleopActivity extends AppCompatActivity {
 
 
         //add defenses crossed counters
-        JSONArray successDefenseTimes = new JSONArray();
+        /*JSONArray successDefenseTimes = new JSONArray();
         for (int i = 0; i < successCrossTimes.size(); i++) {
             JSONArray tmp = new JSONArray();
             for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
@@ -276,6 +298,26 @@ public class TeleopActivity extends AppCompatActivity {
             data.put("failedDefenseCrossTimesTele", failDefenseTimes);
         } catch (JSONException jsone) {
             Log.e("JSON error", "Failed to add failed defense times to JSON");
+            Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
+            return;
+        }*/
+
+
+
+        try {
+            JSONArray defenseTimes = new JSONArray();
+            for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
+                JSONArray tmp = new JSONArray();
+                for (int j = 0; j < combinedDefenseCrosses.get(i).size(); i++) {
+                    JSONObject tmp2 = new JSONObject();
+                    Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
+                    tmp2.put(Long.toString(firstEntry.getKey()), firstEntry.getValue());
+                    tmp.put(tmp2);
+                }
+            }
+            data.put("defenseTimesTele", defenseTimes);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add defense times to JSON");
             Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
             return;
         }

@@ -185,7 +185,7 @@ public class AutoActivity extends AppCompatActivity {
                 "Defense 5")));
         //empty relative layout to space out buttons
         for (int i = 0; i < 5; i++) {
-            buttonCreator.addButtonRow(defenseLayout, successCrossTimes, failCrossTimes, i);
+            buttonCreator.addButtonRow(defenseLayout, combinedDefenseCrosses, i);
         }
 
 
@@ -248,7 +248,7 @@ public class AutoActivity extends AppCompatActivity {
 
 
         //add successful defense cross times to JSON
-        JSONArray successDefenseTimes = new JSONArray();
+        /*JSONArray successDefenseTimes = new JSONArray();
         for (int i = 0; i < successCrossTimes.size(); i++) {
             JSONArray tmp = new JSONArray();
             for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
@@ -284,8 +284,26 @@ public class AutoActivity extends AppCompatActivity {
             Log.e("JSON error", "Failed to add failed defense times to JSON");
             Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
             return;
-        }
+        }*/
 
+
+        try {
+            JSONArray defenseTimes = new JSONArray();
+            for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
+                JSONArray tmp = new JSONArray();
+                for (int j = 0; j < combinedDefenseCrosses.get(i).size(); i++) {
+                    JSONObject tmp2 = new JSONObject();
+                    Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
+                    tmp2.put(Long.toString(firstEntry.getKey()), firstEntry.getValue());
+                    tmp.put(tmp2);
+                }
+            }
+            data.put("defenseTimesAuto", defenseTimes);
+        } catch (JSONException jsone) {
+            Log.e("JSON error", "Failed to add defense times to JSON");
+            Toast.makeText(this, "Error in defense data", Toast.LENGTH_LONG).show();
+            return;
+        }
 
 
         //add all the data in other counters
