@@ -28,7 +28,12 @@ public class ConnectThread extends Thread {
     protected String superName;
     protected String uuid;
     //dataPoints is a map of file names to string values to be sent
-    private Map<String, String> dataPoints;
+    //private Map<String, String> dataPoints;
+    private List<String> fileNames;
+    private List<String> dataPoints;
+    private List<File> files = new ArrayList<>();
+    private File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
+    private boolean autoWrite = true;
 
 
 
@@ -36,9 +41,11 @@ public class ConnectThread extends Thread {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
-        this.dataPoints = new HashMap<>();
+        this.dataPoints = new ArrayList<>();
+        fileNames = new ArrayList<>();
         for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-            this.dataPoints.put(entry.getKey().replaceFirst("UNSENT_", ""), entry.getValue());
+            fileNames.add(entry.getKey().replaceFirst("UNSENT_", ""));
+            this.dataPoints.add(entry.getValue());
         }
     }
     //if you only want to send one value, just include matchName and data
@@ -46,10 +53,31 @@ public class ConnectThread extends Thread {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
-        dataPoints = new HashMap<>();
+        dataPoints = new ArrayList<>();
+        fileNames = new ArrayList<>();
         if (matchName != null) {
-            dataPoints.put(matchName.replaceAll("UNSENT_", ""), data);
+            fileNames.add(matchName.replaceAll("UNSENT_", ""));
+            dataPoints.add(data);
         }
+    }
+    public ConnectThread(MainActivity context, String superName, String uuid, String data) {
+        this.context = context;
+        this.superName = superName;
+        this.uuid = uuid;
+        dataPoints = new ArrayList<>();
+        dataPoints.add(data);
+        autoWrite = false;
+    }
+
+    public ConnectThread(MainActivity context, String superName, String uuid, List<String> dataPoints) {
+        this.context = context;
+        this.superName = superName;
+        this.uuid = uuid;
+        this.dataPoints = new ArrayList<>();
+        for (int i = 0; i < dataPoints.size(); i++) {
+            this.dataPoints.add(dataPoints.get(i));
+        }
+        autoWrite = false;
     }
 
 
@@ -88,22 +116,32 @@ public class ConnectThread extends Thread {
     }
 
 
+    private boolean writeToDisk() {
+        Map<String, String> dataPoints = new HashMap<>();
+        for (int i = 0; i < this.dataPoints.size(); i++) {
+            dataPoints.put(fileNames.get(i), this.dataPoints.get(i));
+        }
+        return writeToDisk(dataPoints);
+    }
 
-    @Override
-    public void run() {
+    public boolean writeToDisk(String fileName, String data) {
+        Map<String, String> dataPoints = new HashMap<>();
+        dataPoints.put(fileName, data);
+        return writeToDisk(dataPoints);
+    }
+
+    public boolean writeToDisk(Map<String, String> dataPoints) {
         //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
         //storage path: /sdcard/Android/MatchData
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
             toastText("External Storage Not Mounted", Toast.LENGTH_LONG, context);
-            return;
+            return false;
         }
-        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
         if (!dir.mkdir()) {
             Log.i("File Info", "Failed to make Directory.  Unimportant");
         }
         //we loop through all the data points, write them to files, and save their files to be renamed later
-        List<File> files = new ArrayList<>();
         for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
             File file;
             PrintWriter fileWriter;
@@ -114,7 +152,7 @@ public class ConnectThread extends Thread {
             } catch (IOException ioe) {
                 Log.e("File Error", "Failed to open file");
                 toastText("Failed To Open File", Toast.LENGTH_LONG, context);
-                return;
+                return false;
             }
 
 
@@ -123,9 +161,22 @@ public class ConnectThread extends Thread {
             if (fileWriter.checkError()) {
                 Log.e("File Error", "Failed to Write to File");
                 toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
-                return;
+                return false;
             }
             files.add(file);
+        }
+        autoWrite = true;
+        return true;
+    }
+
+
+
+    @Override
+    public void run() {
+        if (autoWrite) {
+            if (!writeToDisk()) {
+                return;
+            }
         }
 
 
@@ -137,9 +188,9 @@ public class ConnectThread extends Thread {
 
         //convert data to sendable string
         String data = "";
-        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-            data = data.concat(entry.getValue() + "\n");
-            Log.i("JSON during send", entry.getValue());
+        for (int i = 0; i < dataPoints.size(); i++) {
+            data = data.concat(dataPoints.get(i) + "\n");
+            Log.i("JSON during send", dataPoints.get(i));
         }
 
 
@@ -257,13 +308,13 @@ public class ConnectThread extends Thread {
 
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", Toast.LENGTH_LONG, context);
-        int i = 0;
         //rename files
-        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-            if (!files.get(i).renameTo(new File(dir, entry.getKey()))) {
-                Log.e("File Error", "Failed to Rename File");
+        if (autoWrite) {
+            for (int i = 0; i < fileNames.size(); i++) {
+                if (!files.get(i).renameTo(new File(dir, fileNames.get(i)))) {
+                    Log.e("File Error", "Failed to Rename File");
+                }
             }
-            i++;
         }
     }
 

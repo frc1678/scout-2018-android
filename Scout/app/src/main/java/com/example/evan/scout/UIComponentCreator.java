@@ -172,7 +172,7 @@ public class UIComponentCreator {
 
 
             //add button to row
-            Button defenseButton = getNextDefenseButton();
+            final Button defenseButton = getNextDefenseButton();
             defenseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -278,26 +278,75 @@ public class UIComponentCreator {
                     TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
                     title.setText("Edit Defense " + Integer.toString(index + 1) + " Crossings");
                     ListView listView = (ListView) dialogLayout.findViewById(R.id.defenseEditList);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
+                    final ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
                     for (int i = 0; i < defenseTimes.get(index).size(); i++) {
                         Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                        adapter.add(Long.toString(firstEntry.getKey()));
+                        if (firstEntry.getValue()) {
+                            adapter.add("Defense Succeeded (" + Double.toString((double)firstEntry.getKey()/(double)1000) + "s)");
+                        } else {
+                            adapter.add("Defense Failed (" + Double.toString((double)firstEntry.getKey()/(double)1000) + "s)");
+                        }
                     }
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                            defenseTimes.get(index).remove(position);
+                            adapter.clear();
+                            for (int i = 0; i < defenseTimes.get(index).size(); i++) {
+                                Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
+                                if (firstEntry.getValue()) {
+                                    adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                } else {
+                                    adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    });
+                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                             new AlertDialog.Builder(context)
                                     .setTitle("Defense Cross Options")
                                     .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             defenseTimes.get(index).remove(position);
+                                            adapter.clear();
+                                            for (int i = 0; i < defenseTimes.get(index).size(); i++) {
+                                                Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
+                                                if (firstEntry.getValue()) {
+                                                    adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                                } else {
+                                                    adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                                }
+                                                adapter.notifyDataSetChanged();
+                                            }
                                         }
                                     })
+                                    .setNeutralButton("Cancel", null)
                                     .show();
+                            return true;
                         }
                     });
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //dismiss dialog
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(dialogLayout);
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, index, true)));
+                            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, index, false)));
+                        }
+                    });
+                    dialog.show();
                     return true;
                 }
             });

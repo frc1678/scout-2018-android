@@ -29,8 +29,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -203,9 +206,80 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             Log.i("JSON before send", matchData);
-            new ConnectThread(this, superName, uuid,
-                    getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt",
-                    matchData).start();
+            String sendData = convertJsonToSend(matchData);
+            if (sendData == null) {
+                Log.e("Json Error", "Failed to convert matchData to sendData");
+                Toast.makeText(this, "Error in send data", Toast.LENGTH_LONG).show();
+                return;
+            }
+            ConnectThread connectThread = new ConnectThread(this, superName, uuid, convertJsonToSend(matchData));
+            connectThread.writeToDisk(getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt", matchData);
+        }
+    }
+
+
+
+    private String convertJsonToSend(String json) {
+        List<String> startNames = new ArrayList<>(Arrays.asList("defenseTimesAuto", "defenseTimesTele"));
+        List<String> endSuccessNames = new ArrayList<>(Arrays.asList("successfulDefenseCrossTimesAuto", "successfulDefenseCrossTimesTele"));
+        List<String> endFailNames = new ArrayList<>(Arrays.asList("failedDefenseCrossTimesAuto", "failedDefenseCrossTimesTele"));
+        try {
+            JSONObject data = new JSONObject(json);
+            for (int k = 0; k < 2; k++) {
+                JSONArray defenseTimes = data.getJSONArray(startNames.get(k));
+                List<List<Map<Long, Boolean>>> combinedDefenseCrosses = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    combinedDefenseCrosses.add(i, new ArrayList<Map<Long, Boolean>>());
+                }
+                for (int i = 0; i < defenseTimes.length(); i++) {
+                    for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
+                        String key = defenseTimes.getJSONObject(i).keys().next();
+                        Map<Long, Boolean> map = new HashMap<>();
+                        map.put(Long.parseLong(key), defenseTimes.getJSONObject(i).getBoolean(key));
+                        combinedDefenseCrosses.get(i).add(map);
+                    }
+                }
+                List<List<Long>> successCrossTimes = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    successCrossTimes.add(i, new ArrayList<Long>());
+                }
+                List<List<Long>> failCrossTimes = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    failCrossTimes.add(i, new ArrayList<Long>());
+                }
+                for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
+                    for (int j = 0; j < combinedDefenseCrosses.get(i).size(); j++) {
+                        Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
+                        if (firstEntry.getValue()) {
+                            successCrossTimes.get(i).add(firstEntry.getKey());
+                        } else {
+                            failCrossTimes.get(i).add(firstEntry.getKey());
+                        }
+                    }
+                }
+                data.remove(startNames.get(k));
+                JSONArray successDefenseTimes = new JSONArray();
+                for (int i = 0; i < successCrossTimes.size(); i++) {
+                    JSONArray tmp = new JSONArray();
+                    for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
+                        tmp.put(successCrossTimes.get(i).get(j));
+                    }
+                    successDefenseTimes.put(tmp);
+                }
+                data.put(endSuccessNames.get(k), successDefenseTimes);
+                JSONArray failDefenseTimes = new JSONArray();
+                for (int i = 0; i < failCrossTimes.size(); i++) {
+                    JSONArray tmp = new JSONArray();
+                    for (int j = 0; j < failCrossTimes.get(i).size(); j++) {
+                        tmp.put(failCrossTimes.get(i).get(j));
+                    }
+                    failDefenseTimes.put(tmp);
+                }
+                data.put(endFailNames.get(k), failDefenseTimes);
+            }
+            return data.toString();
+        } catch (JSONException jsone) {
+            return null;
         }
     }
 
