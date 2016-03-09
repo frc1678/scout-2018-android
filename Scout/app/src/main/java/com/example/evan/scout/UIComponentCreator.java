@@ -14,10 +14,12 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -142,6 +144,8 @@ public class UIComponentCreator {
     public static class UIButtonCreator extends UIComponentCreator {
         //this is to indicate whether the last time entered was a success or fail
         private List<Boolean> lastSuccessOrFail;
+        List<TextView> successTexts;
+        List<TextView> failTexts;
         private Activity context;
         public UIButtonCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
@@ -150,6 +154,8 @@ public class UIComponentCreator {
             for (int i = 0; i < 5; i++) {
                 lastSuccessOrFail.add(i, null);
             }
+            successTexts = new ArrayList<>();
+            failTexts = new ArrayList<>();
         }
 
 
@@ -163,10 +169,12 @@ public class UIComponentCreator {
             successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             successText.setGravity(Gravity.CENTER);
             successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, index, true)));
+            successTexts.add(successText);
             final TextView failText = new TextView(context);
             failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             failText.setGravity(Gravity.CENTER);
             failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, index, false)));
+            failTexts.add(failText);
             textViewLayout.addView(successText);
             textViewLayout.addView(failText);
 
@@ -300,14 +308,77 @@ public class UIComponentCreator {
                                 } else {
                                     adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
                                 }
-                                adapter.notifyDataSetChanged();
                             }
+                            adapter.notifyDataSetChanged();
                         }
                     });
                     listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                            new AlertDialog.Builder(context)
+                            final Dialog dialog = new Dialog(context);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            final RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.defense_options_dialog, null);
+                            TextView title = (TextView) dialogLayout.findViewById(R.id.defenseOptionsTitle);
+                            title.setText(((TextView)view).getText());
+                            Button moveButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsMoveButton);
+                            moveButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    EditText editText = (EditText) dialogLayout.findViewById(R.id.defenseOptionMoveEdit);
+                                    int defenseTarget;
+                                    try {
+                                        defenseTarget = Integer.parseInt(editText.getText().toString());
+                                        if ((defenseTarget < 0) || (defenseTarget > 5)) {
+                                            throw new NumberFormatException();
+                                        }
+                                    } catch (NumberFormatException nfe) {
+                                        Log.e("Scout Error", "Tried to move to a non real defense");
+                                        Toast.makeText(context, "Please enter a valid defense", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                    Map<Long, Boolean> crossing = defenseTimes.get(index).remove(position);
+                                    adapter.clear();
+                                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
+                                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
+                                        if (firstEntry.getValue()) {
+                                            adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                        } else {
+                                            adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                    defenseTimes.get(defenseTarget-1).add(crossing);
+                                    dialog.dismiss();
+                                }
+                            });
+                            Button deleteButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsDeleteButton);
+                            deleteButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    defenseTimes.get(index).remove(position);
+                                    adapter.clear();
+                                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
+                                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
+                                        if (firstEntry.getValue()) {
+                                            adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                        } else {
+                                            adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                                        }
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            });
+                            Button cancelButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsCancelButton);
+                            cancelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog.setContentView(dialogLayout);
+                            dialog.show();
+                            /*new AlertDialog.Builder(context)
                                     .setTitle("Defense Cross Options")
                                     .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                                         @Override
@@ -326,7 +397,7 @@ public class UIComponentCreator {
                                         }
                                     })
                                     .setNeutralButton("Cancel", null)
-                                    .show();
+                                    .show();*/
                             return true;
                         }
                     });
@@ -342,8 +413,10 @@ public class UIComponentCreator {
                     dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, index, true)));
-                            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, index, false)));
+                            for (int i = 0; i < successTexts.size(); i++) {
+                                successTexts.get(i).setText("S: " + Integer.toString(numOfCrosses(defenseTimes, i, true)));
+                                failTexts.get(i).setText("F: " + Integer.toString(numOfCrosses(defenseTimes, i, false)));
+                            }
                         }
                     });
                     dialog.show();

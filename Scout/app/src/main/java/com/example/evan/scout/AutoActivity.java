@@ -149,9 +149,9 @@ public class AutoActivity extends AppCompatActivity {
                 JSONArray defenseTimes = data.getJSONArray("defenseTimesAuto");
                 for (int i = 0; i < defenseTimes.length(); i++) {
                     for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
-                        String key = defenseTimes.getJSONObject(i).keys().next();
+                        String key = defenseTimes.getJSONArray(i).getJSONObject(j).keys().next();
                         Map<Long, Boolean> map = new HashMap<>();
-                        map.put(Long.parseLong(key), defenseTimes.getJSONObject(i).getBoolean(key));
+                        map.put(Long.parseLong(key), defenseTimes.getJSONArray(i).getJSONObject(j).getBoolean(key));
                         combinedDefenseCrosses.get(i).add(map);
                     }
                 }
@@ -291,12 +291,13 @@ public class AutoActivity extends AppCompatActivity {
             JSONArray defenseTimes = new JSONArray();
             for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
                 JSONArray tmp = new JSONArray();
-                for (int j = 0; j < combinedDefenseCrosses.get(i).size(); i++) {
+                for (int j = 0; j < combinedDefenseCrosses.get(i).size(); j++) {
                     JSONObject tmp2 = new JSONObject();
                     Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
                     tmp2.put(Long.toString(firstEntry.getKey()), firstEntry.getValue());
                     tmp.put(tmp2);
                 }
+                defenseTimes.put(tmp);
             }
             data.put("defenseTimesAuto", defenseTimes);
         } catch (JSONException jsone) {

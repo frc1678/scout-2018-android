@@ -223,40 +223,69 @@ public class MainActivity extends AppCompatActivity {
         List<String> startNames = new ArrayList<>(Arrays.asList("defenseTimesAuto", "defenseTimesTele"));
         List<String> endSuccessNames = new ArrayList<>(Arrays.asList("successfulDefenseCrossTimesAuto", "successfulDefenseCrossTimesTele"));
         List<String> endFailNames = new ArrayList<>(Arrays.asList("failedDefenseCrossTimesAuto", "failedDefenseCrossTimesTele"));
+        JSONObject data;
         try {
-            JSONObject data = new JSONObject(json);
-            for (int k = 0; k < 2; k++) {
-                JSONArray defenseTimes = data.getJSONArray(startNames.get(k));
-                List<List<Map<Long, Boolean>>> combinedDefenseCrosses = new ArrayList<>();
+            data = new JSONObject(json);
+            String wrapperKey = data.keys().next();
+            data = data.getJSONObject(wrapperKey);
+        } catch (JSONException jsone) {
+            return null;
+        }
+        for (int k = 0; k < 2; k++) {
+            List<List<Map<Long, Boolean>>> combinedDefenseCrosses = new ArrayList<>();
+            try {
+                JSONArray defenseTimes;
+                try {
+                    defenseTimes = data.getJSONArray(startNames.get(k));
+                } catch (JSONException jsone) {
+                    Log.e("JSON error", "0.5");
+                    return null;
+                }
                 for (int i = 0; i < 5; i++) {
                     combinedDefenseCrosses.add(i, new ArrayList<Map<Long, Boolean>>());
                 }
                 for (int i = 0; i < defenseTimes.length(); i++) {
                     for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
-                        String key = defenseTimes.getJSONObject(i).keys().next();
+                        String key;
+                        try {
+                            key = defenseTimes.getJSONArray(i).getJSONObject(j).keys().next();
+                        } catch (JSONException jsone) {
+                            Log.e("JSON error", "1");
+                            return null;
+                        }
                         Map<Long, Boolean> map = new HashMap<>();
-                        map.put(Long.parseLong(key), defenseTimes.getJSONObject(i).getBoolean(key));
+                        try {
+                            map.put(Long.parseLong(key), defenseTimes.getJSONArray(i).getJSONObject(j).getBoolean(key));
+                        } catch (JSONException jsone) {
+                            Log.e("JSON error", "2");
+                            return null;
+                        }
                         combinedDefenseCrosses.get(i).add(map);
                     }
                 }
-                List<List<Long>> successCrossTimes = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    successCrossTimes.add(i, new ArrayList<Long>());
-                }
-                List<List<Long>> failCrossTimes = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    failCrossTimes.add(i, new ArrayList<Long>());
-                }
-                for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
-                    for (int j = 0; j < combinedDefenseCrosses.get(i).size(); j++) {
-                        Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
-                        if (firstEntry.getValue()) {
-                            successCrossTimes.get(i).add(firstEntry.getKey());
-                        } else {
-                            failCrossTimes.get(i).add(firstEntry.getKey());
-                        }
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Error in copying JSON to data");
+                return null;
+            }
+            List<List<Long>> successCrossTimes = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                successCrossTimes.add(i, new ArrayList<Long>());
+            }
+            List<List<Long>> failCrossTimes = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                failCrossTimes.add(i, new ArrayList<Long>());
+            }
+            for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
+                for (int j = 0; j < combinedDefenseCrosses.get(i).size(); j++) {
+                    Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
+                    if (firstEntry.getValue()) {
+                        successCrossTimes.get(i).add(firstEntry.getKey());
+                    } else {
+                        failCrossTimes.get(i).add(firstEntry.getKey());
                     }
                 }
+            }
+            try {
                 data.remove(startNames.get(k));
                 JSONArray successDefenseTimes = new JSONArray();
                 for (int i = 0; i < successCrossTimes.size(); i++) {
@@ -276,11 +305,12 @@ public class MainActivity extends AppCompatActivity {
                     failDefenseTimes.put(tmp);
                 }
                 data.put(endFailNames.get(k), failDefenseTimes);
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Error in copying data to JSON");
+                return null;
             }
-            return data.toString();
-        } catch (JSONException jsone) {
-            return null;
         }
+        return data.toString();
     }
 
 

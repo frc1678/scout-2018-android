@@ -150,9 +150,9 @@ public class TeleopActivity extends AppCompatActivity {
             JSONArray defenseTimes = data.getJSONArray("defenseTimesTele");
             for (int i = 0; i < defenseTimes.length(); i++) {
                 for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
-                    String key = defenseTimes.getJSONObject(i).keys().next();
+                    String key = defenseTimes.getJSONArray(i).getJSONObject(j).keys().next();
                     Map<Long, Boolean> map = new HashMap<>();
-                    map.put(Long.parseLong(key), defenseTimes.getJSONObject(i).getBoolean(key));
+                    map.put(Long.parseLong(key), defenseTimes.getJSONArray(i).getJSONObject(j).getBoolean(key));
                     combinedDefenseCrosses.get(i).add(map);
                 }
             }
@@ -314,6 +314,7 @@ public class TeleopActivity extends AppCompatActivity {
                     tmp2.put(Long.toString(firstEntry.getKey()), firstEntry.getValue());
                     tmp.put(tmp2);
                 }
+                defenseTimes.put(tmp);
             }
             data.put("defenseTimesTele", defenseTimes);
         } catch (JSONException jsone) {
