@@ -212,47 +212,44 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error in send data", Toast.LENGTH_LONG).show();
                 return;
             }
-            ConnectThread connectThread = new ConnectThread(this, superName, uuid, convertJsonToSend(matchData));
-            connectThread.writeToDisk(getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt", matchData);
+            //we want to send data fit for firebase, but we save a different file that will retain more information for future editing
+            ConnectThread.ConnectThreadData data = new ConnectThread.ConnectThreadData(getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt", matchData, sendData);
+            new ConnectThread(this, superName, uuid, data).start();
         }
     }
 
 
 
-    private String convertJsonToSend(String json) {
+    //we need this to change our data into a format fit for firebase
+    public static String convertJsonToSend(String json) {
         List<String> startNames = new ArrayList<>(Arrays.asList("defenseTimesAuto", "defenseTimesTele"));
         List<String> endSuccessNames = new ArrayList<>(Arrays.asList("successfulDefenseCrossTimesAuto", "successfulDefenseCrossTimesTele"));
         List<String> endFailNames = new ArrayList<>(Arrays.asList("failedDefenseCrossTimesAuto", "failedDefenseCrossTimesTele"));
         JSONObject data;
+        JSONObject startData;
+        //first, parse json from string
         try {
-            data = new JSONObject(json);
-            String wrapperKey = data.keys().next();
-            data = data.getJSONObject(wrapperKey);
+            startData = new JSONObject(json);
+            String wrapperKey = startData.keys().next();
+            data = startData.getJSONObject(wrapperKey);
         } catch (JSONException jsone) {
+            Log.e("JSON error", "Error in parsing JSON from string");
             return null;
         }
+        //we do it twice, for auto and teleop
         for (int k = 0; k < 2; k++) {
+            //this is the local format.  First get the data from the json
             List<List<Map<Long, Boolean>>> combinedDefenseCrosses = new ArrayList<>();
             try {
                 JSONArray defenseTimes;
-                try {
-                    defenseTimes = data.getJSONArray(startNames.get(k));
-                } catch (JSONException jsone) {
-                    Log.e("JSON error", "0.5");
-                    return null;
-                }
+                defenseTimes = data.getJSONArray(startNames.get(k));
                 for (int i = 0; i < 5; i++) {
                     combinedDefenseCrosses.add(i, new ArrayList<Map<Long, Boolean>>());
                 }
                 for (int i = 0; i < defenseTimes.length(); i++) {
                     for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
                         String key;
-                        try {
-                            key = defenseTimes.getJSONArray(i).getJSONObject(j).keys().next();
-                        } catch (JSONException jsone) {
-                            Log.e("JSON error", "1");
-                            return null;
-                        }
+                        key = defenseTimes.getJSONArray(i).getJSONObject(j).keys().next();
                         Map<Long, Boolean> map = new HashMap<>();
                         try {
                             map.put(Long.parseLong(key), defenseTimes.getJSONArray(i).getJSONObject(j).getBoolean(key));
@@ -267,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("JSON error", "Error in copying JSON to data");
                 return null;
             }
+            //next 2 lists are firebase format.  Next we take our data and change it to this format:
             List<List<Long>> successCrossTimes = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 successCrossTimes.add(i, new ArrayList<Long>());
@@ -285,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            //finally put our data back in the json and return it
             try {
                 data.remove(startNames.get(k));
                 JSONArray successDefenseTimes = new JSONArray();
@@ -310,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
-        return data.toString();
+        return startData.toString();
     }
 
 
@@ -527,15 +526,30 @@ public class MainActivity extends AppCompatActivity {
 
     //onclick for 'resend all unsent' button
     public void resendAllUnsent(View view) {
-        Map<String, String> dataPoints = new HashMap<>();
+        resendAll("UNSENT_");
+    }
+
+
+
+    //onclick for 'resend all' button
+    public void resendAll(View view) {
+        resendAll("");
+    }
+
+
+    private void resendAll(String filter) {
+        List<String> fileNames = new ArrayList<>();
+        List<String> dataToSend = new ArrayList<>();
+        List<String> dataToSave = new ArrayList<>();
         for (int i = 0; i < fileListAdapter.getCount(); i++) {
             String name = fileListAdapter.getItem(i);
-            if (name.contains("UNSENT_")) {
+            if (name.contains(filter)) {
                 String content = FileListAdapter.readFile(context, name);
                 if (content != null) {
                     try {
                         JSONObject data = new JSONObject(content);
-                        dataPoints.put(name, data.toString());
+                        fileNames.add(name);
+                        dataToSave.add(data.toString());
                     } catch (JSONException jsone) {
                         Log.e("File Error", "Not a valid JSON in resend all");
                         Toast.makeText(context, "Invalid format in file", Toast.LENGTH_LONG).show();
@@ -543,31 +557,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (dataPoints.size() != 0) {
-            new ConnectThread(context, superName, uuid, dataPoints).start();
+        for (int i = 0; i < dataToSave.size(); i++) {
+            dataToSend.add(convertJsonToSend(dataToSave.get(i)));
         }
-    }
-
-
-
-    //onclick for 'resend all' button
-    public void resendAll(View view) {
-        Map<String, String> dataPoints = new HashMap<>();
-        for (int i = 0; i < fileListAdapter.getCount(); i++) {
-            String name = fileListAdapter.getItem(i);
-            String content = FileListAdapter.readFile(context, name);
-            if (content != null) {
-                try {
-                    JSONObject data = new JSONObject(content);
-                    dataPoints.put(name, data.toString());
-                } catch (JSONException jsone) {
-                    Log.e("File Error", "Not a valid JSON in resend all");
-                    Toast.makeText(context, "Invalid format in file", Toast.LENGTH_LONG).show();
-                }
-            }
+        ConnectThread.ConnectThreadData data;
+        try {
+            data = new ConnectThread.ConnectThreadData(fileNames, dataToSave, dataToSend);
+        } catch (IllegalArgumentException iae) {
+            Log.i("File Error", "Error in File Data");
+            Toast.makeText(this, "Error in File Data", Toast.LENGTH_LONG).show();
+            return;
         }
-        if (dataPoints.size() != 0) {
-            new ConnectThread(context, superName, uuid, dataPoints).start();
+        if (data.size() != 0) {
+            new ConnectThread(context, superName, uuid, data).start();
         }
     }
 

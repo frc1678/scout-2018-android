@@ -46,7 +46,13 @@ public class FileListAdapter extends ArrayAdapter<String> {
                 //read data from file
                 String text = readFile(context, name);
                 if (text != null) {
-                    new ConnectThread(context, superName, uuid, name, text).start();
+                    String sendData = MainActivity.convertJsonToSend(text);
+                    if (sendData == null) {
+                        Log.e("Json Error", "Failed to convert matchData to sendData");
+                        Toast.makeText(context, "Error in send data", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    new ConnectThread(context, superName, uuid, new ConnectThread.ConnectThreadData(name, text, sendData)).start();
                 }
             }
         });
@@ -64,7 +70,13 @@ public class FileListAdapter extends ArrayAdapter<String> {
                                 //read data from file
                                 String text = readFile(context, name);
                                 if (text != null) {
-                                    new ConnectThread(context, superName, uuid, name, text).start();
+                                    String sendData = MainActivity.convertJsonToSend(text);
+                                    if (sendData == null) {
+                                        Log.e("Json Error", "Failed to convert matchData to sendData");
+                                        Toast.makeText(context, "Error in send data", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                    new ConnectThread(context, superName, uuid, new ConnectThread.ConnectThreadData(name, text, sendData)).start();
                                 }
                             }
                         })

@@ -23,7 +23,7 @@ public class ScheduleHandler {
     private MainActivity context;
     private class ScheduleReceiver extends ConnectThread {
         public ScheduleReceiver(MainActivity context, String superName, String uuid) {
-            super(context, superName, uuid, null, null);
+            super(context, superName, uuid, null);
         }
 
 

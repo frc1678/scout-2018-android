@@ -142,18 +142,12 @@ public class UIComponentCreator {
 
     //sub class specifically for creating defense buttons
     public static class UIButtonCreator extends UIComponentCreator {
-        //this is to indicate whether the last time entered was a success or fail
-        private List<Boolean> lastSuccessOrFail;
-        List<TextView> successTexts;
-        List<TextView> failTexts;
+        private List<TextView> successTexts;
+        private List<TextView> failTexts;
         private Activity context;
         public UIButtonCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
             this.context = context;
-            lastSuccessOrFail = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                lastSuccessOrFail.add(i, null);
-            }
             successTexts = new ArrayList<>();
             failTexts = new ArrayList<>();
         }
@@ -165,16 +159,19 @@ public class UIComponentCreator {
             LinearLayout textViewLayout = new LinearLayout(context);
             textViewLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
             textViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+
             final TextView successText = new TextView(context);
             successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             successText.setGravity(Gravity.CENTER);
             successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, index, true)));
             successTexts.add(successText);
+
             final TextView failText = new TextView(context);
             failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             failText.setGravity(Gravity.CENTER);
             failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, index, false)));
             failTexts.add(failText);
+
             textViewLayout.addView(successText);
             textViewLayout.addView(failText);
 
@@ -196,12 +193,12 @@ public class UIComponentCreator {
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.dialog, null);
                     TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
                     title.setText("Attempt Defense " + Integer.toString(buttonNum + 1));
+
                     Button success = (Button) dialogLayout.findViewById(R.id.successButton);
                     success.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            lastSuccessOrFail.add(buttonNum, true);
                             //add time
                             Map<Long, Boolean> map = new HashMap<>();
                             map.put(Calendar.getInstance().getTimeInMillis() - startTime, true);
@@ -212,13 +209,12 @@ public class UIComponentCreator {
                             dialog.dismiss();
                         }
                     });
+
                     Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
                     failure.getBackground().setColorFilter(Color.parseColor("#FFC8C8"), PorterDuff.Mode.MULTIPLY);
                     failure.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Long time = Calendar.getInstance().getTimeInMillis() - startTime;
-                            lastSuccessOrFail.add(buttonNum, false);
                             //add time
                             Map<Long, Boolean> map = new HashMap<>();
                             map.put(Calendar.getInstance().getTimeInMillis() - startTime, false);
@@ -229,6 +225,7 @@ public class UIComponentCreator {
                             dialog.dismiss();
                         }
                     });
+
                     Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -241,43 +238,12 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-            //if they hold the button, give them a dialog to undo the last action for that button
-            /*defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    final int buttonNum = Integer.parseInt(((Button) v).getText().toString().replaceAll("Defense ", "")) - 1;
-                    new AlertDialog.Builder(context)
-                            .setTitle("Undo Defense Attempt")
-                            .setMessage("Are you sure you want to undo the last defense attempt for this button?")
-                            .setNegativeButton("Cancel", null)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //if they click yes, redo the last change
-                                    if (lastSuccessOrFail.get(buttonNum) != null) {
-                                        try {
-                                            if (lastSuccessOrFail.get(buttonNum)) {
-                                                successTimes.get(buttonNum).remove(successTimes.get(buttonNum).size() - 1);
-                                                successText.setText("S: " + successTimes.get(buttonNum).size());
-                                                lastSuccessOrFail.add(buttonNum, null);
-                                            } else {
-                                                failTimes.get(buttonNum).remove(failTimes.get(buttonNum).size() - 1);
-                                                failText.setText("F: " + failTimes.get(buttonNum).size());
-                                                lastSuccessOrFail.add(buttonNum, null);
-                                            }
-                                        } catch (IndexOutOfBoundsException ioobe) {
-                                            Log.e("User Error", "Scout tried to undo action that didn't exist. Unimportant");
-                                        }
-                                    }
-                                }
-                            })
-                            .show();
-                    return true;
-                }
-            });*/
 
 
+
+            //when they long click, give them list of crosses
             defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
+                final ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
                 @Override
                 public boolean onLongClick(View v) {
                     final Dialog dialog = new Dialog(context);
@@ -285,31 +251,15 @@ public class UIComponentCreator {
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.defense_edit_dialog, null);
                     TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
                     title.setText("Edit Defense " + Integer.toString(index + 1) + " Crossings");
+
                     ListView listView = (ListView) dialogLayout.findViewById(R.id.defenseEditList);
-                    final ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
-                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
-                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                        if (firstEntry.getValue()) {
-                            adapter.add("Defense Succeeded (" + Double.toString((double)firstEntry.getKey()/(double)1000) + "s)");
-                        } else {
-                            adapter.add("Defense Failed (" + Double.toString((double)firstEntry.getKey()/(double)1000) + "s)");
-                        }
-                    }
                     listView.setAdapter(adapter);
+                    updateUI();
+
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                            defenseTimes.get(index).remove(position);
-                            adapter.clear();
-                            for (int i = 0; i < defenseTimes.get(index).size(); i++) {
-                                Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                                if (firstEntry.getValue()) {
-                                    adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                } else {
-                                    adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                }
-                            }
-                            adapter.notifyDataSetChanged();
+                            deleteCrossing(position);
                         }
                     });
                     listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -320,6 +270,7 @@ public class UIComponentCreator {
                             final RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.defense_options_dialog, null);
                             TextView title = (TextView) dialogLayout.findViewById(R.id.defenseOptionsTitle);
                             title.setText(((TextView)view).getText());
+
                             Button moveButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsMoveButton);
                             moveButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -337,38 +288,20 @@ public class UIComponentCreator {
                                         return;
                                     }
                                     Map<Long, Boolean> crossing = defenseTimes.get(index).remove(position);
-                                    adapter.clear();
-                                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
-                                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                                        if (firstEntry.getValue()) {
-                                            adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                        } else {
-                                            adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                        }
-                                    }
-                                    adapter.notifyDataSetChanged();
+                                    updateUI();
                                     defenseTimes.get(defenseTarget-1).add(crossing);
                                     dialog.dismiss();
                                 }
                             });
+
                             Button deleteButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsDeleteButton);
                             deleteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    defenseTimes.get(index).remove(position);
-                                    adapter.clear();
-                                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
-                                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                                        if (firstEntry.getValue()) {
-                                            adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                        } else {
-                                            adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                        }
-                                    }
-                                    adapter.notifyDataSetChanged();
-                                    dialog.dismiss();
+                                    deleteCrossing(position);
                                 }
                             });
+
                             Button cancelButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsCancelButton);
                             cancelButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -376,31 +309,13 @@ public class UIComponentCreator {
                                     dialog.dismiss();
                                 }
                             });
+
                             dialog.setContentView(dialogLayout);
                             dialog.show();
-                            /*new AlertDialog.Builder(context)
-                                    .setTitle("Defense Cross Options")
-                                    .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            defenseTimes.get(index).remove(position);
-                                            adapter.clear();
-                                            for (int i = 0; i < defenseTimes.get(index).size(); i++) {
-                                                Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                                                if (firstEntry.getValue()) {
-                                                    adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                                } else {
-                                                    adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
-                                                }
-                                                adapter.notifyDataSetChanged();
-                                            }
-                                        }
-                                    })
-                                    .setNeutralButton("Cancel", null)
-                                    .show();*/
                             return true;
                         }
                     });
+
                     Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -409,7 +324,9 @@ public class UIComponentCreator {
                             dialog.dismiss();
                         }
                     });
+
                     dialog.setContentView(dialogLayout);
+                    //when they dismiss, update ui
                     dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
@@ -422,6 +339,26 @@ public class UIComponentCreator {
                     dialog.show();
                     return true;
                 }
+
+
+                private void deleteCrossing(int position) {
+                    //remove from list
+                    defenseTimes.get(index).remove(position);
+                    //update ui
+                    updateUI();
+                }
+                private void updateUI() {
+                    adapter.clear();
+                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
+                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
+                        if (firstEntry.getValue()) {
+                            adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                        } else {
+                            adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
             });
 
 
@@ -429,6 +366,8 @@ public class UIComponentCreator {
             column.addView(defenseButton);
             column.addView(textViewLayout);
         }
+
+        //get number of successes or fails in list
         private int numOfCrosses(List<List<Map<Long, Boolean>>> defenseTimes, int defenseNum, boolean success) {
             int counter = 0;
             for (int i = 0; i < defenseTimes.get(defenseNum).size(); i++) {

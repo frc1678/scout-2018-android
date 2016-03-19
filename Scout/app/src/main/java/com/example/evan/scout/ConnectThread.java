@@ -21,63 +21,89 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+//class to send data over bluetooth and save it to disk
+//we treat sending and saving differently; in some cases you may want to send but not save
 public class ConnectThread extends Thread {
     protected static BluetoothDevice device = null;
     protected static final Object deviceLock = new Object();
     protected MainActivity context;
     protected String superName;
     protected String uuid;
-    //dataPoints is a map of file names to string values to be sent
-    //private Map<String, String> dataPoints;
-    private List<String> fileNames;
-    private List<String> dataPoints;
     private List<File> files = new ArrayList<>();
     private File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData");
-    private boolean autoWrite = true;
+    private ConnectThreadData data;
 
 
 
-    public ConnectThread(MainActivity context, String superName, String uuid, Map<String, String> dataPoints) {
+    public ConnectThread(MainActivity context, String superName, String uuid, ConnectThreadData data) {
         this.context = context;
         this.superName = superName;
         this.uuid = uuid;
-        this.dataPoints = new ArrayList<>();
-        fileNames = new ArrayList<>();
-        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
-            fileNames.add(entry.getKey().replaceFirst("UNSENT_", ""));
-            this.dataPoints.add(entry.getValue());
-        }
-    }
-    //if you only want to send one value, just include matchName and data
-    public ConnectThread(MainActivity context, String superName, String uuid, String matchName, String data) {
-        this.context = context;
-        this.superName = superName;
-        this.uuid = uuid;
-        dataPoints = new ArrayList<>();
-        fileNames = new ArrayList<>();
-        if (matchName != null) {
-            fileNames.add(matchName.replaceAll("UNSENT_", ""));
-            dataPoints.add(data);
-        }
-    }
-    public ConnectThread(MainActivity context, String superName, String uuid, String data) {
-        this.context = context;
-        this.superName = superName;
-        this.uuid = uuid;
-        dataPoints = new ArrayList<>();
-        dataPoints.add(data);
-        autoWrite = false;
+        this.data = data;
     }
 
-    public ConnectThread(MainActivity context, String superName, String uuid, List<String> dataPoints) {
-        this.context = context;
-        this.superName = superName;
-        this.uuid = uuid;
-        this.dataPoints = new ArrayList<>();
-        for (int i = 0; i < dataPoints.size(); i++) {
-            this.dataPoints.add(dataPoints.get(i));
+
+
+    public static class ConnectThreadData {
+        private List<String> fileNames;
+        private List<String> dataToSave;
+        private List<String> dataToSend;
+        private int size;
+        public ConnectThreadData(String fileName, String data) {
+            this();
+            size = 1;
+            fileNames.add(fileName.replaceFirst("UNSENT_", ""));
+            this.dataToSave.add(data);
+            this.dataToSend.add(data);
         }
-        autoWrite = false;
+        public ConnectThreadData(String fileName, String dataToSave, String dataToSend) {
+            this();
+            size = 1;
+            fileNames.add(fileName.replaceFirst("UNSENT_", ""));
+            this.dataToSave.add(dataToSave);
+            this.dataToSend.add(dataToSend);
+        }
+        public ConnectThreadData(List<String> fileNames, List<String> data) throws IllegalArgumentException {
+            this();
+            if (fileNames.size() != data.size()) {
+                throw new IllegalArgumentException();
+            }
+            size = fileNames.size();
+            for (int i = 0; i < size; i++) {
+                this.fileNames.add(fileNames.get(i).replaceFirst("UNSENT_", ""));
+            }
+            this.dataToSend.addAll(data);
+            this.dataToSave.addAll(data);
+        }
+        public ConnectThreadData(List<String> fileNames, List<String> dataToSave, List<String> dataToSend) throws IllegalArgumentException {
+            this();
+            if ((fileNames.size() != dataToSend.size()) || (fileNames.size() != dataToSave.size())) {
+                throw new IllegalArgumentException();
+            }
+            size = fileNames.size();
+            for (int i = 0; i < size; i++) {
+                this.fileNames.add(fileNames.get(i).replaceFirst("UNSENT_", ""));
+            }
+            this.dataToSend.addAll(dataToSend);
+            this.dataToSave.addAll(dataToSave);
+        }
+        private ConnectThreadData() {
+            fileNames = new ArrayList<>();
+            dataToSave = new ArrayList<>();
+            dataToSend = new ArrayList<>();
+        }
+        public int size() {
+            return size;
+        }
+        public List<String> getFileNames() {
+            return fileNames;
+        }
+        public List<String> getDataToSave() {
+            return dataToSave;
+        }
+        public List<String> getDataToSend() {
+            return dataToSend;
+        }
     }
 
 
@@ -116,21 +142,8 @@ public class ConnectThread extends Thread {
     }
 
 
+
     private boolean writeToDisk() {
-        Map<String, String> dataPoints = new HashMap<>();
-        for (int i = 0; i < this.dataPoints.size(); i++) {
-            dataPoints.put(fileNames.get(i), this.dataPoints.get(i));
-        }
-        return writeToDisk(dataPoints);
-    }
-
-    public boolean writeToDisk(String fileName, String data) {
-        Map<String, String> dataPoints = new HashMap<>();
-        dataPoints.put(fileName, data);
-        return writeToDisk(dataPoints);
-    }
-
-    public boolean writeToDisk(Map<String, String> dataPoints) {
         //first we save to a file so if something goes wrong we have backups.  We use external storage so it is not deleted when app is reinstalled.
         //storage path: /sdcard/Android/MatchData
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -142,12 +155,12 @@ public class ConnectThread extends Thread {
             Log.i("File Info", "Failed to make Directory.  Unimportant");
         }
         //we loop through all the data points, write them to files, and save their files to be renamed later
-        for (Map.Entry<String, String> entry : dataPoints.entrySet()) {
+        for (int i = 0; i < data.size(); i++) {
             File file;
             PrintWriter fileWriter;
             try {
                 //we first name the file with the prefix "UNSENT_".  If all goes well, it is renamed without the prefix, but if something fails it will still have it.
-                file = new File(dir, "UNSENT_" + entry.getKey());
+                file = new File(dir, "UNSENT_" + data.getFileNames().get(i));
                 fileWriter = new PrintWriter(file);
             } catch (IOException ioe) {
                 Log.e("File Error", "Failed to open file");
@@ -156,7 +169,7 @@ public class ConnectThread extends Thread {
             }
 
 
-            fileWriter.print(entry.getValue());
+            fileWriter.print(data.getDataToSave().get(i));
             fileWriter.close();
             if (fileWriter.checkError()) {
                 Log.e("File Error", "Failed to Write to File");
@@ -165,7 +178,6 @@ public class ConnectThread extends Thread {
             }
             files.add(file);
         }
-        autoWrite = true;
         return true;
     }
 
@@ -173,12 +185,9 @@ public class ConnectThread extends Thread {
 
     @Override
     public void run() {
-        if (autoWrite) {
-            if (!writeToDisk()) {
-                return;
-            }
+        if (!writeToDisk()) {
+            return;
         }
-
 
 
         if(!initBluetooth(context, superName)) {
@@ -188,9 +197,9 @@ public class ConnectThread extends Thread {
 
         //convert data to sendable string
         String data = "";
-        for (int i = 0; i < dataPoints.size(); i++) {
-            data = data.concat(dataPoints.get(i) + "\n");
-            Log.i("JSON during send", dataPoints.get(i));
+        for (int i = 0; i < this.data.size(); i++) {
+            data = data.concat(this.data.getDataToSend().get(i) + "\n");
+            Log.i("JSON during send", this.data.getDataToSend().get(i));
         }
 
 
@@ -309,11 +318,9 @@ public class ConnectThread extends Thread {
         Log.i("Communications Info", "Done");
         toastText("Data Send Success", Toast.LENGTH_LONG, context);
         //rename files
-        if (autoWrite) {
-            for (int i = 0; i < fileNames.size(); i++) {
-                if (!files.get(i).renameTo(new File(dir, fileNames.get(i)))) {
-                    Log.e("File Error", "Failed to Rename File");
-                }
+        for (int i = 0; i < this.data.size(); i++) {
+            if (!files.get(i).renameTo(new File(dir, this.data.getFileNames().get(i)))) {
+                Log.e("File Error", "Failed to Rename File");
             }
         }
     }
