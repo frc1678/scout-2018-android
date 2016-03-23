@@ -23,6 +23,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -377,6 +378,129 @@ public class UIComponentCreator {
                 }
             }
             return counter;
+        }
+    }
+
+
+
+
+    public static class UIShotCounter extends UIComponentCreator {
+        private List<Integer> shotsMade;
+        private List<Integer> shotsMissed;
+        private Activity context;
+        public UIShotCounter(Activity context, List<String> componentNames) {
+            super(context, componentNames);
+            shotsMade = new ArrayList<>();
+            shotsMissed = new ArrayList<>();
+            this.context = context;
+        }
+        public void addButtonRow(LinearLayout column, final Integer startShotsMade, Integer startShotsMissed, final int index) {
+            LinearLayout textViewLayout = new LinearLayout(context);
+            textViewLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
+            textViewLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+            final TextView successText = new TextView(context);
+            successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
+            successText.setGravity(Gravity.CENTER);
+            successText.setText("S: " + Integer.toString(startShotsMade));
+            shotsMade.add(index, startShotsMade);
+
+            final TextView failText = new TextView(context);
+            failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
+            failText.setGravity(Gravity.CENTER);
+            failText.setText("F: " + Integer.toString(startShotsMissed));
+            shotsMissed.add(index, startShotsMissed);
+
+            textViewLayout.addView(successText);
+            textViewLayout.addView(failText);
+
+            final String titleString = super.componentNames.get(super.currentComponent);
+            final Button defenseButton = getNextDefenseButton();
+            defenseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(context);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.dialog, null);
+                    TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                    title.setText(titleString);
+
+                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
+                    success.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
+                    success.setText("Made");
+                    success.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            shotsMade.set(index, shotsMade.get(index) + 1);
+                            successText.setText("S: " + shotsMade.get(index));
+                        }
+                    });
+
+                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                    failure.getBackground().setColorFilter(Color.parseColor("#FFC8C8"), PorterDuff.Mode.MULTIPLY);
+                    failure.setText("Missed");
+                    failure.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            shotsMissed.set(index, shotsMissed.get(index) + 1);
+                            failText.setText("F: " + shotsMissed.get(index));
+                        }
+                    });
+
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //dismiss dialog
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(dialogLayout);
+                    dialog.show();
+                }
+            });
+            defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final Dialog dialog = new Dialog(context);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.counters_dialog, null);
+                    TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                    title.setText("Edit " + titleString + "s");
+
+                    LinearLayout column = (LinearLayout) dialogLayout.findViewById(R.id.contentLayout);
+                    final UIComponentCreator creator = new UIButtonCreator(context,
+                            Arrays.asList(titleString + "s Made", titleString + "s Missed"));
+                    column.addView(creator.getNextTitleRow(1));
+                    column.addView(creator.getNextCounterRow(1, shotsMade.get(index)));
+                    column.addView(creator.getNextTitleRow(1));
+                    column.addView(creator.getNextCounterRow(1, shotsMissed.get(index)));
+
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //dismiss dialog
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(dialogLayout);
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            List<View> views = creator.getComponentViews();
+                            shotsMade.set(index, Integer.parseInt(((TextView) views.get(0)).getText().toString()));
+                            shotsMissed.set(index, Integer.parseInt(((TextView) views.get(1)).getText().toString()));
+                            successText.setText("S: " + shotsMade.get(index));
+                            failText.setText("F: " + shotsMissed.get(index));
+                        }
+                    });
+                    dialog.show();
+                    return true;
+                }
+            });
+            column.addView(defenseButton);
+            column.addView(textViewLayout);
         }
     }
 }
