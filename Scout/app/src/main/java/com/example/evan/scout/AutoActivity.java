@@ -36,6 +36,7 @@ public class AutoActivity extends AppCompatActivity {
     private UIComponentCreator toggleCreator;
     //class to get and save counters
     private UIComponentCreator counterCreator;
+    private UIComponentCreator.UIShotCreator shotCreator;
     //list of successful cross times for each defense
     /*private List<List<Long>> successCrossTimes;
     //list of failed cross times for each defense
@@ -105,9 +106,10 @@ public class AutoActivity extends AppCompatActivity {
         List<Integer> toggleValues = new ArrayList<>();
 
         List<Integer> counterValues = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        counterValues.add(0);
+        /*for (int i = 0; i < 6; i++) {
             counterValues.add(0);
-        }
+        }*/
 
         boolean reached = false;
 
@@ -124,8 +126,8 @@ public class AutoActivity extends AppCompatActivity {
                     toggleValues.add(i, toggles.getInt(i));
                 }
 
-                List<String> counterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto",
-                        "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
+                List<String> counterNames = new ArrayList<>(Arrays.asList("numBallsKnockedOffMidlineAuto"/*,
+                        "numHighShotsMadeAuto", "numHighShotsMissedAuto", "numLowShotsMadeAuto", "numLowShotsMissedAuto"*/));
                 for (int i = 0; i < counterNames.size(); i++) {
                     counterValues.add(i, data.getInt(counterNames.get(i)));
                 }
@@ -189,16 +191,35 @@ public class AutoActivity extends AppCompatActivity {
         }
 
 
-
         //populate counters for everything
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.autoCounterLinearLayout);
-        counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Balls Knocked Off Mid",
+        LinearLayout fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        rowLayout.addView(fillerSpace);
+        /*counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Balls Knocked Off Mid",
                  "High Shots Made",  "High Shots Missed",  "Low Shots Made",
-                 "Low Shots Missed")));
+                 "Low Shots Missed")));*/
+        counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList("Balls Knocked Off Mid")));
 
-        for (int i = 0; i < 5; i++) {
-            rowLayout.addView(counterCreator.getNextTitleRow(1));
-            rowLayout.addView(counterCreator.getNextCounterRow(1, counterValues.get(i)));
+        for (int i = 0; i < 1; i++) {
+            LinearLayout counterLayout = new LinearLayout(this);
+            counterLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            counterLayout.setOrientation(LinearLayout.VERTICAL);
+            counterLayout.addView(counterCreator.getNextTitleRow(1));
+            counterLayout.addView(counterCreator.getNextCounterRow(1, counterValues.get(i)));
+            rowLayout.addView(counterLayout);
+        }
+
+        fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        rowLayout.addView(fillerSpace);
+
+        shotCreator = new UIComponentCreator.UIShotCreator(this, Arrays.asList("High Shot", "Low Shot"));
+        for (int i = 0; i < 2; i++) {
+            shotCreator.addButtonRow(rowLayout, 0,0,i);
+            fillerSpace = new LinearLayout(this);
+            fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            rowLayout.addView(fillerSpace);
         }
     }
 

@@ -47,6 +47,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                 String text = readFile(context, name);
                 if (text != null) {
                     String sendData = MainActivity.convertJsonToSend(text);
+                    Log.i("JSON before send", sendData);
                     if (sendData == null) {
                         Log.e("Json Error", "Failed to convert matchData to sendData");
                         Toast.makeText(context, "Error in send data", Toast.LENGTH_LONG).show();
@@ -71,6 +72,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                                 String text = readFile(context, name);
                                 if (text != null) {
                                     String sendData = MainActivity.convertJsonToSend(text);
+                                    Log.i("JSON before send", sendData);
                                     if (sendData == null) {
                                         Log.e("Json Error", "Failed to convert matchData to sendData");
                                         Toast.makeText(context, "Error in send data", Toast.LENGTH_LONG).show();

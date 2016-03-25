@@ -205,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
-            Log.i("JSON before send", matchData);
             String sendData = convertJsonToSend(matchData);
+            Log.i("JSON before send", sendData);
             if (sendData == null) {
                 Log.e("Json Error", "Failed to convert matchData to sendData");
                 Toast.makeText(this, "Error in send data", Toast.LENGTH_LONG).show();
