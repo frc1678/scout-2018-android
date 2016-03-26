@@ -92,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
         originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
 
 
+        Log.i("Constants", Constants.KEYS_TO_TITLES.toString());
+
+
 
         //get any values received from other activities
         preferences = getSharedPreferences(PREFERENCES_FILE, 0);
