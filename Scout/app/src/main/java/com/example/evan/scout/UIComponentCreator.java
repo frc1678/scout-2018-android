@@ -130,11 +130,11 @@ public class UIComponentCreator {
         return toggleButton;
     }
 
-    public Button getNextDefenseButton(int width) {
+    public Button getNextDefenseButton(int width, Float textScale) {
         Button button = new Button(context);
         button.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         button.setText(componentNames.get(currentComponent));
-        button.setTextSize(button.getTextSize() * 0.4f);
+        button.setTextSize(button.getTextSize() * textScale);
         currentComponent++;
         return button;
     }
@@ -179,7 +179,7 @@ public class UIComponentCreator {
 
 
             //add button to row
-            final Button defenseButton = getNextDefenseButton(LinearLayout.LayoutParams.WRAP_CONTENT);
+            final Button defenseButton = getNextDefenseButton(LinearLayout.LayoutParams.WRAP_CONTENT, 0.4f);
             defenseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -403,20 +403,20 @@ public class UIComponentCreator {
             final TextView successText = new TextView(context);
             successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             successText.setGravity(Gravity.CENTER);
-            successText.setText("S: " + Integer.toString(startShotsMade));
+            successText.setText("Made: " + Integer.toString(startShotsMade));
             shotsMade.add(index, startShotsMade);
 
             final TextView failText = new TextView(context);
             failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             failText.setGravity(Gravity.CENTER);
-            failText.setText("F: " + Integer.toString(startShotsMissed));
+            failText.setText("Missed: " + Integer.toString(startShotsMissed));
             shotsMissed.add(index, startShotsMissed);
 
             textViewLayout.addView(successText);
             textViewLayout.addView(failText);
 
             final String titleString = super.componentNames.get(super.currentComponent);
-            final Button defenseButton = getNextDefenseButton(LinearLayout.LayoutParams.MATCH_PARENT);
+            final Button defenseButton = getNextDefenseButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.5f);
             defenseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -433,7 +433,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             shotsMade.set(index, shotsMade.get(index) + 1);
-                            successText.setText("S: " + shotsMade.get(index));
+                            successText.setText("Made: " + shotsMade.get(index));
                             dialog.dismiss();
                         }
                     });
@@ -445,7 +445,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             shotsMissed.set(index, shotsMissed.get(index) + 1);
-                            failText.setText("F: " + shotsMissed.get(index));
+                            failText.setText("Missed: " + shotsMissed.get(index));
                             dialog.dismiss();
                         }
                     });
@@ -515,8 +515,8 @@ public class UIComponentCreator {
                             List<View> views = creator.getComponentViews();
                             shotsMade.set(index, Integer.parseInt(((TextView) views.get(0)).getText().toString()));
                             shotsMissed.set(index, Integer.parseInt(((TextView) views.get(1)).getText().toString()));
-                            successText.setText("S: " + shotsMade.get(index));
-                            failText.setText("F: " + shotsMissed.get(index));
+                            successText.setText("Made: " + shotsMade.get(index));
+                            failText.setText("Missed: " + shotsMissed.get(index));
                         }
                     });
                     dialog.show();
@@ -526,5 +526,7 @@ public class UIComponentCreator {
             column.addView(defenseButton);
             column.addView(textViewLayout);
         }
+        public List<Integer> getShotsMade() {return shotsMade;}
+        public List<Integer> getShotsMissed() {return shotsMissed;}
     }
 }

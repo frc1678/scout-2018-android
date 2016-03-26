@@ -45,6 +45,7 @@ public class TeleopActivity extends AppCompatActivity {
     private UIComponentCreator counterCreator;
     //class to get toggle buttons and save values to access later
     private UIComponentCreator toggleCreator;
+    private UIComponentCreator.UIShotCreator shotCreator;
     private int matchNumber;
     private boolean overridden;
     private int teamNumber;
@@ -125,9 +126,8 @@ public class TeleopActivity extends AppCompatActivity {
                 toggleValues.add(i, data.getBoolean(toggleNames.get(i)));
             }
 
-            List<String> counterNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
-                    "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
-                    "numShotsBlockedTele"));
+            List<String> counterNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele", "numShotsBlockedTele"/*,
+                    "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele"*/));
             for (int i = 0; i < counterNames.size(); i++) {
                 counterValues.add(i, data.getInt(counterNames.get(i)));
             }
@@ -166,19 +166,19 @@ public class TeleopActivity extends AppCompatActivity {
                 "Scale", "Disabled", "Incap.")));
         LinearLayout toggleLayout = (LinearLayout) findViewById(R.id.teleToggleButtonLinearLayout);
         //empty relative layout to space out buttons
-        RelativeLayout fillerSpace = new RelativeLayout(this);
+        LinearLayout fillerSpace = new LinearLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
         toggleLayout.addView(fillerSpace);
         for (int i = 0; i < 2; i++) {
             final ToggleButton button1 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i*2));
             toggleLayout.addView(button1);
-            fillerSpace = new RelativeLayout(this);
+            fillerSpace = new LinearLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
             toggleLayout.addView(fillerSpace);
 
             final ToggleButton button2 = toggleCreator.getNextToggleButton(ViewGroup.LayoutParams.MATCH_PARENT, toggleValues.get(i*2+1));
             toggleLayout.addView(button2);
-            fillerSpace = new RelativeLayout(this);
+            fillerSpace = new LinearLayout(this);
             fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.75f));
             toggleLayout.addView(fillerSpace);
 
@@ -215,12 +215,31 @@ public class TeleopActivity extends AppCompatActivity {
 
         //populate counters
         LinearLayout rowLayout = (LinearLayout) findViewById(R.id.teleCounterLinearLayout);
-        counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList( "Ground Intakes",
+        fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        rowLayout.addView(fillerSpace);
+        counterCreator = new UIComponentCreator(this, new ArrayList<>(Arrays.asList( "Ground Intakes", "Shots Blocked"/*,
                  "High Shots Made",  "High Shots Missed",  "Low Shots Made",
-                 "Low Shots Missed", "Shots Blocked")));
-        for (int i = 0; i < 6; i++) {
-            rowLayout.addView(counterCreator.getNextTitleRow(1));
-            rowLayout.addView(counterCreator.getNextCounterRow(1, counterValues.get(i)));
+                 "Low Shots Missed"*/)));
+        for (int i = 0; i < 2; i++) {
+            LinearLayout counterLayout = new LinearLayout(this);
+            counterLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            counterLayout.setOrientation(LinearLayout.VERTICAL);
+            counterLayout.addView(counterCreator.getNextTitleRow(1));
+            counterLayout.addView(counterCreator.getNextCounterRow(1, counterValues.get(i)));
+            rowLayout.addView(counterLayout);
+        }
+
+        fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        rowLayout.addView(fillerSpace);
+
+        shotCreator = new UIComponentCreator.UIShotCreator(this, Arrays.asList("High Shot", "Low Shot"));
+        for (int i = 0; i < 2; i++) {
+            shotCreator.addButtonRow(rowLayout, 0, 0, i);
+            fillerSpace = new LinearLayout(this);
+            fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            rowLayout.addView(fillerSpace);
         }
     }
 
@@ -326,15 +345,29 @@ public class TeleopActivity extends AppCompatActivity {
 
         //add data in other counters
         List<View> currentTextViews = counterCreator.getComponentViews();
-        List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele",
-                "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele",
-                "numShotsBlockedTele"));
+        List<String> counterVarNames = new ArrayList<>(Arrays.asList("numGroundIntakesTele", "numShotsBlockedTele"/*,
+                "numHighShotsMadeTele", "numHighShotsMissedTele", "numLowShotsMadeTele", "numLowShotsMissedTele"*/));
         for (int i = 0; i < currentTextViews.size(); i++) {
             try {
                 data.put(counterVarNames.get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
             } catch (JSONException jsone) {
                 Log.e("JSON error", "Failed to add counter" + Integer.toString(i) + " num to JSON");
                 Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+
+        List<String> JsonShotNames = new ArrayList<>(Arrays.asList("numHighShotsMadeTele", "numHighShotsMissedTele",
+                "numLowShotsMadeTele", "numLowShotsMissedTele"));
+        for (int i = 0; i < JsonShotNames.size(); i+=2) {
+            try {
+                data.put(JsonShotNames.get(i), shotCreator.getShotsMade().get(i/2));
+                data.put(JsonShotNames.get(i+1), shotCreator.getShotsMissed().get(i / 2));
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add " + JsonShotNames.get(i)
+                        + " or " + JsonShotNames.get(i + 1) + " to JSON");
+                Toast.makeText(this, "Error in Shot Data", Toast.LENGTH_LONG).show();
                 return;
             }
         }

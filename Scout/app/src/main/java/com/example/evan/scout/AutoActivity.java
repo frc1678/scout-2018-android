@@ -341,6 +341,21 @@ public class AutoActivity extends AppCompatActivity {
                 return;
             }
         }
+
+
+        List<String> JsonShotNames = new ArrayList<>(Arrays.asList("numHighShotsMadeAuto", "numHighShotsMissedAuto",
+                "numLowShotsMadeAuto", "numLowShotsMissedAuto"));
+        for (int i = 0; i < JsonShotNames.size(); i+=2) {
+            try {
+                data.put(JsonShotNames.get(i), shotCreator.getShotsMade().get(i/2));
+                data.put(JsonShotNames.get(i+1), shotCreator.getShotsMissed().get(i/2));
+            } catch (JSONException jsone) {
+                Log.e("JSON error", "Failed to add " + JsonShotNames.get(i)
+                        + " or " + JsonShotNames.get(i+1) + " to JSON");
+                Toast.makeText(this, "Error in Shot Data", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
     }
 
 
