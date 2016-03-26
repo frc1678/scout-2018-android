@@ -1,12 +1,10 @@
 package com.example.evan.scout;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Constants {
     public static final Map<String, String> KEYS_TO_TITLES;
-    public static final Map<String, String> LOCAL_KEYS_TO_FIREBASE_KEYS;
     static {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             put("didReachAuto", "Reach Completed");
@@ -23,20 +21,6 @@ public class Constants {
             put("numGroundIntakesTele", "Ground Intakes");
             put("numShotsBlockedTele", "Shots Blocked");
             put("defenseTimes_PERIOD._NUMBER/5", "Defense _NUMBER");
-        }};
-        Map<String, String> initialLocalKeysToFirebaseKeys = new HashMap<String, String>() {{
-            put("_SUCCESS/defenseTimes_PERIOD", "successfulDefenseCrossTimes_PERIOD");
-            put("_FAIL/defenseTimes_PERIOD", "failedDefenseCrossTimes_PERIOD");
-            put("isBallIntaked", "ballsIntakedAuto");
-        }};
-        /*this is a lot of data, let me explain:
-        this is a map of 'structs' to lists
-        The first value of the struct is a string representing the starting value of the data
-        The second value of the struct is a list of strings representing the ending values of the data
-        the second value of the map is a list of method names, as strings, to execute to get the starting data to the ending data
-        */
-        Map<Utils.TwoValueStruct<String, List<String>>, List<String>> blah = new HashMap<Utils.TwoValueStruct<String, List<String>>, List<String>>() {{
-
         }};
 
 
@@ -73,15 +57,5 @@ public class Constants {
             }
         }
         KEYS_TO_TITLES = new HashMap<>(modKeysToTitles);
-        Map<String, String> modLocalKeysToFirebaseKeys = new HashMap<>(initialLocalKeysToFirebaseKeys);
-        for (Map.Entry<String, String> entry : initialLocalKeysToFirebaseKeys.entrySet()) {
-            String key = entry.getKey();
-            if (key.contains("_PERIOD")) {
-                modLocalKeysToFirebaseKeys.put(key.replaceAll("_PERIOD", "Auto"), entry.getValue());
-                modLocalKeysToFirebaseKeys.put(key.replaceAll("_PERIOD", "Tele"), entry.getValue());
-            }
-            modKeysToTitles.remove(key);
-        }
-        LOCAL_KEYS_TO_FIREBASE_KEYS = new HashMap<>(modLocalKeysToFirebaseKeys);
     }
 }
