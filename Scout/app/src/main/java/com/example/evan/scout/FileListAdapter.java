@@ -156,7 +156,6 @@ public class FileListAdapter extends ArrayAdapter<String> {
         for (File tmpFile : files) {
             this.add(tmpFile.getName());
         }
-
         //sort so unsent files are at the top, and then the rest come by match number
         this.sort(new Comparator<String>() {
             @Override

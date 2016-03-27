@@ -60,7 +60,7 @@ public abstract class DataActivity extends AppCompatActivity {
         }
         //TODO deserialize JSON
     }
-    private void updateUI() {
+    private void updateUI() {/*
         LinearLayout toggleLayout = (LinearLayout)findViewById(R.id.dataActivityToggleLayout);
         List<String> toggleDisplayTitles = new ArrayList<>();
         for (int i = 0; i < getToggleData().size(); i++) {
@@ -115,7 +115,7 @@ public abstract class DataActivity extends AppCompatActivity {
                 Log.i("Data Error", "Failed to get field from collectedData.  Not including defense button");
             }
         }
-    }
+    */}
     private void updateData() {
         List<View> toggleData = toggleCreator.getComponentViews();
         for (int i = 0; i < getToggleData().size(); i++) {

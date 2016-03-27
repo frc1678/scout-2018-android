@@ -22,6 +22,9 @@ public class LocalTeamInMatchData extends TeamInMatchData {
             defenseTimesAuto.add(i, new ArrayList<Utils.TwoValueStruct<Float, Boolean>>());
         }
         isBallIntaked = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            isBallIntaked.add(false);
+        }
     }
     public TeamInMatchData getFirebaseData() {
         successfulDefenseCrossTimesAuto = localDefenseToFireBaseDefense(defenseTimesAuto, true);

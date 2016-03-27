@@ -93,6 +93,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         Log.i("Constants", Constants.KEYS_TO_TITLES.toString());
+        try {
+            LocalTeamInMatchData test = new LocalTeamInMatchData();
+            List<Utils.TwoValueStruct<Float, Boolean>> haaaaaaaaaaaaaands = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                haaaaaaaaaaaaaands.add(new Utils.TwoValueStruct<>((float)i*6, (i%2)==0));
+            }
+            Utils.setField(test, "defenseTimesAuto.2", haaaaaaaaaaaaaands);
+            Log.i("Test", Utils.getField(test, "defenseTimesAuto.2.4").toString());
+        } catch (Exception e) {
+            Log.i("Test", "shit " + e.getMessage());
+        }
 
 
 
