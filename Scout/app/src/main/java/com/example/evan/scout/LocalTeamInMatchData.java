@@ -34,7 +34,7 @@ public class LocalTeamInMatchData extends TeamInMatchData {
         ballsIntakedAuto = new ArrayList<>();
         for (int i = 0; i < isBallIntaked.size(); i++) {
             if (isBallIntaked.get(i)) {
-                ballsIntakedAuto.add(i);
+                ballsIntakedAuto.add(i+1);
             }
         }
         return this;
@@ -46,18 +46,22 @@ public class LocalTeamInMatchData extends TeamInMatchData {
 
 
     private List<List<Float>> localDefenseToFireBaseDefense(List<List<Utils.TwoValueStruct<Float, Boolean>>> defenseTimes, boolean isSuccess) {
-        List<List<Float>> splitData = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            splitData.add(i, new ArrayList<Float>());
-        }
-        for (int i = 0; i < defenseTimes.size(); i++) {
-            for (int j = 0; j < defenseTimes.get(i).size(); j++) {
-                Utils.TwoValueStruct<Float, Boolean> firstEntry = defenseTimes.get(i).get(j);
-                if (firstEntry.value2 == isSuccess) {
-                    splitData.get(i).add(firstEntry.value1);
+        try {
+            List<List<Float>> splitData = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                splitData.add(i, new ArrayList<Float>());
+            }
+            for (int i = 0; i < defenseTimes.size(); i++) {
+                for (int j = 0; j < defenseTimes.get(i).size(); j++) {
+                    Utils.TwoValueStruct<Float, Boolean> firstEntry = defenseTimes.get(i).get(j);
+                    if (firstEntry.value2 == isSuccess) {
+                        splitData.get(i).add(firstEntry.value1);
+                    }
                 }
             }
+            return splitData;
+        } catch (NullPointerException npe) {
+            return null;
         }
-        return splitData;
     }
 }

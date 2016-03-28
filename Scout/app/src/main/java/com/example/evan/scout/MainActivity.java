@@ -99,8 +99,20 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 5; i++) {
                 haaaaaaaaaaaaaands.add(new Utils.TwoValueStruct<>((float)i*6, (i%2)==0));
             }
-            Utils.setField(test, "defenseTimesAuto.2", haaaaaaaaaaaaaands);
+            for (Integer i = 0; i < 5; i++) {
+                Utils.setField(test, "defenseTimesAuto." + i.toString(), haaaaaaaaaaaaaands);
+            }
+            Utils.setField(test, "numHighShotsMadeAuto", 666);
+            Utils.setField(test, "alliance", "blue");
+            Utils.setField(test, "didScaleTele", true);
+            Utils.setField(test, "isBallIntaked.3", true);
             Log.i("Test", Utils.getField(test, "defenseTimesAuto.2.4").toString());
+            Log.i("Test2", Utils.getField(test.getFirebaseData(), "failedDefenseCrossTimesAuto.2").toString());
+            Log.i("Test3", Utils.serializeObject(test));
+            String cereal = Utils.serializeObject(test);
+            LocalTeamInMatchData bagel = (LocalTeamInMatchData)Utils.deserializeObject(cereal, new LocalTeamInMatchData());
+            Utils.setField(bagel, "numLowShotsMadeTele", 69);
+            Log.i("Test4", Utils.serializeObject(bagel));
         } catch (Exception e) {
             Log.i("Test", "shit " + e.getMessage());
         }
