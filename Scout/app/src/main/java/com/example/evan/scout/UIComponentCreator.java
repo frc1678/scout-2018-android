@@ -156,7 +156,7 @@ public class UIComponentCreator {
 
 
 
-        public void addButtonRow(LinearLayout column, final List<List<Map<Long, Boolean>>> defenseTimes, final int index) {
+        public void addButtonRow(LinearLayout column, final List<Utils.TwoValueStruct<Float, Boolean>> defenseTimes, final Integer index) {
             //add textview counters to layout
             LinearLayout textViewLayout = new LinearLayout(context);
             textViewLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.25f));
@@ -165,13 +165,13 @@ public class UIComponentCreator {
             final TextView successText = new TextView(context);
             successText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             successText.setGravity(Gravity.CENTER);
-            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, index, true)));
+            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, true)));
             successTexts.add(successText);
 
             final TextView failText = new TextView(context);
             failText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.5f));
             failText.setGravity(Gravity.CENTER);
-            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, index, false)));
+            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, false)));
             failTexts.add(failText);
 
             textViewLayout.addView(successText);
@@ -202,11 +202,12 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             //add time
-                            Map<Long, Boolean> map = new HashMap<>();
-                            map.put(Calendar.getInstance().getTimeInMillis() - startTime, true);
-                            defenseTimes.get(buttonNum).add(map);
+                            Utils.TwoValueStruct<Float, Boolean> value =
+                                    new Utils.TwoValueStruct<>(
+                                            (float)(Calendar.getInstance().getTimeInMillis() - startTime)/(float)1000, true);
+                            defenseTimes.add(value);
                             //increment counter
-                            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, buttonNum, true)));
+                            successText.setText("S: " + Integer.toString(numOfCrosses(defenseTimes, true)));
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -218,11 +219,12 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             //add time
-                            Map<Long, Boolean> map = new HashMap<>();
-                            map.put(Calendar.getInstance().getTimeInMillis() - startTime, false);
-                            defenseTimes.get(buttonNum).add(map);
+                            Utils.TwoValueStruct<Float, Boolean> value =
+                                    new Utils.TwoValueStruct<>(
+                                            (float)(Calendar.getInstance().getTimeInMillis() - startTime)/(float)1000, false);
+                            defenseTimes.add(value);
                             //increment counter
-                            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, buttonNum, false)));
+                            failText.setText("F: " + Integer.toString(numOfCrosses(defenseTimes, false)));
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -273,7 +275,7 @@ public class UIComponentCreator {
                             TextView title = (TextView) dialogLayout.findViewById(R.id.defenseOptionsTitle);
                             title.setText(((TextView)view).getText());
 
-                            Button moveButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsMoveButton);
+                            /*Button moveButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsMoveButton);
                             moveButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -289,12 +291,12 @@ public class UIComponentCreator {
                                         Toast.makeText(context, "Please enter a valid defense", Toast.LENGTH_LONG).show();
                                         return;
                                     }
-                                    Map<Long, Boolean> crossing = defenseTimes.get(index).remove(position);
+                                    Map<Long, Boolean> crossing = defenseTimes.remove(position);
                                     updateUI();
-                                    defenseTimes.get(defenseTarget-1).add(crossing);
+                                    defenseTimes.add(crossing);
                                     dialog.dismiss();
                                 }
-                            });
+                            });*/
 
                             Button deleteButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsDeleteButton);
                             deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -332,10 +334,8 @@ public class UIComponentCreator {
                     dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            for (int i = 0; i < successTexts.size(); i++) {
-                                successTexts.get(i).setText("S: " + Integer.toString(numOfCrosses(defenseTimes, i, true)));
-                                failTexts.get(i).setText("F: " + Integer.toString(numOfCrosses(defenseTimes, i, false)));
-                            }
+                            successTexts.get(index).setText("S: " + Integer.toString(numOfCrosses(defenseTimes, true)));
+                            failTexts.get(index).setText("F: " + Integer.toString(numOfCrosses(defenseTimes, false)));
                         }
                     });
                     dialog.show();
@@ -345,18 +345,18 @@ public class UIComponentCreator {
 
                 private void deleteCrossing(int position) {
                     //remove from list
-                    defenseTimes.get(index).remove(position);
+                    defenseTimes.remove(position);
                     //update ui
                     updateUI();
                 }
                 private void updateUI() {
                     adapter.clear();
-                    for (int i = 0; i < defenseTimes.get(index).size(); i++) {
-                        Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(index).get(i).entrySet().iterator().next();
-                        if (firstEntry.getValue()) {
-                            adapter.add("Defense Succeeded (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                    for (int i = 0; i < defenseTimes.size(); i++) {
+                        Utils.TwoValueStruct<Float, Boolean> value = defenseTimes.get(i);
+                        if (value.value2) {
+                            adapter.add("Defense Succeeded (" + Double.toString((double) value.value1 / (double) 1000) + "s)");
                         } else {
-                            adapter.add("Defense Failed (" + Double.toString((double) firstEntry.getKey() / (double) 1000) + "s)");
+                            adapter.add("Defense Failed (" + Double.toString((double) value.value1 / (double) 1000) + "s)");
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -370,11 +370,11 @@ public class UIComponentCreator {
         }
 
         //get number of successes or fails in list
-        private int numOfCrosses(List<List<Map<Long, Boolean>>> defenseTimes, int defenseNum, boolean success) {
+        private int numOfCrosses(List<Utils.TwoValueStruct<Float, Boolean>> defenseTimes, boolean success) {
             int counter = 0;
-            for (int i = 0; i < defenseTimes.get(defenseNum).size(); i++) {
-                Map.Entry<Long, Boolean> firstEntry = defenseTimes.get(defenseNum).get(i).entrySet().iterator().next();
-                if (firstEntry.getValue() == success) {
+            for (int i = 0; i < defenseTimes.size(); i++) {
+                Utils.TwoValueStruct<Float, Boolean> entry = defenseTimes.get(i);
+                if (entry.value2 == success) {
                     counter++;
                 }
             }

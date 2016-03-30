@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,11 +110,10 @@ public class MainActivity extends AppCompatActivity {
             Utils.setField(test, "isBallIntaked.3", true);
             Log.i("Test", Utils.getField(test, "defenseTimesAuto.2.4").toString());
             Log.i("Test2", Utils.getField(test.getFirebaseData(), "failedDefenseCrossTimesAuto.2").toString());
-            Log.i("Test3", Utils.serializeObject(test));
-            String cereal = Utils.serializeObject(test);
-            LocalTeamInMatchData bagel = (LocalTeamInMatchData)Utils.deserializeObject(cereal, new LocalTeamInMatchData());
-            Utils.setField(bagel, "numLowShotsMadeTele", 69);
-            Log.i("Test4", Utils.serializeObject(bagel));
+            String json = Utils.serializeClass(test);
+            Log.i("Test3", json);
+            LocalTeamInMatchData asdf = (LocalTeamInMatchData)Utils.deserializeClass(json, LocalTeamInMatchData.class);
+            Log.i("Test4", Utils.getField(asdf, "numHighShotsMadeAuto").toString());
         } catch (Exception e) {
             Log.i("Test", "shit " + e.getMessage());
         }

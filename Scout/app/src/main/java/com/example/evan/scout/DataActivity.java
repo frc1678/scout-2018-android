@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.google.gson.JsonParseException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,12 +26,12 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract List<String> getCounterData();
     public abstract List<String> getShotData();
     public abstract List<String> getDefenseData();
-    public abstract LocalTeamInMatchData getCollectedData();
-    public abstract Intent getNextActivityIntent();
-    public abstract Intent getPreviousActivityIntent();
+    public abstract Class getNextActivityClass();
+    public abstract Class getPreviousActivityClass();
 
     public final Activity context = this;
 
+    private Intent intent;
     private LocalTeamInMatchData collectedData;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator counterCreator;
@@ -41,26 +43,20 @@ public abstract class DataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
-        collectedData = getCollectedData();
-        parseJson(getIntent().getStringExtra("previousData"));
+        intent = getIntent();
+        parseJson(intent.getStringExtra("previousData"));
         updateUI();
     }
 
     private void parseJson(String json) {
-        JSONObject data;
-        if (json == null) {
-            Log.i("Json Error", "No previous data was passed to data activity. Unimportant");
-            return;
-        }
         try {
-            data = new JSONObject(json);
-        } catch (JSONException jsone) {
-            Log.i("Json Error", "Data passed to data activity was not in JSON format");
-            return;
+            collectedData = (LocalTeamInMatchData)Utils.deserializeClass(json, LocalTeamInMatchData.class);
+        } catch (JsonParseException|NullPointerException e) {
+            collectedData = new LocalTeamInMatchData();
         }
-        //TODO deserialize JSON
     }
-    private void updateUI() {/*
+
+    private void updateUI() {
         LinearLayout toggleLayout = (LinearLayout)findViewById(R.id.dataActivityToggleLayout);
         List<String> toggleDisplayTitles = new ArrayList<>();
         for (int i = 0; i < getToggleData().size(); i++) {
@@ -115,12 +111,21 @@ public abstract class DataActivity extends AppCompatActivity {
                 Log.i("Data Error", "Failed to get field from collectedData.  Not including defense button");
             }
         }
-    */}
+    }
     private void updateData() {
-        List<View> toggleData = toggleCreator.getComponentViews();
-        for (int i = 0; i < getToggleData().size(); i++) {
 
+    }
+
+    private Intent prepareIntent(Class clazz) {
+        updateData();
+        Intent intent = new Intent(this, clazz);
+        intent.putExtras(this.intent);
+        try {
+            intent.putExtra("previousData", Utils.serializeClass(collectedData));
+        } catch (JsonParseException jpe) {
+            intent.putExtra("previousData", (String)null);
         }
+        return intent;
     }
 
     @Override
@@ -133,11 +138,7 @@ public abstract class DataActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.buttonNext) {
-            updateData();
-
-
-            //TODO convert data to json and add it to intent
-            startActivity(getNextActivityIntent());
+            startActivity(prepareIntent(getNextActivityClass()));
         }
         return true;
     }
@@ -153,8 +154,7 @@ public abstract class DataActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO convert data to json and add it to intent
-                        startActivity(getPreviousActivityIntent());
+                        startActivity(prepareIntent(getPreviousActivityClass()));
                     }
                 })
                 .show();
