@@ -195,6 +195,10 @@ public class ConnectThread extends Thread {
         }
 
 
+        if (data.getDataToSend().get(0) == null) {
+            return;
+        }
+
         //convert data to sendable string
         String data = "";
         for (int i = 0; i < this.data.size(); i++) {

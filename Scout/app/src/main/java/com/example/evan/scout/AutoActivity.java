@@ -187,7 +187,7 @@ public class AutoActivity extends AppCompatActivity {
                 "Defense 5")));
         //empty relative layout to space out buttons
         for (int i = 0; i < 5; i++) {
-            buttonCreator.addButtonRow(defenseLayout, combinedDefenseCrosses, i);
+            //TODO buttonCreator.addButtonRow(defenseLayout, combinedDefenseCrosses, i);
         }
 
 

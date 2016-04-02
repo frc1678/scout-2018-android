@@ -46,14 +46,20 @@ public class FileListAdapter extends ArrayAdapter<String> {
                 //read data from file
                 String text = readFile(context, name);
                 if (text != null) {
-                    String sendData = MainActivity.convertJsonToSend(text);
-                    Log.i("JSON before send", sendData);
+                    String sendData;
+                    try {
+                        LocalTeamInMatchData previousData = (LocalTeamInMatchData)Utils.deserializeClass(text, LocalTeamInMatchData.class);
+                        sendData = Utils.serializeClass(previousData.getFirebaseData());
+                    } catch (Exception e) {
+                        sendData = null;
+                    }
+                    Log.i("JSON before send", context.wrapJson(sendData));
                     if (sendData == null) {
                         Log.e("Json Error", "Failed to convert matchData to sendData");
                         Toast.makeText(context, "Error in send data", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    new ConnectThread(context, superName, uuid, new ConnectThread.ConnectThreadData(name, text, sendData)).start();
+                    new ConnectThread(context, superName, uuid, new ConnectThread.ConnectThreadData(name, text, context.wrapJson(sendData))).start();
                 }
             }
         });
@@ -71,14 +77,20 @@ public class FileListAdapter extends ArrayAdapter<String> {
                                 //read data from file
                                 String text = readFile(context, name);
                                 if (text != null) {
-                                    String sendData = MainActivity.convertJsonToSend(text);
-                                    Log.i("JSON before send", sendData);
+                                    String sendData;
+                                    try {
+                                        LocalTeamInMatchData previousData = (LocalTeamInMatchData)Utils.deserializeClass(text, LocalTeamInMatchData.class);
+                                        sendData = Utils.serializeClass(previousData.getFirebaseData());
+                                    } catch (Exception e) {
+                                        sendData = null;
+                                    }
+                                    Log.i("JSON before send", context.wrapJson(sendData));
                                     if (sendData == null) {
                                         Log.e("Json Error", "Failed to convert matchData to sendData");
                                         Toast.makeText(context, "Error in send data", Toast.LENGTH_LONG).show();
                                         return;
                                     }
-                                    new ConnectThread(context, superName, uuid, new ConnectThread.ConnectThreadData(name, text, sendData)).start();
+                                    new ConnectThread(context, superName, uuid, new ConnectThread.ConnectThreadData(name, text, context.wrapJson(sendData))).start();
                                 }
                             }
                         })
@@ -103,20 +115,10 @@ public class FileListAdapter extends ArrayAdapter<String> {
                                         Toast.makeText(context, "Not a valid File", Toast.LENGTH_LONG).show();
                                         return;
                                     }
-                                    String editJSON;
-                                    try {
-                                        //finally parse text to JSON and remove wrapper
-                                        JSONObject data = new JSONObject(text);
-                                        editJSON = data.getJSONObject(Integer.toString(tmpTeam) + "Q" + Integer.toString(tmpMatch)).toString();
-                                    } catch (JSONException jsone) {
-                                        Log.e("JSON Error", "failed to read JSON to be edited");
-                                        Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-                                    Log.i("JSON before edit", editJSON);
+                                    Log.i("JSON before edit", text);
                                     //call the onclick for the 'scout' button to move on to next activity, only when it changes it will keep data
                                     //(see startScout method)
-                                    context.startScout(editJSON, tmpMatch, tmpTeam);
+                                    context.startScout(text, tmpMatch, tmpTeam);
                                 }
                             }
                         })

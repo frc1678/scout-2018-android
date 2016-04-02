@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class Constants {
     public static final Map<String, String> KEYS_TO_TITLES;
+    public static final String COLOR_RED = "#C40000";
+    public static final String COLOR_BLUE = "#4169e1";
     static {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             put("didReachAuto", "Reach Completed");

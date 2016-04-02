@@ -124,15 +124,20 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences(PREFERENCES_FILE, 0);
         overridden = getIntent().getBooleanExtra("overridden", false);
         matchNumber = getIntent().getIntExtra("matchNumber", -1);
+        Log.i("matchNumber at 1", matchNumber + "");
         //if matchNumber was not passed from a previous activity, load it from hard disk
         if (matchNumber == -1) {
             matchNumber = preferences.getInt("matchNumber", 1);
             //otherwise, save it to hard disk
         } else {
+            if (getIntent().getStringExtra("previousData") != null) {
+                matchNumber++;
+            }
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt("matchNumber", matchNumber);
             editor.commit();
         }
+        Log.i("matchNumber at 2", matchNumber + "");
         //scout initials
         scoutName = getIntent().getStringExtra("scoutName");
 
@@ -225,27 +230,42 @@ public class MainActivity extends AppCompatActivity {
 
 
         //teleop activity will send data here so errors show up on this screen
-        String matchData = getIntent().getStringExtra("matchData");
+        String matchData = getIntent().getStringExtra("previousData");
         //if we have data from teleop activity
         if (matchData != null) {
             //if savedInstanceState is not null, it means that the onCreate has already been called for this activity.  We don't want to resend data
             if (savedInstanceState != null) {
                 return;
             }
-            String sendData = convertJsonToSend(matchData);
-            Log.i("JSON before send", sendData);
-            if (sendData == null) {
-                Log.e("Json Error", "Failed to convert matchData to sendData");
-                Toast.makeText(this, "Error in send data", Toast.LENGTH_LONG).show();
-                return;
+            String sendData;
+            try {
+                LocalTeamInMatchData previousData = (LocalTeamInMatchData)Utils.deserializeClass(matchData, LocalTeamInMatchData.class);
+                sendData = Utils.serializeClass(previousData.getFirebaseData());
+            } catch (Exception e) {
+                sendData = null;
             }
+            Log.i("JSON before send", wrapJson(sendData));
             //we want to send data fit for firebase, but we save a different file that will retain more information for future editing
-            ConnectThread.ConnectThreadData data = new ConnectThread.ConnectThreadData(getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt", matchData, sendData);
+            ConnectThread.ConnectThreadData data = new ConnectThread.ConnectThreadData(
+                    getIntent().getStringExtra("matchName") + "_" + new SimpleDateFormat("dd-H:mm", Locale.US).format(new Date()) + ".txt", matchData,
+                    wrapJson(sendData));
             new ConnectThread(this, superName, uuid, data).start();
         }
     }
 
 
+    public static String wrapJson(String json) {
+        if (json == null) {return null;}
+        try {
+            TeamInMatchData data = (TeamInMatchData)Utils.deserializeClass(json, TeamInMatchData.class);
+            JSONObject wrapper = new JSONObject();
+            wrapper.put(data.teamNumber + "Q" + data.matchNumber, new JSONObject(json));
+            return wrapper.toString();
+        } catch (Exception e) {
+            Log.i("JSON Error", "Failed to deserialize JSON to wrap");
+            return null;
+        }
+    }
 
     //we need this to change our data into a format fit for firebase
     public static String convertJsonToSend(String json) {
@@ -585,7 +605,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         for (int i = 0; i < dataToSave.size(); i++) {
-            dataToSend.add(convertJsonToSend(dataToSave.get(i)));
+            String matchData = dataToSave.get(i);
+            String sendData;
+            try {
+                LocalTeamInMatchData previousData = (LocalTeamInMatchData)Utils.deserializeClass(matchData, LocalTeamInMatchData.class);
+                sendData = Utils.serializeClass(previousData.getFirebaseData());
+            } catch (Exception e) {
+                sendData = null;
+            }
+            dataToSend.add(sendData);
         }
         ConnectThread.ConnectThreadData data;
         try {
@@ -624,9 +652,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         fileListAdapter.stopFileObserver();
-        final Intent nextActivity = new Intent(context, AutoActivity.class)
+        //TODO
+        final Intent nextActivity = new Intent(context, TestDataActivity.class)
                 .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber).putExtra("autoJSON", editJSON);
+                .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber).putExtra("previousData", editJSON);
         if (scoutName == null) {
             setScoutName(new Runnable() {
                 @Override
@@ -657,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
                             if (scoutName == null) {
                                 setScoutName(onFinish);
                             }
-                        } else if ((tmpScoutName.length() < 1) || (tmpScoutName.length() > 3) || (tmpScoutName.contains("\n")) || (tmpScoutName.contains("."))) {
+                        } else if ((tmpScoutName.length() < 1) || (tmpScoutName.contains("\n")) || (tmpScoutName.contains("."))) {
                             setScoutName(onFinish);
                         } else {
                             scoutName = tmpScoutName;

@@ -207,7 +207,7 @@ public class TeleopActivity extends AppCompatActivity {
         UIComponentCreator.UIButtonCreator buttonCreator = new UIComponentCreator.UIButtonCreator(this, new ArrayList<>(Arrays.asList("Defense 1", "Defense 2", "Defense 3", "Defense 4",
                 "Defense 5")));
         for (int i = 0; i < 5; i++) {
-            buttonCreator.addButtonRow(defenseLayout, combinedDefenseCrosses, i);
+            //TODO buttonCreator.addButtonRow(defenseLayout, combinedDefenseCrosses, i);
         }
 
 
@@ -399,7 +399,7 @@ public class TeleopActivity extends AppCompatActivity {
     //send data when action bar button clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.teleopSendButton) {
+        if (item.getItemId() == R.id.buttonNext) {
             updateData();
 
 

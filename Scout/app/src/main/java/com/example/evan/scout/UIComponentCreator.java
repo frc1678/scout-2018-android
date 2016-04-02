@@ -266,7 +266,7 @@ public class UIComponentCreator {
                             deleteCrossing(position);
                         }
                     });
-                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    /*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                             final Dialog dialog = new Dialog(context);
@@ -296,7 +296,7 @@ public class UIComponentCreator {
                                     defenseTimes.add(crossing);
                                     dialog.dismiss();
                                 }
-                            });*/
+                            });
 
                             Button deleteButton = (Button) dialogLayout.findViewById(R.id.defenseOptionsDeleteButton);
                             deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -318,7 +318,7 @@ public class UIComponentCreator {
                             dialog.show();
                             return true;
                         }
-                    });
+                    });*/
 
                     Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
                     cancel.setOnClickListener(new View.OnClickListener() {
@@ -354,9 +354,9 @@ public class UIComponentCreator {
                     for (int i = 0; i < defenseTimes.size(); i++) {
                         Utils.TwoValueStruct<Float, Boolean> value = defenseTimes.get(i);
                         if (value.value2) {
-                            adapter.add("Defense Succeeded (" + Double.toString((double) value.value1 / (double) 1000) + "s)");
+                            adapter.add("Defense Succeeded (" + Float.toString(value.value1) + "s)");
                         } else {
-                            adapter.add("Defense Failed (" + Double.toString((double) value.value1 / (double) 1000) + "s)");
+                            adapter.add("Defense Failed (" + Float.toString(value.value1) + "s)");
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -416,7 +416,7 @@ public class UIComponentCreator {
             textViewLayout.addView(failText);
 
             final String titleString = super.componentNames.get(super.currentComponent);
-            final Button defenseButton = getNextDefenseButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.5f);
+            final Button defenseButton = getNextDefenseButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.4f);
             defenseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -463,8 +463,10 @@ public class UIComponentCreator {
                 }
             });
             defenseButton.setOnLongClickListener(new View.OnLongClickListener() {
+                Boolean wasCancelled;
                 @Override
                 public boolean onLongClick(View v) {
+                    wasCancelled = false;
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.counters_dialog, null);
@@ -504,6 +506,7 @@ public class UIComponentCreator {
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            wasCancelled = true;
                             //dismiss dialog
                             dialog.dismiss();
                         }
@@ -513,8 +516,10 @@ public class UIComponentCreator {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             List<View> views = creator.getComponentViews();
-                            shotsMade.set(index, Integer.parseInt(((TextView) views.get(0)).getText().toString()));
-                            shotsMissed.set(index, Integer.parseInt(((TextView) views.get(1)).getText().toString()));
+                            if (!wasCancelled) {
+                                shotsMade.set(index, Integer.parseInt(((TextView) views.get(0)).getText().toString()));
+                                shotsMissed.set(index, Integer.parseInt(((TextView) views.get(1)).getText().toString()));
+                            }
                             successText.setText("Made: " + shotsMade.get(index));
                             failText.setText("Missed: " + shotsMissed.get(index));
                         }
