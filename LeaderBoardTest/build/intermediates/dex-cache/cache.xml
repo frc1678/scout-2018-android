@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8c108c22c99e794eff255bb34d2a461200c4cbb0">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/classes-dbb99033f17a8c92eefa2e31dac34ebbaf756ec8.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/jars/libs/internal_impl-23.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6e239441500605809818997dd63b62a947195f8c">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/internal_impl-23.2.0-a88b6124ddf8a0348652746093992b297372b761.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6e3578f92f7462d1a935a1d36173e3bdd1234976">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/classes-bfb0bebba2d68bccf4b4d9df843828ca88a7f1bf.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="292a9fa091757208efa65e77eef63088247e51f3">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/classes-4293a4622b6fe03b73acb7fe5e3b34df75857a67.jar" />
+    </item>
+    <item
+        jar="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e5f32fa48a3eb2de0c987025c11b6e3864b634d9">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/classes-1b55ed5029f6c277f00b8b780b3d8a9b853c0741.jar" />
+    </item>
+    <item
+        jar="/home/evan/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/gson-2.2.4-85ef54bd62c46bde8ab797a2c1c2881c9d45d0d6.jar" />
+    </item>
+    <item
+        jar="/home/evan/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.2.0/support-annotations-23.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c5bf571bb10462bd90e5419ade67793f71acbc87">
+        <dex dex="/home/evan/AndroidStudioProjects/scout-2016/LeaderBoardTest/app/build/intermediates/pre-dexed/debug/support-annotations-23.2.0-c5d1c2b29380f04836981213766be52599bd51de.jar" />
+    </item>
+
+</items>
