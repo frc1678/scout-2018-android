@@ -1,7 +1,9 @@
 package com.example.evan.scout;
 
 
+import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -65,8 +67,20 @@ public class Utils {
         return gson.fromJson(serializedClass, clazz);
     }
 
+    public static void toastText(final String text, final int duration) {
+        try {
+            ScoutApplication.getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ScoutApplication.getCurrentActivity(), text, duration).show();
+                }
+            });
+        } catch (NullPointerException npe) {
+            Log.e("Toast Error", "Failed to get Activity to toast");
+        }
+    }
+
     public static class TwoValueStruct<K, V> {
-        public TwoValueStruct(){}
         public TwoValueStruct(K value1, V value2) {this.value1 = value1; this.value2 = value2;}
         public K value1; public V value2;
     }

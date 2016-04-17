@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -113,18 +111,18 @@ public class ConnectThread extends Thread {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null) {
             Log.wtf("Bluetooth Error", "Device Not Configured With Bluetooth");
-            toastText("Device Not Configured With Bluetooth", Toast.LENGTH_LONG, context);
+            Utils.toastText("Device Not Configured With Bluetooth", Toast.LENGTH_LONG);
             return false;
         }
         if (!adapter.isEnabled()) {
             Log.e("Bluetooth Error", "Bluetooth Not Enabled");
-            toastText("Bluetooth Not Enabled", Toast.LENGTH_LONG, context);
+            Utils.toastText("Bluetooth Not Enabled", Toast.LENGTH_LONG);
             return false;
         }
         Set<BluetoothDevice> devices = adapter.getBondedDevices();
         if (devices.size() < 1) {
             Log.e("Bluetooth Error", "No Paired Devices");
-            toastText("No Paired Devices", Toast.LENGTH_LONG, context);
+            Utils.toastText("No Paired Devices", Toast.LENGTH_LONG);
             return false;
         }
         adapter.cancelDiscovery();
@@ -137,7 +135,7 @@ public class ConnectThread extends Thread {
             }
         }
         Log.e("Bluetooth Error", "No Paired Device With Name: \"" + superName + "\"");
-        toastText("No Paired Device With Name: \"" + superName + "\"", Toast.LENGTH_LONG, context);
+        Utils.toastText("No Paired Device With Name: \"" + superName + "\"", Toast.LENGTH_LONG);
         return false;
     }
 
@@ -148,7 +146,7 @@ public class ConnectThread extends Thread {
         //storage path: /sdcard/Android/MatchData
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.e("File Error", "External Storage not Mounted");
-            toastText("External Storage Not Mounted", Toast.LENGTH_LONG, context);
+            Utils.toastText("External Storage Not Mounted", Toast.LENGTH_LONG);
             return false;
         }
         if (!dir.mkdir()) {
@@ -164,7 +162,7 @@ public class ConnectThread extends Thread {
                 fileWriter = new PrintWriter(file);
             } catch (IOException ioe) {
                 Log.e("File Error", "Failed to open file");
-                toastText("Failed To Open File", Toast.LENGTH_LONG, context);
+                Utils.toastText("Failed To Open File", Toast.LENGTH_LONG);
                 return false;
             }
 
@@ -173,7 +171,7 @@ public class ConnectThread extends Thread {
             fileWriter.close();
             if (fileWriter.checkError()) {
                 Log.e("File Error", "Failed to Write to File");
-                toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG, context);
+                Utils.toastText("Failed To Save Match Data To File", Toast.LENGTH_LONG);
                 return false;
             }
             files.add(file);
@@ -234,7 +232,7 @@ public class ConnectThread extends Thread {
                     }
                 } catch (IOException ioe2) {
                     Log.e("Socket Error", "Failed To End Socket");
-                    toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                    Utils.toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG);
                     return;
                 }
                 if (counter == 2) { //TODO
@@ -283,7 +281,7 @@ public class ConnectThread extends Thread {
                     socket.close();
                 } catch (IOException ioe2) {
                     Log.e("Socket Error", "Failed To End Socket");
-                    toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                    Utils.toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG);
                     return;
                 }
                 if (counter == 2) { //TODO
@@ -311,7 +309,7 @@ public class ConnectThread extends Thread {
                 socket.close();
             } catch (IOException ioe) {
                 Log.e("Socket Error", "Failed To End Socket");
-                toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                Utils.toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG);
             }
             break;
         }
@@ -320,7 +318,7 @@ public class ConnectThread extends Thread {
 
 
         Log.i("Communications Info", "Done");
-        toastText("Data Send Success", Toast.LENGTH_LONG, context);
+        Utils.toastText("Data Send Success", Toast.LENGTH_LONG);
         //rename files
         for (int i = 0; i < this.data.size(); i++) {
             if (!files.get(i).renameTo(new File(dir, this.data.getFileNames().get(i)))) {
@@ -330,13 +328,4 @@ public class ConnectThread extends Thread {
     }
 
 
-
-    protected static void toastText(final String text, final int duration, final Activity context) {
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, text, duration).show();
-            }
-        });
-    }
 }

@@ -53,7 +53,7 @@ public class ScheduleHandler {
                         break;
                     } catch (IOException ioe) {
                         Log.e("Socket Error", "Failed To Open Socket");
-                        toastText("Failed To Connect To Super", Toast.LENGTH_SHORT, context);
+                        Utils.toastText("Failed To Connect To Super", Toast.LENGTH_SHORT, context);
                         counter++;
                         //if this is the third time, give up
                         if (counter == 3) {
@@ -88,7 +88,7 @@ public class ScheduleHandler {
                         break;
                     } catch (IOException ioe) {
                         Log.e("Communications Error", "Failed To Send Data");
-                        toastText("Failed To Send Match Data To Super", Toast.LENGTH_SHORT, context);
+                        Utils.toastText("Failed To Send Match Data To Super", Toast.LENGTH_SHORT, context);
                         counter++;
                         //after the third failure, we terminate thread and notify user
                         if (counter == 3) {
@@ -126,7 +126,7 @@ public class ScheduleHandler {
                     }
                 } catch (IOException ioe) {
                     Log.e("Bluetooth Error", "Failed to receive schedule from super");
-                    toastText("Failed to receive schedule from super", Toast.LENGTH_SHORT, context);
+                    Utils.toastText("Failed to receive schedule from super", Toast.LENGTH_SHORT, context);
                     data = null;
                 }
 
@@ -140,11 +140,11 @@ public class ScheduleHandler {
                             schedule = new JSONObject(data);
                         } catch (JSONException jsone) {
                             Log.e("JSON Error", "Super sent bad schedule");
-                            toastText("Bad Schedule", Toast.LENGTH_LONG, context);
+                            Utils.toastText("Bad Schedule", Toast.LENGTH_LONG, context);
                             return;
                         }
                         Log.i("Bluetooth Info", "Schedule receive success");
-                        toastText("Schedule Receive Success", Toast.LENGTH_LONG, context);
+                        Utils.toastText("Schedule Receive Success", Toast.LENGTH_LONG, context);
                         onReceive(schedule);
                         //close sockets and stuff
                         try {
@@ -153,7 +153,7 @@ public class ScheduleHandler {
                             socket.close();
                         } catch (IOException ioe) {
                             Log.e("Socket Error", "Failed To End Socket");
-                            toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
+                            Utils.toastText("Failed To Close Connection To Super", Toast.LENGTH_LONG, context);
                             return;
                         }
                         return;

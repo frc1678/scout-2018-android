@@ -1,6 +1,5 @@
 package com.example.evan.scout;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.FileObserver;
@@ -11,14 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Comparator;
 
 //class to handle all interactions with the listview of sent files
@@ -44,7 +36,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final String name = parent.getItemAtPosition(position).toString();
                 //read data from file
-                String text = readFile(context, name);
+                String text = DiskManager.readFile(context, name);
                 if (text != null) {
                     String sendData;
                     try {
@@ -75,7 +67,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = parent.getItemAtPosition(position).toString();
                                 //read data from file
-                                String text = readFile(context, name);
+                                String text = DiskManager.readFile(context, name);
                                 if (text != null) {
                                     String sendData;
                                     try {
@@ -102,7 +94,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = parent.getItemAtPosition(position).toString();
                                 //first read from file
-                                String text = readFile(context, name);
+                                String text = DiskManager.readFile(context, name);
                                 if (text != null) {
                                     //next get team and matchnumber from filename
                                     int tmpTeam;
@@ -230,28 +222,6 @@ public class FileListAdapter extends ArrayAdapter<String> {
         fileObserver.stopWatching();
     }
 
-
-    public static String readFile(Activity context, String name) {
-        BufferedReader file;
-        try {
-            file = new BufferedReader(new InputStreamReader(new FileInputStream(
-                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name))));
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed To Open File");
-            Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        String text;
-        try {
-            text = file.readLine();
-        } catch (IOException ioe) {
-            Log.e("File Error", "Failed To Read From File");
-            Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        Log.i("JSON after read", text);
-        return text;
-    }
 
     public void setSuperName(String superName) {
         this.superName = superName;

@@ -24,8 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -589,7 +587,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < fileListAdapter.getCount(); i++) {
             String name = fileListAdapter.getItem(i);
             if (name.contains(filter)) {
-                String content = FileListAdapter.readFile(context, name);
+                String content = DiskManager.readFile(context, name);
                 if (content != null) {
                     try {
                         JSONObject data = new JSONObject(content);
