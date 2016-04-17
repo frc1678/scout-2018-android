@@ -31,7 +31,11 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public abstract class DataActivity extends AppCompatActivity {
     public abstract List<String> getToggleData();
@@ -54,6 +58,8 @@ public abstract class DataActivity extends AppCompatActivity {
     private UIComponentCreator.UIShotCreator shotCreator;
     private UIComponentCreator.UIButtonCreator defenseCreator;
     private ToggleButton longToggleButton;
+    private Boolean readyForNextActivity = false;
+    private final Object readyForNextActivityLock = new Object();
 
 
     @Override
@@ -62,7 +68,6 @@ public abstract class DataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_data);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         intent = getIntent();
-        Log.i("matchNumber at 3", getIntent().getIntExtra("matchNumber", -1) + "");
         setTitle("Scout Team " + intent.getIntExtra("teamNumber", -1));
         Drawable actionBarBackgroundColor;
         if (intent.getIntExtra("scoutNumber", -1) < 4) {
@@ -74,9 +79,19 @@ public abstract class DataActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(actionBarBackgroundColor);
         }
+        Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (readyForNextActivityLock) {
+                    readyForNextActivity = true;
+                }
+            }
+        }, 1, TimeUnit.SECONDS);
         parseJson(intent.getStringExtra("previousData"));
         updateUI();
     }
+
+
 
     private void parseJson(String json) {
         try {
@@ -87,6 +102,8 @@ public abstract class DataActivity extends AppCompatActivity {
         }
         Log.i("Data in data activity", Utils.serializeClass(collectedData));
     }
+
+
 
     private void updateUI() {
         LinearLayout toggleLayout = (LinearLayout)findViewById(R.id.dataActivityToggleLayout);
@@ -102,14 +119,12 @@ public abstract class DataActivity extends AppCompatActivity {
                 value1 = (Boolean) Utils.getField(collectedData, getToggleData().get(i));
                 if (value1 == null) {throw new NullPointerException();}
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData. Not including toggle");
                 value1 = false;
             }
             try {
                 value2 = (Boolean) Utils.getField(collectedData, getToggleData().get(i+1));
                 if (value2 == null) {throw new NullPointerException();}
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData. Not including toggle");
                 value2 = false;
             }
             final ToggleButton button1 = toggleCreator.getNextToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, value1);
@@ -137,6 +152,9 @@ public abstract class DataActivity extends AppCompatActivity {
                 });
             }
         }
+
+
+
         LinearLayout counterLayout = (LinearLayout)findViewById(R.id.dataActivityCounterLayout);
         counterLayout.addView(getFillerSpace(1f));
         List<String> counterNames = new ArrayList<>();
@@ -150,7 +168,6 @@ public abstract class DataActivity extends AppCompatActivity {
                 value = (Integer)Utils.getField(collectedData, getCounterData().get(i));
                 if (value == null) {throw new NullPointerException();}
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData. Not including counter");
                 value = 0;
             }
             LinearLayout enclosingLayout = new LinearLayout(this);
@@ -161,6 +178,9 @@ public abstract class DataActivity extends AppCompatActivity {
             counterLayout.addView(enclosingLayout);
         }
         counterLayout.addView(getFillerSpace(1f));
+
+
+
         List<String> shotNames = new ArrayList<>();
         for (int i = 0; i < getShotData().size(); i+=2) {
             shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
@@ -173,20 +193,21 @@ public abstract class DataActivity extends AppCompatActivity {
                 value1 = (Integer)Utils.getField(collectedData, getShotData().get(i));
                 if (value1 == null) {throw new NullPointerException();}
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData.  Not including shot button");
                 value1 = 0;
             }
             try {
                 value2 = (Integer)Utils.getField(collectedData, getShotData().get(i+1));
                 if (value2 == null) {throw new NullPointerException();}
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData.  Not including shot button");
                 value2 = 0;
             }
             shotCreator.addButtonRow(counterLayout, value1,
                     value2, i/2);
             counterLayout.addView(getFillerSpace(1f));
         }
+
+
+
         LinearLayout defenseLayout = (LinearLayout)findViewById(R.id.dataActivityDefenseLayout);
         List<String> defenseNames = new ArrayList<>();
         for (int i = 0; i < getDefenseData().size(); i++) {
@@ -198,9 +219,11 @@ public abstract class DataActivity extends AppCompatActivity {
                 defenseCreator.addButtonRow(defenseLayout,
                         (List<Utils.TwoValueStruct<Float, Boolean>>)Utils.getField(collectedData, getDefenseData().get(i)), i);
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData.  Not including defense button");
+                //data not passed from previous activity.  Use default empty struct
             }
         }
+
+
 
         if (getLongToggleData() != null) {
             RelativeLayout longToggleLayout = (RelativeLayout)findViewById(R.id.dataActivityLongToggleLayout);
@@ -213,18 +236,23 @@ public abstract class DataActivity extends AppCompatActivity {
                 value = (Boolean)Utils.getField(collectedData, getLongToggleData());
                 if (value == null) {throw new NullPointerException();}
             } catch (Exception e) {
-                Log.i("Data Error", "Failed to get field from collectedData.  Not including long toggle button");
                 value = false;
             }
             longToggleButton.setChecked(value);
             longToggleLayout.addView(longToggleButton);
         }
     }
+
+
+
     private LinearLayout getFillerSpace(Float weight) {
         LinearLayout fillerSpace = new LinearLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
         return fillerSpace;
     }
+
+
+
     private void updateData() {
         collectedData.scoutName = getIntent().getStringExtra("scoutName");
 
@@ -284,6 +312,8 @@ public abstract class DataActivity extends AppCompatActivity {
         collectedData.teamNumber = this.intent.getIntExtra("teamNumber", -1);
     }
 
+
+
     private Intent prepareIntent(Class clazz) {
         updateData();
         Intent intent = new Intent(this, clazz);
@@ -298,17 +328,28 @@ public abstract class DataActivity extends AppCompatActivity {
         return intent;
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(getActionBarMenu(), menu);
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.buttonNext) {
-            startActivity(prepareIntent(getNextActivityClass()));
+            synchronized (readyForNextActivityLock) {
+                if (!readyForNextActivity) {
+                    Log.i("Scout Error", "Tried to move on too quickly!");
+                    return true;
+                }
+            }
+            Long startTime = Calendar.getInstance().getTimeInMillis();
+            Intent intent = prepareIntent(getNextActivityClass());
+            Long stopTime = Calendar.getInstance().getTimeInMillis();
+            Log.i("Starting next Activity!", "Time to update and serialize data: " + Long.toString(stopTime - startTime) + "ms");
+            startActivity(intent);
         }
         return true;
     }

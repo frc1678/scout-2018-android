@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences(PREFERENCES_FILE, 0);
         overridden = getIntent().getBooleanExtra("overridden", false);
         matchNumber = getIntent().getIntExtra("matchNumber", -1);
-        Log.i("matchNumber at 1", matchNumber + "");
         //if matchNumber was not passed from a previous activity, load it from hard disk
         if (matchNumber == -1) {
             matchNumber = preferences.getInt("matchNumber", 1);
@@ -137,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("matchNumber", matchNumber);
             editor.commit();
         }
-        Log.i("matchNumber at 2", matchNumber + "");
         //scout initials
         scoutName = getIntent().getStringExtra("scoutName");
 
