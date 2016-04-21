@@ -652,16 +652,12 @@ public class MainActivity extends AppCompatActivity {
         final Intent nextActivity = new Intent(context, TestDataActivity.class)
                 .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                 .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber).putExtra("previousData", editJSON);
-        if (scoutName == null) {
-            setScoutName(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(nextActivity.putExtra("scoutName", scoutName));
-                }
-            });
-        } else {
-            startActivity(nextActivity);
-        }
+        setScoutName(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(nextActivity.putExtra("scoutName", scoutName));
+            }
+        });
     }
 
 
@@ -681,6 +677,10 @@ public class MainActivity extends AppCompatActivity {
                         if (tmpScoutName.equals("")) {
                             if (scoutName == null) {
                                 setScoutName(onFinish);
+                            } else {
+                                if (onFinish != null) {
+                                    onFinish.run();
+                                }
                             }
                         } else if ((tmpScoutName.length() < 1) || (tmpScoutName.contains("\n")) || (tmpScoutName.contains("."))) {
                             setScoutName(onFinish);

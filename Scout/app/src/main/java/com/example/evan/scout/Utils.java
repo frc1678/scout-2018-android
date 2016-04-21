@@ -69,15 +69,19 @@ public class Utils {
 
     public static void toastText(final String text, final int duration) {
         try {
-            ScoutApplication.getCurrentActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ScoutApplication.getCurrentActivity(), text, duration).show();
-                }
-            });
+            toastText(text, duration, ScoutApplication.getCurrentActivity());
         } catch (NullPointerException npe) {
             Log.e("Toast Error", "Failed to get Activity to toast");
         }
+    }
+
+    public static void toastText(final String text, final int duration, final Activity context) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, text, duration).show();
+            }
+        });
     }
 
     public static class TwoValueStruct<K, V> {
