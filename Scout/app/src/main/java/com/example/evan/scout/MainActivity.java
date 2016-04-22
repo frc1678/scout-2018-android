@@ -668,7 +668,8 @@ public class MainActivity extends AppCompatActivity {
         final EditText editText = new EditText(this);
         editText.setHint(scoutName);
         new AlertDialog.Builder(this)
-                .setTitle("Set Scout Initials")
+                .setTitle("Set Scout Name")
+                .setMessage("First name only, no caps.")
                 .setView(editText)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override

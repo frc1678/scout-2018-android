@@ -11,7 +11,7 @@ public class ScoutApplication extends Application implements Application.Activit
     @Override
     public void onCreate() {
         super.onCreate();
-        new Instabug.Builder(this, "c178ad40771c0f46fc047a11b88fbc38")
+        new Instabug.Builder(this, "a2dea1c21dcb2688370dbfc0a7dc80bd")
                 .setInvocationEvent(IBGInvocationEvent.IBGInvocationEventShake)
                 .build();
         registerActivityLifecycleCallbacks(this);
