@@ -30,12 +30,9 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private String superName;
     private static final String redSuperName = "red super";
     private static final String blueSuperName = "blue super";
-    //private static final String redSuperName = "Long Family Fire";
-    //private static final String blueSuperName = "G Pad 7.0 LTE";
 
     //current list of sent files
     private FileListAdapter fileListAdapter;
@@ -90,31 +85,6 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         //see comment on this variable above
         originalEditTextDrawable = findViewById(R.id.teamNumber1Edit).getBackground();
-
-
-        Log.i("Constants", Constants.KEYS_TO_TITLES.toString());
-        try {
-            LocalTeamInMatchData test = new LocalTeamInMatchData();
-            List<Utils.TwoValueStruct<Float, Boolean>> haaaaaaaaaaaaaands = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                haaaaaaaaaaaaaands.add(new Utils.TwoValueStruct<>((float)i*6, (i%2)==0));
-            }
-            for (Integer i = 0; i < 5; i++) {
-                Utils.setField(test, "defenseTimesAuto." + i.toString(), haaaaaaaaaaaaaands);
-            }
-            Utils.setField(test, "numHighShotsMadeAuto", 666);
-            Utils.setField(test, "alliance", "blue");
-            Utils.setField(test, "didScaleTele", true);
-            Utils.setField(test, "isBallIntaked.3", true);
-            Log.i("Test", Utils.getField(test, "defenseTimesAuto.2.4").toString());
-            Log.i("Test2", Utils.getField(test.getFirebaseData(), "failedDefenseCrossTimesAuto.2").toString());
-            String json = Utils.serializeClass(test);
-            Log.i("Test3", json);
-            LocalTeamInMatchData asdf = (LocalTeamInMatchData)Utils.deserializeClass(json, LocalTeamInMatchData.class);
-            Log.i("Test4", Utils.getField(asdf, "numHighShotsMadeAuto").toString());
-        } catch (Exception e) {
-            Log.i("Test", "shit " + e.getMessage());
-        }
 
 
 
@@ -261,98 +231,6 @@ public class MainActivity extends AppCompatActivity {
             Log.i("JSON Error", "Failed to deserialize JSON to wrap");
             return null;
         }
-    }
-
-    //we need this to change our data into a format fit for firebase
-    public static String convertJsonToSend(String json) {
-        List<String> startNames = new ArrayList<>(Arrays.asList("defenseTimesAuto", "defenseTimesTele"));
-        List<String> endSuccessNames = new ArrayList<>(Arrays.asList("successfulDefenseCrossTimesAuto", "successfulDefenseCrossTimesTele"));
-        List<String> endFailNames = new ArrayList<>(Arrays.asList("failedDefenseCrossTimesAuto", "failedDefenseCrossTimesTele"));
-        JSONObject data;
-        JSONObject startData;
-        //first, parse json from string
-        try {
-            startData = new JSONObject(json);
-            String wrapperKey = startData.keys().next();
-            data = startData.getJSONObject(wrapperKey);
-        } catch (JSONException jsone) {
-            Log.e("JSON error", "Error in parsing JSON from string");
-            return null;
-        }
-        //we do it twice, for auto and teleop
-        for (int k = 0; k < 2; k++) {
-            //this is the local format.  First get the data from the json
-            List<List<Map<Long, Boolean>>> combinedDefenseCrosses = new ArrayList<>();
-            try {
-                JSONArray defenseTimes;
-                defenseTimes = data.getJSONArray(startNames.get(k));
-                for (int i = 0; i < 5; i++) {
-                    combinedDefenseCrosses.add(i, new ArrayList<Map<Long, Boolean>>());
-                }
-                for (int i = 0; i < defenseTimes.length(); i++) {
-                    for (int j = 0; j < defenseTimes.getJSONArray(i).length(); j++) {
-                        String key;
-                        key = defenseTimes.getJSONArray(i).getJSONObject(j).keys().next();
-                        Map<Long, Boolean> map = new HashMap<>();
-                        try {
-                            map.put(Long.parseLong(key), defenseTimes.getJSONArray(i).getJSONObject(j).getBoolean(key));
-                        } catch (JSONException jsone) {
-                            Log.e("JSON error", "2");
-                            return null;
-                        }
-                        combinedDefenseCrosses.get(i).add(map);
-                    }
-                }
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Error in copying JSON to data");
-                return null;
-            }
-            //next 2 lists are firebase format.  Next we take our data and change it to this format:
-            List<List<Long>> successCrossTimes = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                successCrossTimes.add(i, new ArrayList<Long>());
-            }
-            List<List<Long>> failCrossTimes = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                failCrossTimes.add(i, new ArrayList<Long>());
-            }
-            for (int i = 0; i < combinedDefenseCrosses.size(); i++) {
-                for (int j = 0; j < combinedDefenseCrosses.get(i).size(); j++) {
-                    Map.Entry<Long, Boolean> firstEntry = combinedDefenseCrosses.get(i).get(j).entrySet().iterator().next();
-                    if (firstEntry.getValue()) {
-                        successCrossTimes.get(i).add(firstEntry.getKey());
-                    } else {
-                        failCrossTimes.get(i).add(firstEntry.getKey());
-                    }
-                }
-            }
-            //finally put our data back in the json and return it
-            try {
-                data.remove(startNames.get(k));
-                JSONArray successDefenseTimes = new JSONArray();
-                for (int i = 0; i < successCrossTimes.size(); i++) {
-                    JSONArray tmp = new JSONArray();
-                    for (int j = 0; j < successCrossTimes.get(i).size(); j++) {
-                        tmp.put(successCrossTimes.get(i).get(j));
-                    }
-                    successDefenseTimes.put(tmp);
-                }
-                data.put(endSuccessNames.get(k), successDefenseTimes);
-                JSONArray failDefenseTimes = new JSONArray();
-                for (int i = 0; i < failCrossTimes.size(); i++) {
-                    JSONArray tmp = new JSONArray();
-                    for (int j = 0; j < failCrossTimes.get(i).size(); j++) {
-                        tmp.put(failCrossTimes.get(i).get(j));
-                    }
-                    failDefenseTimes.put(tmp);
-                }
-                data.put(endFailNames.get(k), failDefenseTimes);
-            } catch (JSONException jsone) {
-                Log.e("JSON error", "Error in copying data to JSON");
-                return null;
-            }
-        }
-        return startData.toString();
     }
 
 
@@ -649,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
         }
         fileListAdapter.stopFileObserver();
         //TODO
-        final Intent nextActivity = new Intent(context, TestDataActivity.class)
+        final Intent nextActivity = new Intent(context, AutoActivity.class)
                 .putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                 .putExtra("teamNumber", teamNumber).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber).putExtra("previousData", editJSON);
         setScoutName(new Runnable() {
