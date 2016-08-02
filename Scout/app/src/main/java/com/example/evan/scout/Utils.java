@@ -13,6 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -82,6 +87,28 @@ public class Utils {
                 Toast.makeText(context, text, duration).show();
             }
         });
+    }
+
+    public static String readFile(Activity context, String name) {
+        BufferedReader file;
+        try {
+            file = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/MatchData/" + name))));
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Open File");
+            Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        String text;
+        try {
+            text = file.readLine();
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Read From File");
+            Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        Log.i("JSON after read", text);
+        return text;
     }
 
     public static class TwoValueStruct<K, V> {

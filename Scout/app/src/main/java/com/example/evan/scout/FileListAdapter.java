@@ -36,7 +36,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final String name = parent.getItemAtPosition(position).toString();
                 //read data from file
-                String text = DiskManager.readFile(context, name);
+                String text = Utils.readFile(context, name);
                 if (text != null) {
                     String sendData;
                     try {
@@ -67,7 +67,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = parent.getItemAtPosition(position).toString();
                                 //read data from file
-                                String text = DiskManager.readFile(context, name);
+                                String text = Utils.readFile(context, name);
                                 if (text != null) {
                                     String sendData;
                                     try {
@@ -94,7 +94,7 @@ public class FileListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = parent.getItemAtPosition(position).toString();
                                 //first read from file
-                                String text = DiskManager.readFile(context, name);
+                                String text = Utils.readFile(context, name);
                                 if (text != null) {
                                     //next get team and matchnumber from filename
                                     int tmpTeam;
