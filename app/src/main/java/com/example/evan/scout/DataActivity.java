@@ -90,7 +90,7 @@ public abstract class DataActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(actionBarBackgroundColor);
             }
-
+//useless delete this comment later
         Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
             @Override
             public void run() {
