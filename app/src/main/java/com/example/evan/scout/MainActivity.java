@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             scoutNumber = sharedPreferences.getInt("scoutNumber", 0);
         }
 
-        bgLoopThread bgLT = new bgLoopThread(context, scoutNumber, databaseReference);
+        bgLoopThread bgLT = new bgLoopThread(context , scoutNumber, databaseReference);
         bgLT.start();
 
         if(sharedPreferences.contains("scoutName")){
@@ -104,13 +105,6 @@ public class MainActivity extends AppCompatActivity {
             DataManager.addZeroTierJsonData("scoutName", scoutName);
             Log.e("Last Scout name used", scoutName);
         }
-
-//        IntentFilter filter1 = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-//        registerReceiver(mBroadcastReceiver1, filter1);
-//
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
-//        registerReceiver(mBroadcastReceiver1, intentFilter);
 
         currentMatchNumber = -1;
         new MatchNumListener(new MatchNumListener.MatchFirebaseInterface() {

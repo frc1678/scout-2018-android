@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
@@ -37,6 +39,7 @@ public class bgLoopThread extends Thread {
     private DatabaseReference databaseReference;
     public static String scoutName;
     Activity context;
+    Handler handler;
 
     public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference){
         this.context = context;
@@ -56,21 +59,28 @@ public class bgLoopThread extends Thread {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
                         if(scoutName.equals(tempScoutName)) {
-                            new AlertDialog.Builder(context)
-                                    .setTitle("")
-                                    .setMessage("Are you " + tempScoutName + "?")
-                                    .setCancelable(false)
-                                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            scoutName = tempScoutName;
-                                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-                                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                                            Log.e("tempScoutName", tempScoutName);
-                                            scoutName = tempScoutName;
-                                        }
-                                    })
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
+                            handler = new Handler(context.getMainLooper());
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    new AlertDialog.Builder(context)
+                                        .setTitle("")
+                                        .setMessage("Are you " + tempScoutName + "?")
+                                        .setCancelable(false)
+                                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                scoutName = tempScoutName;
+                                                DataManager.addZeroTierJsonData("scoutName", scoutName);
+                                                databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+                                                Log.e("tempScoutName", tempScoutName);
+                                                scoutName = tempScoutName;
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                                } // This is your code
+                            };
+                            handler.post(runnable);
                         }else if(scoutName.equals(tempScoutName)){
                             scoutName = tempScoutName;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
