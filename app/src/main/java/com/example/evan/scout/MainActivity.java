@@ -1,15 +1,20 @@
 package com.example.evan.scout;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -27,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.evan.scout.bgLoopThread.scoutName;
+
 /**
  * Created by Calvin on 7/26/17.
  */
@@ -41,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     //the database declaration
     private DatabaseReference databaseReference;
 
+    public static String teamColor;
+
     //the id of the scout.  1-3 is red, 4+ is blue
     public int scoutNumber;
 
@@ -49,10 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
     //the current match number
     public int matchNumber;
-
-    //the name of the scout currently using the tablet
-    public String scoutName;
-    public String firebaseScoutName;
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -66,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
+    private boolean bluetoothOff = false;
+    private boolean bluetoothOn = false;
+
     //set the context
     private final MainActivity context = this;
 
@@ -77,10 +85,7 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        firebaseScoutName = "NO NAME ASSIGNED";
-
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        setActionBarColor();
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -90,11 +95,22 @@ public class MainActivity extends AppCompatActivity {
         }else if(sharedPreferences.contains("scoutNumber")){
             scoutNumber = sharedPreferences.getInt("scoutNumber", 0);
         }
+
+        bgLoopThread bgLT = new bgLoopThread(context, scoutNumber, databaseReference);
+        bgLT.start();
+
         if(sharedPreferences.contains("scoutName")){
             scoutName = sharedPreferences.getString("scoutName", "");
             DataManager.addZeroTierJsonData("scoutName", scoutName);
             Log.e("Last Scout name used", scoutName);
         }
+
+//        IntentFilter filter1 = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+//        registerReceiver(mBroadcastReceiver1, filter1);
+//
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+//        registerReceiver(mBroadcastReceiver1, intentFilter);
 
         currentMatchNumber = -1;
         new MatchNumListener(new MatchNumListener.MatchFirebaseInterface() {
@@ -112,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
 
         //get and set team number to scout from firebase
         setTeamNumber();
-        setScoutNameListener();
+        EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+        teamNumberEditText.setText(String.valueOf(teamNumber));
 
         //block the edittext from being edited until overridden
         matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
@@ -124,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() != null){
-                    firebaseScoutName = dataSnapshot.getValue(String.class);
+                    scoutName = dataSnapshot.getValue(String.class);
                 }
             }
 
@@ -133,8 +150,41 @@ public class MainActivity extends AppCompatActivity {
                 //Do Nothing.
             }
         });
+
+        databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    if(teamNumber == (int)dataSnapshot.getValue()){
+                        setActionBarColor(Constants.COLOR_BLUE);
+                        teamColor = "blue";
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    if(teamNumber == (int)dataSnapshot.getValue()){
+                        setActionBarColor(Constants.COLOR_RED);
+                        teamColor = "red";
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         setTitle("Scout");
-        Log.i("HATRED", String.valueOf(overridden));
     }
 
     @Override
@@ -159,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.currentScout){
-            Toast.makeText(getBaseContext(), firebaseScoutName, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), scoutName, Toast.LENGTH_SHORT).show();
         }
 
         if (id == R.id.mainOverride){
@@ -184,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
     public void setMatchNumber(){
         EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
         matchNumberEditText.setText(String.valueOf(currentMatchNumber));
+        matchNumberEditText.setTextColor(Color.parseColor("black"));
     }
 
     public void setTeamNumber(){
@@ -253,7 +304,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         setMatchNumber();
                         setTeamNumber();
-                        setScoutNameListener();
+                        EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+                        teamNumberEditText.setText(String.valueOf(teamNumber));
                     }
                 })
                 .show();
@@ -355,58 +407,62 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void setActionBarColor(){
+    public void setActionBarColor(String color){
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN)));
+            if(color.equals("red")){
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_RED)));
+            }else if(color.equals("blue")){
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE)));
+            }
         }
     }
 
-    public void setScoutNameListener() {
-        Log.e("scoutNumber", String.valueOf(scoutNumber));
-        if (scoutNumber > 0){
-            databaseReference.child("scouts").child(String.valueOf("scout" + scoutNumber)).child("currentUser").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(final DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
-                        final String tempScoutName = dataSnapshot.getValue().toString();
-                        if(!sharedPreferences.getString("scoutName", " ").equals(tempScoutName)) {
-                            new AlertDialog.Builder(context)
-                                    .setTitle("")
-                                    .setMessage("Are you " + tempScoutName + "?")
-                                    .setCancelable(false)
-                                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            scoutName = tempScoutName;
-                                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-                                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                                            Log.e("tempScoutName", tempScoutName);
-                                            sharedPreferences.edit().remove("scoutName").apply();
-                                            editor.putString("scoutName", tempScoutName).commit();
-                                        }
-                                    })
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                        }else if(sharedPreferences.getString("scoutName", " ").equals(tempScoutName)){
-                            scoutName = tempScoutName;
-                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                        }
-
-                    } else {
-                        //setScoutName();
-                    }
-                    EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-                    teamNumberEditText.setText(String.valueOf(teamNumber));
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
+//    public void setScoutNameListener() {
+//        Log.e("scoutNumber", String.valueOf(scoutNumber));
+//        if (scoutNumber > 0){
+//            databaseReference.child("scouts").child(String.valueOf("scout" + scoutNumber)).child("currentUser").addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(final DataSnapshot dataSnapshot) {
+//                    if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
+//                        final String tempScoutName = dataSnapshot.getValue().toString();
+//                        if(!sharedPreferences.getString("scoutName", " ").equals(tempScoutName)) {
+//                            new AlertDialog.Builder(context)
+//                                    .setTitle("")
+//                                    .setMessage("Are you " + tempScoutName + "?")
+//                                    .setCancelable(false)
+//                                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            scoutName = tempScoutName;
+//                                            DataManager.addZeroTierJsonData("scoutName", scoutName);
+//                                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                                            Log.e("tempScoutName", tempScoutName);
+//                                            sharedPreferences.edit().remove("scoutName").apply();
+//                                            editor.putString("scoutName", tempScoutName).commit();
+//                                        }
+//                                    })
+//                                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                                    .show();
+//                        }else if(sharedPreferences.getString("scoutName", " ").equals(tempScoutName)){
+//                            scoutName = tempScoutName;
+//                            DataManager.addZeroTierJsonData("scoutName", scoutName);
+//                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                        }
+//
+//                    } else {
+//                        //setScoutName();
+//                    }
+//                    EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+//                    teamNumberEditText.setText(String.valueOf(teamNumber));
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }
+//    }
 
     @Override
     public void onBackPressed(){

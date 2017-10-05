@@ -10,6 +10,8 @@ public class Constants {
     public static int highShotTele = 0;
     public static int lowShotTele = 0;
     public static final String COLOR_GREEN = "#65C423";
+    public static final String COLOR_RED = "#ff0000";
+    public static final String COLOR_BLUE = "#0000ff";
     static {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             put("didGetDisabled", "Disabled");

@@ -85,7 +85,15 @@ public abstract class DataActivity extends AppCompatActivity {
 //        setTitle("Scout Team " + intent.getIntExtra("teamNumber", -1));
 
             Drawable actionBarBackgroundColor;
-            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN));
+
+            if(MainActivity.teamColor.equals("blue")){
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            }else if(MainActivity.teamColor.equals("red")){
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+            }else{
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+            }
+
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(actionBarBackgroundColor);
