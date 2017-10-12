@@ -34,10 +34,16 @@ import com.google.gson.JsonParseException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,6 +65,9 @@ public abstract class DataActivity extends AppCompatActivity {
     public Boolean doTogglesDepend() {return false;}
 
     public final Activity context = this;
+
+    File dir;
+    PrintWriter file;
 
     private Intent intent;
     private UIComponentCreator toggleCreator;
@@ -98,6 +107,8 @@ public abstract class DataActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(actionBarBackgroundColor);
             }
+
+        dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
 
         Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
             @Override
@@ -277,7 +288,32 @@ public abstract class DataActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.buttonNext) {
             if(activityName() == "tele"){
                 Log.e("collectedData", DataManager.collectedData.toString());
-                Utils.SendFirebaseData(databaseReference);
+                Utils.SendFirebaseData(databaseReference, DataManager.collectedData);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            file = null;
+                            //make the directory of the file
+                            dir.mkdir();
+                            //can delete when doing the actual thing
+                            file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_"  + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
+                        } catch (IOException IOE) {
+                            Log.e("File error", "Failed to open File");
+                            return;
+                        }
+
+
+                        file.println(DataManager.collectedData.toString());
+                        file.close();
+                        context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }.start();
             }
             synchronized (readyForNextActivityLock) {
                 if (!readyForNextActivity) {

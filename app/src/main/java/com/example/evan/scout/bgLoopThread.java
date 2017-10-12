@@ -7,8 +7,11 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -59,21 +62,25 @@ public class bgLoopThread extends Thread {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
                         if(scoutName.equals(tempScoutName)) {
-                            handler = new Handler(context.getMainLooper());
+                            handler = new Handler(Looper.getMainLooper());
                             Runnable runnable = new Runnable() {
                                 @Override
                                 public void run() {
+                                    View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
+                                    final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
+                                    editText.setText(tempScoutName);
                                     new AlertDialog.Builder(context)
+                                        .setView(dialogView)
                                         .setTitle("")
-                                        .setMessage("Are you " + tempScoutName + "?")
+                                        .setMessage("Are you this person?")
                                         .setCancelable(false)
-                                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
-                                                scoutName = tempScoutName;
+                                                scoutName = editText.getText().toString();
                                                 DataManager.addZeroTierJsonData("scoutName", scoutName);
                                                 databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
                                                 Log.e("tempScoutName", tempScoutName);
-                                                scoutName = tempScoutName;
+                                                scoutName = editText.getText().toString();
                                             }
                                         })
                                         .setIcon(android.R.drawable.ic_dialog_alert)

@@ -18,16 +18,17 @@
         ]]>
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AutoActivity" >
+        <activity android:name=".AutoActivity" android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".TeleopActivity" >
+        <activity android:name=".TeleopActivity" android:theme="@style/AppTheme">
         </activity>
     </application>
 

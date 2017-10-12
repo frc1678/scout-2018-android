@@ -14,7 +14,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,8 +51,8 @@ public class Utils {
         dialog.create().show();
     }
 
-    public static void SendFirebaseData(DatabaseReference ref){
-        ref.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(DataManager.collectedData);
+    public static void SendFirebaseData(DatabaseReference ref, JSONObject data){
+        ref.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(data);
     }
 
     public static Object getField(Object object, String field) throws Exception {

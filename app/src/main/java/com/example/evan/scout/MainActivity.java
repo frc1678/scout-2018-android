@@ -24,7 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +35,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
@@ -58,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public int teamNumber;
 
     //the current match number
-    public int matchNumber;
+    public static int matchNumber;
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -67,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
     MenuItem overrideItem;
 
     EditText matchNumberEditText;
+
+    ListView listView;
+    ArrayAdapter<String> adapter;
 
     //Shared Preference for scoutNumber
     SharedPreferences sharedPreferences;
@@ -99,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
 
         bgLoopThread bgLT = new bgLoopThread(context , scoutNumber, databaseReference);
         bgLT.start();
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        listView = (ListView) findViewById(R.id.view_files_received);
+        listView.setAdapter(adapter);
 
         if(sharedPreferences.contains("scoutName")){
             scoutName = sharedPreferences.getString("scoutName", "");
@@ -457,6 +480,131 @@ public class MainActivity extends AppCompatActivity {
 //            });
 //        }
 //    }
+
+    public void listenForResendClick(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = parent.getItemAtPosition(position).toString();
+                name = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data/" + name;
+
+                final String fileName = name;
+                final String[] nameOfResendMatch = name.split("Q");
+                new AlertDialog.Builder(context)
+                        .setTitle("RESEND DATA?")
+                        .setMessage("RESEND " + "Q" + nameOfResendMatch[1] + "?")
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String content = readFile(fileName);
+                                JSONObject superData;
+                                try {
+                                    superData = new JSONObject(content);
+                                } catch (JSONException jsone) {
+                                    Log.e("File Error", "no valid JSON in the file");
+                                    Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                List<JSONObject> dataPoints = new ArrayList<>();
+                                dataPoints.add(superData);
+                                resendSuperData(dataPoints);
+                            }
+                        }).show();
+            }
+        });
+    }
+
+    public void resendAllClicked(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("RESEND ALL?")
+                .setMessage("RESEND ALL DATA?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        List<JSONObject> dataPoints = new ArrayList<>();
+                        for (int i = 0; i < adapter.getCount(); i++) {
+                            String content;
+                            String name = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data/" + adapter.getItem(i);
+                            content = readFile(name);
+                            if (content != null) {
+                                try {
+                                    JSONObject data = new JSONObject(content);
+                                    dataPoints.add(data);
+                                } catch (JSONException jsone) {
+                                    Log.i("JSON info", "Failed to parse JSON for resend all. unimportant");
+                                }
+                            }
+                        }
+                        resendSuperData(dataPoints);
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void resendSuperData(final List<JSONObject> dataPoints) {
+        new Thread() {
+            @Override
+            public void run() {
+                //read data from file
+                for (int j = 0; j < dataPoints.size(); j++) {
+                    Log.e("Test 2", "assign file data to Json");
+                    JSONObject superData = dataPoints.get(j);
+
+                    Utils.SendFirebaseData(databaseReference, superData);
+                }
+                toasts("Resent Super data!", false);
+            }
+        }.start();
+    }
+
+    public String readFile(String name) {
+        BufferedReader file;
+        try {
+            file = new BufferedReader(new InputStreamReader(new FileInputStream(
+                    new File(name))));
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Open File");
+            Toast.makeText(context, "Failed To Open File", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        String dataOfFile = "";
+        String buf;
+        try {
+            while ((buf = file.readLine()) != null) {
+                dataOfFile = dataOfFile.concat(buf + "\n");
+            }
+        } catch (IOException ioe) {
+            Log.e("File Error", "Failed To Read From File");
+            Toast.makeText(context, "Failed To Read From File", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        Log.i("fileData", dataOfFile);
+        return dataOfFile;
+    }
+
+    public void toasts(final String message, boolean isLongMessage) {
+        if (!isLongMessage) {
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 
     @Override
     public void onBackPressed(){
