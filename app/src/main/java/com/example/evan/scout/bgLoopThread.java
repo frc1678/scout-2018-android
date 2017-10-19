@@ -61,39 +61,33 @@ public class bgLoopThread extends Thread {
                 public void onDataChange(final DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
-                        if(scoutName.equals(tempScoutName)) {
-                            handler = new Handler(Looper.getMainLooper());
-                            Runnable runnable = new Runnable() {
-                                @Override
-                                public void run() {
-                                    View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
-                                    final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
-                                    editText.setText(tempScoutName);
-                                    new AlertDialog.Builder(context)
-                                        .setView(dialogView)
-                                        .setTitle("")
-                                        .setMessage("Are you this person?")
-                                        .setCancelable(false)
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                scoutName = editText.getText().toString();
-                                                DataManager.addZeroTierJsonData("scoutName", scoutName);
-                                                databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                                                Log.e("tempScoutName", tempScoutName);
-                                                scoutName = editText.getText().toString();
-                                            }
-                                        })
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .show();
-                                } // This is your code
-                            };
-                            handler.post(runnable);
-                        }else if(scoutName.equals(tempScoutName)){
-                            scoutName = tempScoutName;
-                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                        }
 
+                        handler = new Handler(Looper.getMainLooper());
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
+                                final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
+                                editText.setText(tempScoutName);
+                                new AlertDialog.Builder(context)
+                                    .setView(dialogView)
+                                    .setTitle("")
+                                    .setMessage("Are you this person?")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            scoutName = editText.getText().toString();
+                                            DataManager.addZeroTierJsonData("scoutName", scoutName);
+                                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+                                            Log.e("tempScoutName", tempScoutName);
+                                            scoutName = editText.getText().toString();
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            } // This is your code
+                        };
+                        handler.post(runnable);
                     }
                 }
 

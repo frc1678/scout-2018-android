@@ -18,7 +18,9 @@ import android.provider.ContactsContract;
 import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +49,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem overrideItem;
 
     EditText matchNumberEditText;
+    EditText searchBar;
 
     ListView listView;
     ArrayAdapter<String> adapter;
@@ -134,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMatchChanged() {
                 currentMatchNumber = MatchNumListener.currentMatchNumber;
+                Log.e("MEME", currentMatchNumber+"");
+                findColor();
                 if(!overridden) {
                     setMatchNumber();
                 }
@@ -145,62 +153,17 @@ public class MainActivity extends AppCompatActivity {
 
         //get and set team number to scout from firebase
         setTeamNumber();
-        EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-        teamNumberEditText.setText(String.valueOf(teamNumber));
+//--------------------------------------------------------------------------------------------------
+                    EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+                    teamNumberEditText.setText(String.valueOf(teamNumber));
 
-        //block the edittext from being edited until overridden
-        matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
-        matchNumberEditText.setEnabled(false);
-        findViewById(R.id.teamNumEdit).setEnabled(false);
+                    //block the edittext from being edited until overridden
+                    matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
+                    matchNumberEditText.setEnabled(false);
+                    findViewById(R.id.teamNumEdit).setEnabled(false);
 
-        //set title
-        databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
-                    scoutName = dataSnapshot.getValue(String.class);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //Do Nothing.
-            }
-        });
-
-        databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
-                    if(teamNumber == (int)dataSnapshot.getValue()){
-                        setActionBarColor(Constants.COLOR_BLUE);
-                        teamColor = "blue";
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
-                    if(teamNumber == (int)dataSnapshot.getValue()){
-                        setActionBarColor(Constants.COLOR_RED);
-                        teamColor = "red";
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+        updateListView();
+        listenForResendClick();
         setTitle("Scout");
     }
 
@@ -285,6 +248,41 @@ public class MainActivity extends AppCompatActivity {
         databaseReference.child("scouts").child("scout" + scoutNumber).child("team").addValueEventListener(matchNumberListener);
     }
 
+    public void findColor(){
+        for(int i = 0; i < 3; i++){
+            final int num = i;
+            databaseReference.child("Matches").child(currentMatchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                        setActionBarColor(Constants.COLOR_BLUE);
+                        teamColor = "blue";
+                        Log.e("CALLED!!!", teamColor);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+
+                }
+            });
+            databaseReference.child("Matches").child(currentMatchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                        setActionBarColor(Constants.COLOR_RED);
+                        teamColor = "red";
+                        Log.e("CALLED!!!", teamColor);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+
+                }
+            });
+        }
+    }
     //display dialog to set scout number
     private void setScoutNumber() {
         final EditText editText = new EditText(this);
@@ -511,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 List<JSONObject> dataPoints = new ArrayList<>();
                                 dataPoints.add(superData);
-                                resendSuperData(dataPoints);
+                                resendScoutData(dataPoints);
                             }
                         }).show();
             }
@@ -538,7 +536,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        resendSuperData(dataPoints);
+                        resendScoutData(dataPoints);
 
                     }
                 })
@@ -547,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void resendSuperData(final List<JSONObject> dataPoints) {
+    public void resendScoutData(final List<JSONObject> dataPoints) {
         new Thread() {
             @Override
             public void run() {
@@ -586,6 +584,75 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.i("fileData", dataOfFile);
         return dataOfFile;
+    }
+
+    public void getScoutData(View view) {
+        searchBar = (EditText) findViewById(R.id.searchEditText);
+        searchBar.setFocusable(false);
+        //listenForFileListClick();
+        updateListView();
+        searchBar.setFocusableInTouchMode(true);
+    }
+
+    public void updateListView() {
+
+        final EditText searchBar = (EditText)findViewById(R.id.searchEditText);
+        final File dir;
+        dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
+        if (!dir.mkdir()) {
+            Log.i("File Info", "Failed to make Directory. Unimportant");
+        }
+        final File[] files = dir.listFiles();
+        adapter.clear();
+        for (File tmpFile : files) {
+            adapter.add(tmpFile.getName());
+        }
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence Register, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (searchBar.getText().toString().equals("")){
+                    adapter.clear();
+                    searchBar.setFocusable(false);
+                    for (File tmpFile : files) {
+                        adapter.add(tmpFile.getName());
+                    }
+                    searchBar.setFocusableInTouchMode(true);
+                    adapter.sort(new Comparator<String>() {
+                        @Override
+                        public int compare(String lhs, String rhs) {
+                            File lhsFile = new File(dir, lhs);
+                            File rhsFile = new File(dir, rhs);
+                            Date lhsDate = new Date(lhsFile.lastModified());
+                            Date rhsDate = new Date(rhsFile.lastModified());
+                            return rhsDate.compareTo(lhsDate);
+                        }
+                    });
+                }else{
+                    for (int i = 0; i < adapter.getCount();){
+                        if(adapter.getItem(i).startsWith((searchBar.getText().toString()).toUpperCase()) || adapter.getItem(i).contains((searchBar.getText().toString()).toUpperCase())){
+                            i++;
+                        }else{
+                            adapter.remove(adapter.getItem(i));
+                        }
+                    }
+                }
+            }
+        });
+        adapter.sort(new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                File lhsFile = new File(dir, lhs);
+                File rhsFile = new File(dir, rhs);
+                Date lhsDate = new Date(lhsFile.lastModified());
+                Date rhsDate = new Date(rhsFile.lastModified());
+                return rhsDate.compareTo(lhsDate);
+            }
+        });
+        adapter.notifyDataSetChanged();
     }
 
     public void toasts(final String message, boolean isLongMessage) {

@@ -29,7 +29,9 @@ import android.widget.ToggleButton;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +46,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -64,8 +68,11 @@ public abstract class DataActivity extends AppCompatActivity {
     public Boolean shouldSpaceToggles() {return false;}
     public Boolean doTogglesDepend() {return false;}
 
-    public final Activity context = this;
+    public static boolean saveTeleData = false;
+    public static boolean saveAutoData = false;
+    public static String activityName;
 
+    public final Activity context = this;
     File dir;
     PrintWriter file;
 
@@ -77,38 +84,46 @@ public abstract class DataActivity extends AppCompatActivity {
     private UIComponentCreator.UIShotCreator shotCreator;
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
-//    private LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    //    private LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!saveTeleData){
+            DataManager.addZeroTierJsonData("didLiftoff", false);
+            DataManager.addZeroTierJsonData("liftoffTime", 0);
+        }
+
         if(activityName() == "auto"){
             setContentView(R.layout.activity_auto);
         }else if(activityName() == "tele"){
             setContentView(R.layout.activity_teleop);
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        activityName = activityName();
         intent = getIntent();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 //        setTitle("Scout Team " + intent.getIntExtra("teamNumber", -1));
 
-            Drawable actionBarBackgroundColor;
+        Drawable actionBarBackgroundColor;
 
-            if(MainActivity.teamColor.equals("blue")){
-                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-            }else if(MainActivity.teamColor.equals("red")){
-                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
-            }else{
-                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-            }
+        if(MainActivity.teamColor.equals("blue")){
+            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+        }else if(MainActivity.teamColor.equals("red")){
+            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+        }else{
+            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+        }
 
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setBackgroundDrawable(actionBarBackgroundColor);
-            }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
+        }
 
         dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
+
 
         Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
             @Override
@@ -136,6 +151,16 @@ public abstract class DataActivity extends AppCompatActivity {
                 Log.e("toggleSize", toggleDisplayTitles.size()+"");
                 final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
                 final ToggleButton button2 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
+
+                if(saveTeleData && activityName() == "tele"){
+                    try {
+                        button1.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(0)));
+                        button2.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(1)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
 
                 liftOffCreator = new UIComponentCreator.UIButtonCreator(this, null);
                 toggleLayout.addView(liftOffCreator.addButton(button1, button2));
@@ -169,57 +194,68 @@ public abstract class DataActivity extends AppCompatActivity {
                     }
                 }
             }
-
-
         }
 
-                    LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML());
-                    List<String> shotNames = new ArrayList<>();
-                    for (int i = 0; i < getShotData().size(); i++) {
-                        shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
-                    }
-                    Log.e("shotNames",String.valueOf(shotNames.size()));
-                    shotCreator = new UIComponentCreator.UIShotCreator(this, shotNames);
-                    for (int i = 0; i < getShotData().size(); i+=2) {
-                        Button button1 = null;
-                        Button button2 = null;
+        LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML());
+        List<String> shotNames = new ArrayList<>();
+        for (int i = 0; i < getShotData().size(); i++) {
+            shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
+        }
+        Log.e("shotNames",String.valueOf(shotNames.size()));
+        shotCreator = new UIComponentCreator.UIShotCreator(this, shotNames);
+        for (int i = 0; i < getShotData().size(); i+=2) {
+            Button button1 = null;
+            Button button2 = null;
 
-                        if(activityName() == "auto"){
-                            Log.e("first",i+"");
-                            button1 = shotCreator.addButton("highShotTimesForBoilerAuto");
-                            button2 = shotCreator.addButton("lowShotTimesForBoilerAuto");
-                        }else if(activityName() == "tele"){
-                            button1 = shotCreator.addButton("highShotTimesForBoilerTele");
-                            button2 = shotCreator.addButton("lowShotTimesForBoilerTele");
-                        }
+            if(activityName() == "auto"){
+                Log.e("first",i+"");
+                button1 = shotCreator.addButton("highShotTimesForBoilerAuto");
+                button2 = shotCreator.addButton("lowShotTimesForBoilerAuto");
+            }else if(activityName() == "tele"){
+                button1 = shotCreator.addButton("highShotTimesForBoilerTele");
+                button2 = shotCreator.addButton("lowShotTimesForBoilerTele");
+            }
 
-                        shotLayout.addView(button1);
-                        shotLayout.addView(getFillerSpace(0.3f));
-                        shotLayout.addView(button2);
-                    }
+            shotLayout.addView(button1);
+            shotLayout.addView(getFillerSpace(0.3f));
+            shotLayout.addView(button2);
+        }
 
         LinearLayout gearLayout = (LinearLayout)findViewById(getOtherXML());
         gearCreator = new UIComponentCreator.UIGearCreator(this, null);
-        gearCreator.addButton(gearLayout);
+        gearLayout.addView(gearCreator.addButton());
         gearLayout.addView(getFillerSpace(1f));
+        try {
+            if((saveAutoData && activityName() == "auto")){
+                gearCreator.setNumGearsLiftOne(DataManager.collectedData.getJSONObject("gearsPlacedByLiftAuto").getInt("hpStation"));
+                gearCreator.setNumGearsLiftTwo(DataManager.collectedData.getJSONObject("gearsPlacedByLiftAuto").getInt("allianceWall"));
+                gearCreator.setNumGearsLiftThree(DataManager.collectedData.getJSONObject("gearsPlacedByLiftAuto").getInt("boiler"));
+            }else if(saveTeleData && activityName() == "tele"){
+                gearCreator.setNumGearsLiftOne(DataManager.collectedData.getJSONObject("gearsPlacedByLiftTele").getInt("hpStation"));
+                gearCreator.setNumGearsLiftTwo(DataManager.collectedData.getJSONObject("gearsPlacedByLiftTele").getInt("allianceWall"));
+                gearCreator.setNumGearsLiftThree(DataManager.collectedData.getJSONObject("gearsPlacedByLiftTele").getInt("boiler"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                    LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
-                    List<String> counterNames = new ArrayList<>();
-                    for (int i = 0; i < getCounterData().size(); i++) {
-                        counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
-                    }
-                    counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-                    for (int i = 0; i < getCounterData().size(); i++) {
-                        if(i == (getCounterData().size() - 1) && activityName() == "tele"){
-                            gearLayout.addView(counterCreator.addCounter());
-                        }else{
-                            counterLayout.addView(counterCreator.addCounter());
-                            if(activityName() == "tele"){
-                                Log.e("telecounter", "counterMade"+i);
-                            }
-                        }
-                    }
-                    counterLayout.addView(getFillerSpace(1f));
+        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+        List<String> counterNames = new ArrayList<>();
+        for (int i = 0; i < getCounterData().size(); i++) {
+            counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+        }
+        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+        for (int i = 0; i < getCounterData().size(); i++) {
+            if(i == (getCounterData().size() - 1) && activityName() == "tele"){
+                gearLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+            }else{
+                counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+                if(activityName() == "tele"){
+                    Log.e("telecounter", "counterMade"+i);
+                }
+            }
+        }
+        counterLayout.addView(getFillerSpace(1f));
     }
 
 
@@ -232,13 +268,14 @@ public abstract class DataActivity extends AppCompatActivity {
 
 
 
-    private void updateData() {
-        if(toggleCreator != null){
+    private void updateData() throws JSONException {
+        if(activityName() == "tele"){
             List<View> toggleList = toggleCreator.getComponentViews();
             for (int i = 0; i < toggleList.size(); i++) {
                 ToggleButton toggleButton = (ToggleButton) toggleList.get(i);
                 try {
-                    DataManager.addZeroTierJsonData("didBecomeIncapacitated", toggleButton.isChecked());
+                    Log.e("KEYTOGGLE", getToggleData().get(i));
+                    DataManager.addZeroTierJsonData(getToggleData().get(i), toggleButton.isChecked());
                 } catch (Exception e) {
                     Log.e("Data Error", "Failed to add toggle " + Integer.toString(i) + " to Data");
                     Toast.makeText(this, "Invalid data in counter" + Integer.toString(i), Toast.LENGTH_LONG).show();
@@ -247,9 +284,15 @@ public abstract class DataActivity extends AppCompatActivity {
             }
         }
 
+        Log.e("HOPESIZE", counterCreator.getComponentViews().size()+"");
         List<View> currentTextViews = counterCreator.getComponentViews();
+        Log.e("HOPESIZE", currentTextViews.size()+"");
         for (int i = 0; i < currentTextViews.size(); i++) {
+            if(currentTextViews.get(i) != null){
+                Log.e("MOREHOPE", i+"");
+            }
             try {
+                Log.e("keyCOUNTER", getCounterData().get(i));
                 DataManager.addZeroTierJsonData(getCounterData().get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
             } catch (Exception e) {
                 Log.e("Data Error", "Failed to add counter" + Integer.toString(i) + " num to Data");
@@ -257,12 +300,31 @@ public abstract class DataActivity extends AppCompatActivity {
                 return;
             }
         }
+
+        Log.e("check", "CHECKGEAR");
+        List<String> gearLifts = Arrays.asList("hpStation", "allianceWall", "boiler");
+        List<Object> gearNums = new ArrayList<>();
+        Log.e("check", "CHECKGEAR");
+        gearNums.add(gearCreator.getNumGearsLiftOne());
+        gearNums.add(gearCreator.getNumGearsLiftTwo());
+        gearNums.add(gearCreator.getNumGearsLiftThree());
+        Log.e("CHECKPOINT", "CHECKGEAR");
+        if(activityName() == "auto"){
+            Log.e("gearData", "auto");
+            DataManager.addOneTierJsonData(false, "gearsPlacedByLiftAuto", gearLifts, gearNums);
+        }else if(activityName() == "tele"){
+            Log.e("gearData", "tele");
+            DataManager.addOneTierJsonData(false, "gearsPlacedByLiftTele", gearLifts, gearNums);
+        }
     }
 
-
-
     private Intent prepareIntent(Class clazz) {
-        updateData();
+        Log.e("intentCalled", "called");
+        try {
+            updateData();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Intent intent = new Intent(this, clazz);
         intent.putExtras(this.intent);
         try {
@@ -286,35 +348,6 @@ public abstract class DataActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.buttonNext) {
-            if(activityName() == "tele"){
-                Log.e("collectedData", DataManager.collectedData.toString());
-                Utils.SendFirebaseData(databaseReference, DataManager.collectedData);
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            file = null;
-                            //make the directory of the file
-                            dir.mkdir();
-                            //can delete when doing the actual thing
-                            file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_"  + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
-                        } catch (IOException IOE) {
-                            Log.e("File error", "Failed to open File");
-                            return;
-                        }
-
-
-                        file.println(DataManager.collectedData.toString());
-                        file.close();
-                        context.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }.start();
-            }
             synchronized (readyForNextActivityLock) {
                 if (!readyForNextActivity) {
                     Log.i("Scout Error", "Tried to move on too quickly!");
@@ -325,29 +358,83 @@ public abstract class DataActivity extends AppCompatActivity {
             Intent intent = prepareIntent(getNextActivityClass());
             Long stopTime = Calendar.getInstance().getTimeInMillis();
             Log.i("Starting next Activity!", "Time to update and serialize data: " + Long.toString(stopTime - startTime) + "ms");
+
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        file = null;
+                        //make the directory of the file
+                        dir.mkdir();
+                        //can delete when doing the actual thing
+                        file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_"  + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
+                    } catch (IOException IOE) {
+                        Log.e("File error", "Failed to open File");
+                        return;
+                    }
+
+
+                    file.println(DataManager.collectedData.toString());
+                    file.close();
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }.start();
+
+            if(activityName() == "tele" && Constants.sent){
+                Log.e("collectedData", DataManager.collectedData.toString());
+                String jsonString = DataManager.collectedData.toString();
+                Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
+                databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
+            }else if(activityName() == "tele" && !Constants.sent){
+
+            }
             startActivity(intent);
         }
         return true;
     }
 
-
-
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Stop Scouting")
-                .setMessage("Are you sure you want to go back now?")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = prepareIntent(getPreviousActivityClass());
-                        if (getPreviousActivityClass() == MainActivity.class) {
-                            intent.putExtra("previousData", (String) null);
+        if(activityName() == "auto") {
+            new AlertDialog.Builder(this)
+                    .setTitle("Stop Scouting")
+                    .setMessage("Are you sure you want to go back now?")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAutoData = true;
+                            Intent intent = prepareIntent(getPreviousActivityClass());
+                            if (getPreviousActivityClass() == MainActivity.class) {
+                                intent.putExtra("previousData", (String) null);
+                            }
+                            startActivity(intent);
                         }
-                        startActivity(intent);
-                    }
-                })
-                .show();
+                    })
+                    .show();
+        }else if(activityName() == "tele"){
+            new AlertDialog.Builder(this)
+                    .setTitle("Save Data?")
+                    .setMessage("Do you want to save this data?")
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAutoData = true;
+                            saveTeleData = true;
+                            Intent intent = prepareIntent(getPreviousActivityClass());
+                            if (getPreviousActivityClass() == MainActivity.class) {
+                                intent.putExtra("previousData", (String) null);
+                            }
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        }
     }
 }
