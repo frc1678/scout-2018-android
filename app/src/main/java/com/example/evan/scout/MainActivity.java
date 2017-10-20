@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Calvin on 7/26/17.
  */
 
-// 10/19/17 8:14
+// 10/19/17 8:47
 
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
