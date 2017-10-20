@@ -59,7 +59,7 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 /**
  * Created by Calvin on 7/26/17.
  */
-
+//TODO MEMEMEMEMEMEMEMEMEMEMEMEMEMEMEEM
 // 8/31/17 8:28
 
 public class MainActivity extends AppCompatActivity {

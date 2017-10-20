@@ -586,6 +586,8 @@ public class UIComponentCreator {
                                 if(height.equals("high")){    highShotDataList.add(dataSpace);}
                                 else if(height.equals("low")){   lowShotDataList.add(dataSpace);}
 
+                                position = null;
+
                                 dialog.dismiss();
                             }else{
                                 Toast.makeText(context, "Please put shot location", Toast.LENGTH_SHORT).show();

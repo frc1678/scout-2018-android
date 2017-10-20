@@ -12,7 +12,6 @@ public class Constants {
     public static final String COLOR_GREEN = "#65C423";
     public static final String COLOR_RED = "#ff0000";
     public static final String COLOR_BLUE = "#0000ff";
-    public static final boolean sent = false;
     static {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             put("didGetDisabled", "Disabled");

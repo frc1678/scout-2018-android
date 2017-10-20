@@ -72,6 +72,8 @@ public abstract class DataActivity extends AppCompatActivity {
     public static boolean saveAutoData = false;
     public static String activityName;
 
+    private boolean sent;
+
     public final Activity context = this;
     File dir;
     PrintWriter file;
@@ -90,6 +92,8 @@ public abstract class DataActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sent = false;
 
         if(!saveTeleData){
             DataManager.addZeroTierJsonData("didLiftoff", false);
@@ -359,40 +363,45 @@ public abstract class DataActivity extends AppCompatActivity {
             Long stopTime = Calendar.getInstance().getTimeInMillis();
             Log.i("Starting next Activity!", "Time to update and serialize data: " + Long.toString(stopTime - startTime) + "ms");
 
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        file = null;
-                        //make the directory of the file
-                        dir.mkdir();
-                        //can delete when doing the actual thing
-                        file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_"  + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
-                    } catch (IOException IOE) {
-                        Log.e("File error", "Failed to open File");
-                        return;
-                    }
-
-
-                    file.println(DataManager.collectedData.toString());
-                    file.close();
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }.start();
-
-            if(activityName() == "tele" && Constants.sent){
+            if((activityName() == "tele") && sent){
+                sent = false;
                 Log.e("collectedData", DataManager.collectedData.toString());
                 String jsonString = DataManager.collectedData.toString();
                 Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
                 databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
-            }else if(activityName() == "tele" && !Constants.sent){
-
+            }else if(activityName() == "tele" && !sent){
+                sent = true;
             }
+
+            new Thread() {
+                @Override
+                public void run() {
+                    if((activityName() == "tele") && sent) {
+                        try {
+                            file = null;
+                            //make the directory of the file
+                            dir.mkdir();
+                            //can delete when doing the actual thing
+                            file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
+                        } catch (IOException IOE) {
+                            Log.e("File error", "Failed to open File");
+                            return;
+                        }
+
+
+                        file.println(DataManager.collectedData.toString());
+                        file.close();
+                        context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e("sentBOOL", Boolean.toString(sent));
+                                Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }.start();
+
             startActivity(intent);
         }
         return true;
