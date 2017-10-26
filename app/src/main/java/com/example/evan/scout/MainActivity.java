@@ -1,5 +1,6 @@
 package com.example.evan.scout;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -59,7 +60,8 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 /**
  * Created by Calvin on 7/26/17.
  */
-//TODO MEMEMEMEMEMEMEMEMEMEMEMEMEMEMEEM
+//TODO 10/25/17 7:06 p.m.
+    //changes HAHAHA
 // 8/31/17 8:28
 
 public class MainActivity extends AppCompatActivity {
@@ -102,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
     //set the context
     private final MainActivity context = this;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
