@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +56,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
@@ -63,7 +67,7 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 //TODO 10/25/17 7:06 p.m.
     //changes HAHAHA
 // 8/31/17 8:28
-
+//by Ben bobell, 10/25/2017.
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
@@ -166,6 +170,19 @@ public class MainActivity extends AppCompatActivity {
         updateListView();
         listenForResendClick();
         setTitle("Scout");
+        int delay = 0; // delay for 0 sec.
+        int period = 5000; // repeat every 5 sec.
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask()
+        {
+            public void run()
+            { if (internetCheck()==false){
+                Toast.makeText(getBaseContext(), "Please check your internet connection settings and try again",
+                        Toast.LENGTH_LONG).show();
+            }
+                //Call function
+            }
+        }, delay, period);
     }
 
     @Override
@@ -679,4 +696,17 @@ public class MainActivity extends AppCompatActivity {
         //Do Nothing
         Toast.makeText(getBaseContext(), "Cannot Complete Operation", Toast.LENGTH_SHORT).show();
     }
+    public boolean internetCheck(){
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
+        return connected;
+    }
+
 }
