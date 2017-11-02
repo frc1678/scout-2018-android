@@ -25,6 +25,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseException;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -115,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        MainActivity main = this;
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         //get the scout number from shared preferences, otherwise ask the user to set it
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             scoutNumber = sharedPreferences.getInt("scoutNumber", 0);
         }
 
-        bgLoopThread bgLT = new bgLoopThread(context , scoutNumber, databaseReference);
+        bgLoopThread bgLT = new bgLoopThread(context , scoutNumber, databaseReference, main);
         bgLT.start();
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
@@ -170,19 +174,16 @@ public class MainActivity extends AppCompatActivity {
         updateListView();
         listenForResendClick();
         setTitle("Scout");
-        int delay = 0; // delay for 0 sec.
-        int period = 5000; // repeat every 5 sec.
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask()
-        {
-            public void run()
-            { if (internetCheck()==false){
-                Toast.makeText(getBaseContext(), "Please check your internet connection settings and try again",
-                        Toast.LENGTH_LONG).show();
-            }
-                //Call function
-            }
-        }, delay, period);
+//        int delay = 0; // delay for 0 sec.
+//        int period = 5000; // repeat every 5 sec.
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask()
+//        {
+//            public void run()
+//            {
+//                //Call function
+//            }
+//        }, delay, period);
     }
 
     @Override
@@ -269,36 +270,45 @@ public class MainActivity extends AppCompatActivity {
     public void findColor(){
         for(int i = 0; i < 3; i++){
             final int num = i;
-            databaseReference.child("Matches").child(currentMatchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                        setActionBarColor(Constants.COLOR_BLUE);
-                        teamColor = "blue";
-                        Log.e("CALLED!!!", teamColor);
+            try{
+                databaseReference.child("Matches").child(currentMatchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                            setActionBarColor(Constants.COLOR_BLUE);
+                            teamColor = "blue";
+                            Log.e("CALLED!!!", teamColor);
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
 
-                }
-            });
-            databaseReference.child("Matches").child(currentMatchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                        setActionBarColor(Constants.COLOR_RED);
-                        teamColor = "red";
-                        Log.e("CALLED!!!", teamColor);
                     }
-                }
+                });
+            }catch(NullPointerException npe){
+                teamColor = "green";
+            }
+            try{
+                databaseReference.child("Matches").child(currentMatchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                            setActionBarColor(Constants.COLOR_RED);
+                            teamColor = "red";
+                            Log.e("CALLED!!!", teamColor);
+                        }
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
 
-                }
-            });
+                    }
+                });
+            }catch(NullPointerException npe){
+                teamColor = "green";
+            }
+
         }
     }
     //display dialog to set scout number
@@ -697,16 +707,15 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Cannot Complete Operation", Toast.LENGTH_SHORT).show();
     }
     public boolean internetCheck(){
-        boolean connected = false;
+        boolean connected;
+        boolean isBluetooth = false;
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            connected = true;
-        }
-        else
-            connected = false;
-        return connected;
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        connected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        isBluetooth = activeNetwork.getType() == ConnectivityManager.TYPE_BLUETOOTH;
+
+        return isBluetooth;
     }
 
 }

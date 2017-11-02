@@ -41,13 +41,15 @@ public class bgLoopThread extends Thread {
     private int scoutNumber;
     private DatabaseReference databaseReference;
     public static String scoutName;
+    MainActivity main;
     Activity context;
     Handler handler;
 
-    public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference){
+    public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity){
         this.context = context;
         this.scoutNumber = scoutNumber;
         this.databaseReference = databaseReference;
+        main = mainActivity;
     }
     public void run() {
         setScoutNameListener(scoutNumber, databaseReference);
@@ -62,10 +64,28 @@ public class bgLoopThread extends Thread {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
 
+                        int delay = 5000;
+
                         handler = new Handler(Looper.getMainLooper());
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
+                                if (!main.internetCheck()){
+                                    View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
+                                    final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
+                                    editText.setText("WARNING!");
+                                    new AlertDialog.Builder(context)
+                                            .setView(dialogView)
+                                            .setTitle("")
+                                            .setMessage("YOU ARE NOT CONNECTED TO INTERNET! PLEASE RESEND MATCH!")
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
                                 View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
                                 final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
                                 editText.setText(tempScoutName);
@@ -78,6 +98,7 @@ public class bgLoopThread extends Thread {
                                         public void onClick(DialogInterface dialog, int which) {
                                             scoutName = editText.getText().toString();
                                             DataManager.addZeroTierJsonData("scoutName", scoutName);
+                                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
                                             databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
                                             Log.e("tempScoutName", tempScoutName);
                                             scoutName = editText.getText().toString();
@@ -85,9 +106,15 @@ public class bgLoopThread extends Thread {
                                     })
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
+
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             } // This is your code
                         };
-                        handler.post(runnable);
+                        handler.postDelayed(runnable, delay);
                     }
                 }
 
