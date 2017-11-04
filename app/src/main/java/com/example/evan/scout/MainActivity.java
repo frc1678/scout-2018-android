@@ -43,6 +43,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,8 +58,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -527,16 +531,18 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String content = readFile(fileName);
-                                JSONObject superData;
+                                Log.e("XXXX","XXXX");
+                                Log.e("CONTENT", content);
+                                JSONObject scoutData;
                                 try {
-                                    superData = new JSONObject(content);
+                                    scoutData = new JSONObject(content);
                                 } catch (JSONException jsone) {
                                     Log.e("File Error", "no valid JSON in the file");
                                     Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
                                     return;
                                 }
                                 List<JSONObject> dataPoints = new ArrayList<>();
-                                dataPoints.add(superData);
+                                dataPoints.add(scoutData);
                                 resendScoutData(dataPoints);
                             }
                         }).show();
@@ -580,11 +586,12 @@ public class MainActivity extends AppCompatActivity {
                 //read data from file
                 for (int j = 0; j < dataPoints.size(); j++) {
                     Log.e("Test 2", "assign file data to Json");
-                    JSONObject superData = dataPoints.get(j);
-
-                    Utils.SendFirebaseData(databaseReference, superData);
+                    JSONObject scoutData = dataPoints.get(j);
+                    String jsonString = scoutData.toString();
+                    Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
+                    databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
                 }
-                toasts("Resent Super data!", false);
+                toasts("Resent Scout data!", false);
             }
         }.start();
     }
@@ -713,9 +720,13 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         connected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-        isBluetooth = activeNetwork.getType() == ConnectivityManager.TYPE_BLUETOOTH;
-
-        return isBluetooth;
+//        isBluetooth = activeNetwork.getType() == ConnectivityManager.TYPE_BLUETOOTH;
+//
+//        Log.e("CONNECTION", Boolean.toString(connected));
+//        Log.e("CONNECTIONBLUETTOOTH", Boolean.toString(isBluetooth));
+//
+//        return isBluetooth;
+        return connected;
     }
 
 }

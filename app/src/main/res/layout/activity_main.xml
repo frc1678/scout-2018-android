@@ -117,6 +117,7 @@
             android:layout_width="fill_parent"
             android:layout_height="330dp"
             android:id="@+id/view_files_received"
+            android:isScrollContainer="false"
             android:layout_above="@+id/resendAll" />
         <Button
             android:layout_width="wrap_content"

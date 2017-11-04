@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,9 +73,9 @@ public class bgLoopThread extends Thread {
                             @Override
                             public void run() {
                                 if (!main.internetCheck()){
-                                    View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
-                                    final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
-                                    editText.setText("WARNING!");
+                                    View dialogView = LayoutInflater.from(context).inflate(R.layout.internetdialog, null);
+                                    final TextView textView = (TextView) dialogView.findViewById(R.id.messageTextView);
+                                    textView.setText("WARNING!");
                                     new AlertDialog.Builder(context)
                                             .setView(dialogView)
                                             .setTitle("")
@@ -106,12 +108,6 @@ public class bgLoopThread extends Thread {
                                     })
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
-
-                                try {
-                                    Thread.sleep(5000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
                             } // This is your code
                         };
                         handler.postDelayed(runnable, delay);

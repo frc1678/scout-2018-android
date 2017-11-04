@@ -430,7 +430,18 @@ public abstract class DataActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Save Data?")
                     .setMessage("Do you want to save this data?")
-                    .setNegativeButton("No", null)
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAutoData = false;
+                            saveTeleData = false;
+                            Intent intent = prepareIntent(getPreviousActivityClass());
+                            if (getPreviousActivityClass() == MainActivity.class) {
+                                intent.putExtra("previousData", (String) null);
+                            }
+                            startActivity(intent);
+                        }
+                    })
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

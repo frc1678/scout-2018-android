@@ -349,6 +349,7 @@ public class UIComponentCreator {
                     titleTV.setText("Which Lift?");
 
                     Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
+                    liftOneButton.setBackgroundColor(Color.parseColor("#ff9999"));
                     liftOneButton.setText("Lift 1 ("+numGearsLiftOne+")");
                     liftOneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -361,6 +362,7 @@ public class UIComponentCreator {
                     });
 
                     Button liftTwoButton = (Button) dialogLayout.findViewById(R.id.liftTwoButton);
+                    liftTwoButton.setBackgroundColor(Color.parseColor("#ff9999"));
                     liftTwoButton.setText("Lift 2 ("+numGearsLiftTwo+")");
                     liftTwoButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -374,6 +376,7 @@ public class UIComponentCreator {
                     });
 
                     Button liftThreeButton = (Button) dialogLayout.findViewById(R.id.liftThreeButton);
+                    liftThreeButton.setBackgroundColor(Color.parseColor("#ff9999"));
                     liftThreeButton.setText("Lift 3 ("+numGearsLiftThree+")");
                     liftThreeButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -612,6 +615,8 @@ public class UIComponentCreator {
                 public boolean onLongClick(View v){
                     if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
                         try {
+                            Log.e("testAuto", DataActivity.activityName+Boolean.toString(DataActivity.saveAutoData));
+                            Log.e("testTele", DataActivity.activityName+Boolean.toString(DataActivity.saveTeleData));
                             for(int i = 0; i < DataManager.collectedData.getJSONObject(shotFBname).length();i++){
                                 JSONObject tempContainer = DataManager.collectedData.getJSONObject(shotFBname).getJSONObject(i+"");
                                 final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
@@ -626,6 +631,11 @@ public class UIComponentCreator {
                             }
                         } catch (JSONException e){
                             e.printStackTrace();
+                        }
+                        if(DataActivity.activityName.equals("auto")){
+                            DataActivity.saveAutoData = false;
+                        }else if(DataActivity.activityName.equals("tele")){
+                            DataActivity.saveTeleData = false;
                         }
                     }
 
