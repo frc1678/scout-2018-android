@@ -363,20 +363,19 @@ public abstract class DataActivity extends AppCompatActivity {
             Long stopTime = Calendar.getInstance().getTimeInMillis();
             Log.i("Starting next Activity!", "Time to update and serialize data: " + Long.toString(stopTime - startTime) + "ms");
 
-            if((activityName() == "tele") && sent){
-                sent = false;
+            Log.e("MEMES", Boolean.toString(sent));
+            if((activityName() == "tele")){
                 Log.e("collectedData", DataManager.collectedData.toString());
                 String jsonString = DataManager.collectedData.toString();
                 Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
+                Log.e("SUBTITLE", DataManager.subTitle);
                 databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
-            }else if(activityName() == "tele" && !sent){
-                sent = true;
             }
 
             new Thread() {
                 @Override
                 public void run() {
-                    if((activityName() == "tele") && sent) {
+                    if((activityName() == "tele")) {
                         try {
                             file = null;
                             //make the directory of the file
