@@ -55,6 +55,7 @@ public class bgLoopThread extends Thread {
     }
     public void run() {
         setScoutNameListener(scoutNumber, databaseReference);
+        setInternetListener();
     }
 
     public void setScoutNameListener(final int scoutNumber, final DatabaseReference databaseReference) {
@@ -66,28 +67,10 @@ public class bgLoopThread extends Thread {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
 
-                        int delay = 5000;
-
                         handler = new Handler(Looper.getMainLooper());
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
-                                if (!main.internetCheck()){
-                                    View dialogView = LayoutInflater.from(context).inflate(R.layout.internetdialog, null);
-                                    final TextView textView = (TextView) dialogView.findViewById(R.id.messageTextView);
-                                    textView.setText("WARNING!");
-                                    new AlertDialog.Builder(context)
-                                            .setView(dialogView)
-                                            .setTitle("")
-                                            .setMessage("YOU ARE NOT CONNECTED TO INTERNET! PLEASE RESEND MATCH!")
-                                            .setCancelable(false)
-                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                }
-                                            })
-                                            .setIcon(android.R.drawable.ic_dialog_alert)
-                                            .show();
-                                }
                                 View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
                                 final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
                                 editText.setText(tempScoutName);
@@ -110,7 +93,7 @@ public class bgLoopThread extends Thread {
                                     .show();
                             } // This is your code
                         };
-                        handler.postDelayed(runnable, delay);
+                        handler.post(runnable);
                     }
                 }
 
@@ -120,6 +103,37 @@ public class bgLoopThread extends Thread {
                 }
             });
         }
+    }
+
+    public void setInternetListener(){
+        handler = new Handler(Looper.getMainLooper());
+
+        int delay = 5000;
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.e("connection", Boolean.toString(main.internetCheck()));
+                if (!main.internetCheck()){
+                    View dialogView = LayoutInflater.from(context).inflate(R.layout.internetdialog, null);
+                    final TextView textView = (TextView) dialogView.findViewById(R.id.messageTextView);
+                    textView.setText("WARNING!");
+                    new AlertDialog.Builder(context)
+                            .setView(dialogView)
+                            .setTitle("")
+                            .setMessage("YOU ARE NOT CONNECTED TO INTERNET! PLEASE RESEND MATCH!")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            } // This is your code
+        };
+        handler.postDelayed(runnable, delay);
+
     }
 
     public void toasts(final String message) {

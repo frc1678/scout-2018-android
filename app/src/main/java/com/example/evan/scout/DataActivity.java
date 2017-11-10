@@ -74,6 +74,7 @@ public abstract class DataActivity extends AppCompatActivity {
 
     private boolean sent;
 
+    private int numSendClicks;
     public final Activity context = this;
     File dir;
     PrintWriter file;
@@ -111,12 +112,18 @@ public abstract class DataActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 //        setTitle("Scout Team " + intent.getIntExtra("teamNumber", -1));
 
+        numSendClicks = 0;
+
         Drawable actionBarBackgroundColor;
 
-        if(MainActivity.teamColor.equals("blue")){
-            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-        }else if(MainActivity.teamColor.equals("red")){
-            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+        if(MainActivity.teamColor != null){
+            if(MainActivity.teamColor.equals("blue")){
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            }else if(MainActivity.teamColor.equals("red")){
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+            }else{
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+            }
         }else{
             actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
         }
@@ -364,44 +371,60 @@ public abstract class DataActivity extends AppCompatActivity {
             Log.i("Starting next Activity!", "Time to update and serialize data: " + Long.toString(stopTime - startTime) + "ms");
 
             Log.e("MEMES", Boolean.toString(sent));
+
             if((activityName() == "tele")){
-                Log.e("collectedData", DataManager.collectedData.toString());
-                String jsonString = DataManager.collectedData.toString();
-                Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
-                Log.e("SUBTITLE", DataManager.subTitle);
-                databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
+                numSendClicks++;
+                    if(numSendClicks >= 2){
+                        saveAutoData = false;
+                        saveTeleData = false;
+
+                        Log.e("collectedData", DataManager.collectedData.toString());
+                        Log.e("SUBTITLE", DataManager.subTitle);
+
+                        String jsonString = DataManager.collectedData.toString();
+                        Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
+                        databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
+                    }
             }
 
             new Thread() {
                 @Override
                 public void run() {
                     if((activityName() == "tele")) {
-                        try {
-                            file = null;
-                            //make the directory of the file
-                            dir.mkdir();
-                            //can delete when doing the actual thing
-                            file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
-                        } catch (IOException IOE) {
-                            Log.e("File error", "Failed to open File");
-                            return;
-                        }
-
-
-                        file.println(DataManager.collectedData.toString());
-                        file.close();
-                        context.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.e("sentBOOL", Boolean.toString(sent));
-                                Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                        if(numSendClicks >= 2) {
+                            try {
+                                file = null;
+                                //make the directory of the file
+                                dir.mkdir();
+                                //can delete when doing the actual thing
+                                file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
+                            } catch (IOException IOE) {
+                                Log.e("File error", "Failed to open File");
+                                return;
                             }
-                        });
+
+
+                            file.println(DataManager.collectedData.toString());
+                            file.close();
+                            context.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("sentBOOL", Boolean.toString(sent));
+                                    Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            numSendClicks = 0;
+                        }
                     }
                 }
             }.start();
 
-            startActivity(intent);
+            if(!activityName.equals("tele")){
+                startActivity(intent);
+            }else if(activityName.equals("tele") && numSendClicks >= 2){
+                startActivity(intent);
+            }
         }
         return true;
     }

@@ -93,7 +93,7 @@ public class ShotListAdapter extends BaseAdapter {
                     Toast.makeText(activityContext, "No Radiobutton Was Checked",
                             Toast.LENGTH_SHORT).show();
                 }
-                ((TextView) subDialogView.findViewById(R.id.title)).setText(title);
+                ((TextView) subDialogView.findViewById(R.id.dialogTitle)).setText(title);
 
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activityContext);
                 dialogBuilder.setView(subDialogView);
@@ -153,7 +153,7 @@ public class ShotListAdapter extends BaseAdapter {
                         }
                     }
                 });
-                ((Button) subDialogView.findViewById(R.id.cancelButton)).setOnClickListener(new View.OnClickListener() {
+                ((Button) subDialogView.findViewById(R.id.failButton)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         dialog.cancel();

@@ -14,8 +14,8 @@ public class Constants {
     public static final String COLOR_BLUE = "#0000ff";
     static {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
-            put("didGetDisabled", "Disabled");
-            put("didGetIncapacitated", "Incapacitated");
+            put("didStartDisabled", "Disabled");
+            put("didBecomeIncapacitated", "Incapacitated");
             put("numHoppersUsedAuto", "Hoppers Used Auto");
             put("highShotAuto", "highShotAuto");
             put("lowShotAuto", "lowShotAuto");
@@ -31,8 +31,6 @@ public class Constants {
             put("readyForLiftOff", "Ready For LiftOff");
         }};
 
-
-
         //convert constant syntax
         Map<String, String> modKeysToTitles = new HashMap<>(initialKeysToTitles);
         for (Map.Entry<String, String> entry : initialKeysToTitles.entrySet()) {
@@ -46,24 +44,24 @@ public class Constants {
                 modKeysToTitles.remove(key);
             }
         }
-        initialKeysToTitles = new HashMap<>(modKeysToTitles);
-        for (Map.Entry<String, String> entry : initialKeysToTitles.entrySet()) {
-            String key = entry.getKey();
-            if (key.contains("_MADE")) {
-                modKeysToTitles.put(key.replaceAll("_MADE", "Made"), entry.getValue());
-                modKeysToTitles.put(key.replaceAll("_MADE", "Missed"), entry.getValue());
-                modKeysToTitles.remove(key);
-            }
-        }
-        initialKeysToTitles = new HashMap<>(modKeysToTitles);
-        for (Map.Entry<String, String> entry : initialKeysToTitles.entrySet()) {
-            String key = entry.getKey();
-            if (key.contains("_PERIOD")) {
-                modKeysToTitles.put(key.replaceAll("_PERIOD", "Auto"), entry.getValue());
-                modKeysToTitles.put(key.replaceAll("_PERIOD", "Tele"), entry.getValue());
-                modKeysToTitles.remove(key);
-            }
-        }
+//        initialKeysToTitles = new HashMap<>(modKeysToTitles);
+//        for (Map.Entry<String, String> entry : initialKeysToTitles.entrySet()) {
+//            String key = entry.getKey();
+//            if (key.contains("_MADE")) {
+//                modKeysToTitles.put(key.replaceAll("_MADE", "Made"), entry.getValue());
+//                modKeysToTitles.put(key.replaceAll("_MADE", "Missed"), entry.getValue());
+//                modKeysToTitles.remove(key);
+//            }
+//        }
+//        initialKeysToTitles = new HashMap<>(modKeysToTitles);
+//        for (Map.Entry<String, String> entry : initialKeysToTitles.entrySet()) {
+//            String key = entry.getKey();
+//            if (key.contains("_PERIOD")) {
+//                modKeysToTitles.put(key.replaceAll("_PERIOD", "Auto"), entry.getValue());
+//                modKeysToTitles.put(key.replaceAll("_PERIOD", "Tele"), entry.getValue());
+//                modKeysToTitles.remove(key);
+//            }
+//        }
         KEYS_TO_TITLES = new HashMap<>(modKeysToTitles);
     }
 }

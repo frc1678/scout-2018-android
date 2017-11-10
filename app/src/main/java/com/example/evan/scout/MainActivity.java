@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -76,8 +77,6 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 //by Ben bobell, 10/25/2017.
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
-
-    public Integer currentMatchNumber;
 
     //the database declaration
     private DatabaseReference databaseReference;
@@ -148,18 +147,38 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Last Scout name used", scoutName);
         }
 
-        currentMatchNumber = -1;
+        matchNumber = -1;
         new MatchNumListener(new MatchNumListener.MatchFirebaseInterface() {
             @Override
             public void onMatchChanged() {
-                currentMatchNumber = MatchNumListener.currentMatchNumber;
-                Log.e("MEME", currentMatchNumber+"");
+                matchNumber = MatchNumListener.currentMatchNumber;
+                Log.e("MEME", matchNumber+"");
                 findColor();
                 if(!overridden) {
                     setMatchNumber();
                 }
             }
         });
+
+        Drawable actionBarBackgroundColor;
+
+        if(teamColor != null){
+            if(teamColor.equals("blue")){
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            }else if(teamColor.equals("red")){
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+            }else{
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+            }
+        }else{
+            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+        }
+
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
+        }
 
         //get and set match number from firebase
         setMatchNumber();
@@ -236,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     //this method will get the match number and set it from firebase
     public void setMatchNumber(){
         EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
-        matchNumberEditText.setText(String.valueOf(currentMatchNumber));
+        matchNumberEditText.setText(String.valueOf(matchNumber));
         matchNumberEditText.setTextColor(Color.parseColor("black"));
     }
 
@@ -274,44 +293,52 @@ public class MainActivity extends AppCompatActivity {
     public void findColor(){
         for(int i = 0; i < 3; i++){
             final int num = i;
-            try{
-                databaseReference.child("Matches").child(currentMatchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+            databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.e("DANKKKKKK", "DANKKKKKK");
+                    if(dataSnapshot != null){
                         if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
                             setActionBarColor(Constants.COLOR_BLUE);
                             teamColor = "blue";
                             Log.e("CALLED!!!", teamColor);
+                        }else{
+                            teamColor = "green";
                         }
+                    }else{
+                        teamColor = "green";
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
 
-                    }
-                });
-            }catch(NullPointerException npe){
-                teamColor = "green";
-            }
-            try{
-                databaseReference.child("Matches").child(currentMatchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                }
+            });
+
+            databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.e("DANKKKKKK", "DANKKKKKK");
+                    if(dataSnapshot != null){
                         if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
                             setActionBarColor(Constants.COLOR_RED);
                             teamColor = "red";
                             Log.e("CALLED!!!", teamColor);
+                        }else{
+                            teamColor = "green";
                         }
+                    }else{
+                        teamColor = "green";
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
 
-                    }
-                });
-            }catch(NullPointerException npe){
-                teamColor = "green";
-            }
+                }
+            });
+
 
         }
     }
@@ -382,13 +409,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Please set your number and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
-                        DataManager.subTitle = teamNumber + "Q" + currentMatchNumber + "-" + scoutNumber;
+                        DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                         if (matchNumber <= 0) {
                             setMatchNumber();
                             Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            DataManager.subTitle = teamNumber + "Q" + currentMatchNumber + "-" + scoutNumber;
+                            DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                             if (teamNumber <= 0) {
                                 setTeamNumber();
                                 Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
@@ -428,13 +455,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.i("HATRED", "ISNOTOVERRIDEN");
             if (scoutNumber <= 0) {
                 setScoutNumber();
                 Toast.makeText(getBaseContext(), "Please set your number and try again",
                         Toast.LENGTH_LONG).show();
             } else {
-                DataManager.subTitle = teamNumber + "Q" + currentMatchNumber + "-" + scoutNumber;
+                DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                 if (teamNumber <= 0) {
                     setTeamNumber();
                     Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
@@ -442,14 +468,13 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Intent intent = new Intent(this, AutoActivity.class);
                     EditText matchNumber = (EditText) findViewById(R.id.matchNumTextEdit);
-                    DataManager.subTitle = teamNumber + "Q" + currentMatchNumber + "-" + scoutNumber;
+                    DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                     DataManager.addZeroTierJsonData("scoutName", scoutName);
                     intent.setAction("returningNoSavedData");
                     SharedPreferences.Editor spfe = sharedPreferences.edit();
-                    spfe.putString("lastScoutName", scoutName);
+                    spfe.putString("scoutName", scoutName);
                     spfe.commit();
                     startActivity(intent);
-
                 }
             }
         }
@@ -464,52 +489,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-//    public void setScoutNameListener() {
-//        Log.e("scoutNumber", String.valueOf(scoutNumber));
-//        if (scoutNumber > 0){
-//            databaseReference.child("scouts").child(String.valueOf("scout" + scoutNumber)).child("currentUser").addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(final DataSnapshot dataSnapshot) {
-//                    if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
-//                        final String tempScoutName = dataSnapshot.getValue().toString();
-//                        if(!sharedPreferences.getString("scoutName", " ").equals(tempScoutName)) {
-//                            new AlertDialog.Builder(context)
-//                                    .setTitle("")
-//                                    .setMessage("Are you " + tempScoutName + "?")
-//                                    .setCancelable(false)
-//                                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int which) {
-//                                            scoutName = tempScoutName;
-//                                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-//                                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-//                                            Log.e("tempScoutName", tempScoutName);
-//                                            sharedPreferences.edit().remove("scoutName").apply();
-//                                            editor.putString("scoutName", tempScoutName).commit();
-//                                        }
-//                                    })
-//                                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                                    .show();
-//                        }else if(sharedPreferences.getString("scoutName", " ").equals(tempScoutName)){
-//                            scoutName = tempScoutName;
-//                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-//                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-//                        }
-//
-//                    } else {
-//                        //setScoutName();
-//                    }
-//                    EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-//                    teamNumberEditText.setText(String.valueOf(teamNumber));
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
-//        }
-//    }
 
     public void listenForResendClick(){
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -639,6 +618,7 @@ public class MainActivity extends AppCompatActivity {
         }
         final File[] files = dir.listFiles();
         adapter.clear();
+        Log.e("DEBUGGING", files.toString());
         for (File tmpFile : files) {
             adapter.add(tmpFile.getName());
         }
