@@ -71,6 +71,7 @@ public abstract class DataActivity extends AppCompatActivity {
     public static boolean saveTeleData = false;
     public static boolean saveAutoData = false;
     public static String activityName;
+    public static boolean rejected = false;
 
     private boolean sent;
 
@@ -79,6 +80,10 @@ public abstract class DataActivity extends AppCompatActivity {
     File dir;
     PrintWriter file;
 
+    public static ArrayList<HashMap<String, Object>> highShotAutoDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> lowShotAutoDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> highShotTeleDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> lowShotTeleDataList = new ArrayList<HashMap<String, Object>>();
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
@@ -359,6 +364,8 @@ public abstract class DataActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.buttonNext) {
+            rejected = false;
+
             synchronized (readyForNextActivityLock) {
                 if (!readyForNextActivity) {
                     Log.i("Scout Error", "Tried to move on too quickly!");
@@ -377,6 +384,11 @@ public abstract class DataActivity extends AppCompatActivity {
                     if(numSendClicks >= 2){
                         saveAutoData = false;
                         saveTeleData = false;
+
+                        highShotAutoDataList = new ArrayList<>();
+                        lowShotAutoDataList = new ArrayList<>();
+                        highShotTeleDataList = new ArrayList<>();
+                        lowShotTeleDataList = new ArrayList<>();
 
                         Log.e("collectedData", DataManager.collectedData.toString());
                         Log.e("SUBTITLE", DataManager.subTitle);
@@ -457,7 +469,8 @@ public abstract class DataActivity extends AppCompatActivity {
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            saveAutoData = false;
+                            rejected = true;
+                            saveAutoData = true;
                             saveTeleData = false;
                             Intent intent = prepareIntent(getPreviousActivityClass());
                             if (getPreviousActivityClass() == MainActivity.class) {
@@ -469,6 +482,7 @@ public abstract class DataActivity extends AppCompatActivity {
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            rejected = false;
                             saveAutoData = true;
                             saveTeleData = true;
                             Intent intent = prepareIntent(getPreviousActivityClass());
