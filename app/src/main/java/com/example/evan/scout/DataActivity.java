@@ -383,6 +383,8 @@ public abstract class DataActivity extends AppCompatActivity {
 
                         String jsonString = DataManager.collectedData.toString();
                         Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
+                        Log.e("SUBTITLE", DataManager.subTitle);
+                        Log.e("JSONMAP", jsonString);
                         databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
                     }
             }

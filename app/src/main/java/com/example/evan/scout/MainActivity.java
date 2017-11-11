@@ -231,7 +231,34 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.currentScout){
-            Toast.makeText(getBaseContext(), scoutName, Toast.LENGTH_SHORT).show();
+            View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
+            final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
+
+            if(scoutName != null){
+                editText.setText(scoutName);
+            }else{
+                editText.setText("");
+            }
+            new AlertDialog.Builder(context)
+                    .setView(dialogView)
+                    .setTitle("")
+                    .setMessage("Are you this person?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            scoutName = editText.getText().toString();
+                            DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+                            Log.e("tempScoutName", scoutName);
+                            scoutName = editText.getText().toString();
+                            SharedPreferences.Editor spfe = sharedPreferences.edit();
+                            spfe.putString("scoutName", scoutName);
+                            spfe.commit();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
 
         if (id == R.id.mainOverride){
@@ -409,12 +436,14 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Please set your number and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
+                        Log.e("MATCHNUMBER1", matchNumber+"");
                         DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                         if (matchNumber <= 0) {
                             setMatchNumber();
                             Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                     Toast.LENGTH_LONG).show();
                         } else {
+                            Log.e("MATCHNUMBER2", matchNumber+"");
                             DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                             if (teamNumber <= 0) {
                                 setTeamNumber();
@@ -423,15 +452,16 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 try {
                                     if (!scoutName.equals("")) {
-                                        EditText matchNumber = (EditText) findViewById(R.id.matchNumTextEdit);
+                                        EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
                                         String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumEdit)).getText().toString();
                                         Intent intent = new Intent(this, AutoActivity.class);
                                         if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
                                             Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
                                             if(ovrrdTeamNum > 0) {
-                                                DataManager.subTitle = ovrrdTeamNum + "Q" + Integer.parseInt(matchNumber.getText().toString()) + "-" + scoutNumber;
+                                                Log.e("MATCHNUMBER3", matchNumber+"");
+                                                DataManager.subTitle = ovrrdTeamNum + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                                                 DataManager.addZeroTierJsonData("scoutName", scoutName);
-                                                intent.putExtra("matchNumber", Integer.parseInt(matchNumber.getText().toString())).putExtra("overridden", overridden)
+                                                intent.putExtra("matchNumber", Integer.parseInt(matchNumberEditText.getText().toString())).putExtra("overridden", overridden)
                                                 .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
                                                 intent.setAction("returningNoSavedData");
                                                 startActivity(intent);
@@ -460,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Please set your number and try again",
                         Toast.LENGTH_LONG).show();
             } else {
+                Log.e("MATCHNUMBER4", matchNumber+"");
                 DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                 if (teamNumber <= 0) {
                     setTeamNumber();
@@ -467,8 +498,9 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 } else {
                     Intent intent = new Intent(this, AutoActivity.class);
-                    EditText matchNumber = (EditText) findViewById(R.id.matchNumTextEdit);
-                    DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
+                    EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
+                    Log.e("MATCHNUMBER5", matchNumber+"");
+                    DataManager.subTitle = teamNumber + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                     DataManager.addZeroTierJsonData("scoutName", scoutName);
                     intent.setAction("returningNoSavedData");
                     SharedPreferences.Editor spfe = sharedPreferences.edit();
