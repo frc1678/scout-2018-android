@@ -87,24 +87,24 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:id="@+id/listLayout"
-        android:layout_alignParentRight="true"
-        android:layout_weight="1">
+    <!--<RelativeLayout-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:id="@+id/listLayout"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_weight="1">-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/webView"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-    </RelativeLayout>
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/webView"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentEnd="true" />-->
+    <!--</RelativeLayout>-->
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -118,7 +118,8 @@
             android:layout_height="330dp"
             android:id="@+id/view_files_received"
             android:isScrollContainer="false"
-            android:layout_above="@+id/resendAll" />
+            android:layout_above="@+id/resendAll"
+            android:layout_below="@+id/searchEditText"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -144,8 +145,8 @@
             android:hint="Search: "
             android:id="@+id/searchEditText"
             android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/resendAll"
-            android:layout_alignStart="@+id/resendAll" />
+            android:layout_alignLeft="@+id/button"
+            android:layout_alignStart="@+id/button" />
 
     </RelativeLayout>
 

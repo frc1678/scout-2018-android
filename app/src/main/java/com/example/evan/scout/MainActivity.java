@@ -71,7 +71,7 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 /**
  * Created by Calvin on 7/26/17.
  */
-//TODO 10/25/17 7:06 p.m.
+//TODO 11/11/17 10:40 am Madtown Showown
     //changes HAHAHA
 // 8/31/17 8:28
 //by Ben bobell, 10/25/2017.
@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         MainActivity main = this;
+
+        if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -464,6 +466,8 @@ public class MainActivity extends AppCompatActivity {
                                                 intent.putExtra("matchNumber", Integer.parseInt(matchNumberEditText.getText().toString())).putExtra("overridden", overridden)
                                                 .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
                                                 intent.setAction("returningNoSavedData");
+                                                DataManager.addZeroTierJsonData("teamNumber", teamNumber);
+                                                DataManager.addZeroTierJsonData("matchNumber", matchNumber);
                                                 startActivity(intent);
                                             } else {
                                                 Toast.makeText(getBaseContext(), "Choose a Valid Team", Toast.LENGTH_SHORT).show();
@@ -506,6 +510,8 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor spfe = sharedPreferences.edit();
                     spfe.putString("scoutName", scoutName);
                     spfe.commit();
+                    DataManager.addZeroTierJsonData("teamNumber", teamNumber);
+                    DataManager.addZeroTierJsonData("matchNumber", matchNumber);
                     startActivity(intent);
                 }
             }
@@ -543,7 +549,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 String content = readFile(fileName);
                                 Log.e("XXXX","XXXX");
-                                Log.e("CONTENT", content);
                                 JSONObject scoutData;
                                 try {
                                     scoutData = new JSONObject(content);
@@ -596,11 +601,18 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 //read data from file
                 for (int j = 0; j < dataPoints.size(); j++) {
+                    String keyName = "faulty";
                     Log.e("Test 2", "assign file data to Json");
                     JSONObject scoutData = dataPoints.get(j);
+                    try {
+                        //TODO im assuming here that scoutnum doesnt change
+                        keyName = scoutData.getString("teamNumber")+"Q"+scoutData.getString("matchNumber")+"-"+scoutNumber;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     String jsonString = scoutData.toString();
                     Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
-                    databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
+                    databaseReference.child("TempTeamInMatchDatas").child(keyName).setValue(jsonMap);
                 }
                 toasts("Resent Scout data!", false);
             }

@@ -74,7 +74,7 @@ public class UIComponentCreator {
         toggleButton.setText(componentNames.get(currentComponent));
         toggleButton.setTextOn(componentNames.get(currentComponent));
         toggleButton.setTextOff(componentNames.get(currentComponent));
-        toggleButton.setTextSize(toggleButton.getTextSize() * 0.4f);
+        toggleButton.setTextSize(toggleButton.getTextSize() * 1f);
         toggleButton.setChecked(value);
         currentComponent++;
         componentViews.add(toggleButton);
@@ -155,7 +155,7 @@ public class UIComponentCreator {
 
         public Button addButton(final ToggleButton button1, final ToggleButton button2) {
             //add button to row
-            final Button liftOffButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.4f);
+            final Button liftOffButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
             liftOffButton.setText("Ready For LiftOff");
             liftOffButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -284,7 +284,7 @@ public class UIComponentCreator {
         }
 
         public Button addButton(){
-            final Button gearButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.7f);
+            final Button gearButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
             gearButton.setText("Gear Placed");
             gearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -444,7 +444,7 @@ public class UIComponentCreator {
             final String height = name.substring(0,index2);
             final String dataName = name;
 
-            final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.7f);
+            final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
             shotButton.setText(buttonName);
             shotButton.setOnClickListener(new View.OnClickListener() {
                 @Override

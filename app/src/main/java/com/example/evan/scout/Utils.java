@@ -51,10 +51,6 @@ public class Utils {
         dialog.create().show();
     }
 
-    public static void SendFirebaseData(DatabaseReference ref, JSONObject data){
-        ref.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(data);
-    }
-
     public static Object getField(Object object, String field) throws Exception {
         List<String> fields = Arrays.asList(field.split("\\."));
         if (fields.size() == 1) {
