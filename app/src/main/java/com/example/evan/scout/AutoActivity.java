@@ -6,7 +6,7 @@ import java.util.List;
 
 public class AutoActivity extends DataActivity {
     public String activityName(){   return "auto"; }
-    public List<String> getShotData() {
+    public List<String> getShotData() { //todo change
         return formatList(Arrays.asList("highShotAuto", "lowShotAuto"));
     }
     public List<String> getToggleData() {
@@ -14,11 +14,11 @@ public class AutoActivity extends DataActivity {
     }
     public List<String> getCounterData() {
         return formatList(Arrays.asList("numHoppersUsedAuto"));
-    }
+    } //todo change
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return R.id.autoCounterLinearLayout; }
-    public Integer getShotXML() { return R.id.autoShotButtonLinearLayout; };
-    public Integer getOtherXML() { return R.id.autoGearIntakeButtonLinearLayout; };
+    public Integer getCounterXML() { return R.id.autoCounterLinearLayout; } //todo change
+    public Integer getShotXML() { return R.id.autoShotButtonLinearLayout; }; //todo change
+    public Integer getOtherXML() { return R.id.autoGearIntakeButtonLinearLayout; }; //todo change
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}

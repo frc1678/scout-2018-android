@@ -47,10 +47,10 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
     public abstract List<String> getToggleData();
     public abstract List<String> getCounterData();
-    public abstract List<String> getShotData();
+    public abstract List<String> getShotData(); //todo change
     public abstract Integer getToggleXML();
     public abstract Integer getCounterXML();
-    public abstract Integer getShotXML();
+    public abstract Integer getShotXML(); //todo change
     public abstract Integer getOtherXML();
     public abstract Class getNextActivityClass();
     public abstract Class getPreviousActivityClass();
@@ -63,9 +63,9 @@ public abstract class DataActivity extends AppCompatActivity {
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
-    private UIComponentCreator.UIGearCreator gearCreator;
+    private UIComponentCreator.UIGearCreator gearCreator; //todo change
     private UIComponentCreator.UIButtonCreator liftOffCreator;
-    private UIComponentCreator.UIShotCreator shotCreator;
+    private UIComponentCreator.UIShotCreator shotCreator; //todo change
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
 //    private LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -98,7 +98,7 @@ public abstract class DataActivity extends AppCompatActivity {
                     readyForNextActivity = true;
                 }
             }
-        }, 1, TimeUnit.SECONDS);
+        }, 1, TimeUnit.SECONDS); //todo change
 
         updateUI();
     }
@@ -115,13 +115,13 @@ public abstract class DataActivity extends AppCompatActivity {
 
                 toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
                 Log.e("toggleSize", toggleDisplayTitles.size()+"");
-                final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
-                final ToggleButton button2 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
+                final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false); //todo check
+                final ToggleButton button2 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false); //todo check
 
-                liftOffCreator = new UIComponentCreator.UIButtonCreator(this, null);
-                toggleLayout.addView(liftOffCreator.addButton(button1, button2));
+                liftOffCreator = new UIComponentCreator.UIButtonCreator(this, null); //todo change
+                toggleLayout.addView(liftOffCreator.addButton(button1, button2)); //todo change
 
-                for (int i = 0; i < getToggleData().size(); i+=2) {
+                for (int i = 0; i < getToggleData().size(); i+=2) { //todo check for loop
                     toggleLayout.addView(button1);
                     if (shouldSpaceToggles()) {
                         toggleLayout.addView(getFillerSpace(0.2f));
@@ -154,7 +154,7 @@ public abstract class DataActivity extends AppCompatActivity {
 
         }
 
-                    LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML());
+                    LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML()); //todo change from here
                     List<String> shotNames = new ArrayList<>();
                     for (int i = 0; i < getShotData().size(); i++) {
                         shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
@@ -177,11 +177,11 @@ public abstract class DataActivity extends AppCompatActivity {
                         shotLayout.addView(button1);
                         shotLayout.addView(getFillerSpace(0.3f));
                         shotLayout.addView(button2);
-                    }
+                    } //todo change to here
 
         LinearLayout gearLayout = (LinearLayout)findViewById(getOtherXML());
-        gearCreator = new UIComponentCreator.UIGearCreator(this, null);
-        gearCreator.addButton(gearLayout);
+        gearCreator = new UIComponentCreator.UIGearCreator(this, null); //todo change
+        gearCreator.addButton(gearLayout); //todo change
         gearLayout.addView(getFillerSpace(1f));
 
                     LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());

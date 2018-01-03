@@ -5,28 +5,28 @@ import java.util.Map;
 
 public class Constants {
     public static final Map<String, String> KEYS_TO_TITLES;
-    public static int highShotAuto = 0;
-    public static int lowShotAuto = 0;
-    public static int highShotTele = 0;
-    public static int lowShotTele = 0;
+    public static int highShotAuto = 0; //todo change
+    public static int lowShotAuto = 0; //todo change
+    public static int highShotTele = 0; //todo change
+    public static int lowShotTele = 0; //todo change
     public static final String COLOR_GREEN = "#65C423";
     static {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             put("didGetDisabled", "Disabled");
             put("didGetIncapacitated", "Incapacitated");
-            put("numHoppersUsedAuto", "Hoppers Used Auto");
-            put("highShotAuto", "highShotAuto");
-            put("lowShotAuto", "lowShotAuto");
-            put("highShotTele", "highShotTele");
-            put("lowShotTele", "lowShotTele");
-            put("numGroundGearIntakesTele", "Ground Gear Intakes");
-            put("numHumanGearIntakesTele", "Human Gear Intakes");
-            put("numGearsFumbledTele", "Gears Fumbled Tele");
-            put("numGearsEjectedTele", "Gears Ejected Tele");
-            put("numHoppersUsedTele", "Hoppers Used Tele");
-            put("gearPlacedAuto", "Gear Placed");
-            put("gearPlacedTele", "Gear Placed");
-            put("readyForLiftOff", "Ready For LiftOff");
+            put("numHoppersUsedAuto", "Hoppers Used Auto"); //todo change
+            put("highShotAuto", "highShotAuto"); //todo change
+            put("lowShotAuto", "lowShotAuto"); //todo change
+            put("highShotTele", "highShotTele"); //todo change
+            put("lowShotTele", "lowShotTele"); //todo change
+            put("numGroundGearIntakesTele", "Ground Gear Intakes"); //todo change
+            put("numHumanGearIntakesTele", "Human Gear Intakes"); //todo change
+            put("numGearsFumbledTele", "Gears Fumbled Tele"); //todo change
+            put("numGearsEjectedTele", "Gears Ejected Tele"); //todo change
+            put("numHoppersUsedTele", "Hoppers Used Tele"); //todo change
+            put("gearPlacedAuto", "Gear Placed"); //todo change
+            put("gearPlacedTele", "Gear Placed"); //todo change
+            put("readyForLiftOff", "Ready For LiftOff"); //todo change
         }};
 
 
