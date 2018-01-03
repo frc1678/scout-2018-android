@@ -213,7 +213,7 @@ public class UIComponentCreator {
                     final TextView liftoffTimeView = (TextView) dialogLayout.findViewById(R.id.liftoffTime);
                     final CountDownTimer cdt = new CountDownTimer(135000, 100) {
                         @Override
-                        public void onTick(long millisUntilFinished) {
+                        public void onTick(long millisUntilFinished) {  //todo change
                             double currentSeconds = (135000.0 - millisUntilFinished) / 1000;
                             liftoffTimeView.setText(String.valueOf(currentSeconds));
                         }
@@ -264,29 +264,29 @@ public class UIComponentCreator {
 
         public UIGearCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
-            numGearsLiftOne = 0;
-            numGearsLiftTwo = 0;
-            numGearsLiftThree = 0;
+            numGearsLiftOne = 0;    //todo change
+            numGearsLiftTwo = 0;    //todo change
+            numGearsLiftThree = 0;  //todo change
             this.context = context;
         }
 
         public void addButton(LinearLayout parent){
             final Button gearButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.7f);
-            gearButton.setText("Gear Placed");
+            gearButton.setText("Gear Placed"); //todo change
             gearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v) {   //todo change
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.gear_dialog, null);
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText("Which Lift?");
+                    titleTV.setText("Which Lift?"); //todo change
 
                     Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
                     liftOneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            numGearsLiftOne += 1;
+                            numGearsLiftOne += 1;   //todo change
                             dialog.dismiss();
                         }
                     });
@@ -295,7 +295,7 @@ public class UIComponentCreator {
                     liftTwoButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            numGearsLiftTwo += 1;
+                            numGearsLiftTwo += 1;   //todo change
                             dialog.dismiss();
                         }
                     });
@@ -304,7 +304,7 @@ public class UIComponentCreator {
                     liftThreeButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            numGearsLiftThree += 1;
+                            numGearsLiftThree += 1; //todo change
                             dialog.dismiss();
                         }
                     });
@@ -328,16 +328,16 @@ public class UIComponentCreator {
                 public boolean onLongClick(View v) {
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.gear_dialog, null);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.gear_dialog, null); //todo change
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText("Which Lift?");
+                    titleTV.setText("Which Lift?");     //todo change
 
                     Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
                     liftOneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             numGearsLiftOne -= 1;
-                            dialog.dismiss();
+                            dialog.dismiss();   //todo change
                         }
                     });
 
@@ -346,7 +346,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             numGearsLiftTwo -= 1;
-                            dialog.dismiss();
+                            dialog.dismiss();   //todo change
                         }
                     });
 
@@ -355,7 +355,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             numGearsLiftThree -= 1;
-                            dialog.dismiss();
+                            dialog.dismiss();       // todo change
                         }
                     });
 
@@ -374,39 +374,39 @@ public class UIComponentCreator {
                     return true;
                 }
             });
-            parent.addView(gearButton);
+            parent.addView(gearButton);     //todo change
         }
     }
 
     public static class UIShotCreator extends UIComponentCreator {
-        private int shotsMade;
+        private int shotsMade;  //todo change
         private String position;
         private long startTime;
         private long endTime;
         private float totalTime;
         private String name;
         private Activity context;
-        private int currentShotComponent;
+        private int currentShotComponent;   //todo change
 
         public UIShotCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
-            currentShotComponent = 0;
-            shotsMade = 0;
+            currentShotComponent = 0;   //todo change
+            shotsMade = 0;  //todo change
             this.context = context;
-            name = "LOL";
+            name = "LOL";   //lol
         }
         public Button addButton(final String shotFBname) {
             name = UIShotCreator.super.componentNames.get(currentShotComponent);
             final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 0.7f);
-            Log.e("CurrentComponent",String.valueOf(currentShotComponent));
-            shotButton.setText(super.componentNames.get(currentShotComponent));
+            Log.e("CurrentComponent",String.valueOf(currentShotComponent));//todo change
+            shotButton.setText(super.componentNames.get(currentShotComponent));// todo change
             shotButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startTime = System.currentTimeMillis();
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.shot_dialog, null);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.shot_dialog, null); //todo change
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
                     titleTV.setText(name);
 
@@ -417,7 +417,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             shotsMade -= 10;
-                            numberView.setText(String.valueOf(shotsMade));
+                            numberView.setText(String.valueOf(shotsMade));  //todo change
                         }
                     });
 
@@ -426,7 +426,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             shotsMade -= 1;
-                            numberView.setText(String.valueOf(shotsMade));
+                            numberView.setText(String.valueOf(shotsMade));  //todo change
                         }
                     });
 
@@ -435,7 +435,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             shotsMade += 10;
-                            numberView.setText(String.valueOf(shotsMade));
+                            numberView.setText(String.valueOf(shotsMade));  //todo change
                         }
                     });
 
@@ -444,7 +444,7 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             shotsMade += 1;
-                            numberView.setText(String.valueOf(shotsMade));
+                            numberView.setText(String.valueOf(shotsMade));  //todo change
                         }
                     });
 
@@ -453,7 +453,7 @@ public class UIComponentCreator {
                     keyRadioButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            position = "Key";
+                            position = "Key";   //todo change
                         }
                     });
 
@@ -461,7 +461,7 @@ public class UIComponentCreator {
                     hopperRadioButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            position = "Hopper";
+                            position = "Hopper";    //todo change
                         }
                     });
 
@@ -477,7 +477,7 @@ public class UIComponentCreator {
                     otherRadioButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            position = "Other";
+                            position = "Other";     //todo change
                         }
                     });
 
@@ -525,8 +525,8 @@ public class UIComponentCreator {
                 }
             });
             currentShotComponent++;
-            super.componentViews.add(shotButton);
-            return shotButton;
+            super.componentViews.add(shotButton);   //todo change
+            return shotButton;  //todo change
         }
     }
 }
