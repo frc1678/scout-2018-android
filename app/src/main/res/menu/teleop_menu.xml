@@ -5,4 +5,8 @@
         android:title="Send"
         android:id="@+id/buttonNext"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/teamNumTextView"
+        android:title=""
+        app:showAsAction="always"/>
 </menu>
