@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -358,6 +359,37 @@ public abstract class DataActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(getActionBarMenu(), menu);
+        if (activityName() == "auto") {
+            try {
+                MenuItem textView = menu.findItem(R.id.teamNumTextView);
+                LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.textview, null);
+                TextView teamNumTextView = (TextView) linearLayout.findViewById(R.id.normalTV);
+                teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
+                textView.setActionView(teamNumTextView);
+                MenuItem button = menu.findItem(R.id.buttonNext);
+                Button buttonNext = (Button) findViewById(R.id.nextButton);
+                buttonNext.setText(button.getTitle());
+                buttonNext.setGravity(Gravity.RIGHT);
+                button.setActionView(buttonNext);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else if(activityName() == "tele"){
+            try{
+                MenuItem textView = menu.findItem(R.id.teamNumTextView);
+                TextView teamNumTextView = (TextView) findViewById(R.id.normalTV);
+                teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
+                teamNumTextView.setGravity(Gravity.RIGHT);
+                textView.setActionView(teamNumTextView);
+                MenuItem button = menu.findItem(R.id.buttonNext);
+                Button buttonNext = (Button) findViewById(R.id.nextButton);
+                buttonNext.setText(button.getTitle());
+                button.setActionView(buttonNext);
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+
         return true;
     }
 
