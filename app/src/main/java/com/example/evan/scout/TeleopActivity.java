@@ -7,14 +7,14 @@ import java.util.List;
 public class TeleopActivity extends DataActivity {
     public String activityName(){   return "tele"; }
     public List<String> getShotData() {
-        return formatList(Arrays.asList("highShotTele", "lowShotTele"));
+        return formatList(Arrays.asList("", ""));
     }
     public List<String> getToggleData() {
-        return formatList(Arrays.asList("didStartDisabled", "didBecomeIncapacitated"));
+        return formatList(Arrays.asList("", ""));
     }
     public List<String> getCounterData() {
-        return formatList(Arrays.asList("numGroundGearIntakesTele", "numHumanGearIntakesTele",
-                "numGearsFumbledTele", "numGearsEjectedTele", "numHoppersUsedTele"));
+        return formatList(Arrays.asList("", "",
+                "", "", ""));
     }
     public Integer getToggleXML() { return R.id.teleToggleButtonLinearLayout; }
     public Integer getCounterXML() { return R.id.teleCounterLinearLayout; }

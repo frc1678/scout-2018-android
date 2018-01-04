@@ -81,10 +81,6 @@ public abstract class DataActivity extends AppCompatActivity {
     File dir;
     PrintWriter file;
 
-    public static ArrayList<HashMap<String, Object>> highShotAutoDataList = new ArrayList<HashMap<String, Object>>();
-    public static ArrayList<HashMap<String, Object>> lowShotAutoDataList = new ArrayList<HashMap<String, Object>>();
-    public static ArrayList<HashMap<String, Object>> highShotTeleDataList = new ArrayList<HashMap<String, Object>>();
-    public static ArrayList<HashMap<String, Object>> lowShotTeleDataList = new ArrayList<HashMap<String, Object>>();
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
@@ -93,7 +89,6 @@ public abstract class DataActivity extends AppCompatActivity {
     private UIComponentCreator.UIShotCreator shotCreator;
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
-    //    private LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     DatabaseReference databaseReference;
 
     @Override
@@ -102,9 +97,9 @@ public abstract class DataActivity extends AppCompatActivity {
 
         sent = false;
 
+        //check for whether they want to save data
         if(!saveTeleData){
-            DataManager.addZeroTierJsonData("didLiftoff", false);
-            DataManager.addZeroTierJsonData("liftoffTime", 0);
+
         }
 
         if(activityName() == "auto"){
@@ -116,7 +111,6 @@ public abstract class DataActivity extends AppCompatActivity {
         activityName = activityName();
         intent = getIntent();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-//        setTitle("Scout Team " + intent.getIntExtra("teamNumber", -1));
 
         numSendClicks = 0;
 
@@ -166,96 +160,63 @@ public abstract class DataActivity extends AppCompatActivity {
 
                 toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
                 Log.e("toggleSize", toggleDisplayTitles.size()+"");
+                //template version, you can add as many as you want example bellow
                 final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
-                final ToggleButton button2 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
 
+                //our game didn't have toggles in auto, so I added this if
                 if(saveTeleData && activityName() == "tele"){
                     try {
                         button1.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(0)));
-                        button2.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(1)));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
 
+                //xml layout beutification - :D lol
                 liftOffCreator = new UIComponentCreator.UIButtonCreator(this, null);
-                toggleLayout.addView(liftOffCreator.addButton(button1, button2));
 
                 for (int i = 0; i < getToggleData().size(); i+=2) {
                     toggleLayout.addView(button1);
                     if (shouldSpaceToggles()) {
                         toggleLayout.addView(getFillerSpace(0.2f));
                     }
-                    toggleLayout.addView(button2);
                     if (shouldSpaceToggles() && i+1 != getToggleData().size()-1) {
                         toggleLayout.addView(getFillerSpace(0.2f));
                     }
-                    if (doTogglesDepend()) {
-                        button1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                if (isChecked) {
-                                    button2.setChecked(false);
-                                }
-                            }
-                        });
-                        button2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                if (isChecked) {
-                                    button1.setChecked(false);
-                                }
-                            }
-                        });
-                    }
+
                 }
             }
         }
 
-        LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML());
-        List<String> shotNames = new ArrayList<>();
-        for (int i = 0; i < getShotData().size(); i++) {
-            shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
-        }
-        Log.e("shotNames",String.valueOf(shotNames.size()));
-        shotCreator = new UIComponentCreator.UIShotCreator(this, shotNames);
-        for (int i = 0; i < getShotData().size(); i+=2) {
-            Button button1 = null;
-            Button button2 = null;
+                        //shot stuff, will probably be useless
+                        LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML());
+                        List<String> shotNames = new ArrayList<>();
+                        for (int i = 0; i < getShotData().size(); i++) {
+                            shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
+                        }
+                        Log.e("shotNames",String.valueOf(shotNames.size()));
+                        shotCreator = new UIComponentCreator.UIShotCreator(this, shotNames);
+                        for (int i = 0; i < getShotData().size(); i+=2) {
+                            Button button1 = null;
+                            Button button2 = null;
 
-            if(activityName() == "auto"){
-                Log.e("first",i+"");
-                button1 = shotCreator.addButton("highShotTimesForBoilerAuto");
-                button2 = shotCreator.addButton("lowShotTimesForBoilerAuto");
-            }else if(activityName() == "tele"){
-                button1 = shotCreator.addButton("highShotTimesForBoilerTele");
-                button2 = shotCreator.addButton("lowShotTimesForBoilerTele");
-            }
+                            if(activityName() == "auto"){
+                                Log.e("first",i+"");
+                                button1 = shotCreator.addButton("highShotTimesForBoilerAuto");
+                                button2 = shotCreator.addButton("lowShotTimesForBoilerAuto");
+                            }else if(activityName() == "tele"){
+                                button1 = shotCreator.addButton("highShotTimesForBoilerTele");
+                                button2 = shotCreator.addButton("lowShotTimesForBoilerTele");
+                            }
 
-            shotLayout.addView(button1);
-            shotLayout.addView(getFillerSpace(0.3f));
-            shotLayout.addView(button2);
-        }
+                            shotLayout.addView(button1);
+                            shotLayout.addView(getFillerSpace(0.3f));
+                            shotLayout.addView(button2);
+                        }
 
-        LinearLayout gearLayout = (LinearLayout)findViewById(getOtherXML());
-        gearCreator = new UIComponentCreator.UIGearCreator(this, null);
-        gearLayout.addView(gearCreator.addButton());
-        gearLayout.addView(getFillerSpace(1f));
-        try {
-            if((saveAutoData && activityName() == "auto")){
-                gearCreator.setNumGearsLiftOne(DataManager.collectedData.getJSONObject("gearsPlacedByLiftAuto").getInt("hpStation"));
-                gearCreator.setNumGearsLiftTwo(DataManager.collectedData.getJSONObject("gearsPlacedByLiftAuto").getInt("allianceWall"));
-                gearCreator.setNumGearsLiftThree(DataManager.collectedData.getJSONObject("gearsPlacedByLiftAuto").getInt("boiler"));
-            }else if(saveTeleData && activityName() == "tele"){
-                gearCreator.setNumGearsLiftOne(DataManager.collectedData.getJSONObject("gearsPlacedByLiftTele").getInt("hpStation"));
-                gearCreator.setNumGearsLiftTwo(DataManager.collectedData.getJSONObject("gearsPlacedByLiftTele").getInt("allianceWall"));
-                gearCreator.setNumGearsLiftThree(DataManager.collectedData.getJSONObject("gearsPlacedByLiftTele").getInt("boiler"));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
+        //counters
         LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
         List<String> counterNames = new ArrayList<>();
         for (int i = 0; i < getCounterData().size(); i++) {
@@ -264,7 +225,6 @@ public abstract class DataActivity extends AppCompatActivity {
         counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
         for (int i = 0; i < getCounterData().size(); i++) {
             if(i == (getCounterData().size() - 1) && activityName() == "tele"){
-                gearLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
             }else{
                 counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
                 if(activityName() == "tele"){
@@ -275,15 +235,12 @@ public abstract class DataActivity extends AppCompatActivity {
         counterLayout.addView(getFillerSpace(1f));
     }
 
-
-
+    //for beautification
     private LinearLayout getFillerSpace(Float weight) {
         LinearLayout fillerSpace = new LinearLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
         return fillerSpace;
     }
-
-
 
     private void updateData() throws JSONException {
         if(activityName() == "tele"){
@@ -301,12 +258,9 @@ public abstract class DataActivity extends AppCompatActivity {
             }
         }
 
-        Log.e("HOPESIZE", counterCreator.getComponentViews().size()+"");
         List<View> currentTextViews = counterCreator.getComponentViews();
-        Log.e("HOPESIZE", currentTextViews.size()+"");
         for (int i = 0; i < currentTextViews.size(); i++) {
             if(currentTextViews.get(i) != null){
-                Log.e("MOREHOPE", i+"");
             }
             try {
                 Log.e("keyCOUNTER", getCounterData().get(i));
@@ -316,22 +270,6 @@ public abstract class DataActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
                 return;
             }
-        }
-
-        Log.e("check", "CHECKGEAR");
-        List<String> gearLifts = Arrays.asList("hpStation", "allianceWall", "boiler");
-        List<Object> gearNums = new ArrayList<>();
-        Log.e("check", "CHECKGEAR");
-        gearNums.add(gearCreator.getNumGearsLiftOne());
-        gearNums.add(gearCreator.getNumGearsLiftTwo());
-        gearNums.add(gearCreator.getNumGearsLiftThree());
-        Log.e("CHECKPOINT", "CHECKGEAR");
-        if(activityName() == "auto"){
-            Log.e("gearData", "auto");
-            DataManager.addOneTierJsonData(false, "gearsPlacedByLiftAuto", gearLifts, gearNums);
-        }else if(activityName() == "tele"){
-            Log.e("gearData", "tele");
-            DataManager.addOneTierJsonData(false, "gearsPlacedByLiftTele", gearLifts, gearNums);
         }
     }
 
@@ -355,43 +293,43 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
 
+                        //some real compicated shit, just kidding - can't find way to custom in menu - if you can then do it :D
+                        @Override
+                        public boolean onCreateOptionsMenu(Menu menu) {
+                            getMenuInflater().inflate(getActionBarMenu(), menu);
+                            if (activityName() == "auto") {
+                                try {
+                                    MenuItem textView = menu.findItem(R.id.teamNumTextView);
+                                    LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.textview, null);
+                                    TextView teamNumTextView = (TextView) linearLayout.findViewById(R.id.normalTV);
+                                    teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
+                                    textView.setActionView(teamNumTextView);
+                                    MenuItem button = menu.findItem(R.id.buttonNext);
+                                    Button buttonNext = (Button) findViewById(R.id.nextButton);
+                                    buttonNext.setText(button.getTitle());
+                                    buttonNext.setGravity(Gravity.RIGHT);
+                                    button.setActionView(buttonNext);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }else if(activityName() == "tele"){
+                                try{
+                                    MenuItem textView = menu.findItem(R.id.teamNumTextView);
+                                    TextView teamNumTextView = (TextView) findViewById(R.id.normalTV);
+                                    teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
+                                    teamNumTextView.setGravity(Gravity.RIGHT);
+                                    textView.setActionView(teamNumTextView);
+                                    MenuItem button = menu.findItem(R.id.buttonNext);
+                                    Button buttonNext = (Button) findViewById(R.id.nextButton);
+                                    buttonNext.setText(button.getTitle());
+                                    button.setActionView(buttonNext);
+                                }catch(JSONException e){
+                                    e.printStackTrace();
+                                }
+                            }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(getActionBarMenu(), menu);
-        if (activityName() == "auto") {
-            try {
-                MenuItem textView = menu.findItem(R.id.teamNumTextView);
-                LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.textview, null);
-                TextView teamNumTextView = (TextView) linearLayout.findViewById(R.id.normalTV);
-                teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
-                textView.setActionView(teamNumTextView);
-                MenuItem button = menu.findItem(R.id.buttonNext);
-                Button buttonNext = (Button) findViewById(R.id.nextButton);
-                buttonNext.setText(button.getTitle());
-                buttonNext.setGravity(Gravity.RIGHT);
-                button.setActionView(buttonNext);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }else if(activityName() == "tele"){
-            try{
-                MenuItem textView = menu.findItem(R.id.teamNumTextView);
-                TextView teamNumTextView = (TextView) findViewById(R.id.normalTV);
-                teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
-                teamNumTextView.setGravity(Gravity.RIGHT);
-                textView.setActionView(teamNumTextView);
-                MenuItem button = menu.findItem(R.id.buttonNext);
-                Button buttonNext = (Button) findViewById(R.id.nextButton);
-                buttonNext.setText(button.getTitle());
-                button.setActionView(buttonNext);
-            }catch(JSONException e){
-                e.printStackTrace();
-            }
-        }
-
-        return true;
-    }
+                            return true;
+                        }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -417,10 +355,7 @@ public abstract class DataActivity extends AppCompatActivity {
                         saveAutoData = false;
                         saveTeleData = false;
 
-                        highShotAutoDataList = new ArrayList<>();
-                        lowShotAutoDataList = new ArrayList<>();
-                        highShotTeleDataList = new ArrayList<>();
-                        lowShotTeleDataList = new ArrayList<>();
+                       //had specific stuff about save or unsave
 
                         Log.e("collectedData", DataManager.collectedData.toString());
                         Log.e("SUBTITLE", DataManager.subTitle);

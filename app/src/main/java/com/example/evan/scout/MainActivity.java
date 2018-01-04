@@ -72,8 +72,7 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 /**
  * Created by Calvin on 7/26/17.
  */
-//TODO 11/11/17 1:31 pm Madtown Showown - Scout is basically done
-    //changes HAHAHA
+
 // 8/31/17 8:28
 //by Ben bobell, 10/25/2017.
 public class MainActivity extends AppCompatActivity {

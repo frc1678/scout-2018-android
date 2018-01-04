@@ -553,29 +553,6 @@ public class UIComponentCreator {
                                 dataSpace.put(shotKeys.get(1), shotValues.get(1));
                                 dataSpace.put(shotKeys.get(2), shotValues.get(2));
 
-                                switch(dataName) {
-                                    case "highShotAuto" :
-                                        DataActivity.highShotAutoDataList.add(dataSpace);
-                                        i = Constants.highShotAuto;
-                                        Constants.highShotAuto = i+1;
-                                        break;
-                                    case "lowShotAuto" :
-                                        DataActivity.lowShotAutoDataList.add(dataSpace);
-                                        i = Constants.lowShotAuto;
-                                        Constants.lowShotAuto = i+1;
-                                        break;
-                                    case "highShotTele" :
-                                        DataActivity.highShotTeleDataList.add(dataSpace);
-                                        i = Constants.highShotTele;
-                                        Constants.highShotTele = i+1;
-                                        break;
-                                    case "lowShotTele" :
-                                        DataActivity.lowShotTeleDataList.add(dataSpace);
-                                        i = Constants.lowShotTele;
-                                        Constants.lowShotTele = i+1;
-                                        break;
-                                }
-
                                 if(DataManager.collectedData.has(shotFBname)){
                                     try {
                                         DataManager.sideData = DataManager.collectedData.getJSONObject(shotFBname);
@@ -615,51 +592,6 @@ public class UIComponentCreator {
 
                 public boolean onLongClick(View v){
                     if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
-                        try {
-                            Log.e("testAuto", DataActivity.activityName+Boolean.toString(DataActivity.saveAutoData));
-                            Log.e("testTele", DataActivity.activityName+Boolean.toString(DataActivity.saveTeleData));
-
-                            if(shotFBname.equals("highShotTimesForBoilerAuto")){
-                                DataActivity.highShotAutoDataList = new ArrayList<>();
-                            }else if(shotFBname.equals("lowShotTimesForBoilerAuto")){
-                                DataActivity.lowShotAutoDataList = new ArrayList<>();
-                            }else if(shotFBname.equals("highShotTimesForBoilerTele")){
-                                DataActivity.highShotTeleDataList = new ArrayList<>();
-                            }else if(shotFBname.equals("lowShotTimesForBoilerTele")){
-                                DataActivity.lowShotTeleDataList = new ArrayList<>();
-                            }
-                            if(DataActivity.rejected){
-                                DataActivity.highShotAutoDataList = new ArrayList<>();
-                                DataActivity.lowShotAutoDataList = new ArrayList<>();
-                                DataActivity.highShotTeleDataList = new ArrayList<>();
-                                DataActivity.lowShotTeleDataList = new ArrayList<>();
-                                DataManager.collectedData.remove("highShotTimesForBoilerAuto");
-                                DataManager.collectedData.remove("lowShotTimesForBoilerAuto");
-                                DataManager.collectedData.remove("highShotTimesForBoilerTele");
-                                DataManager.collectedData.remove("lowShotTimesForBoilerTele");
-                            }else{
-                                for(int i = 0; i < DataManager.collectedData.getJSONObject(shotFBname).length();i++){
-                                    JSONObject tempContainer = DataManager.collectedData.getJSONObject(shotFBname).getJSONObject(i+"");
-                                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
-                                    dataSpace.put("numShots", tempContainer.getInt("numShots"));
-                                    dataSpace.put("position", tempContainer.getString("position"));
-                                    dataSpace.put("time", tempContainer.getLong("time"));
-                                    if(shotFBname.equals("highShotTimesForBoilerAuto")){
-                                        DataActivity.highShotAutoDataList.add(dataSpace);
-                                    }else if(shotFBname.equals("lowShotTimesForBoilerAuto")){
-                                        DataActivity.lowShotAutoDataList.add(dataSpace);
-                                    }else if(shotFBname.equals("highShotTimesForBoilerTele")){
-                                        DataActivity.highShotTeleDataList.add(dataSpace);
-                                    }else if(shotFBname.equals("lowShotTimesForBoilerTele")){
-                                        DataActivity.lowShotTeleDataList.add(dataSpace);
-                                    }
-                                }
-                            }
-
-
-                        } catch (JSONException e){
-                            e.printStackTrace();
-                        }
                         if(DataActivity.activityName.equals("auto")){
                             DataActivity.saveAutoData = false;
                         }else if(DataActivity.activityName.equals("tele")){
@@ -668,16 +600,6 @@ public class UIComponentCreator {
                     }
 
                     int latest = 0;
-
-                    if(shotFBname.equals("highShotTimesForBoilerAuto")){
-                        latest = DataActivity.highShotAutoDataList.size();
-                    }else if(shotFBname.equals("lowShotTimesForBoilerAuto")){
-                        latest = DataActivity.lowShotAutoDataList.size();
-                    }else if(shotFBname.equals("highShotTimesForBoilerTele")){
-                        latest = DataActivity.highShotTeleDataList.size();
-                    }else if(shotFBname.equals("lowShotTimesForBoilerTele")){
-                        latest = DataActivity.lowShotTeleDataList.size();
-                    }
 
                     if(latest > 0){
                         View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
@@ -694,36 +616,6 @@ public class UIComponentCreator {
                         shotBuilder.setTitle(titleName);
                         shotBuilder.setCancelable(false);
                         AlertDialog shotDialog = shotBuilder.create();
-
-                        if(shotFBname.equals("highShotTimesForBoilerAuto")){
-                            shotList.setAdapter(new ShotListAdapter(context, DataActivity.highShotAutoDataList, shotDialog, titleName, new ShotListAdapter.ListModificationListener() {
-                                @Override
-                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
-                                    DataActivity.highShotAutoDataList = returnList;
-                                }
-                            }));
-                        }else if(shotFBname.equals("lowShotTimesForBoilerAuto")){
-                            shotList.setAdapter(new ShotListAdapter(context, DataActivity.lowShotAutoDataList, shotDialog, titleName, new ShotListAdapter.ListModificationListener() {
-                                @Override
-                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
-                                    DataActivity.lowShotAutoDataList = returnList;
-                                }
-                            }));
-                        }else if(shotFBname.equals("highShotTimesForBoilerTele")){
-                            shotList.setAdapter(new ShotListAdapter(context, DataActivity.highShotTeleDataList, shotDialog, titleName, new ShotListAdapter.ListModificationListener() {
-                                @Override
-                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
-                                    DataActivity.highShotTeleDataList = returnList;
-                                }
-                            }));
-                        }else if(shotFBname.equals("lowShotTimesForBoilerTele")){
-                            shotList.setAdapter(new ShotListAdapter(context, DataActivity.lowShotTeleDataList, shotDialog, titleName, new ShotListAdapter.ListModificationListener() {
-                                @Override
-                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
-                                    DataActivity.lowShotTeleDataList = returnList;
-                                }
-                            }));
-                        }
 
                         shotDialog.show();
                     } else {
