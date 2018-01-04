@@ -1,6 +1,11 @@
 package com.example.evan.scout;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -9,7 +14,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,10 +34,21 @@ import java.util.List;
  */
 
 public class Utils {
-    public static String tempData = null;
 
-    public static void SendFirebaseData(DatabaseReference ref){
-        ref.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(DataManager.collectedData);
+    public static void checkData(){
+
+    }
+
+    public static void makeToast(Context context, String text){
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void makeDialog(Context context, String title, String message){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(title);
+        dialog.setMessage(message);
+        dialog.setNeutralButton("OK", null);
+        dialog.create().show();
     }
 
     public static Object getField(Object object, String field) throws Exception {

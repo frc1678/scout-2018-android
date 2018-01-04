@@ -7,13 +7,13 @@ import java.util.List;
 public class AutoActivity extends DataActivity {
     public String activityName(){   return "auto"; }
     public List<String> getShotData() {
-        return formatList(Arrays.asList("highShotAuto", "lowShotAuto"));
+        return formatList(Arrays.asList("", ""));
     }
     public List<String> getToggleData() {
         return null;
     }
     public List<String> getCounterData() {
-        return formatList(Arrays.asList("numHoppersUsedAuto"));
+        return formatList(Arrays.asList(""));
     }
     public Integer getToggleXML() { return null; }
     public Integer getCounterXML() { return R.id.autoCounterLinearLayout; }
