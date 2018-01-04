@@ -120,24 +120,24 @@ public abstract class DataActivity extends AppCompatActivity {
 
         numSendClicks = 0;
 
-        Drawable actionBarBackgroundColor;
+                        Drawable actionBarBackgroundColor;
 
-        if(MainActivity.teamColor != null){
-            if(MainActivity.teamColor.equals("blue")){
-                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-            }else if(MainActivity.teamColor.equals("red")){
-                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
-            }else{
-                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-            }
-        }else{
-            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-        }
+                        if(MainActivity.teamColor != null){
+                            if(MainActivity.teamColor.equals("blue")){
+                                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+                            }else if(MainActivity.teamColor.equals("red")){
+                                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+                            }else{
+                                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+                            }
+                        }else{
+                            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+                        }
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
-        }
+                        ActionBar actionBar = getSupportActionBar();
+                        if (actionBar != null) {
+                            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
+                        }
 
         dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
 

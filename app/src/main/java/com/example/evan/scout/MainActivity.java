@@ -41,6 +41,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -320,55 +321,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void findColor(){
-        for(int i = 0; i < 3; i++){
-            final int num = i;
-            databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.e("DANKKKKKK", "DANKKKKKK");
-                    if(dataSnapshot != null){
-                        if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                            setActionBarColor(Constants.COLOR_BLUE);
-                            teamColor = "blue";
-                            Log.e("CALLED!!!", teamColor);
+        try{
+            for(int i = 0; i < 3; i++){
+                final int num = i;
+                databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.e("DANKKKKKK", "DANKKKKKK");
+                        if(dataSnapshot != null){
+                            if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                                setActionBarColor(Constants.COLOR_BLUE);
+                                teamColor = "blue";
+                                Log.e("CALLED!!!", teamColor);
+                            }else{
+                                teamColor = "green";
+                            }
                         }else{
                             teamColor = "green";
                         }
-                    }else{
-                        teamColor = "green";
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
 
-                }
-            });
+                    }
+                });
 
-            databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.e("DANKKKKKK", "DANKKKKKK");
-                    if(dataSnapshot != null){
-                        if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                            setActionBarColor(Constants.COLOR_RED);
-                            teamColor = "red";
-                            Log.e("CALLED!!!", teamColor);
+                databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot != null){
+                            if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                                setActionBarColor(Constants.COLOR_RED);
+                                teamColor = "red";
+                                Log.e("CALLED!!!", teamColor);
+                            }else{
+                                teamColor = "green";
+                            }
                         }else{
                             teamColor = "green";
                         }
-                    }else{
-                        teamColor = "green";
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
 
-                }
-            });
+                    }
+                });
 
 
+            }
+        }catch(DatabaseException de){
+            teamColor = "green";
         }
     }
     //display dialog to set scout number
@@ -744,12 +748,6 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         connected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-//        isBluetooth = activeNetwork.getType() == ConnectivityManager.TYPE_BLUETOOTH;
-//
-//        Log.e("CONNECTION", Boolean.toString(connected));
-//        Log.e("CONNECTIONBLUETTOOTH", Boolean.toString(isBluetooth));
-//
-//        return isBluetooth;
         return connected;
     }
 
