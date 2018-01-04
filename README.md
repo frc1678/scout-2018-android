@@ -1,4 +1,4 @@
-#1678 Scout 2018
+# 1678 Scout 2018
 
 This is a guideline for handling and contributing to the 2018 season’s projects.
 
