@@ -8,7 +8,7 @@ This is a guideline for handling and contributing to the 2018 season’s project
 Collects objective data about the robot’s performance on the field. Example data points from this year are the number of geares scored on each peg and whether or not a robot successfully triggered the touchpad (in order to get climb points). Between 1 and 3 scouts collect data on each team in each qualification match. 												
 ## Use Notes
 
-See the [Android Viewer](https://docs.google.com/document/d/159PaCnExGtZYFpsA3HxMCevKZBWVccw01g_FTKpb3ww/edit) section in the Basic App Requirements doc for more details on the Scout.
+See the [Scout](https://docs.google.com/document/d/159PaCnExGtZYFpsA3HxMCevKZBWVccw01g_FTKpb3ww/edit) section in the Basic App Requirements doc for more details on the Scout.
 
 ## Style Guide
 
