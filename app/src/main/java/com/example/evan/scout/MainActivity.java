@@ -72,9 +72,7 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 /**
  * Created by Calvin on 7/26/17.
  */
-//template branch
-// 8/31/17 8:28
-//by Ben bobell, 10/25/2017.
+//THIS IS THE MASTER BRANCH
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
