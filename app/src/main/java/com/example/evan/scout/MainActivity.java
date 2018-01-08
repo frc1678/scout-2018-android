@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Shared Preference for scoutNumber
     SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    SharedPreferences.Editor spfe;
 
     private boolean bluetoothOff = false;
     private boolean bluetoothOn = false;
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        spfe = sharedPreferences.edit();
         if(!sharedPreferences.contains("scoutNumber")) {
             Log.e("no previous", "scout number");
             setScoutNumber();
@@ -182,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setBackgroundDrawable(actionBarBackgroundColor);
         }
 
+        teamNumber = sharedPreferences.getInt("teamNumber", -1);
+        matchNumber = sharedPreferences.getInt("matchNumber", -1);
+
         //get and set match number from firebase
         setMatchNumber();
 
@@ -199,16 +202,6 @@ public class MainActivity extends AppCompatActivity {
         updateListView();
         listenForResendClick();
         setTitle("Scout");
-//        int delay = 0; // delay for 0 sec.
-//        int period = 5000; // repeat every 5 sec.
-//        Timer timer = new Timer();
-//        timer.scheduleAtFixedRate(new TimerTask()
-//        {
-//            public void run()
-//            {
-//                //Call function
-//            }
-//        }, delay, period);
     }
 
     @Override
@@ -254,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
                             databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
                             Log.e("tempScoutName", scoutName);
                             scoutName = editText.getText().toString();
-                            SharedPreferences.Editor spfe = sharedPreferences.edit();
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
                         }
@@ -295,12 +287,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //will set the match number and will update it as long as it exists, if not, a value of -1 will be assigned
-                if(dataSnapshot.getValue() != null){
+                if(dataSnapshot.getValue() != null && !overridden){
                     teamNumber = Integer.parseInt(dataSnapshot.getValue().toString());
-                } else {
-                    teamNumber = -1;
-                }
-                if(!overridden) {
+
                     EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
                     teamNumberEditText.setText(String.valueOf(teamNumber));
                 }
@@ -309,11 +298,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.i("firebase", "database Error");
-                teamNumber = -1;
-                if(!overridden) {
-                    EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
-                    matchNumberEditText.setText(String.valueOf(teamNumber));
-                }
             }
         };
         databaseReference.child("scouts").child("scout" + scoutNumber).child("team").addValueEventListener(matchNumberListener);
@@ -401,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
                                     throw new NumberFormatException();
                                 }
                                 scoutNumber = tmpScoutNumber;
-                                editor.putInt("scoutNumber", scoutNumber).apply();
+                                spfe.putInt("scoutNumber", scoutNumber).apply();
                                 Log.e("saved S#", scoutNumber + "");
                                 Log.e("scoutNumber", "saved");
                             }
@@ -469,6 +453,9 @@ public class MainActivity extends AppCompatActivity {
                                                 intent.putExtra("matchNumber", Integer.parseInt(matchNumberEditText.getText().toString())).putExtra("overridden", overridden)
                                                 .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
                                                 intent.setAction("returningNoSavedData");
+                                                spfe.putInt("teamNumber", teamNumber);
+                                                spfe.putInt("matchNumber", matchNumber);
+                                                spfe.commit();
                                                 DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                                                 DataManager.addZeroTierJsonData("matchNumber", matchNumber);
                                                 startActivity(intent);
@@ -510,8 +497,9 @@ public class MainActivity extends AppCompatActivity {
                     DataManager.subTitle = teamNumber + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                     DataManager.addZeroTierJsonData("scoutName", scoutName);
                     intent.setAction("returningNoSavedData");
-                    SharedPreferences.Editor spfe = sharedPreferences.edit();
                     spfe.putString("scoutName", scoutName);
+                    spfe.putInt("teamNumber", teamNumber);
+                    spfe.putInt("matchNumber", matchNumber);
                     spfe.commit();
                     DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                     DataManager.addZeroTierJsonData("matchNumber", matchNumber);

@@ -7,14 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -297,37 +300,44 @@ public abstract class DataActivity extends AppCompatActivity {
                         @Override
                         public boolean onCreateOptionsMenu(Menu menu) {
                             getMenuInflater().inflate(getActionBarMenu(), menu);
-                            if (activityName() == "auto") {
-                                try {
-                                    MenuItem textView = menu.findItem(R.id.teamNumTextView);
-                                    LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.textview, null);
-                                    TextView teamNumTextView = (TextView) linearLayout.findViewById(R.id.normalTV);
-                                    teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
-                                    textView.setActionView(teamNumTextView);
-                                    MenuItem button = menu.findItem(R.id.buttonNext);
-                                    Button buttonNext = (Button) findViewById(R.id.nextButton);
-                                    buttonNext.setText(button.getTitle());
-                                    buttonNext.setGravity(Gravity.RIGHT);
-                                    button.setActionView(buttonNext);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }else if(activityName() == "tele"){
-                                try{
-                                    MenuItem textView = menu.findItem(R.id.teamNumTextView);
-                                    TextView teamNumTextView = (TextView) findViewById(R.id.normalTV);
-                                    teamNumTextView.setText(DataManager.collectedData.getString("teamNumber"));
-                                    teamNumTextView.setGravity(Gravity.RIGHT);
-                                    textView.setActionView(teamNumTextView);
-                                    MenuItem button = menu.findItem(R.id.buttonNext);
-                                    Button buttonNext = (Button) findViewById(R.id.nextButton);
-                                    buttonNext.setText(button.getTitle());
-                                    button.setActionView(buttonNext);
-                                }catch(JSONException e){
-                                    e.printStackTrace();
-                                }
-                            }
+                            final LayoutInflater.Factory existingFactory = getLayoutInflater().getFactory();
+                                    try{
+                                        Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
+                                        field.setAccessible(true);
+                                        field.setBoolean(getLayoutInflater(), false);
+                                        getLayoutInflater().setFactory(new LayoutInflater.Factory() {
+                                                public View onCreateView(String name, Context context, AttributeSet attrs) {
+                                                        try {
+                                                                LayoutInflater li = LayoutInflater.from(context);
+                                                                View view = li.createView(name, null, attrs);
 
+                                                                        if (existingFactory != null) {
+                                                                        view = existingFactory.onCreateView(name, context, attrs);
+                                                                    }
+
+                                                                        ((TextView) view).setTextSize(20);
+
+                                                                        // set the text color
+                                                                                Typeface face = Typeface.createFromAsset(getAssets(),"Technoma.otf");
+                                                                ((TextView) view).setTypeface(face);
+                                                                ((TextView) view).setTextColor(Color.WHITE);
+
+                                                                        return view;
+                                                            } catch (InflateException e) {
+                                                                //Handle any inflation exception here
+                                                                    } catch (ClassNotFoundException e) {
+                                                                //Handle any ClassNotFoundException here
+                                                                    }
+                                                        return null;
+                                    }
+                                            });}catch (NoSuchFieldException e) {
+                                        } catch (IllegalArgumentException e) {
+                                        } catch (IllegalAccessException e) {
+                            }
+                                            MenuItem textView = (MenuItem)findViewById(R.id.teamNumTextView);
+                                    try {
+                                            textView.setTitle(DataManager.collectedData.getInt("teamNumber"));
+                                        }catch (JSONException je){}
                             return true;
                         }
 
