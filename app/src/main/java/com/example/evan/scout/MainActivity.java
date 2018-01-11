@@ -72,7 +72,7 @@ import static com.example.evan.scout.bgLoopThread.scoutName;
 /**
  * Created by Calvin on 7/26/17.
  */
-//THIS IS THE MASTER BRANCH
+//THIS IS THE MASTER BRANCH - Ni Hao Ding Dong I hav Long Schlong(I updated the general layouts)
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
