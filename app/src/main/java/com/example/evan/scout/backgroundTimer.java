@@ -27,7 +27,7 @@ public class backgroundTimer extends Thread{
         startTimer();
     }
     private void startTimer(){
-        Log.e("REEEETNIGA","CALLED START TIMER!!!!!");
+        Log.e("TIMERCALLED","CALLED START TIMER!!!!!");
         updatedTime = 0;
         matchTimer = new CountDownTimer(15000, 10) {
             @Override
@@ -44,7 +44,7 @@ public class backgroundTimer extends Thread{
         matchTimer.start();
     }
     private void startTimerTele(){
-        Log.e("REEEETNIGA","CALLED tele START TIMER!!!!!");
+        Log.e("TIMERCALLED","CALLED tele START TIMER!!!!!");
         updatedTime = 0;
         matchTimer = new CountDownTimer(135000, 10) {
             @Override

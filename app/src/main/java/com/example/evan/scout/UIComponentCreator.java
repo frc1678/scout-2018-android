@@ -312,12 +312,12 @@ public class UIComponentCreator {
                                 switchSuccess = true;
 
                                 int i = 0;
-                                List<String> shotKeys = Arrays.asList("didSucceed", "startTime", "endTime");
-                                List<Object> shotValues = new ArrayList<>();
-                                shotValues.clear();
-                                shotValues.add(switchSuccess);
-                                shotValues.add(startTime);
-                                shotValues.add(endTime);
+                                List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                                List<Object> switchValues = new ArrayList<>();
+                                switchKeys.clear();
+                                switchValues.add(switchSuccess);
+                                switchValues.add(startTime);
+                                switchValues.add(endTime);
 
                                 if(DataManager.collectedData.has(switchFBname)){
                                     try {
@@ -325,11 +325,11 @@ public class UIComponentCreator {
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
+                                    DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
                                     DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
                                 }else{
                                     DataManager.sideData = new JSONObject();
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
+                                    DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
                                     DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
                                 }
 
