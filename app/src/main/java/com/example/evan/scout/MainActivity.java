@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
     //boolean if the schedule has been overridden
     public boolean overridden = false;
 
+    public backgroundTimer bgTimer;
+
     //all of the menuItems
     MenuItem overrideItem;
 
@@ -119,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         MainActivity main = this;
+
+        bgTimer = new backgroundTimer(context);
 
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
 
@@ -217,6 +221,9 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if(id == R.id.beginTimerButton && bgTimer.timerReady) {
+            bgTimer.setMatchTimer();
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.setScoutIDButton) {
             setScoutNumber();
