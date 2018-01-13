@@ -60,21 +60,24 @@ public class UIComponentCreator {
         currentComponent = 0;
     }
 
-    public Button getBasicButton (int width, Float textScale) {
+    public Button getBasicButton(int width, Float textScale) {
         Button button = new Button(context);
         button.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        if(componentNames != null){            button.setText(componentNames.get(currentComponent)); }
+        if (componentNames != null) {
+            button.setText(componentNames.get(currentComponent));
+        }
         button.setTextSize(button.getTextSize() * textScale);
         return button;
     }
 
-    public ToggleButton getToggleButton (int width, boolean value) {
+    public ToggleButton getToggleButton(int width, boolean value, int color) {
         ToggleButton toggleButton = new ToggleButton(context);
         toggleButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
         toggleButton.setText(componentNames.get(currentComponent));
         toggleButton.setTextOn(componentNames.get(currentComponent));
         toggleButton.setTextOff(componentNames.get(currentComponent));
         toggleButton.setTextSize(toggleButton.getTextSize() * 1f);
+        toggleButton.setBackgroundColor(color);
         toggleButton.setChecked(value);
         currentComponent++;
         componentViews.add(toggleButton);
@@ -106,7 +109,7 @@ public class UIComponentCreator {
 
             final TextView valueTV = (TextView) counterLayout.findViewById(R.id.value);
             try {
-                if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
+                if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
                     valueTV.setText(DataManager.collectedData.getString(counterFBname));
                 }
             } catch (JSONException e) {
@@ -118,8 +121,8 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     int value = Integer.parseInt(valueTV.getText().toString());
-                    if(value > 0){
-                        value --;
+                    if (value > 0) {
+                        value--;
                     }
                     valueTV.setText(String.valueOf(value));
                 }
@@ -131,7 +134,7 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     int value = Integer.parseInt(valueTV.getText().toString());
-                    value ++;
+                    value++;
                     valueTV.setText(String.valueOf(value));
                 }
             });
@@ -161,7 +164,7 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if(DataManager.collectedData.getBoolean("didLiftoff") != true){
+                        if (DataManager.collectedData.getBoolean("didLiftoff") != true) {
                             button1.setChecked(false);
                             button2.setChecked(false);
 
@@ -194,7 +197,7 @@ public class UIComponentCreator {
                                     cdt.cancel();
 
                                     liftoffTime = Double.valueOf(liftoffTimeView.getText().toString());
-                                    Log.e("scrub", liftoffTime+"");
+                                    Log.e("scrub", liftoffTime + "");
 
                                     DataManager.addZeroTierJsonData("didLiftoff", true);
                                     DataManager.addZeroTierJsonData("liftoffTime", liftoffTime);
@@ -215,16 +218,16 @@ public class UIComponentCreator {
                             dialog.setContentView(dialogLayout);
                             dialog.show();
                             cdt.start();
-                        }else if(DataManager.collectedData.getBoolean("didLiftoff") == true){
+                        } else if (DataManager.collectedData.getBoolean("didLiftoff") == true) {
                             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
                             View liftOffRemoveView = layoutInflater.inflate(R.layout.dialog, null);
                             try {
-                                if(DataActivity.saveTeleData && DataActivity.activityName.equals("tele")){
-                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(DataManager.collectedData.getDouble("liftoffTime")+"");
-                                }else {
+                                if (DataActivity.saveTeleData && DataActivity.activityName.equals("tele")) {
+                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(DataManager.collectedData.getDouble("liftoffTime") + "");
+                                } else {
                                     ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(String.valueOf(liftoffTime));
                                 }
-                            } catch(NullPointerException npe){
+                            } catch (NullPointerException npe) {
                                 ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText("0.0");
                             }
                             ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setTextColor(Color.parseColor("#FF0000"));
@@ -283,7 +286,7 @@ public class UIComponentCreator {
             this.context = context;
         }
 
-        public Button addButton(){
+        public Button addButton() {
             final Button gearButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
             gearButton.setText("Gear Placed");
             gearButton.setOnClickListener(new View.OnClickListener() {
@@ -296,7 +299,7 @@ public class UIComponentCreator {
                     titleTV.setText("Which Lift?");
 
                     Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
-                    liftOneButton.setText("Lift 1 ("+numGearsLiftOne+")");
+                    liftOneButton.setText("Lift 1 (" + numGearsLiftOne + ")");
                     liftOneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -306,7 +309,7 @@ public class UIComponentCreator {
                     });
 
                     Button liftTwoButton = (Button) dialogLayout.findViewById(R.id.liftTwoButton);
-                    liftTwoButton.setText("Lift 2 ("+numGearsLiftTwo+")");
+                    liftTwoButton.setText("Lift 2 (" + numGearsLiftTwo + ")");
                     liftTwoButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -316,7 +319,7 @@ public class UIComponentCreator {
                     });
 
                     Button liftThreeButton = (Button) dialogLayout.findViewById(R.id.liftThreeButton);
-                    liftThreeButton.setText("Lift 3 ("+numGearsLiftThree+")");
+                    liftThreeButton.setText("Lift 3 (" + numGearsLiftThree + ")");
                     liftThreeButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -350,11 +353,11 @@ public class UIComponentCreator {
 
                     Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
                     liftOneButton.setBackgroundColor(Color.parseColor("#ff9999"));
-                    liftOneButton.setText("Lift 1 ("+numGearsLiftOne+")");
+                    liftOneButton.setText("Lift 1 (" + numGearsLiftOne + ")");
                     liftOneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(numGearsLiftOne > 0){
+                            if (numGearsLiftOne > 0) {
                                 numGearsLiftOne -= 1;
                                 dialog.dismiss();
                             }
@@ -363,11 +366,11 @@ public class UIComponentCreator {
 
                     Button liftTwoButton = (Button) dialogLayout.findViewById(R.id.liftTwoButton);
                     liftTwoButton.setBackgroundColor(Color.parseColor("#ff9999"));
-                    liftTwoButton.setText("Lift 2 ("+numGearsLiftTwo+")");
+                    liftTwoButton.setText("Lift 2 (" + numGearsLiftTwo + ")");
                     liftTwoButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(numGearsLiftTwo > 0){
+                            if (numGearsLiftTwo > 0) {
                                 numGearsLiftTwo -= 1;
                                 dialog.dismiss();
                             }
@@ -377,11 +380,11 @@ public class UIComponentCreator {
 
                     Button liftThreeButton = (Button) dialogLayout.findViewById(R.id.liftThreeButton);
                     liftThreeButton.setBackgroundColor(Color.parseColor("#ff9999"));
-                    liftThreeButton.setText("Lift 3 ("+numGearsLiftThree+")");
+                    liftThreeButton.setText("Lift 3 (" + numGearsLiftThree + ")");
                     liftThreeButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(numGearsLiftThree > 0){
+                            if (numGearsLiftThree > 0) {
                                 numGearsLiftThree -= 1;
                                 dialog.dismiss();
                             }
@@ -407,12 +410,29 @@ public class UIComponentCreator {
             return gearButton;
         }
 
-        public int getNumGearsLiftOne() {   return numGearsLiftOne;}
-        public int getNumGearsLiftTwo() {   return numGearsLiftTwo;}
-        public int getNumGearsLiftThree() {   return numGearsLiftThree;}
-        public void setNumGearsLiftOne(int i) {   numGearsLiftOne = i;}
-        public void setNumGearsLiftTwo(int i) {   numGearsLiftTwo = i;}
-        public void setNumGearsLiftThree(int i) {   numGearsLiftThree = i;}
+        public int getNumGearsLiftOne() {
+            return numGearsLiftOne;
+        }
+
+        public int getNumGearsLiftTwo() {
+            return numGearsLiftTwo;
+        }
+
+        public int getNumGearsLiftThree() {
+            return numGearsLiftThree;
+        }
+
+        public void setNumGearsLiftOne(int i) {
+            numGearsLiftOne = i;
+        }
+
+        public void setNumGearsLiftTwo(int i) {
+            numGearsLiftTwo = i;
+        }
+
+        public void setNumGearsLiftThree(int i) {
+            numGearsLiftThree = i;
+        }
     }
 
     public static class UIShotCreator extends UIComponentCreator {
@@ -432,14 +452,15 @@ public class UIComponentCreator {
             this.context = context;
             name = "LOL";
         }
+
         public Button addButton(final String shotFBname) {
             name = UIShotCreator.super.componentNames.get(currentShotComponent);
-            int index1 = name.indexOf("t")+1;
+            int index1 = name.indexOf("t") + 1;
             int index2 = name.indexOf("S");
             String buttonName = name.substring(0, index1);
-            final String dialogName = name.substring(0,1).toUpperCase() + name.substring(1, index2) + " Shooting";
-            final String titleName = name.substring(0,1).toUpperCase() + name.substring(1, index2) + " Shots";
-            final String height = name.substring(0,index2);
+            final String dialogName = name.substring(0, 1).toUpperCase() + name.substring(1, index2) + " Shooting";
+            final String titleName = name.substring(0, 1).toUpperCase() + name.substring(1, index2) + " Shots";
+            final String height = name.substring(0, index2);
             final String dataName = name;
 
             final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
@@ -449,7 +470,7 @@ public class UIComponentCreator {
                 public void onClick(View v) {
                     shotsMade = 0;
                     startTime = System.currentTimeMillis();
-                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
+                    final HashMap<String, Object> dataSpace = new HashMap<String, Object>();
 
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -463,9 +484,9 @@ public class UIComponentCreator {
                     minusTenButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(shotsMade >= 10){
+                            if (shotsMade >= 10) {
                                 shotsMade -= 10;
-                            }else{
+                            } else {
                                 shotsMade = 0;
                             }
                             numberView.setText(String.valueOf(shotsMade));
@@ -476,7 +497,7 @@ public class UIComponentCreator {
                     minusButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(shotsMade > 0){
+                            if (shotsMade > 0) {
                                 shotsMade -= 1;
                             }
                             numberView.setText(String.valueOf(shotsMade));
@@ -537,7 +558,7 @@ public class UIComponentCreator {
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(position != null){
+                            if (position != null) {
                                 endTime = System.currentTimeMillis();
                                 totalTime = endTime - startTime;
 
@@ -547,30 +568,30 @@ public class UIComponentCreator {
                                 shotValues.clear();
                                 shotValues.add(shotsMade);
                                 shotValues.add(position);
-                                shotValues.add(totalTime/1000);
+                                shotValues.add(totalTime / 1000);
 
                                 dataSpace.put(shotKeys.get(0), shotValues.get(0));
                                 dataSpace.put(shotKeys.get(1), shotValues.get(1));
                                 dataSpace.put(shotKeys.get(2), shotValues.get(2));
 
-                                if(DataManager.collectedData.has(shotFBname)){
+                                if (DataManager.collectedData.has(shotFBname)) {
                                     try {
                                         DataManager.sideData = DataManager.collectedData.getJSONObject(shotFBname);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
-                                }else{
+                                    DataManager.addOneTierJsonData(true, i + "", shotKeys, shotValues);
+                                    DataManager.addZeroTierJsonData(shotFBname, DataManager.sideData);
+                                } else {
                                     DataManager.sideData = new JSONObject();
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
+                                    DataManager.addOneTierJsonData(true, i + "", shotKeys, shotValues);
+                                    DataManager.addZeroTierJsonData(shotFBname, DataManager.sideData);
                                 }
 
                                 position = null;
 
                                 dialog.dismiss();
-                            }else{
+                            } else {
                                 Toast.makeText(context, "Please put shot location", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -590,18 +611,18 @@ public class UIComponentCreator {
             });
             shotButton.setOnLongClickListener(new View.OnLongClickListener() {
 
-                public boolean onLongClick(View v){
-                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
-                        if(DataActivity.activityName.equals("auto")){
+                public boolean onLongClick(View v) {
+                    if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
+                        if (DataActivity.activityName.equals("auto")) {
                             DataActivity.saveAutoData = false;
-                        }else if(DataActivity.activityName.equals("tele")){
+                        } else if (DataActivity.activityName.equals("tele")) {
                             DataActivity.saveTeleData = false;
                         }
                     }
 
                     int latest = 0;
 
-                    if(latest > 0){
+                    if (latest > 0) {
                         View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
                         ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
 
@@ -619,7 +640,7 @@ public class UIComponentCreator {
 
                         shotDialog.show();
                     } else {
-                        Toast.makeText(context, "No Entries for "+titleName, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No Entries for " + titleName, Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 }
@@ -629,4 +650,6 @@ public class UIComponentCreator {
             return shotButton;
         }
     }
+
+    //--------------------------------------------------------------------Adding UIPlatformCubeCreator
 }
