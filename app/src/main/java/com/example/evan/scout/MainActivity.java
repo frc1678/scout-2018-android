@@ -28,6 +28,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -223,7 +224,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
+            item.setCheckable(false);
         }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.setScoutIDButton) {
             setScoutNumber();

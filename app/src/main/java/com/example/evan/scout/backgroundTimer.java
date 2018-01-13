@@ -27,11 +27,12 @@ public class backgroundTimer extends Thread{
         startTimer();
     }
     private void startTimer(){
+        Log.e("REEEETNIGA","CALLED START TIMER!!!!!");
         updatedTime = 0;
         matchTimer = new CountDownTimer(15000, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
-                updatedTime = 15000 - millisUntilFinished;
+                updatedTime = (15000 - millisUntilFinished)/1000;
                 Log.e("updatedTime", (15000 - millisUntilFinished)+"");
             }
 
@@ -40,13 +41,15 @@ public class backgroundTimer extends Thread{
                 startTimerTele();
             }
         };
+        matchTimer.start();
     }
     private void startTimerTele(){
+        Log.e("REEEETNIGA","CALLED tele START TIMER!!!!!");
         updatedTime = 0;
         matchTimer = new CountDownTimer(135000, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
-                updatedTime = 135000 - millisUntilFinished;
+                updatedTime = (135000 - millisUntilFinished)/1000;
                 Log.e("updatedTime", (135000 - millisUntilFinished)+"");
             }
 
@@ -55,6 +58,7 @@ public class backgroundTimer extends Thread{
                 timerReady = true;
             }
         };
+        matchTimer.start();
     }
     public static float getUpdatedTime(){
         return updatedTime;

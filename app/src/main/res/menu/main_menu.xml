@@ -4,6 +4,7 @@
     <item
         android:title="Start Timer"
         android:id="@+id/beginTimerButton"
+        app:showAsAction="ifRoom"
         android:checkable="true"/>
     <item
         android:id="@+id/currentScout"
