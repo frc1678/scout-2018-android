@@ -68,13 +68,14 @@ public class UIComponentCreator {
         return button;
     }
 
-    public ToggleButton getToggleButton (int width, boolean value) {
+    public ToggleButton getToggleButton (int width, boolean value, int color) {
         ToggleButton toggleButton = new ToggleButton(context);
         toggleButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
         toggleButton.setText(componentNames.get(currentComponent));
         toggleButton.setTextOn(componentNames.get(currentComponent));
         toggleButton.setTextOff(componentNames.get(currentComponent));
         toggleButton.setTextSize(toggleButton.getTextSize() * 1f);
+        toggleButton.setBackgroundColor(color);
         toggleButton.setChecked(value);
         currentComponent++;
         componentViews.add(toggleButton);
