@@ -718,6 +718,21 @@ public class UIComponentCreator {
                                     final Dialog activeLiftdialog = new Dialog(context);
                                     activeLiftdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     title.setText("Lifting Partner Type");
+                                    RadioButton assistedLiftRadioButton = (RadioButton) dialogLayout.findViewById(R.id.assistedLiftRadio);
+                                    assistedLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            liftType = "Assisted Lift";
+                                        }
+                                    });
+                                    RadioButton passiveLiftRadioButton = (RadioButton) dialogLayout.findViewById(R.id.passiveLiftRadio);
+                                    passiveLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            liftType = "Passive Lift";
+                                        }
+                                    });
+
                                     Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
                                     cancel.setOnClickListener(new View.OnClickListener() {
                                         @Override
