@@ -28,6 +28,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     //boolean if the schedule has been overridden
     public boolean overridden = false;
 
+    public backgroundTimer bgTimer;
+
     //all of the menuItems
     MenuItem overrideItem;
 
@@ -119,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         MainActivity main = this;
+
+        bgTimer = new backgroundTimer(context);
 
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
 
@@ -216,6 +221,11 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(id == R.id.beginTimerButton && bgTimer.timerReady) {
+            bgTimer.setMatchTimer();
+            item.setCheckable(false);
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.setScoutIDButton) {
