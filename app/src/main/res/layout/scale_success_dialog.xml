@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/successDialogLayout">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="25dp"
+        android:gravity="center_horizontal"
+        android:id="@+id/dialogTitle"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ownershipLayout"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/dialogTitle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:paddingLeft="10sp"
+            android:text="Ownership:"
+            android:id="@+id/ownershipView" />
+    </LinearLayout>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ownershipLayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/ownershipRadioGroup"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:text="Blue Owned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ownedBlueRadio"
+            android:padding="5dp"
+            android:textSize="25dp"
+            android:paddingRight="5dp"
+
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView1"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Balanced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/balancedRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+
+            android:textSize="25dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Red Owned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ownedRedRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+
+            android:textSize="25dp"
+            android:layout_weight="1" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layerLayout"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/ownershipRadioGroup">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:paddingLeft="10sp"
+            android:paddingTop="10sp"
+            android:text="Layer:"
+            android:id="@+id/layerView" />
+    </LinearLayout>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layerLayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/layerRadioGroup"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:text="Layer 1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/layer1Radio"
+            android:padding="5dp"
+            android:textSize="25dp"
+            android:paddingRight="5dp"
+
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewlayer1"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Layer 2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/layer2Radio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+
+            android:textSize="25dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewlayer2"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Layer 3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/layer3Radio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+
+            android:textSize="25dp"
+            android:layout_weight="1" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/buttonLayout"
+        android:layout_below="@+id/layerRadioGroup">
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#FAA2A8"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/cancelButton"/>
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/doneButton"/>
+    </LinearLayout>
+</RelativeLayout>

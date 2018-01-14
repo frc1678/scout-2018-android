@@ -60,15 +60,17 @@ public class UIComponentCreator {
         currentComponent = 0;
     }
 
-    public Button getBasicButton (int width, Float textScale) {
+    public Button getBasicButton(int width, Float textScale) {
         Button button = new Button(context);
         button.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        if(componentNames != null){            button.setText(componentNames.get(currentComponent)); }
+        if (componentNames != null) {
+            button.setText(componentNames.get(currentComponent));
+        }
         button.setTextSize(button.getTextSize() * textScale);
         return button;
     }
 
-    public ToggleButton getToggleButton (int width, boolean value) {
+    public ToggleButton getToggleButton(int width, boolean value) {
         ToggleButton toggleButton = new ToggleButton(context);
         toggleButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
         toggleButton.setText(componentNames.get(currentComponent));
@@ -106,7 +108,7 @@ public class UIComponentCreator {
 
             final TextView valueTV = (TextView) counterLayout.findViewById(R.id.value);
             try {
-                if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
+                if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
                     valueTV.setText(DataManager.collectedData.getString(counterFBname));
                 }
             } catch (JSONException e) {
@@ -118,8 +120,8 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     int value = Integer.parseInt(valueTV.getText().toString());
-                    if(value > 0){
-                        value --;
+                    if (value > 0) {
+                        value--;
                     }
                     valueTV.setText(String.valueOf(value));
                 }
@@ -131,7 +133,7 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     int value = Integer.parseInt(valueTV.getText().toString());
-                    value ++;
+                    value++;
                     valueTV.setText(String.valueOf(value));
                 }
             });
@@ -161,7 +163,7 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if(DataManager.collectedData.getBoolean("didLiftoff") != true){
+                        if (DataManager.collectedData.getBoolean("didLiftoff") != true) {
                             button1.setChecked(false);
                             button2.setChecked(false);
 
@@ -194,7 +196,7 @@ public class UIComponentCreator {
                                     cdt.cancel();
 
                                     liftoffTime = Double.valueOf(liftoffTimeView.getText().toString());
-                                    Log.e("scrub", liftoffTime+"");
+                                    Log.e("scrub", liftoffTime + "");
 
                                     DataManager.addZeroTierJsonData("didLiftoff", true);
                                     DataManager.addZeroTierJsonData("liftoffTime", liftoffTime);
@@ -215,16 +217,16 @@ public class UIComponentCreator {
                             dialog.setContentView(dialogLayout);
                             dialog.show();
                             cdt.start();
-                        }else if(DataManager.collectedData.getBoolean("didLiftoff") == true){
+                        } else if (DataManager.collectedData.getBoolean("didLiftoff") == true) {
                             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
                             View liftOffRemoveView = layoutInflater.inflate(R.layout.dialog, null);
                             try {
-                                if(DataActivity.saveTeleData && DataActivity.activityName.equals("tele")){
-                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(DataManager.collectedData.getDouble("liftoffTime")+"");
-                                }else {
+                                if (DataActivity.saveTeleData && DataActivity.activityName.equals("tele")) {
+                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(DataManager.collectedData.getDouble("liftoffTime") + "");
+                                } else {
                                     ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(String.valueOf(liftoffTime));
                                 }
-                            } catch(NullPointerException npe){
+                            } catch (NullPointerException npe) {
                                 ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText("0.0");
                             }
                             ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setTextColor(Color.parseColor("#FF0000"));
@@ -268,6 +270,7 @@ public class UIComponentCreator {
             return liftOffButton;
         }
     }
+
 
     public static class UISwitchCreator extends UIComponentCreator {
         private boolean switchSuccess;
@@ -414,6 +417,237 @@ public class UIComponentCreator {
             currentSwitchComponent++;
             super.componentViews.add(switchButton);
             return switchButton;
+        }
+    }
+
+    public static class UIScaleCreator extends UIComponentCreator {
+        private String status;
+        private int layer;
+        private long startTime; //TODO time stuff
+        private long endTime;
+        private String name;
+        private Activity context;
+        private int currentScaleComponent;
+        private boolean didSucceed;
+
+        public UIScaleCreator(Activity context, List<String> componentNames) {
+            super(context, componentNames);
+            currentScaleComponent = 0;
+            this.context = context;
+            name = "Scale Attempt";
+            layer = 0;
+        }
+
+        public Button addButton(final String scaleFBname) {
+
+            final Button scaleButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
+            scaleButton.setText(name);
+            scaleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startTime = System.currentTimeMillis();
+                    final HashMap<String, Object> dataSpace = new HashMap<String, Object>();
+
+                    final Dialog dialog = new Dialog(context);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_dialog, null);
+                    TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                    titleTV.setText(name);
+
+                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                    failure.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            endTime = System.currentTimeMillis(); //TODO time stuff
+                            didSucceed = false;
+
+                            int i = 0;
+                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime"); //TODO time stuff
+                            List<Object> scaleValues = new ArrayList<>();
+                            scaleValues.clear();
+                            scaleValues.add(didSucceed);
+                            scaleValues.add(startTime);
+                            scaleValues.add(endTime);
+
+                           if (DataManager.collectedData.has(scaleFBname)) {
+                                try {
+                                    DataManager.sideData = DataManager.collectedData.getJSONObject(scaleFBname);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                            } else {
+                                DataManager.sideData = new JSONObject();
+                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
+                    success.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            endTime = System.currentTimeMillis(); //TODO time stuff
+                            didSucceed = true;
+
+                            dialog.dismiss();
+
+                            final Dialog successDialog = new Dialog(context);
+                            successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
+                            TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
+                            successTitleTV.setText(name);
+
+                            RadioButton ownedBlueRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.ownedBlueRadio);
+                            ownedBlueRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    status = "ownedBlue";
+                                }
+                            });
+
+                            RadioButton ownedRedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.ownedRedRadio);
+                            ownedRedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    status = "ownedRed";
+                                }
+                            });
+
+                            RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.balancedRadio);
+                            balancedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    status = "balanced";
+                                }
+                            });
+
+                            RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.layer1Radio);
+                            layer1RadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    layer = 1;
+                                }
+                            });
+
+                            RadioButton layer2RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.layer2Radio);
+                            layer2RadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    layer = 2;
+                                }
+                            });
+
+                            RadioButton layer3RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.layer3Radio);
+                            layer3RadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    layer = 3;
+                                }
+                            });
+
+                            Button cancel = (Button) successDialogLayout.findViewById(R.id.cancelButton);
+                            cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    successDialog.dismiss();
+                                }
+                            });
+
+                            Button done = (Button) successDialog.findViewById(R.id.doneButton);
+                            done.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (status != null && layer != 0) {
+                                        int i = 0;
+                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
+                                        List<Object> scaleValues = new ArrayList<>();
+                                        scaleValues.clear();
+                                        scaleValues.add(didSucceed);
+                                        scaleValues.add(startTime);
+                                        scaleValues.add(endTime);
+                                        scaleValues.add(status);
+                                        scaleValues.add(layer);
+
+                                        if (DataManager.collectedData.has(scaleFBname)) {
+                                            try {
+                                                DataManager.sideData = DataManager.collectedData.getJSONObject(scaleFBname);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                            DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                                        } else {
+                                            DataManager.sideData = new JSONObject();
+                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                            DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                                        }
+
+                                        successDialog.dismiss();
+
+                                    } else {
+                                        Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    dialog.setContentView(dialogLayout);
+                    dialog.show();
+                }
+            });
+
+            /*scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
+
+                public boolean onLongClick(View v) {
+                    if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
+                        if (DataActivity.activityName.equals("auto")) {
+                            DataActivity.saveAutoData = false;
+                        } else if (DataActivity.activityName.equals("tele")) {
+                            DataActivity.saveTeleData = false;
+                        }
+                    }
+
+                    int latest = 0;
+
+                    if (latest > 0) {
+                        View scaleHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.scale_history_dialog, null);
+                        ListView scaleList = (ListView) scaleHistory.findViewById(R.id.scaleListView);
+
+                        AlertDialog.Builder scaleBuilder = new AlertDialog.Builder(context);
+                        scaleBuilder.setView(scaleHistory);
+                        scaleBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        scaleBuilder.setTitle(name);
+                        scaleBuilder.setCancelable(false);
+                        AlertDialog scaleDialog = scaleBuilder.create();
+
+                        scaleDialog.show();
+                    } else {
+                        Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });*/
+            currentScaleComponent++;
+            super.componentViews.add(scaleButton);
+            return scaleButton;
         }
     }
 }
