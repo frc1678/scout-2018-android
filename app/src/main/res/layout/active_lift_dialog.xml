@@ -13,7 +13,7 @@
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/liftType">
+        android:id="@+id/liftingPartnerType">
 
         <RadioButton
             android:text="Passive Lift"
@@ -48,14 +48,12 @@
             android:id="@+id/textView2"
             android:layout_weight="1" />
     </RadioGroup>
-
-
     <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonLayout"
-        android:layout_below="@+id/liftType">
+        android:layout_below="@+id/liftingPartnerType">
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"

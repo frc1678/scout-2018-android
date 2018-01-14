@@ -632,7 +632,8 @@ public class UIComponentCreator {
     //-----------Adding CLimb
     public static class UIClimbButtonCreator extends UIComponentCreator {
         double climbTime;
-        private String liftType;
+        public String liftType;
+        public String liftingPartnerType;
         private Activity context;
 
         public UIClimbButtonCreator(Activity context, List<String> componentNames) {
@@ -685,6 +686,8 @@ public class UIComponentCreator {
 
                                     DataManager.addZeroTierJsonData("didClimb", true);
                                     DataManager.addZeroTierJsonData("climbTime",climbTime);
+                                    DataManager.addZeroTierJsonData("liftType", liftType);
+                                    DataManager.addZeroTierJsonData("liftingPartnerType", liftingPartnerType);
                                     //add to sd card
                                     dialog.dismiss();
                                 }
@@ -712,14 +715,15 @@ public class UIComponentCreator {
                                 @Override
                                 public void onClick(View v) {
                                     liftType = "Active Lift";
-                                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    title.setText("Active Lift Type");
+                                    final Dialog activeLiftdialog = new Dialog(context);
+                                    activeLiftdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    title.setText("Lifting Partner Type");
                                     Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
                                     cancel.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             //dismiss dialog
-                                            dialog.dismiss();
+                                            activeLiftdialog.dismiss();
                                         }
                                     });
                                     Button done = (Button) dialogLayout.findViewById(R.id.doneButton);
@@ -727,8 +731,14 @@ public class UIComponentCreator {
                                         @Override
                                         public void onClick(View v) {
                                             cdt.cancel();
-                                            DataManager.addZeroTierJsonData("activeLiftType", activeLiftType);
+                                            climbTime = Double.valueOf(climbTimeView.getText().toString());
+                                            Log.e("scrub", climbTime+"");
+                                            DataManager.addZeroTierJsonData("didClimb", true);
+                                            DataManager.addZeroTierJsonData("climbTime",climbTime);
+                                            DataManager.addZeroTierJsonData("liftType", liftType);
+                                            DataManager.addZeroTierJsonData("liftingPartnerType", liftingPartnerType);
                                             //add to sd card
+                                            activeLiftdialog.dismiss();
                                             dialog.dismiss();
                                         }
                                     });
@@ -756,24 +766,24 @@ public class UIComponentCreator {
                             cdt.start();
                         }else if(DataManager.collectedData.getBoolean("didLiftoff") == true){
                             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-                            View liftOffRemoveView = layoutInflater.inflate(R.layout.dialog, null);
+                            View climbRemoveView = layoutInflater.inflate(R.layout.dialog, null);
                             try {
                                 if(DataActivity.saveTeleData && DataActivity.activityName.equals("tele")){
-                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(DataManager.collectedData.getDouble("liftoffTime")+"");
+                                    ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setText(DataManager.collectedData.getDouble("climbTime")+"");
                                 }else {
-                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(String.valueOf(climbTime));
+                                    ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setText(String.valueOf(climbTime));
                                 }
                             } catch(NullPointerException npe){
-                                ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText("0.0");
+                                ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setText("0.0");
                             }
-                            ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setTextColor(Color.parseColor("#FF0000"));
+                            ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setTextColor(Color.parseColor("#FF0000"));
 
                             final Dialog dialog = new Dialog(context);
                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            final TextView title = (TextView) liftOffRemoveView.findViewById(R.id.dialogTitle);
+                            final TextView title = (TextView) climbRemoveView.findViewById(R.id.dialogTitle);
                             title.setText("Undo Climb?");
 
-                            Button success = (Button) liftOffRemoveView.findViewById(R.id.successButton);
+                            Button success = (Button) climbRemoveView.findViewById(R.id.successButton);
                             success.setText("Cancel");
                             success.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
                             success.setOnClickListener(new View.OnClickListener() {
@@ -783,7 +793,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            Button failure = (Button) liftOffRemoveView.findViewById(R.id.failButton);
+                            Button failure = (Button) climbRemoveView.findViewById(R.id.failButton);
                             failure.setText("Remove");
                             failure.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
                             failure.setOnClickListener(new View.OnClickListener() {
@@ -791,11 +801,13 @@ public class UIComponentCreator {
                                 public void onClick(View v) {
                                     DataManager.addZeroTierJsonData("didClimb", false);
                                     DataManager.addZeroTierJsonData("climbTime", 0);
+                                    DataManager.addZeroTierJsonData("liftType", liftType);
+                                    DataManager.addZeroTierJsonData("liftingPartnerType", liftingPartnerType);
                                     dialog.cancel();
                                 }
                             });
 
-                            dialog.setContentView(liftOffRemoveView);
+                            dialog.setContentView(climbRemoveView);
                             dialog.show();
                         }
                     } catch (JSONException e) {
