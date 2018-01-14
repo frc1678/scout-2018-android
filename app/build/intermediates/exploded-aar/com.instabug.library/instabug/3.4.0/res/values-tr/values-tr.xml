@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Ses dosyası kaydetme izni engellendi</string>
+    <string name="instabug_err_invalid_comment">Lütfen geçerli bir yorum girin</string>
+    <string name="instabug_err_invalid_email">Lütfen geçerli bir e-posta girin</string>
+    <string name="instabug_external_storage_permission_denied">Depolama izni engellendi</string>
+    <string name="instabug_str_add_photo">Galeriden Resim Seç</string>
+    <string name="instabug_str_alert_message_max_attachments">Varolan bir eki yeni bir eki eklemek için kaldırın.</string>
+    <string name="instabug_str_alert_title_max_attachments">Ek Eklenemiyor</string>
+    <string name="instabug_str_annotate">Ekran görüntüsü çekin</string>
+    <string name="instabug_str_audio">Ses</string>
+    <string name="instabug_str_bug_comment_hint">Sorun neydi?</string>
+    <string name="instabug_str_bug_header">Sorun Bildir</string>
+    <string name="instabug_str_conversations">Konuşmalar</string>
+    <string name="instabug_str_email_hint">E-postanı Gir</string>
+    <string name="instabug_str_feedback_comment_hint">Nasıl iyileştirebiliriz?</string>
+    <string name="instabug_str_feedback_header">İyileştirme Öner</string>
+    <string name="instabug_str_hold_to_record">Kaydetmek için Basılı Tut</string>
+    <string name="instabug_str_image">Resim</string>
+    <string name="instabug_str_image_loading_error">Resim yüklenemedi</string>
+    <string name="instabug_str_invocation_dialog_title">Size nasıl yardımcı olabiliriz?	</string>
+    <string name="instabug_str_messages">Mesajlar</string>
+    <string name="instabug_str_notification_title">""</string>
+    <string name="instabug_str_notifications_body">%2$s ve diğer kullanıcılardan %1$d yeni mesaj</string>
+    <string name="instabug_str_please_wait">Lütfen bir dakika bekleyin</string>
+    <string name="instabug_str_record_audio">Sesli Not Kaydet</string>
+    <string name="instabug_str_record_video">Ekranı kayda alın</string>
+    <string name="instabug_str_release_stop_record">Eklemek için Serbest Bırak</string>
+    <string name="instabug_str_sending_message_hint">Mesajınızı yazın</string>
+    <string name="instabug_str_shake_hint">Geribildirimlerinizi almayı çok isteriz bizimle&lt;br/> konuşmak için cihazınızı &lt;b>sallayın&lt;/b></string>
+    <string name="instabug_str_success_note">Geribildiriminizi aldık.\n%s uygulamasını daha iyi hale getirmemize yardım ettiğiniz için teşekkürler.</string>
+    <string name="instabug_str_swipe_hint">Geribildirimlerinizi almayı çok isteriz, &lt;br />bize ulaşmak için&lt;b>2 parmağınızla ekranı kaydırın&lt;/b>.</string>
+    <string name="instabug_str_take_screenshot">Ekran Görüntüsü Al</string>
+    <string name="instabug_str_talk_to_us">Bizimle konuşun</string>
+    <string name="instabug_str_thank_you">Teşekkür Ederiz</string>
+    <string name="instabug_str_video">Video</string>
+    <string name="instabug_str_video_encoder_busy">Video Kodlayıcı başla bir videonun kodlanmasıyla meşgul</string>
+    <string name="instabug_str_video_encoding_error">Yetersiz bellek nedeniyle video kodlanamadı</string>
+    <string name="instabug_str_video_player">Video Oynatıcı</string>
+</resources>

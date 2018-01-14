@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/dialogLayout">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:id="@+id/dialogTitle"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/liftOffTimeLayout"
+        android:layout_below="@+id/dialogTitle"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/liftoffTimeText"
+            android:gravity="center_horizontal"
+            android:text="Time :    "
+            android:textColor="#000000"
+            android:textSize="25sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/liftoffTime"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textColor="#088b00"
+            android:textSize="25sp"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/liftOffTimeLayout"
+        android:id="@+id/buttonLayout">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Success"
+            android:id="@+id/successButton"/>
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Failure"
+            android:id="@+id/failButton"/>
+    </LinearLayout>
+</RelativeLayout>

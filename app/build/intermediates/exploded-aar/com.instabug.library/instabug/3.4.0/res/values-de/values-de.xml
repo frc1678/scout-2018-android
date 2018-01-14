@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Genehmigung für Tonaufnahme verweigert</string>
+    <string name="instabug_err_invalid_comment">Bitte geben Sie einen gültigen Kommentar ein</string>
+    <string name="instabug_err_invalid_email">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
+    <string name="instabug_external_storage_permission_denied">Speichergenehmigung verweigert</string>
+    <string name="instabug_str_add_photo">Bild aus Galerie auswählen</string>
+    <string name="instabug_str_alert_message_max_attachments">Entfernen Sie einen vorhandenen Anhang, um einen neuen hinzuzufügen.</string>
+    <string name="instabug_str_alert_title_max_attachments">Anhang kann nicht hinzugefügt werden</string>
+    <string name="instabug_str_annotate">Auf dem Screenshot zeichnen</string>
+    <string name="instabug_str_audio">Audiodatei</string>
+    <string name="instabug_str_bug_comment_hint">Was ist schiefgelaufen?</string>
+    <string name="instabug_str_bug_header">Problem melden</string>
+    <string name="instabug_str_conversations">Unterhaltungen</string>
+    <string name="instabug_str_email_hint">E-Mail-Adresse eingeben</string>
+    <string name="instabug_str_feedback_comment_hint">Wie können wir die App verbessern?</string>
+    <string name="instabug_str_feedback_header">Verbesserungsvorschlag</string>
+    <string name="instabug_str_hold_to_record">Zum Aufnehmen drücken &amp; gedrückt halten</string>
+    <string name="instabug_str_image">Bild</string>
+    <string name="instabug_str_image_loading_error">Fehler beim Laden des Bildes.</string>
+    <string name="instabug_str_invocation_dialog_title">Wie können wir Ihnen helfen?</string>
+    <string name="instabug_str_messages">Nachrichten</string>
+    <string name="instabug_str_notification_title">"%1$s Team"</string>
+    <string name="instabug_str_notifications_body">%1$d neue Nachrichten von %2$s und weiteren</string>
+    <string name="instabug_str_please_wait">Bitte warten Sie einen Augenblick</string>
+    <string name="instabug_str_record_audio">Sprachnotiz aufnehmen</string>
+    <string name="instabug_str_record_video">Bildschirmaufnahme tätigen</string>
+    <string name="instabug_str_release_stop_record">Zum Anhängen loslassen</string>
+    <string name="instabug_str_sending_message_hint">Nachricht eingeben</string>
+    <string name="instabug_str_shake_hint">Wir würden uns über Ihr Feedback freuen.&lt;br/>&lt;b>Schütteln Sie Ihr Gerät&lt;/b>, um mit uns zu reden.</string>
+    <string name="instabug_str_success_note">Wir haben Ihr Feedback erhalten.\nVielen Danke für Ihre Hilfe, %s weiter zu verbessern.</string>
+    <string name="instabug_str_swipe_hint">Wir würden uns über Ihr Feedback freuen.&lt;br/>&lt;b>Streichen Sie mit 2 Fingern&lt;/b>, um mit uns zu reden</string>
+    <string name="instabug_str_take_screenshot">Screenshot aufnehmen</string>
+    <string name="instabug_str_talk_to_us">Sprechen Sie mit uns</string>
+    <string name="instabug_str_thank_you">Vielen Dank</string>
+    <string name="instabug_str_video">Video</string>
+    <string name="instabug_str_video_encoder_busy">Der Video-Encoder verschlüsselt gerade ein anderes Video.</string>
+    <string name="instabug_str_video_encoding_error">Video konnte nicht verschlüsselt werden, da Sie nicht über ausreichend freien Speicherplatz verfügen.</string>
+    <string name="instabug_str_video_player">Videoplayer</string>
+</resources>

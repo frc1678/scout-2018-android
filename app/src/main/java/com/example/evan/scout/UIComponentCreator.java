@@ -204,7 +204,7 @@ public class UIComponentCreator {
                             });
 
                             Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
-                            failure.getBackground().setColorFilter(Color.parseColor("#FFC8C8"), PorterDuff.Mode.MULTIPLY);
+                            failure.getBackground().setColorFilter(Color.parseColor("#FFC8C7"), PorterDuff.Mode.MULTIPLY);
                             failure.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -415,375 +415,123 @@ public class UIComponentCreator {
         public void setNumGearsLiftThree(int i) {   numGearsLiftThree = i;}
     }
 
-    public static class UIShotCreator extends UIComponentCreator {
-        private int shotsMade;
-        private String position;
-        private long startTime;
-        private long endTime;
-        private long totalTime;
-        private String name;
-        private Activity context;
-        private int currentShotComponent;
-
-        public UIShotCreator(Activity context, List<String> componentNames) {
-            super(context, componentNames);
-            currentShotComponent = 0;
-            shotsMade = 0;
-            this.context = context;
-            name = "LOL";
-        }
-        public Button addButton(final String shotFBname) {
-            name = UIShotCreator.super.componentNames.get(currentShotComponent);
-            int index1 = name.indexOf("t")+1;
-            int index2 = name.indexOf("S");
-            String buttonName = name.substring(0, index1);
-            final String dialogName = name.substring(0,1).toUpperCase() + name.substring(1, index2) + " Shooting";
-            final String titleName = name.substring(0,1).toUpperCase() + name.substring(1, index2) + " Shots";
-            final String height = name.substring(0,index2);
-            final String dataName = name;
-
-            final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            shotButton.setText(buttonName);
-            shotButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    shotsMade = 0;
-                    startTime = System.currentTimeMillis();
-                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
-
-                    final Dialog dialog = new Dialog(context);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.shot_dialog, null);
-                    TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText(dialogName);
-
-                    final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
-
-                    Button minusTenButton = (Button) dialogLayout.findViewById(R.id.minusTenButton);
-                    minusTenButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(shotsMade >= 10){
-                                shotsMade -= 10;
-                            }else{
-                                shotsMade = 0;
-                            }
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    Button minusButton = (Button) dialogLayout.findViewById(R.id.minusButton);
-                    minusButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(shotsMade > 0){
-                                shotsMade -= 1;
-                            }
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    Button plusTenButton = (Button) dialogLayout.findViewById(R.id.plusTenButton);
-                    plusTenButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            shotsMade += 10;
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    Button plusButton = (Button) dialogLayout.findViewById(R.id.plusButton);
-                    plusButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            shotsMade += 1;
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    RadioButton keyRadioButton = (RadioButton) dialogLayout.findViewById(R.id.keyRadio);
-                    keyRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Key";
-                        }
-                    });
-
-                    RadioButton hopperRadioButton = (RadioButton) dialogLayout.findViewById(R.id.hopperRadio);
-                    hopperRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Hopper";
-                        }
-                    });
-
-                    RadioButton allianceWallRadioButton = (RadioButton) dialogLayout.findViewById(R.id.allianceWallRadio);
-                    allianceWallRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Alliance Wall";
-                        }
-                    });
-
-                    RadioButton otherRadioButton = (RadioButton) dialogLayout.findViewById(R.id.otherRadio);
-                    otherRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Other";
-                        }
-                    });
-
-                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                    success.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(position != null){
-                                endTime = System.currentTimeMillis();
-                                totalTime = endTime - startTime;
-
-                                int i = 0;
-                                List<String> shotKeys = Arrays.asList("numShots", "position", "time");
-                                List<Object> shotValues = new ArrayList<>();
-                                shotValues.clear();
-                                shotValues.add(shotsMade);
-                                shotValues.add(position);
-                                shotValues.add(totalTime/1000);
-
-                                dataSpace.put(shotKeys.get(0), shotValues.get(0));
-                                dataSpace.put(shotKeys.get(1), shotValues.get(1));
-                                dataSpace.put(shotKeys.get(2), shotValues.get(2));
-
-                                if(DataManager.collectedData.has(shotFBname)){
-                                    try {
-                                        DataManager.sideData = DataManager.collectedData.getJSONObject(shotFBname);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
-                                }else{
-                                    DataManager.sideData = new JSONObject();
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
-                                }
-
-                                position = null;
-
-                                dialog.dismiss();
-                            }else{
-                                Toast.makeText(context, "Please put shot location", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
-                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
-                    failure.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    dialog.setContentView(dialogLayout);
-                    dialog.show();
-                }
-            });
-            shotButton.setOnLongClickListener(new View.OnLongClickListener() {
-
-                public boolean onLongClick(View v){
-                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
-                        if(DataActivity.activityName.equals("auto")){
-                            DataActivity.saveAutoData = false;
-                        }else if(DataActivity.activityName.equals("tele")){
-                            DataActivity.saveTeleData = false;
-                        }
-                    }
-
-                    int latest = 0;
-
-                    if(latest > 0){
-                        View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
-                        ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
-
-                        AlertDialog.Builder shotBuilder = new AlertDialog.Builder(context);
-                        shotBuilder.setView(shotsHistory);
-                        shotBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        shotBuilder.setTitle(titleName);
-                        shotBuilder.setCancelable(false);
-                        AlertDialog shotDialog = shotBuilder.create();
-
-                        shotDialog.show();
-                    } else {
-                        Toast.makeText(context, "No Entries for "+titleName, Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-            });
-            currentShotComponent++;
-            super.componentViews.add(shotButton);
-            return shotButton;
-        }
-    }
     public static class UIPyramidCreator extends UIComponentCreator {
-        private int shotsMade;
-        private String position;
+
+        private int numGroundPyramidIntake;
+        private int numElevatedPyramidIntake;
+        //private int layer;
         private long startTime;
         private long endTime;
         private long totalTime;
         private String name;
         private Activity context;
-        private int currentShotComponent;
+        private int currentPyramidComponent;
+
 
         public UIPyramidCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
-            currentShotComponent = 0;
-            shotsMade = 0;
+            currentPyramidComponent = 0;
+            numElevatedPyramidIntake = 0;
+            numGroundPyramidIntake = 0;
+
             this.context = context;
             name = "LOL";
-        }
-        public Button addButton(final String shotFBname) {
-            name = UIPyramidCreator.super.componentNames.get(currentShotComponent);
 
-            final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            shotButton.setText(name);
-            shotButton.setOnClickListener(new View.OnClickListener() {
+        }
+        public Button addButton(final String pyramidFBname) {
+            name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
+
+            final Button pyramidButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
+            pyramidButton.setText(name);
+            pyramidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    shotsMade = 0;
-                    startTime = System.currentTimeMillis();
+                     numElevatedPyramidIntake= 0;
+                     numGroundPyramidIntake = 0;
                     final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
 
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.shot_dialog, null);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.pyramid_dialog, null);
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText("Dab");
+                    titleTV.setText(name);
 
-                    final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
+                    //final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
 
-                    Button minusTenButton = (Button) dialogLayout.findViewById(R.id.minusTenButton);
-                    minusTenButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(shotsMade >= 10){
-                                shotsMade -= 10;
-                            }else{
-                                shotsMade = 0;
-                            }
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
 
-                    Button minusButton = (Button) dialogLayout.findViewById(R.id.minusButton);
-                    minusButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(shotsMade > 0){
-                                shotsMade -= 1;
-                            }
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
+                    //Button groundIntake = (Button) dialogLayout.findViewById(R.id.successButton);
+                    //groundIntake.setOnClickListener(new View.OnClickListener() {
+                        //@Override
+                        //public void onClick(View v) {
 
-                    Button plusTenButton = (Button) dialogLayout.findViewById(R.id.plusTenButton);
-                    plusTenButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            shotsMade += 10;
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
 
-                    Button plusButton = (Button) dialogLayout.findViewById(R.id.plusButton);
-                    plusButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            shotsMade += 1;
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
 
-                    RadioButton keyRadioButton = (RadioButton) dialogLayout.findViewById(R.id.keyRadio);
-                    keyRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Key";
-                        }
-                    });
+                            Button groundButton = (Button) dialogLayout.findViewById(R.id.elevatedButton);
+                            groundButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                     numElevatedPyramidIntake += 1;
+                                }
+                            });
 
-                    RadioButton hopperRadioButton = (RadioButton) dialogLayout.findViewById(R.id.hopperRadio);
-                    hopperRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Hopper";
-                        }
-                    });
+                            Button elevatedButton = (Button) dialogLayout.findViewById(R.id.groundButton);
+                            elevatedButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    numGroundPyramidIntake += 1;
+                                }
+                            });
+                            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                                cancelButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                             });
 
-                    RadioButton allianceWallRadioButton = (RadioButton) dialogLayout.findViewById(R.id.allianceWallRadio);
-                    allianceWallRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Alliance Wall";
-                        }
-                    });
 
-                    RadioButton otherRadioButton = (RadioButton) dialogLayout.findViewById(R.id.otherRadio);
-                    otherRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Other";
-                        }
-                    });
 
-                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                    success.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(position != null){
+                            if(numGroundPyramidIntake != 0 && numElevatedPyramidIntake!= 0){
                                 endTime = System.currentTimeMillis();
                                 totalTime = endTime - startTime;
 
                                 int i = 0;
-                                List<String> shotKeys = Arrays.asList("numShots", "position", "time");
-                                List<Object> shotValues = new ArrayList<>();
-                                shotValues.clear();
-                                shotValues.add(shotsMade);
-                                shotValues.add(position);
-                                shotValues.add(totalTime/1000);
+                                List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake", "numElevatedPyramidIntake" /*"time"*/);
+                                List<Object> pyramidValues = new ArrayList<>();
+                                pyramidValues.clear();
+                                //pyramidValues.add();
+                                pyramidValues.add(numElevatedPyramidIntake);
+                                pyramidValues.add(numGroundPyramidIntake);
+                                //pyramidValues.add(totalTime/1000);
 
-                                dataSpace.put(shotKeys.get(0), shotValues.get(0));
-                                dataSpace.put(shotKeys.get(1), shotValues.get(1));
-                                dataSpace.put(shotKeys.get(2), shotValues.get(2));
+                                dataSpace.put(pyramidKeys.get(0), pyramidValues.get(0));
+                                dataSpace.put(pyramidKeys.get(1), pyramidValues.get(1));
+                                dataSpace.put(pyramidKeys.get(2), pyramidValues.get(2));
 
-                                if(DataManager.collectedData.has(shotFBname)){
+                                if(DataManager.collectedData.has(pyramidFBname)){
                                     try {
-                                        DataManager.sideData = DataManager.collectedData.getJSONObject(shotFBname);
+                                        DataManager.sideData = DataManager.collectedData.getJSONObject(pyramidFBname);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
+                                    DataManager.addOneTierJsonData(true, i+"", pyramidKeys, pyramidValues);
+                                    DataManager.addZeroTierJsonData(pyramidFBname,DataManager.sideData);
                                 }else{
                                     DataManager.sideData = new JSONObject();
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
+                                    DataManager.addOneTierJsonData(true, i+"", pyramidKeys, pyramidValues);
+                                    DataManager.addZeroTierJsonData(pyramidFBname,DataManager.sideData);
                                 }
 
-                                position = null;
+
 
                                 dialog.dismiss();
                             }else{
-                                Toast.makeText(context, "Please put shot location", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
-                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                    /*Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
                     failure.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -791,11 +539,10 @@ public class UIComponentCreator {
                         }
                     });
 
-                    dialog.setContentView(dialogLayout);
-                    dialog.show();
+                    dialog.dismiss();
                 }
-            });
-            shotButton.setOnLongClickListener(new View.OnLongClickListener() {
+            });*/
+            /*shotButton.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View v){
                     if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
@@ -809,31 +556,32 @@ public class UIComponentCreator {
                     int latest = 0;
 
                     if(latest > 0){
-                        View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
-                        ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
+                        //View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
+                        //ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
 
-                        AlertDialog.Builder shotBuilder = new AlertDialog.Builder(context);
-                        shotBuilder.setView(shotsHistory);
-                        shotBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                        AlertDialog.Builder pyramidBuilder = new AlertDialog.Builder(context);
+                        pyramidBuilder.setView(shotsHistory);
+                        pyramidBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
                             }
                         });
-                        shotBuilder.setTitle(titleName);
-                        shotBuilder.setCancelable(false);
-                        AlertDialog shotDialog = shotBuilder.create();
+                        pyramidBuilder.setTitle(name);
+                        pyramidBuilder.setCancelable(false);
+                        AlertDialog pyramidDialog = pyramidBuilder.create();
 
-                        shotDialog.show();
+                        pyramidDialog.show();
                     } else {
-                        Toast.makeText(context, "No Entries for "+titleName, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No Entries for "+name, Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 }
-            });
-            currentShotComponent++;
-            super.componentViews.add(shotButton);
-            return shotButton;
+            }*/
+            ;
+            currentPyramidComponent++;
+            super.componentViews.add(pyramidButton);
+            return pyramidButton;
         }
     }
 

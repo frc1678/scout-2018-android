@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Tilladelse til lydoptagelse nægtet</string>
+    <string name="instabug_err_invalid_comment">Indtast en gyldig kommentar</string>
+    <string name="instabug_err_invalid_email">Indtast en gyldig e-mail</string>
+    <string name="instabug_external_storage_permission_denied">Tilladelse til lagring nægtet</string>
+    <string name="instabug_str_add_photo">Vælg billede fra galleri</string>
+    <string name="instabug_str_alert_message_max_attachments">Fjern en eksisterende vedhæftet fil for at tilføje en ny.</string>
+    <string name="instabug_str_alert_title_max_attachments">Kan ikke Tilføj Attachment</string>
+    <string name="instabug_str_annotate">Tegn på screenshot</string>
+    <string name="instabug_str_audio">Lyd</string>
+    <string name="instabug_str_bug_comment_hint">Hvad gik galt?</string>
+    <string name="instabug_str_bug_header">Rapporter om et problem</string>
+    <string name="instabug_str_conversations">Samtaler</string>
+    <string name="instabug_str_email_hint">Indtast din e-mail</string>
+    <string name="instabug_str_feedback_comment_hint">Hvad kan vi gøre bedre?</string>
+    <string name="instabug_str_feedback_header">Foreslå en forbedring</string>
+    <string name="instabug_str_hold_to_record">Tryk og hold nede for at optage</string>
+    <string name="instabug_str_image">Billede</string>
+    <string name="instabug_str_image_loading_error">Kunne ikke indlæse billede</string>
+    <string name="instabug_str_invocation_dialog_title">Hvad kan vi hjælpe med?</string>
+    <string name="instabug_str_messages">Beskeder</string>
+    <string name="instabug_str_notification_title">"%1$s team"</string>
+    <string name="instabug_str_notifications_body">%1$d nye beskeder fra %2$s og andre</string>
+    <string name="instabug_str_please_wait">Vent et øjeblik</string>
+    <string name="instabug_str_record_audio">Optag en stemmebesked</string>
+    <string name="instabug_str_record_video">Foretag en skærmoptagelse</string>
+    <string name="instabug_str_release_stop_record">Slip for at vedhæfte</string>
+    <string name="instabug_str_sending_message_hint">Skriv din besked</string>
+    <string name="instabug_str_shake_hint">Vi vil gerne høre din feedback&lt;br/>&lt;b>Ryst&lt;/b> din enhed for at tale til os.</string>
+    <string name="instabug_str_success_note">Vi har modtaget din feedback.\nTak fordi du hjælper os med at gøre %s bedre.</string>
+    <string name="instabug_str_swipe_hint">Vi vil gerne høre din feedback&lt;br />&lt;b>Skub med to fingre&lt;/b> for at tale til os.</string>
+    <string name="instabug_str_take_screenshot">Tag et screenshot</string>
+    <string name="instabug_str_talk_to_us">Tal til os</string>
+    <string name="instabug_str_thank_you">Tak</string>
+    <string name="instabug_str_video">Video</string>
+    <string name="instabug_str_video_encoder_busy">Video Encoder har travlt med at kode en anden video</string>
+    <string name="instabug_str_video_encoding_error">Kunne ikke kode video på grund af lav hukommelse</string>
+    <string name="instabug_str_video_player">Videoafspiller</string>
+</resources>

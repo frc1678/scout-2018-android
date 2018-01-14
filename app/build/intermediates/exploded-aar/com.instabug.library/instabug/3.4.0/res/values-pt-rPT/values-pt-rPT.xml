@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Permissão de gravação áudio recusada</string>
+    <string name="instabug_err_invalid_comment">Introduza um comentário válido</string>
+    <string name="instabug_err_invalid_email">Introduza um e-mail válido</string>
+    <string name="instabug_external_storage_permission_denied">Permissão de armazenamento recusada</string>
+    <string name="instabug_str_add_photo">Selecione a Imagem na Galeria</string>
+    <string name="instabug_str_alert_message_max_attachments">Remova um anexo existente para adicionar um novo.</string>
+    <string name="instabug_str_alert_title_max_attachments">Não é possível adicionar anexo</string>
+    <string name="instabug_str_annotate">Desenhar na captura de ecrã</string>
+    <string name="instabug_str_audio">Áudio</string>
+    <string name="instabug_str_bug_comment_hint">Qual foi o problema?</string>
+    <string name="instabug_str_bug_header">Reportar um Problema</string>
+    <string name="instabug_str_conversations">Conversas</string>
+    <string name="instabug_str_email_hint">Introduza o seu e-mail</string>
+    <string name="instabug_str_feedback_comment_hint">Como poderemos melhorar?</string>
+    <string name="instabug_str_feedback_header">Sugerir um Melhoramento</string>
+    <string name="instabug_str_hold_to_record">Mantenha Premido para Gravar</string>
+    <string name="instabug_str_image">Imagem</string>
+    <string name="instabug_str_image_loading_error">Não foi possível carregar a imagem</string>
+    <string name="instabug_str_invocation_dialog_title">Como o podemos ajudar?</string>
+    <string name="instabug_str_messages">Mensagens</string>
+    <string name="instabug_str_notification_title">"Equipa %1$s"</string>
+    <string name="instabug_str_notifications_body">%1$d novas mensagens de %2$s e outros</string>
+    <string name="instabug_str_please_wait">Aguarde um momento</string>
+    <string name="instabug_str_record_audio">Gravar uma Nota de Voz</string>
+    <string name="instabug_str_record_video">Gravar o ecrã</string>
+    <string name="instabug_str_release_stop_record">Liberte para Anexar</string>
+    <string name="instabug_str_sending_message_hint">Escreva a sua mensagem</string>
+    <string name="instabug_str_shake_hint">Adoramos os seus comentários&lt;br/>&lt;b>Abane&lt;/b> o seu dispositivo para falar connosco.</string>
+    <string name="instabug_str_success_note">Recebemos os seus comentários.\nObrigado por nos ajudar a %s melhorar.</string>
+    <string name="instabug_str_swipe_hint">Adoramos os seus comentários&lt;br />&lt;b>Deslize com 2 dedos&lt;/b> para falar connosco.</string>
+    <string name="instabug_str_take_screenshot">Obter captura de ecrã</string>
+    <string name="instabug_str_talk_to_us">Fale connosco</string>
+    <string name="instabug_str_thank_you">Obrigado</string>
+    <string name="instabug_str_video">Vídeo</string>
+    <string name="instabug_str_video_encoder_busy">O Codificador de Vídeo está ocupado a codificar outro vídeo</string>
+    <string name="instabug_str_video_encoding_error">Memória insuficiente para codificar vídeo</string>
+    <string name="instabug_str_video_player">Leitor de Vídeo</string>
+</resources>

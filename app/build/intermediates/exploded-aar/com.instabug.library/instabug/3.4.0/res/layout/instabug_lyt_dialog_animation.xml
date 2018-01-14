@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/InstabugBaseContainer"
+    android:layout_width="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal"
+    android:padding="@dimen/instabug_dialog_container_padding">
+
+    <com.instabug.library.internal.view.AnimatedImageView
+        android:id="@+id/animation_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:minHeight="100dp"
+        android:minWidth="200dp" />
+
+    <TextView
+        android:id="@+id/animation_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/instabug_normal_text_size" />
+</LinearLayout>

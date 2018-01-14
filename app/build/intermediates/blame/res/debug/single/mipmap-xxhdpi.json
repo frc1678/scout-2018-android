@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/meme.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/src/main/res/mipmap-xxhdpi/meme.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/dank.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/src/main/res/mipmap-xxhdpi/dank.png"
+    }
+]

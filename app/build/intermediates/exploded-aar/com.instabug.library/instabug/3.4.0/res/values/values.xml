@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="color|reference" name="instabug_background_color"/>
+    <attr format="color" name="instabug_dialog_button_text_color"/>
+    <attr format="color" name="instabug_dialog_item_text_color"/>
+    <attr format="reference" name="instabug_divider"/>
+    <attr format="color" name="instabug_divider_color"/>
+    <attr format="color|reference" name="instabug_foreground_color"/>
+    <attr format="reference" name="instabug_item_border"/>
+    <attr format="color" name="instabug_message_date_text_color"/>
+    <attr format="color" name="instabug_message_sender_text_color"/>
+    <attr format="color" name="instabug_message_snippet_text_color"/>
+    <attr format="color|reference" name="instabug_primary_color"/>
+    <attr format="color|reference" name="instabug_received_message_text_color"/>
+    <attr format="color|reference" name="instabug_sent_message_text_color"/>
+    <attr format="color|reference" name="instabug_theme_tinting_color"/>
+    <attr format="color" name="instabug_unread_message_background_color"/>
+    <bool name="isTablet">false</bool>
+    <color name="instabug_annotation_color_blue">#2d8cd5</color>
+    <color name="instabug_annotation_color_default">@color/instabug_annotation_color_red</color>
+    <color name="instabug_annotation_color_gray">#273646</color>
+    <color name="instabug_annotation_color_green">#00a388</color>
+    <color name="instabug_annotation_color_red">#e16152</color>
+    <color name="instabug_annotation_color_yellow">#efca4c</color>
+    <color name="instabug_dialog_bg_color">#90000000</color>
+    <color name="instabug_text_color_grey">#737373</color>
+    <color name="instabug_theme_tinting_color_dark">#fdfdfd</color>
+    <color name="instabug_theme_tinting_color_light">#737373</color>
+    <color name="instabug_transparent_color">#00000000</color>
+    <color name="instabug_url_color_blue">#365899</color>
+    <declare-styleable name="CircleImageView"><attr format="dimension" name="ibg_civ_border_width"/><attr format="color" name="ibg_civ_border_color"/><attr format="boolean" name="ibg_civ_border_overlay"/><attr format="color" name="ibg_civ_fill_color"/></declare-styleable>
+    <declare-styleable name="ColorPickerPopUpView"><attr format="enum" name="orientation">
+            <enum name="vertical" value="0"/>
+            <enum name="horizontal" value="1"/>
+        </attr></declare-styleable>
+    <declare-styleable name="IconView"><attr name="android:textSize"/><attr name="android:textColor"/><attr name="android:padding"/><attr format="enum" name="instabug_icon">
+            <enum name="instabug" value="0"/>
+            <enum name="audio" value="1"/>
+            <enum name="avatar" value="2"/>
+            <enum name="back" value="3"/>
+            <enum name="bug" value="4"/>
+            <enum name="cancel" value="5"/>
+            <enum name="capture_screenshot" value="6"/>
+            <enum name="capture_video" value="7"/>
+            <enum name="close" value="8"/>
+            <enum name="erase" value="9"/>
+            <enum name="feedback" value="10"/>
+            <enum name="floating_bubble" value="11"/>
+            <enum name="next" value="12"/>
+            <enum name="pause" value="13"/>
+            <enum name="photo_library" value="14"/>
+            <enum name="play" value="15"/>
+            <enum name="plus_attach" value="16"/>
+            <enum name="plus" value="17"/>
+            <enum name="send" value="18"/>
+            <enum name="stop" value="19"/>
+            <enum name="talk_to_us" value="20"/>
+            <enum name="tick" value="21"/>
+            <enum name="blur" value="22"/>
+            <enum name="brush" value="23"/>
+            <enum name="magnify" value="24"/>
+            <enum name="undo" value="25"/>
+
+        </attr></declare-styleable>
+    <dimen name="Instabug_text_medium">18sp</dimen>
+    <dimen name="instabug_attachment_placeholder_margin">4dp</dimen>
+    <dimen name="instabug_bottom_sheet_padding">8dp</dimen>
+    <dimen name="instabug_button_text_size">12sp</dimen>
+    <dimen name="instabug_chat_item_avatar_size">40dp</dimen>
+    <dimen name="instabug_container_padding">16dp</dimen>
+    <dimen name="instabug_date_text_size">10sp</dimen>
+    <dimen name="instabug_dialog_container_padding">24dp</dimen>
+    <dimen name="instabug_normal_text_size">14sp</dimen>
+    <dimen name="instabug_remove_attachment_button_padding">8dp</dimen>
+    <dimen name="instabug_remove_attachment_button_size">34dp</dimen>
+    <dimen name="instabug_toolbar_button_padding">18dp</dimen>
+    <dimen name="instabug_vertical_separator_height">1dp</dimen>
+    <item name="instabug_floating_button" type="id"/>
+    <string name="font_fontFamily_medium" translatable="false">sans-serif-medium</string>
+    <string name="instabug_audio_recorder_permission_denied">Audio recording permission denied</string>
+    <string name="instabug_err_invalid_comment">Please enter a valid comment</string>
+    <string name="instabug_err_invalid_email">Please enter a valid email</string>
+    <string name="instabug_external_storage_permission_denied">Storage permission denied</string>
+    <string name="instabug_str_add_photo">Select Image from Gallery</string>
+    <string name="instabug_str_alert_message_max_attachments">Remove an existing attachment to add a new one.</string>
+    <string name="instabug_str_alert_title_max_attachments">Cannot Add Attachment</string>
+    <string name="instabug_str_annotate">Draw on screenshot</string>
+    <string name="instabug_str_audio">Audio</string>
+    <string name="instabug_str_bug_comment_hint">What went wrong?</string>
+    <string name="instabug_str_bug_header">Report a Problem</string>
+    <string name="instabug_str_cancel">Cancel</string>
+    <string name="instabug_str_capture">Capture</string>
+    <string name="instabug_str_conversations">Conversations</string>
+    <string name="instabug_str_email_hint">Enter your Email</string>
+    <string name="instabug_str_empty" translatable="false"/>
+    <string name="instabug_str_feedback_comment_hint">How can we improve?</string>
+    <string name="instabug_str_feedback_header">Suggest an Improvement</string>
+    <string name="instabug_str_hold_to_record">Press and Hold to Record</string>
+    <string name="instabug_str_image">Image</string>
+    <string name="instabug_str_image_loading_error">Couldn\'t load image</string>
+    <string name="instabug_str_instabug" translatable="false">Instabug</string>
+    <string name="instabug_str_invocation_dialog_title">How can we help you?</string>
+    <string name="instabug_str_messages">Messages</string>
+    <string name="instabug_str_next">Next</string>
+    <string name="instabug_str_notification_title">"%1$s Team"</string>
+    <string name="instabug_str_notifications_body">%1$d new messages from %2$s and others</string>
+    <string name="instabug_str_ok">OK</string>
+    <string name="instabug_str_pb" translatable="false">Powered by </string>
+    <string name="instabug_str_please_wait">Please wait a moment</string>
+    <string name="instabug_str_plus" translatable="false">+</string>
+    <string name="instabug_str_record_audio">Record a Voice Note</string>
+    <string name="instabug_str_record_video">Take a screen recording</string>
+    <string name="instabug_str_release_stop_record">Release to Attach</string>
+    <string name="instabug_str_sending_message_hint">Type your message</string>
+    <string name="instabug_str_shake_hint">We love to hear your feedback&lt;br/>&lt;b>Shake&lt;/b> your device to talk to us.</string>
+    <string name="instabug_str_submit">Send</string>
+    <string name="instabug_str_success_note">We\'ve received your feedback.\nThank you for helping us make %s better.</string>
+    <string name="instabug_str_swipe_hint">We love to hear your feedback&lt;br />&lt;b>Swipe with 2 fingers&lt;/b> to talk to us.</string>
+    <string name="instabug_str_take_screenshot">Take a Screenshot</string>
+    <string name="instabug_str_talk_to_us">Talk to us</string>
+    <string name="instabug_str_thank_you">Thank You</string>
+    <string name="instabug_str_video">Video</string>
+    <string name="instabug_str_video_encoder_busy">Video Encoder is busy encoding other video</string>
+    <string name="instabug_str_video_encoding_error">Couldn\'t encode video due to low memory</string>
+    <string name="instabug_str_video_player">Video Player</string>
+    <style name="InstabugAnnotationColorIconContainer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:foregroundGravity">center</item>
+    </style>
+    <style name="InstabugAnnotationColorIconImage">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+    <style name="InstabugAnnotationContainer" parent="InstabugBaseContainer">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="InstabugBaseContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">?attr/instabug_background_color</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:clickable">true</item>
+    </style>
+    <style name="InstabugBaseText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">?attr/instabug_foreground_color</item>
+    </style>
+    <style name="InstabugBaseToolbarContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:background">?attr/instabug_primary_color</item>
+    </style>
+    <style name="InstabugBorderlessDialog" parent="android:Theme.Light">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowBackground">@color/instabug_transparent_color</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+    <style name="InstabugBottomBarContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="InstabugBottomSheetContainer" parent="InstabugBaseContainer">
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:paddingLeft">@dimen/instabug_container_padding</item>
+        <item name="android:paddingRight">@dimen/instabug_container_padding</item>
+        <item name="android:paddingBottom">@dimen/instabug_bottom_sheet_padding</item>
+    </style>
+    <style name="InstabugBottomSheetItemBaseImage">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="InstabugBottomSheetItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+    <style name="InstabugBottomSheetItemImage" parent="InstabugBottomSheetItemBaseImage">
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:padding">2dp</item>
+    </style>
+    <style name="InstabugBottomSheetItemText" parent="InstabugBaseText">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:textSize">@dimen/instabug_normal_text_size</item>
+    </style>
+    <style name="InstabugChatsItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">1dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+    </style>
+    <style name="InstabugDialogButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="InstabugDialogButtonText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?attr/instabug_dialog_button_text_color</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">?attr/instabug_background_color</item>
+    </style>
+    <style name="InstabugDialogComposeMessageContainer">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+    </style>
+    <style name="InstabugDialogContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/instabug_dialog_bg_color</item>
+        <item name="android:clickable">true</item>
+    </style>
+    <style name="InstabugDialogItemBaseImage">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="InstabugDialogItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">?attr/instabug_background_color</item>
+    </style>
+    <style name="InstabugDialogItemImage" parent="InstabugDialogItemBaseImage">
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+    <style name="InstabugDialogItemText" parent="InstabugBaseText">
+        <item name="android:textSize">@dimen/instabug_normal_text_size</item>
+        <item name="android:textColor">?attr/instabug_dialog_item_text_color</item>
+    </style>
+    <style name="InstabugDialogToolbarContainer" parent="InstabugBaseToolbarContainer">
+        <item name="android:background">?attr/instabug_background_color</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+    <style name="InstabugEditTextStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">?attr/instabug_background_color</item>
+        <item name="android:gravity">start</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
+        <item name="android:padding">20dp</item>
+    </style>
+    <style name="InstabugImageButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">@null</item>
+    </style>
+    <style name="InstabugSdkTheme" parent="@android:style/Theme.Translucent">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="InstabugSdkTheme.Base.Dark" parent="@android:style/Theme">
+        <item name="android:editTextStyle">@android:style/Widget.EditText</item>
+    </style>
+    <style name="InstabugSdkTheme.Base.Light" parent="@android:style/Theme.Light">
+        <item name="android:editTextStyle">@android:style/Widget.EditText</item>
+    </style>
+    <style name="InstabugSdkTheme.Dark" parent="InstabugSdkTheme.Base.Dark">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>'
+
+        <item name="instabug_primary_color">#252525</item>
+        <item name="instabug_theme_tinting_color">@color/instabug_theme_tinting_color_dark</item>
+        <item name="instabug_foreground_color">#ffffff</item>
+        <item name="instabug_background_color">#363636</item>
+        <item name="instabug_divider_color">#474747</item>
+
+        <item name="instabug_message_sender_text_color">#EBEBEB</item>
+        <item name="instabug_message_snippet_text_color">#D0D0D0</item>
+        <item name="instabug_message_date_text_color">#B4B4B4</item>
+        <item name="instabug_unread_message_background_color">#313131</item>
+        <item name="instabug_sent_message_text_color">?attr/instabug_foreground_color</item>
+        <item name="instabug_received_message_text_color">?attr/instabug_background_color</item>
+
+        <item name="instabug_dialog_item_text_color">#ffffff</item>
+        <item name="instabug_dialog_button_text_color">#ffffff</item>
+
+        <item name="instabug_divider">@drawable/instabug_bg_divider_list_dark</item>
+        <item name="instabug_item_border">@drawable/instabug_bg_border_dark</item>
+    </style>
+    <style name="InstabugSdkTheme.Light" parent="InstabugSdkTheme.Base.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="instabug_primary_color">#eceff1</item>
+        <item name="instabug_theme_tinting_color">@color/instabug_theme_tinting_color_light</item>
+        <item name="instabug_foreground_color">#000000</item>
+        <item name="instabug_background_color">#ffffff</item>
+        <item name="instabug_divider_color">#dddddd</item>
+
+        <item name="instabug_message_sender_text_color">#000000</item>
+        <item name="instabug_message_snippet_text_color">#737373</item>
+        <item name="instabug_message_date_text_color">#9A9A9A</item>
+        <item name="instabug_unread_message_background_color">#F9F9F9</item>
+        <item name="instabug_sent_message_text_color">?attr/instabug_background_color</item>
+        <item name="instabug_received_message_text_color">?attr/instabug_foreground_color</item>
+
+        <item name="instabug_dialog_item_text_color">#767575</item>
+        <item name="instabug_dialog_button_text_color">#2F8BF7</item>
+
+        <item name="instabug_divider">@drawable/instabug_bg_divider_list_light</item>
+        <item name="instabug_item_border">@drawable/instabug_bg_border_light</item>
+    </style>
+    <style name="InstabugText" parent="InstabugBaseText">
+        <item name="android:textSize">@dimen/instabug_normal_text_size</item>
+        <item name="android:background">?attr/instabug_background_color</item>
+    </style>
+    <style name="InstabugToolbarTitle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:fontFamily">@string/font_fontFamily_medium</item>
+        <item name="android:textSize">@dimen/Instabug_text_medium</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">left|start</item>
+        <item name="android:textColor">?attr/instabug_foreground_color</item>
+    </style>
+    <style name="InstabugTopDialogButton" parent="InstabugDialogButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:gravity">left|start|center_vertical</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
+    <style name="InstabugUnreadMessagesCountIcon">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+</resources>

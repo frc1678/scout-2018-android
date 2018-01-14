@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">В разрешении на аудиозапись отказано</string>
+    <string name="instabug_err_invalid_comment">Введите допустимый комментарий</string>
+    <string name="instabug_err_invalid_email">Введите действительный эл. адрес</string>
+    <string name="instabug_external_storage_permission_denied">В сохранении отказано	</string>
+    <string name="instabug_str_add_photo">Выбрать изображение из Альбома</string>
+    <string name="instabug_str_alert_message_max_attachments">Удалить существующий вложение, чтобы добавить новый.</string>
+    <string name="instabug_str_alert_title_max_attachments">Невозможно добавить Вложений</string>
+    <string name="instabug_str_annotate">Рисовать на снимке экрана</string>
+    <string name="instabug_str_audio">Аудио</string>
+    <string name="instabug_str_bug_comment_hint">Что случилось?</string>
+    <string name="instabug_str_bug_header">Сообщить о проблеме</string>
+    <string name="instabug_str_conversations">Разговоры</string>
+    <string name="instabug_str_email_hint">Введите адрес эл. почты	</string>
+    <string name="instabug_str_feedback_comment_hint">Что мы можем улучшить?</string>
+    <string name="instabug_str_feedback_header">Предложить улучшение</string>
+    <string name="instabug_str_hold_to_record">Нажмите и удерживайте, чтобы записать</string>
+    <string name="instabug_str_image">Изображение</string>
+    <string name="instabug_str_image_loading_error">Не удалось загрузить изображение</string>
+    <string name="instabug_str_invocation_dialog_title">Чем можем быть полезны?	</string>
+    <string name="instabug_str_messages">Сообщения</string>
+    <string name="instabug_str_notification_title">""</string>
+    <string name="instabug_str_notifications_body">%1$d новых сообщения (-ий) от %2$s и других</string>
+    <string name="instabug_str_please_wait">Подождите немного</string>
+    <string name="instabug_str_record_audio">Записать голосовую заметку</string>
+    <string name="instabug_str_record_video">Записать изображение экрана</string>
+    <string name="instabug_str_release_stop_record">Отпустите, чтобы прикрепить</string>
+    <string name="instabug_str_sending_message_hint">Введите сообщение</string>
+    <string name="instabug_str_shake_hint">Будем очень благодарны вам за отзыв&lt;br/>Чтобы поговорить с нами, &lt;b>встряхните&lt;/b> свое устройство.</string>
+    <string name="instabug_str_success_note">Мы получили ваш отзыв.\nСпасибо, что помогаете нам улучшить %s.</string>
+    <string name="instabug_str_swipe_hint">Будем очень благодарны вам за отзыв&lt;br/>Чтобы поговорить с нами, &lt;b>смахните&lt;/b> двумя пальцами.</string>
+    <string name="instabug_str_take_screenshot">Сделать снимок экрана	</string>
+    <string name="instabug_str_talk_to_us">Свяжитесь с нами	</string>
+    <string name="instabug_str_thank_you">Спасибо</string>
+    <string name="instabug_str_video">Видео</string>
+    <string name="instabug_str_video_encoder_busy">Видеокодировщик сейчас кодирует другое видео</string>
+    <string name="instabug_str_video_encoding_error">Не удалось закодировать видео из-за нехватки памяти.</string>
+    <string name="instabug_str_video_player">Видеоплеер</string>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Permission d\'enregistrement audio refusée</string>
+    <string name="instabug_err_invalid_comment">Veuillez saisir une commentaire valide</string>
+    <string name="instabug_err_invalid_email">Veuillez saisir un e-mail valide</string>
+    <string name="instabug_external_storage_permission_denied">Permission de stockage refusée</string>
+    <string name="instabug_str_add_photo">Choisir Image dans la galerie</string>
+    <string name="instabug_str_alert_message_max_attachments">Supprimez une pièce jointe existante pour en ajouter une nouvelle.</string>
+    <string name="instabug_str_alert_title_max_attachments">Impossible d\'ajouter une pièce jointe</string>
+    <string name="instabug_str_annotate">Dessiner sur la capture d\'écran</string>
+    <string name="instabug_str_audio">Audio</string>
+    <string name="instabug_str_bug_comment_hint">Quel problème avez-vous rencontré ?</string>
+    <string name="instabug_str_bug_header">Signaler un problème</string>
+    <string name="instabug_str_conversations">Conversations</string>
+    <string name="instabug_str_email_hint">Saisissez votre adresse e-mail</string>
+    <string name="instabug_str_feedback_comment_hint">Où pouvons-nous progresser ?</string>
+    <string name="instabug_str_feedback_header">Suggérer une amélioration</string>
+    <string name="instabug_str_hold_to_record">Appuyer longuement pour enregistrer</string>
+    <string name="instabug_str_image">Image</string>
+    <string name="instabug_str_image_loading_error">Impossible de charger l\'image</string>
+    <string name="instabug_str_invocation_dialog_title">Que pouvons-nous faire pour vous ?</string>
+    <string name="instabug_str_messages">Messages</string>
+    <string name="instabug_str_notification_title">"Équipe %1$s"</string>
+    <string name="instabug_str_notifications_body">%1$d nouveaux messages de %2$s et autres</string>
+    <string name="instabug_str_please_wait">Veuillez patienter</string>
+    <string name="instabug_str_record_audio">Enregistrer un message vocal</string>
+    <string name="instabug_str_record_video">Effectuez un enregistrement de l\'écran</string>
+    <string name="instabug_str_release_stop_record">Relâcher pour joindre</string>
+    <string name="instabug_str_sending_message_hint">Saisissez votre message</string>
+    <string name="instabug_str_shake_hint">Vos commentaires nous intéressent beaucoup&lt;br/>&lt;b>Secouez&lt;/b> votre appareil pour nous parler.</string>
+    <string name="instabug_str_success_note">Nous avons bien reçu vos commentaires.\nMerci de nous aider à améliorer %s.</string>
+    <string name="instabug_str_swipe_hint">Vos commentaires nous intéressent beaucoup&lt;br />&lt;b>Balayez avec 2 doigts&lt;/b> pour nous parler.</string>
+    <string name="instabug_str_take_screenshot">Prendre une capture d\'écran</string>
+    <string name="instabug_str_talk_to_us">Parlez-nous</string>
+    <string name="instabug_str_thank_you">Merci</string>
+    <string name="instabug_str_video">Vidéo</string>
+    <string name="instabug_str_video_encoding_error">Impossible d\'encoder la vidéo en raison d\'un manque de mémoire</string>
+    <string name="instabug_str_video_player">Lecteur vidéo</string>
+</resources>

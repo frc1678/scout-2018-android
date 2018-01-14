@@ -1,0 +1,123 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/InstabugBaseContainer"
+    android:layout_gravity="center">
+
+    <FrameLayout
+        android:id="@+id/instabug_annotation_image_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/divider"
+        android:padding="8dp">
+
+        <FrameLayout
+            android:id="@+id/instabug_annotation_image_border"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <com.instabug.library.view.annotation.AnnotationView
+                android:id="@+id/instabug_annotation_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"/>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+  <com.instabug.library.view.annotation.ColorPickerPopUpView
+      android:id="@+id/instabug_color_picker"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
+      android:layout_marginBottom="4dp"
+      app:orientation="vertical"
+      android:visibility="gone"
+      android:layout_toLeftOf="@+id/instabug_annotation_actions_container"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/instabug_annotation_actions_container"
+        android:background="?attr/instabug_divider_color" />
+
+  <LinearLayout
+        android:id="@+id/instabug_annotation_actions_container"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="?attr/instabug_primary_color"
+        android:gravity="right|top"
+        android:orientation="vertical"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:weightSum="4">
+
+        <RelativeLayout
+            android:id="@+id/icon_brush_layout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1">
+
+            <com.instabug.library.view.IconView
+                android:id="@+id/icon_brush"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:gravity="center"
+                android:padding="0dp"
+                android:textColor="?attr/instabug_theme_tinting_color"
+                android:textSize="26sp"
+                app:instabug_icon="brush" />
+
+            <View
+                android:id="@+id/brush_indicator"
+                android:layout_width="18dp"
+                android:layout_height="2dp"
+                android:layout_below="@id/icon_brush"
+                android:layout_marginLeft="-24dp"
+                android:layout_toRightOf="@id/icon_brush"
+                android:background="@color/instabug_annotation_color_red" />
+        </RelativeLayout>
+
+
+        <com.instabug.library.view.IconView
+            android:id="@+id/icon_magnify"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/instabug_theme_tinting_color"
+            android:textSize="26sp"
+            app:instabug_icon="magnify" />
+
+        <com.instabug.library.view.IconView
+            android:id="@+id/icon_blur"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/instabug_theme_tinting_color"
+            android:textSize="26sp"
+            app:instabug_icon="blur" />
+
+        <com.instabug.library.view.IconView
+            android:id="@+id/icon_undo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="?attr/instabug_theme_tinting_color"
+            android:textSize="26sp"
+            app:instabug_icon="undo" />
+
+    </LinearLayout>
+</RelativeLayout>

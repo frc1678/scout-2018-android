@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/instabug_option_report_bug"
+    style="@style/InstabugDialogItemContainer">
+
+  <ImageView
+      android:id="@+id/instabug_icon"
+      style="@style/InstabugDialogItemImage"
+      tools:src="@drawable/instabug_ic_send_feedback"
+      android:tint="?attr/instabug_theme_tinting_color"/>
+
+  <TextView
+      android:id="@+id/instabug_label"
+      style="@style/InstabugDialogItemText"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:text="@string/instabug_str_bug_header"/>
+</LinearLayout>

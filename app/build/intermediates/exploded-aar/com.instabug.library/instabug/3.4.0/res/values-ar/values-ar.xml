@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">إذن التسجيل الصوتي تم رفضة</string>
+    <string name="instabug_err_invalid_comment">الرجاء إدخال تعليق صحيح</string>
+    <string name="instabug_err_invalid_email">الرجاء إدخال بريد إلكتروني صحيح لاتاحة الفرصة لنا لنعود اليكم</string>
+    <string name="instabug_external_storage_permission_denied">إذن الذاكرة تم رفضة</string>
+    <string name="instabug_str_add_photo">قم بتحديد صورة من المعرض</string>
+    <string name="instabug_str_alert_message_max_attachments">قم بحذف إحدى المرفقات لإضافة واحدة جديدة.</string>
+    <string name="instabug_str_alert_title_max_attachments">لا يمكن إضافة المرفق</string>
+    <string name="instabug_str_audio">تسجيل صوتي</string>
+    <string name="instabug_str_bug_comment_hint">ما الخطأ الذي حدث؟</string>
+    <string name="instabug_str_bug_header">الإبلاغ عن مشكلة</string>
+    <string name="instabug_str_cancel">إلغاء</string>
+    <string name="instabug_str_conversations">المحادثات</string>
+    <string name="instabug_str_email_hint">ادخل بريدك الإلكتروني</string>
+    <string name="instabug_str_feedback_comment_hint">كيف يمكننا التحسين؟</string>
+    <string name="instabug_str_feedback_header">اقتراح تحسين</string>
+    <string name="instabug_str_hold_to_record">اضغط باستمرار للتسجيل</string>
+    <string name="instabug_str_image">صورة</string>
+    <string name="instabug_str_invocation_dialog_title">كيف يمكننا المساعدة؟</string>
+    <string name="instabug_str_next">التالي</string>
+    <string name="instabug_str_notification_title">" فريق %1$s"</string>
+    <string name="instabug_str_notifications_body">%1$d رسالة جديدة من %2$s و آخرين</string>
+    <string name="instabug_str_ok">حسنا</string>
+    <string name="instabug_str_please_wait">برجاء الإنتظار</string>
+    <string name="instabug_str_record_audio">تسجيل ملاحظة صوتية</string>
+    <string name="instabug_str_record_video">تسجيل فيديو من الشاشة</string>
+    <string name="instabug_str_release_stop_record">قم بالتحرير للإرفاق</string>
+    <string name="instabug_str_shake_hint">نحب أن نعرف تعليقاتك&lt;br />&lt;b>قم بهز&lt;/b> الجهاز للتحدث إلينا</string>
+    <string name="instabug_str_submit">إرسال</string>
+    <string name="instabug_str_success_note">لقد تسلّمنا تعليقك. نشكرك على مساعدتنا على تحسين %s</string>
+    <string name="instabug_str_swipe_hint">نحب أن نعرف تعليقاتك&lt;br />&lt;b>اسحب بإصبعين&lt;/b> للتحدث إلينا</string>
+    <string name="instabug_str_take_screenshot">خذ لقطة للشاشة</string>
+    <string name="instabug_str_talk_to_us">تحدث معنا</string>
+    <string name="instabug_str_thank_you">لقد تسلمنا تعليقك. نشكرك على مساعدتنا على تحسين %s.</string>
+    <string name="instabug_str_video">فيديو</string>
+</resources>

@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/InstabugBaseContainer">
+
+    <LinearLayout
+        style="@style/InstabugBaseContainer"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:scrollbarStyle="insideOverlay">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/instabug_background_color"
+                android:divider="?attr/instabug_divider"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <EditText
+                    android:id="@+id/instabug_edit_text_email"
+                    style="@style/InstabugEditTextStyle"
+                    android:hint="@string/instabug_str_email_hint"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    tools:text="mgamal@instabug.com" />
+
+                <EditText
+                    android:id="@+id/instabug_edit_text_message"
+                    style="@style/InstabugEditTextStyle"
+                    android:layout_height="wrap_content"
+                    android:inputType="textAutoCorrect|textMultiLine"
+                    android:minLines="3"
+                    tools:text="Hello\nOther\nWorld" />
+
+                <LinearLayout
+                    android:id="@+id/instabug_lyt_attachments_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:animateLayoutChanges="true"
+                    android:background="?attr/instabug_background_color"
+                    android:gravity="center_vertical"
+                    android:minHeight="100dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:weightSum="4" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <include layout="@layout/instabug_attachments_action_bar" />
+
+    </LinearLayout>
+
+</RelativeLayout>

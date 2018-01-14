@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">錄音權限遭到拒絕</string>
+    <string name="instabug_err_invalid_comment">請輸入有效的註解</string>
+    <string name="instabug_err_invalid_email">請輸入正確的電子郵件地址</string>
+    <string name="instabug_external_storage_permission_denied">儲存空間權限遭拒</string>
+    <string name="instabug_str_add_photo">選取圖庫中的圖片</string>
+    <string name="instabug_str_alert_message_max_attachments">刪除現有附件以添加新附件。</string>
+    <string name="instabug_str_alert_title_max_attachments">無法添加附件</string>
+    <string name="instabug_str_annotate">在螢幕擷取畫面上繪圖</string>
+    <string name="instabug_str_audio">音訊</string>
+    <string name="instabug_str_bug_comment_hint">問題在哪裡？</string>
+    <string name="instabug_str_bug_header">回報問題</string>
+    <string name="instabug_str_conversations">對話</string>
+    <string name="instabug_str_email_hint">輸入您的電子郵件地址</string>
+    <string name="instabug_str_feedback_comment_hint">我們應該如何改善？</string>
+    <string name="instabug_str_feedback_header">建議改進方式</string>
+    <string name="instabug_str_hold_to_record">按住即可錄音</string>
+    <string name="instabug_str_image">圖片</string>
+    <string name="instabug_str_image_loading_error">無法載入圖片</string>
+    <string name="instabug_str_invocation_dialog_title">您有什麼問題？</string>
+    <string name="instabug_str_messages">訊息</string>
+    <string name="instabug_str_notification_title">"%1$s 小組"</string>
+    <string name="instabug_str_notifications_body">有 %1$d 則新訊息來自%2$s和其他人</string>
+    <string name="instabug_str_please_wait">請稍候</string>
+    <string name="instabug_str_record_audio">錄下語音記事</string>
+    <string name="instabug_str_record_video">錄下操作畫面</string>
+    <string name="instabug_str_release_stop_record">放開即可夾檔</string>
+    <string name="instabug_str_sending_message_hint">輸入訊息內容</string>
+    <string name="instabug_str_shake_hint">我們很想聽聽您的意見&lt;br/>&lt;b>搖一下&lt;/b>您的裝置就能與我們對談。</string>
+    <string name="instabug_str_success_note">我們收到您的意見了。\n感謝您協助我們改進 %s。</string>
+    <string name="instabug_str_swipe_hint">我們很想聽聽您的意見&lt;br />&lt;b>雙指滑動&lt;/b>就能與我們對談。</string>
+    <string name="instabug_str_take_screenshot">拍攝螢幕擷取畫面</string>
+    <string name="instabug_str_talk_to_us">請告訴我們</string>
+    <string name="instabug_str_thank_you">感謝您</string>
+    <string name="instabug_str_video">影片</string>
+    <string name="instabug_str_video_encoder_busy">視訊編碼器正在將其他影片編碼</string>
+    <string name="instabug_str_video_encoding_error">無法將影片編碼，因為記憶體不足</string>
+    <string name="instabug_str_video_player">影片播放器</string>
+</resources>

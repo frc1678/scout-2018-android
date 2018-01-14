@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Tillstånd för ljudinspelning nekades</string>
+    <string name="instabug_err_invalid_comment">Vänligen fyll i en giltig kommentar</string>
+    <string name="instabug_err_invalid_email">Vänligen ange en giltig e-postadress</string>
+    <string name="instabug_external_storage_permission_denied">Lagringsåtkomst nekad</string>
+    <string name="instabug_str_add_photo">Välj bild från galleri</string>
+    <string name="instabug_str_alert_message_max_attachments">Ta bort en befintlig bilagan du vill lägga till en ny.</string>
+    <string name="instabug_str_alert_title_max_attachments">Kan inte lägga till bilaga</string>
+    <string name="instabug_str_annotate">Rita på skärmavbild</string>
+    <string name="instabug_str_audio">Ljud</string>
+    <string name="instabug_str_bug_comment_hint">Vad gick fel?</string>
+    <string name="instabug_str_bug_header">Rapportera ett problem</string>
+    <string name="instabug_str_conversations">Samtal</string>
+    <string name="instabug_str_email_hint">Ange din e-postadress</string>
+    <string name="instabug_str_feedback_comment_hint">Hur kan vi bli bättre?</string>
+    <string name="instabug_str_feedback_header">Föreslå en förbättring</string>
+    <string name="instabug_str_hold_to_record">Tryck och håll för att spela in</string>
+    <string name="instabug_str_image">Bild</string>
+    <string name="instabug_str_image_loading_error">Kunde inte läsa in bild</string>
+    <string name="instabug_str_invocation_dialog_title">Hur kan vi hjälpa till?</string>
+    <string name="instabug_str_messages">Meddelanden</string>
+    <string name="instabug_str_notification_title">"Teamet för %1$s"</string>
+    <string name="instabug_str_notifications_body">%1$d nya meddelanden från bland andra %2$s</string>
+    <string name="instabug_str_please_wait">Vänligen vänta ett ögonblick</string>
+    <string name="instabug_str_record_audio">Spela in en röstnotis</string>
+    <string name="instabug_str_record_video">Gör en skärminspelning</string>
+    <string name="instabug_str_release_stop_record">Släpp för att bifoga</string>
+    <string name="instabug_str_sending_message_hint">Skriv ditt meddelande</string>
+    <string name="instabug_str_shake_hint">Vi vill gärna höra dina synpunkter.&lt;br/>&lt;b>Skaka&lt;/b> din enhet för att prata med oss.</string>
+    <string name="instabug_str_success_note">Vi har tagit emot dina synpunkter.\nTack för att du hjälper oss att göra %s bättre.</string>
+    <string name="instabug_str_swipe_hint">Vi vill gärna höra dina synpunkter.&lt;br/>&lt;b>Svep med två fingrar&lt;/b> för att prata med oss.</string>
+    <string name="instabug_str_take_screenshot">Ta en skärmavbild</string>
+    <string name="instabug_str_talk_to_us">Prata med oss</string>
+    <string name="instabug_str_thank_you">Tack</string>
+    <string name="instabug_str_video">Video</string>
+    <string name="instabug_str_video_encoder_busy">Videokodaren är upptage med att koda en annan video</string>
+    <string name="instabug_str_video_encoding_error">Kunde inte koda videon på grund av brist på ledigt minne</string>
+    <string name="instabug_str_video_player">Videospelare</string>
+</resources>

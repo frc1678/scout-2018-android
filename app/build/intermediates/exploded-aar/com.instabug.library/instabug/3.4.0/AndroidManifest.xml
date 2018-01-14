@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.instabug.library" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="24" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <activity
+            android:name="com.instabug.library.InstabugFeedbackActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/InstabugSdkTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <service android:name="com.instabug.library.network.worker.uploader.InstabugSessionUploaderService" />
+        <service android:name="com.instabug.library.network.worker.uploader.InstabugBugsUploaderService" />
+        <service android:name="com.instabug.library.network.worker.uploader.InstabugCrashesUploaderService" />
+        <service android:name="com.instabug.library.network.worker.uploader.InstabugMessageUploaderService" />
+        <service android:name="com.instabug.library.network.worker.fetcher.InstabugFeaturesFetcherService" />
+        <service android:name="com.instabug.library.internal.video.VideoProcessingService" />
+
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

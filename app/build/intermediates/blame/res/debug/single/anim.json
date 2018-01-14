@@ -1,0 +1,90 @@
+[
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/notification_open_anim.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/notification_open_anim.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/anim_recording_audio_dialog_exit.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/anim_recording_audio_dialog_exit.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/notification_swipe_left_anim.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/notification_swipe_left_anim.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_slide_out_bottom.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_slide_out_bottom.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_popup_enter.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_popup_enter.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/tooltip_exit.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/tooltip_exit.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/notification_close_anim.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/notification_close_anim.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_popup_exit.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_popup_exit.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_slide_in_top.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/anim_invocation_dialog_exit.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/anim_invocation_dialog_exit.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/anim_recording_audio_dialog_enter.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/anim_recording_audio_dialog_enter.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/notification_swipe_right_anim.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/notification_swipe_right_anim.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_shrink_fade_out_from_bottom.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_shrink_fade_out_from_bottom.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/anim_invocation_dialog_enter.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/anim_invocation_dialog_enter.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_slide_out_top.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_slide_out_top.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_fade_out.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_fade_out.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/instabug_anim_bottom_sheet_exit.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/instabug_anim_bottom_sheet_exit.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/tooltip_enter.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/tooltip_enter.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_bottom.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_slide_in_bottom.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_grow_fade_in_from_bottom.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_grow_fade_in_from_bottom.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/instabug_anim_bottom_sheet_enter.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/anim/instabug_anim_bottom_sheet_enter.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/anim/abc_fade_in.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/26.0.1/res/anim/abc_fade_in.xml"
+    }
+]

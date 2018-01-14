@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="instabug_audio_recorder_permission_denied">Oprávnění k záznamu zvuku bylo odepřeno</string>
+    <string name="instabug_err_invalid_comment">Zadejte platný komentář</string>
+    <string name="instabug_err_invalid_email">Zadejte platný e-mail</string>
+    <string name="instabug_external_storage_permission_denied">Oprávnění k uložení bylo odepřeno</string>
+    <string name="instabug_str_add_photo">Vybrat obrázek z galerie</string>
+    <string name="instabug_str_alert_message_max_attachments">Odebrat stávající přílohu přidat novou.</string>
+    <string name="instabug_str_alert_title_max_attachments">Nelze přidat přílohu</string>
+    <string name="instabug_str_annotate">Kreslit na snímek obrazovky</string>
+    <string name="instabug_str_audio">Zvuk</string>
+    <string name="instabug_str_bug_comment_hint">Co se pokazilo?</string>
+    <string name="instabug_str_bug_header">Ohlásit problém</string>
+    <string name="instabug_str_conversations">Konverzace</string>
+    <string name="instabug_str_email_hint">Zadejte svůj e-mail</string>
+    <string name="instabug_str_feedback_comment_hint">Co můžeme zlepšit?</string>
+    <string name="instabug_str_feedback_header">Navrhnout zlepšení</string>
+    <string name="instabug_str_hold_to_record">Stisknutím a podržením nahrajte hlas</string>
+    <string name="instabug_str_image">Obrázek</string>
+    <string name="instabug_str_image_loading_error">Obrázek nelze načíst</string>
+    <string name="instabug_str_invocation_dialog_title">Jak vám můžeme pomoci?</string>
+    <string name="instabug_str_messages">Zprávy</string>
+    <string name="instabug_str_notification_title">"Tým %1$s"</string>
+    <string name="instabug_str_notifications_body">%1$d nových zpráv od uživatele %2$s a dalších</string>
+    <string name="instabug_str_please_wait">Počkejte chvíli</string>
+    <string name="instabug_str_record_audio">Nahrát hlasovou poznámku</string>
+    <string name="instabug_str_record_video">Pořídit záznam obrazovky</string>
+    <string name="instabug_str_release_stop_record">Uvolněním připojíte nahrávku</string>
+    <string name="instabug_str_sending_message_hint">Zadejte zprávu</string>
+    <string name="instabug_str_shake_hint">Zajímá nás váš názor&lt;br/>Pokud nám chcete něco sdělit, &lt;b>zatřeste&lt;/b> zařízením.</string>
+    <string name="instabug_str_success_note">Obdrželi jsme vaši zpětnou vazbu.\nDěkujeme, že nám pomáháte zlepšovat aplikaci %s.</string>
+    <string name="instabug_str_swipe_hint">Zajímá nás váš názor&lt;br/>Pokud nám chcete něco sdělit, &lt;b>přejeďte dvěma prsty&lt;/b>.</string>
+    <string name="instabug_str_take_screenshot">Vytvořit snímek obrazovky</string>
+    <string name="instabug_str_talk_to_us">Mluvte s námi</string>
+    <string name="instabug_str_thank_you">Děkujeme</string>
+    <string name="instabug_str_video">Video</string>
+    <string name="instabug_str_video_encoder_busy">Videokodér kóduje jiné video</string>
+    <string name="instabug_str_video_encoding_error">Video nelze dekódovat kvůli nedostatku paměti</string>
+    <string name="instabug_str_video_player">Přehrávač videa</string>
+</resources>

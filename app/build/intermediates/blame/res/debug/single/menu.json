@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/menu/main_menu.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/src/main/res/menu/main_menu.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/menu/teleop_menu.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/src/main/res/menu/teleop_menu.xml"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/menu/auto_menu.xml",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/src/main/res/menu/auto_menu.xml"
+    }
+]

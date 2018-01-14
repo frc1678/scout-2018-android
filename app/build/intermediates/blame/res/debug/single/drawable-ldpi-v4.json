@@ -1,0 +1,102 @@
+[
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_send.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_send.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_next.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_next.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_plus.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_plus.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_capture_screenshot.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_capture_screenshot.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_talk_to_us.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_talk_to_us.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_back.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_back.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_video.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_video.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_attach.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_attach.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_pause.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_pause.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_record_audio.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_record_audio.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_floating_btn.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_floating_btn.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_close.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_close.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_play.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_play.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_send_feedback.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_send_feedback.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_record_video.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_record_video.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_remove.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_remove.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/common_ic_googleplayservices.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.0.2/res/drawable-ldpi-v4/common_ic_googleplayservices.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_erase.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_erase.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_check.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_check.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_mic.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_mic.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_attach_gallery_image.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_attach_gallery_image.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_stop.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_stop.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_avatar.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_avatar.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_video_received.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_video_received.png"
+    },
+    {
+        "merged": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/res/merged/debug/drawable-ldpi-v4/instabug_ic_report_bug.png",
+        "source": "/Users/zjzhou/StudioProjects/scout-2018-android/app/build/intermediates/exploded-aar/com.instabug.library/instabug/3.4.0/res/drawable-ldpi-v4/instabug_ic_report_bug.png"
+    }
+]

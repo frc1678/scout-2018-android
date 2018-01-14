@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/shot_dialog">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="25dp"
+        android:gravity="center_horizontal"
+        android:id="@+id/dialogTitle"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nbLayout"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/dialogTitle">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:text="-10"
+            android:gravity="center"
+            android:id="@+id/minusTenButton"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="-1"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:id="@+id/minusButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/numberView" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:text="+1"
+            android:gravity="center"
+            android:id="@+id/plusButton" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:text="+10"
+            android:gravity="center"
+            android:id="@+id/plusTenButton"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nbLayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/radioGroup"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:text="Key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/keyRadio"
+            android:padding="5dp"
+            android:textSize="25dp"
+            android:paddingRight="5dp"
+
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Hopper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hopperRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+
+            android:textSize="25dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Alliance Wall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/allianceWallRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+
+            android:textSize="25dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/otherRadio"
+            android:textSize="25dp"
+            android:padding="5dp"
+            android:layout_weight="1"
+            android:checked="false" />
+
+    </RadioGroup>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/buttonLayout"
+        android:layout_below="@+id/radioGroup">
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#FAA2A8"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/failButton"/>
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/successButton"/>
+    </LinearLayout>
+</RelativeLayout>

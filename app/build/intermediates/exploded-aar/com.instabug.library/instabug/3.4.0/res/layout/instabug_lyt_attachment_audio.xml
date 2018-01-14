@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/instabug_remove_attachment_button_padding"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="17dp">
+
+        <ImageView
+            android:id="@+id/instabug_img_audio_attachment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/instabug_img_audio_placeholder" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="1dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/instabug_btn_audio_play_attachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:padding="8dp"
+                android:src="@drawable/instabug_ic_play" />
+
+            <TextView
+                android:id="@+id/instabug_txt_attachment_length"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <com.instabug.library.view.IconView
+        android:id="@+id/instabug_btn_remove_attachment"
+        android:layout_width="@dimen/instabug_remove_attachment_button_size"
+        android:layout_height="@dimen/instabug_remove_attachment_button_size"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="-8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:instabug_icon="cancel" />
+</RelativeLayout>
