@@ -649,5 +649,174 @@ public class UIComponentCreator {
             super.componentViews.add(scaleButton);
             return scaleButton;
         }
+        public static class UIPyramidCreator extends UIComponentCreator {
+
+            private int numGroundPyramidIntake;
+            private int numElevatedPyramidIntake;
+            //private int layer;
+            private long startTime;
+            private long endTime;
+            private long totalTime;
+            private String name;
+            private Activity context;
+            private int currentPyramidComponent;
+
+
+            public UIPyramidCreator(Activity context, List<String> componentNames) {
+                super(context, componentNames);
+                currentPyramidComponent = 0;
+                numElevatedPyramidIntake = 0;
+                numGroundPyramidIntake = 0;
+
+                this.context = context;
+                name = "LOL";
+
+            }
+            public Button addButton(final String pyramidFBname) {
+                name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
+
+                final Button pyramidButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
+                pyramidButton.setText(name);
+                pyramidButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        numElevatedPyramidIntake= 0;
+                        numGroundPyramidIntake = 0;
+                        final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
+
+                        final Dialog dialog = new Dialog(context);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.pyramid_dialog, null);
+                        TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                        titleTV.setText(name);
+
+                        //final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
+
+
+                        //Button groundIntake = (Button) dialogLayout.findViewById(R.id.successButton);
+                        //groundIntake.setOnClickListener(new View.OnClickListener() {
+                        //@Override
+                        //public void onClick(View v) {
+
+
+
+                        Button groundButton = (Button) dialogLayout.findViewById(R.id.elevatedButton);
+                        groundButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                numElevatedPyramidIntake += 1;
+                            }
+                        });
+
+                        Button elevatedButton = (Button) dialogLayout.findViewById(R.id.groundButton);
+                        elevatedButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                numGroundPyramidIntake += 1;
+                            }
+                        });
+                        Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                        cancelButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+
+                        if(numGroundPyramidIntake != 0 && numElevatedPyramidIntake!= 0){
+                            endTime = System.currentTimeMillis();
+                            totalTime = endTime - startTime;
+
+                            int i = 0;
+                            List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake", "numElevatedPyramidIntake" /*"time"*/);
+                            List<Object> pyramidValues = new ArrayList<>();
+                            pyramidValues.clear();
+                            //pyramidValues.add();
+                            pyramidValues.add(numElevatedPyramidIntake);
+                            pyramidValues.add(numGroundPyramidIntake);
+                            //pyramidValues.add(totalTime/1000);
+
+                            dataSpace.put(pyramidKeys.get(0), pyramidValues.get(0));
+                            dataSpace.put(pyramidKeys.get(1), pyramidValues.get(1));
+                            dataSpace.put(pyramidKeys.get(2), pyramidValues.get(2));
+
+                            if(DataManager.collectedData.has(pyramidFBname)){
+                                try {
+                                    DataManager.sideData = DataManager.collectedData.getJSONObject(pyramidFBname);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                DataManager.addOneTierJsonData(true, i+"", pyramidKeys, pyramidValues);
+                                DataManager.addZeroTierJsonData(pyramidFBname,DataManager.sideData);
+                            }else{
+                                DataManager.sideData = new JSONObject();
+                                DataManager.addOneTierJsonData(true, i+"", pyramidKeys, pyramidValues);
+                                DataManager.addZeroTierJsonData(pyramidFBname,DataManager.sideData);
+                            }
+
+
+
+                            dialog.dismiss();
+                        }else{
+                            Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                    /*Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                    failure.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.dismiss();
+                }
+            });*/
+            /*shotButton.setOnLongClickListener(new View.OnLongClickListener() {
+
+                public boolean onLongClick(View v){
+                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
+                        if(DataActivity.activityName.equals("auto")){
+                            DataActivity.saveAutoData = false;
+                        }else if(DataActivity.activityName.equals("tele")){
+                            DataActivity.saveTeleData = false;
+                        }
+                    }
+
+                    int latest = 0;
+
+                    if(latest > 0){
+                        //View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
+                        //ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
+
+                        AlertDialog.Builder pyramidBuilder = new AlertDialog.Builder(context);
+                        pyramidBuilder.setView(shotsHistory);
+                        pyramidBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        pyramidBuilder.setTitle(name);
+                        pyramidBuilder.setCancelable(false);
+                        AlertDialog pyramidDialog = pyramidBuilder.create();
+
+                        pyramidDialog.show();
+                    } else {
+                        Toast.makeText(context, "No Entries for "+name, Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            }*/
+                ;
+                currentPyramidComponent++;
+                super.componentViews.add(pyramidButton);
+                return pyramidButton;
+            }
+        }
     }
 }
