@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/dialogLayout">
+    android:id="@+id/climbDialogLayout">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,96 +44,30 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="Success"
-            android:id="@+id/successButton"/>
+            android:backgroundTint="#FAA2A8"
+            android:text="Failure"
+            android:id="@+id/failButton"/>
         <Button
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="Failure"
-            android:id="@+id/failButton"/>
-
+            android:backgroundTint="#BBEDC5"
+            android:text="Success"
+            android:id="@+id/successButton"/>
     </LinearLayout>
+    <LinearLayout
 
-    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonLayout"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/radioGroup"
-        android:orientation="horizontal"
-
-        >
-
-    <RadioButton
-        android:text="Passive Lift"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/passiveLiftRadio"
-        android:padding="5dp"
-        android:textSize="25dp"
-        android:paddingRight="5dp"
-
-        android:layout_weight="1" />
-
-    <TextView
-        android:text="     "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:layout_weight="1" />
-
-    <RadioButton
-        android:text="Active Lift"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/activeLiftRadio"
-        android:padding="5dp"
-        android:paddingRight="5dp"
-
-        android:textSize="25dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:text="     "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:layout_weight="1" />
-
-        <RadioButton
-            android:text="Climb"
-            android:layout_width="wrap_content"
+        android:id="@+id/cancelLine"
+        android:layout_below="@+id/buttonLayout">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/climbRadio"
-            android:padding="5dp"
-            android:paddingRight="5dp"
-            android:textSize="25dp"
-            android:layout_weight="1" />
+            android:text="Cancel"
+            android:id="@+id/cancelButton"/>
 
-        <TextView
-            android:text="     "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            android:layout_weight="1" />
 
-        <RadioButton
-            android:text="Assisted Lift"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/assistedLiftRadio"
-            android:padding="5dp"
-            android:paddingRight="5dp"
-            android:textSize="25dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:text="     "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView5"
-            android:layout_weight="1" />
-    </RadioGroup>
+    </LinearLayout>
 </RelativeLayout>
