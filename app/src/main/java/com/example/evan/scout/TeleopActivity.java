@@ -16,15 +16,9 @@ public class TeleopActivity extends DataActivity {
         return formatList(Arrays.asList("", "",
                 "", "", ""));
     }
-    public Integer getToggleXML() { return R.id.teleToggleButtonLinearLayout; }
-    public Integer getCounterXML() { return R.id.teleCounterLinearLayout; }
-    public Integer getShotXML() { return R.id.teleShotButtonLinearLayout; };
-    public Integer getOtherXML() { return R.id.teleGearIntakeButtonLinearLayout; };
+    public Integer getToggleXML() { return null; }
+    public Integer getCounterXML() { return null; }
 
-    @Override
-    public Boolean shouldSpaceToggles() {return true;}
-    @Override
-    public Boolean doTogglesDepend() {return true;}
     public Class getNextActivityClass() {return MainActivity.class;}
     public Class getPreviousActivityClass() {return AutoActivity.class;}
     public int getActionBarMenu() {return R.menu.teleop_menu;}

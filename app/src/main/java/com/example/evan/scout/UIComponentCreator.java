@@ -271,334 +271,105 @@ public class UIComponentCreator {
         }
     }
 
-    public static class UIGearCreator extends UIComponentCreator {
-        private Activity context;
-        private int numGearsLiftOne;
-        private int numGearsLiftTwo;
-        private int numGearsLiftThree;
 
-        public UIGearCreator(Activity context, List<String> componentNames) {
-            super(context, componentNames);
-            numGearsLiftOne = 0;
-            numGearsLiftTwo = 0;
-            numGearsLiftThree = 0;
-            this.context = context;
-        }
-
-        public Button addButton() {
-            final Button gearButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            gearButton.setText("Gear Placed");
-            gearButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.gear_dialog, null);
-                    TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText("Which Lift?");
-
-                    Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
-                    liftOneButton.setText("Lift 1 (" + numGearsLiftOne + ")");
-                    liftOneButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            numGearsLiftOne += 1;
-                            dialog.dismiss();
-                        }
-                    });
-
-                    Button liftTwoButton = (Button) dialogLayout.findViewById(R.id.liftTwoButton);
-                    liftTwoButton.setText("Lift 2 (" + numGearsLiftTwo + ")");
-                    liftTwoButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            numGearsLiftTwo += 1;
-                            dialog.dismiss();
-                        }
-                    });
-
-                    Button liftThreeButton = (Button) dialogLayout.findViewById(R.id.liftThreeButton);
-                    liftThreeButton.setText("Lift 3 (" + numGearsLiftThree + ")");
-                    liftThreeButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            numGearsLiftThree += 1;
-                            dialog.dismiss();
-                        }
-                    });
-
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //dismiss dialog
-                            dialog.dismiss();
-                        }
-                    });
-
-                    dialog.setContentView(dialogLayout);
-                    dialog.show();
-                }
-            });
-
-            gearButton.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.gear_dialog, null);
-                    TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText("Which Lift?");
-
-                    Button liftOneButton = (Button) dialogLayout.findViewById(R.id.liftOneButton);
-                    liftOneButton.setBackgroundColor(Color.parseColor("#ff9999"));
-                    liftOneButton.setText("Lift 1 (" + numGearsLiftOne + ")");
-                    liftOneButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (numGearsLiftOne > 0) {
-                                numGearsLiftOne -= 1;
-                                dialog.dismiss();
-                            }
-                        }
-                    });
-
-                    Button liftTwoButton = (Button) dialogLayout.findViewById(R.id.liftTwoButton);
-                    liftTwoButton.setBackgroundColor(Color.parseColor("#ff9999"));
-                    liftTwoButton.setText("Lift 2 (" + numGearsLiftTwo + ")");
-                    liftTwoButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (numGearsLiftTwo > 0) {
-                                numGearsLiftTwo -= 1;
-                                dialog.dismiss();
-                            }
-
-                        }
-                    });
-
-                    Button liftThreeButton = (Button) dialogLayout.findViewById(R.id.liftThreeButton);
-                    liftThreeButton.setBackgroundColor(Color.parseColor("#ff9999"));
-                    liftThreeButton.setText("Lift 3 (" + numGearsLiftThree + ")");
-                    liftThreeButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (numGearsLiftThree > 0) {
-                                numGearsLiftThree -= 1;
-                                dialog.dismiss();
-                            }
-                        }
-                    });
-
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //dismiss dialog
-                            dialog.dismiss();
-                        }
-                    });
-
-                    dialog.setContentView(dialogLayout);
-                    dialog.show();
-
-                    return true;
-                }
-            });
-
-            return gearButton;
-        }
-
-        public int getNumGearsLiftOne() {
-            return numGearsLiftOne;
-        }
-
-        public int getNumGearsLiftTwo() {
-            return numGearsLiftTwo;
-        }
-
-        public int getNumGearsLiftThree() {
-            return numGearsLiftThree;
-        }
-
-        public void setNumGearsLiftOne(int i) {
-            numGearsLiftOne = i;
-        }
-
-        public void setNumGearsLiftTwo(int i) {
-            numGearsLiftTwo = i;
-        }
-
-        public void setNumGearsLiftThree(int i) {
-            numGearsLiftThree = i;
-        }
-    }
-
-    /*public static class UIShotCreator extends UIComponentCreator {
-        private int shotsMade;
-        private String position;
-        private long startTime;
-        private long endTime;
-        private long totalTime;
+    public static class UISwitchCreator extends UIComponentCreator {
+        private boolean switchSuccess;
+        private float startTime;
+        private float endTime;
         private String name;
         private Activity context;
-        private int currentShotComponent;
+        private int currentSwitchComponent;
 
-        public UIShotCreator(Activity context, List<String> componentNames) {
+        public UISwitchCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
-            currentShotComponent = 0;
-            shotsMade = 0;
+            currentSwitchComponent = 0;
+            switchSuccess = false;
             this.context = context;
             name = "LOL";
         }
-        public Button addButton(final String shotFBname) {
-            name = UIShotCreator.super.componentNames.get(currentShotComponent);
-            int index1 = name.indexOf("t")+1;
-            int index2 = name.indexOf("S");
-            String buttonName = name.substring(0, index1);
-            final String dialogName = name.substring(0,1).toUpperCase() + name.substring(1, index2) + " Shooting";
-            final String titleName = name.substring(0,1).toUpperCase() + name.substring(1, index2) + " Shots";
-            final String height = name.substring(0,index2);
-            final String dataName = name;
+        public Button addButton(final String switchFBname) {
+            name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
-            final Button shotButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            shotButton.setText(buttonName);
-            shotButton.setOnClickListener(new View.OnClickListener() {
+            final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
+            switchButton.setText(name);
+            switchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    shotsMade = 0;
-                    startTime = System.currentTimeMillis();
-                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
+                    switchSuccess = false;
+                    startTime = backgroundTimer.getUpdatedTime();
 
+                    //Create Dialog
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.shot_dialog, null);
+                    RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_dialog, null);
+                    //Set Dialog Title
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText(dialogName);
+                    titleTV.setText(name);
 
-                    final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
-
-                    Button minusTenButton = (Button) dialogLayout.findViewById(R.id.minusTenButton);
-                    minusTenButton.setOnClickListener(new View.OnClickListener() {
+                    Button successButton = (Button) dialogLayout.findViewById(R.id.successButton);
+                    successButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(shotsMade >= 10){
-                                shotsMade -= 10;
-                            }else{
-                                shotsMade = 0;
-                            }
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    Button minusButton = (Button) dialogLayout.findViewById(R.id.minusButton);
-                    minusButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(shotsMade > 0){
-                                shotsMade -= 1;
-                            }
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    Button plusTenButton = (Button) dialogLayout.findViewById(R.id.plusTenButton);
-                    plusTenButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            shotsMade += 10;
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    Button plusButton = (Button) dialogLayout.findViewById(R.id.plusButton);
-                    plusButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            shotsMade += 1;
-                            numberView.setText(String.valueOf(shotsMade));
-                        }
-                    });
-
-                    RadioButton keyRadioButton = (RadioButton) dialogLayout.findViewById(R.id.keyRadio);
-                    keyRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Key";
-                        }
-                    });
-
-                    RadioButton hopperRadioButton = (RadioButton) dialogLayout.findViewById(R.id.hopperRadio);
-                    hopperRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Hopper";
-                        }
-                    });
-
-                    RadioButton allianceWallRadioButton = (RadioButton) dialogLayout.findViewById(R.id.allianceWallRadio);
-                    allianceWallRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Alliance Wall";
-                        }
-                    });
-
-                    RadioButton otherRadioButton = (RadioButton) dialogLayout.findViewById(R.id.otherRadio);
-                    otherRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            position = "Other";
-                        }
-                    });
-
-                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                    success.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(position != null){
-                                endTime = System.currentTimeMillis();
-                                totalTime = endTime - startTime;
+                                //calculate time
+                                endTime = backgroundTimer.getUpdatedTime();
+                                switchSuccess = true;
 
                                 int i = 0;
-                                List<String> shotKeys = Arrays.asList("numShots", "position", "time");
-                                List<Object> shotValues = new ArrayList<>();
-                                shotValues.clear();
-                                shotValues.add(shotsMade);
-                                shotValues.add(position);
-                                shotValues.add(totalTime/1000);
+                                List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                                List<Object> switchValues = new ArrayList<>();
+                                switchKeys.clear();
+                                switchValues.add(switchSuccess);
+                                switchValues.add(startTime);
+                                switchValues.add(endTime);
 
-                                dataSpace.put(shotKeys.get(0), shotValues.get(0));
-                                dataSpace.put(shotKeys.get(1), shotValues.get(1));
-                                dataSpace.put(shotKeys.get(2), shotValues.get(2));
-
-                                if(DataManager.collectedData.has(shotFBname)){
+                                if(DataManager.collectedData.has(switchFBname)){
                                     try {
-                                        DataManager.sideData = DataManager.collectedData.getJSONObject(shotFBname);
+                                        DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
+                                    DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
+                                    DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
                                 }else{
                                     DataManager.sideData = new JSONObject();
-                                    DataManager.addOneTierJsonData(true, i+"", shotKeys, shotValues);
-                                    DataManager.addZeroTierJsonData(shotFBname,DataManager.sideData);
+                                    DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
+                                    DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
                                 }
 
-                                position = null;
-
                                 dialog.dismiss();
-                            }else{
-                                Toast.makeText(context, "Please put shot location", Toast.LENGTH_SHORT).show();
                             }
-                        }
                     });
 
                     Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
                     failure.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            //calculate time
+//                                endTime = System.currentTimeMillis();
+                            switchSuccess = true;
+
+                            int i = 0;
+                            List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                            List<Object> switchValues = new ArrayList<>();
+                            switchValues.clear();
+                            switchValues.add(switchSuccess);
+                            switchValues.add(startTime);
+                            switchValues.add(endTime);
+
+                            if(DataManager.collectedData.has(switchFBname)){
+                                try {
+                                    DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
+                                DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
+                            }else{
+                                DataManager.sideData = new JSONObject();
+                                DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
+                                DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
+                            }
+
                             dialog.dismiss();
                         }
                     });
@@ -607,47 +378,47 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-            shotButton.setOnLongClickListener(new View.OnLongClickListener() {
-
-                public boolean onLongClick(View v){
-                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
-                        if(DataActivity.activityName.equals("auto")){
-                            DataActivity.saveAutoData = false;
-                        }else if(DataActivity.activityName.equals("tele")){
-                            DataActivity.saveTeleData = false;
-                        }
-                    }
-
-                    int latest = 0;
-
-                    if(latest > 0){
-                        View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
-                        ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
-
-                        AlertDialog.Builder shotBuilder = new AlertDialog.Builder(context);
-                        shotBuilder.setView(shotsHistory);
-                        shotBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        shotBuilder.setTitle(titleName);
-                        shotBuilder.setCancelable(false);
-                        AlertDialog shotDialog = shotBuilder.create();
-
-                        shotDialog.show();
-                    } else {
-                        Toast.makeText(context, "No Entries for "+titleName, Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                }
-            });
-            currentShotComponent++;
-            super.componentViews.add(shotButton);
-            return shotButton;
+//            switchButton.setOnLongClickListener(new View.OnLongClickListener() {
+//
+//                public boolean onLongClick(View v){
+//                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
+//                        if(DataActivity.activityName.equals("auto")){
+//                            DataActivity.saveAutoData = false;
+//                        }else if(DataActivity.activityName.equals("tele")){
+//                            DataActivity.saveTeleData = false;
+//                        }
+//                    }
+//
+//                    int latest = 0;
+//
+//                    if(latest > 0){
+//                        View switchHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
+//                        ListView switchList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
+//
+//                        AlertDialog.Builder switchBuilder = new AlertDialog.Builder(context);
+//                        switchBuilder.setView(switchHistory);
+//                        switchBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.cancel();
+//                            }
+//                        });
+//                        switchBuilder.setTitle(name);
+//                        switchBuilder.setCancelable(false);
+//                        AlertDialog shotDialog = switchBuilder.create();
+//
+//                        shotDialog.show();
+//                    } else {
+//                        Toast.makeText(context, "No Entries for "+name, Toast.LENGTH_SHORT).show();
+//                    }
+//                    return true;
+//                }
+//            });
+            currentSwitchComponent++;
+            super.componentViews.add(switchButton);
+            return switchButton;
         }
-    }*/
+    }
 
     public static class UIScaleCreator extends UIComponentCreator {
         private String status;

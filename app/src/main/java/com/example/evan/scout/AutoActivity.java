@@ -16,9 +16,7 @@ public class AutoActivity extends DataActivity {
         return formatList(Arrays.asList(""));
     }
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return R.id.autoCounterLinearLayout; }
-    public Integer getShotXML() { return R.id.autoShotButtonLinearLayout; };
-    public Integer getOtherXML() { return R.id.autoGearIntakeButtonLinearLayout; };
+    public Integer getCounterXML() { return null; }
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}
