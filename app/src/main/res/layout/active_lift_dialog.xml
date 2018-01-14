@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/dialogLayout">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:id="@+id/dialogTitle"/>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/liftType">
+
+        <RadioButton
+            android:text="Passive Lift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/passiveLiftRadio"
+            android:padding="5dp"
+            android:textSize="25dp"
+            android:paddingRight="5dp"
+
+            android:layout_weight="1" />
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView1"
+            android:layout_weight="1" />
+        <RadioButton
+            android:text="Assisted Lift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/assistedLiftRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:textSize="25dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="     "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:layout_weight="1" />
+    </RadioGroup>
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonLayout"
+        android:layout_below="@+id/liftType">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#FAA2A8"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/cancelButton"/>
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/doneButton"/>
+    </LinearLayout>
+</RelativeLayout>
