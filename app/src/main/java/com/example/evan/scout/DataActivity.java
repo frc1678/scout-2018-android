@@ -64,13 +64,9 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract List<String> getShotData();
     public abstract Integer getToggleXML();
     public abstract Integer getCounterXML();
-    public abstract Integer getShotXML();
-    public abstract Integer getOtherXML();
     public abstract Class getNextActivityClass();
     public abstract Class getPreviousActivityClass();
     public abstract int getActionBarMenu();
-    public Boolean shouldSpaceToggles() {return false;}
-    public Boolean doTogglesDepend() {return false;}
 
     public static boolean saveTeleData = false;
     public static boolean saveAutoData = false;
@@ -87,9 +83,7 @@ public abstract class DataActivity extends AppCompatActivity {
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
-    private UIComponentCreator.UIGearCreator gearCreator;
     private UIComponentCreator.UIButtonCreator liftOffCreator;
-    private UIComponentCreator.UIShotCreator shotCreator;
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
     DatabaseReference databaseReference;
@@ -119,10 +113,10 @@ public abstract class DataActivity extends AppCompatActivity {
 
                         Drawable actionBarBackgroundColor;
 
-                        if(MainActivity.teamColor != null){
-                            if(MainActivity.teamColor.equals("blue")){
+                        if(MainActivity.allianceColor != null){
+                            if(MainActivity.allianceColor.equals("blue")){
                                 actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-                            }else if(MainActivity.teamColor.equals("red")){
+                            }else if(MainActivity.allianceColor.equals("red")){
                                 actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
                             }else{
                                 actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
@@ -179,45 +173,18 @@ public abstract class DataActivity extends AppCompatActivity {
                 //xml layout beutification - :D lol
                 liftOffCreator = new UIComponentCreator.UIButtonCreator(this, null);
 
-                for (int i = 0; i < getToggleData().size(); i+=2) {
-                    toggleLayout.addView(button1);
-                    if (shouldSpaceToggles()) {
-                        toggleLayout.addView(getFillerSpace(0.2f));
-                    }
-                    if (shouldSpaceToggles() && i+1 != getToggleData().size()-1) {
-                        toggleLayout.addView(getFillerSpace(0.2f));
-                    }
-
-                }
+//                for (int i = 0; i < getToggleData().size(); i+=2) {
+//                    toggleLayout.addView(button1);
+//                    if (shouldSpaceToggles()) {
+//                        toggleLayout.addView(getFillerSpace(0.2f));
+//                    }
+//                    if (shouldSpaceToggles() && i+1 != getToggleData().size()-1) {
+//                        toggleLayout.addView(getFillerSpace(0.2f));
+//                    }
+//
+//                }
             }
         }
-
-                        //shot stuff, will probably be useless
-                        LinearLayout shotLayout = (LinearLayout)findViewById(getShotXML());
-                        List<String> shotNames = new ArrayList<>();
-                        for (int i = 0; i < getShotData().size(); i++) {
-                            shotNames.add(Constants.KEYS_TO_TITLES.get(getShotData().get(i)));
-                        }
-                        Log.e("shotNames",String.valueOf(shotNames.size()));
-                        shotCreator = new UIComponentCreator.UIShotCreator(this, shotNames);
-                        for (int i = 0; i < getShotData().size(); i+=2) {
-                            Button button1 = null;
-                            Button button2 = null;
-
-                            if(activityName() == "auto"){
-                                Log.e("first",i+"");
-                                button1 = shotCreator.addButton("highShotTimesForBoilerAuto");
-                                button2 = shotCreator.addButton("lowShotTimesForBoilerAuto");
-                            }else if(activityName() == "tele"){
-                                button1 = shotCreator.addButton("highShotTimesForBoilerTele");
-                                button2 = shotCreator.addButton("lowShotTimesForBoilerTele");
-                            }
-
-                            shotLayout.addView(button1);
-                            shotLayout.addView(getFillerSpace(0.3f));
-                            shotLayout.addView(button2);
-                        }
-
 
         //counters
         LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
