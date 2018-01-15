@@ -52,7 +52,7 @@ public class Constants {
             put("numReturnIntake", "Return Intake");
             put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
             put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
-            put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
+            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
             put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
             put("scaleAttemptAuto", "Scale Attempt Auto");
             put("scaleAttemptTele", "Scale Attempt Tele");
