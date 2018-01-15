@@ -113,10 +113,10 @@ public abstract class DataActivity extends AppCompatActivity {
 
                         Drawable actionBarBackgroundColor;
 
-                        if(MainActivity.teamColor != null){
-                            if(MainActivity.teamColor.equals("blue")){
+                        if(MainActivity.allianceColor != null){
+                            if(MainActivity.allianceColor.equals("blue")){
                                 actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-                            }else if(MainActivity.teamColor.equals("red")){
+                            }else if(MainActivity.allianceColor.equals("red")){
                                 actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
                             }else{
                                 actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));

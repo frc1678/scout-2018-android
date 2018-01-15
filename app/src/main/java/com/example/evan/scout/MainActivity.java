@@ -2,6 +2,7 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,11 +32,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseException;
@@ -80,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
     //the database declaration
     private DatabaseReference databaseReference;
 
-    public static String teamColor;
+    public static String allianceColor;
+    private ActionBar actionBar;
 
     //the id of the scout.  1-3 is red, 4+ is blue
     public int scoutNumber;
@@ -90,9 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
     //the current match number
     public static int matchNumber;
-
-    //alliance color
-    public static String allianceColor;
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -161,31 +164,20 @@ public class MainActivity extends AppCompatActivity {
             public void onMatchChanged() {
                 matchNumber = MatchNumListener.currentMatchNumber;
                 Log.e("MEME", matchNumber+"");
-                findColor();
                 if(!overridden) {
                     setMatchNumber();
                 }
             }
         });
 
-        Drawable actionBarBackgroundColor;
-
-        if(teamColor != null){
-            if(teamColor.equals("blue")){
-                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-            }else if(teamColor.equals("red")){
-                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
-            }else{
-                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-            }
-        }else{
-            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+        findColor();
+        if(allianceColor == null){
+            setAllianceColor();
         }
 
-
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
+            actionBar.setBackgroundDrawable(returnDrawable());
         }
 
         teamNumber = sharedPreferences.getInt("teamNumber", -1);
@@ -224,6 +216,16 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (id == R.id.allianceColorButton) {
+            setAllianceColor();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(returnDrawable());
+            }else{
+                Log.e("NULLLLL", "acitonBar is null!");
+            }
+            return true;
+        }
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
@@ -325,13 +327,9 @@ public class MainActivity extends AppCompatActivity {
                         if(dataSnapshot != null){
                             if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
                                 setActionBarColor(Constants.COLOR_BLUE);
-                                teamColor = "blue";
-                                Log.e("CALLED!!!", teamColor);
-                            }else{
-                                teamColor = "green";
+                                allianceColor = "blue";
+                                Log.e("CALLED!!!", allianceColor);
                             }
-                        }else{
-                            teamColor = "green";
                         }
                     }
 
@@ -347,13 +345,9 @@ public class MainActivity extends AppCompatActivity {
                         if(dataSnapshot != null){
                             if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
                                 setActionBarColor(Constants.COLOR_RED);
-                                teamColor = "red";
-                                Log.e("CALLED!!!", teamColor);
-                            }else{
-                                teamColor = "green";
+                                allianceColor = "red";
+                                Log.e("CALLED!!!", allianceColor);
                             }
-                        }else{
-                            teamColor = "green";
                         }
                     }
 
@@ -366,7 +360,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }catch(DatabaseException de){
-            teamColor = "green";
         }
     }
     //display dialog to set scout number
@@ -747,6 +740,44 @@ public class MainActivity extends AppCompatActivity {
         connected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         return connected;
+    }
+
+    public void setAllianceColor(){
+        final Dialog colorDialog = new Dialog(context);
+        colorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        RelativeLayout colorDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.color_dialog, null);
+        //Set Dialog Title
+        TextView titleTV = (TextView) colorDialogLayout.findViewById(R.id.dialogTitle);
+        titleTV.setText("Alliance Color");
+
+        Button redButton = (Button) colorDialogLayout.findViewById(R.id.successButton);
+        redButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                allianceColor = "red";
+                colorDialog.dismiss();
+            }
+        });
+        Button blueButton = (Button) colorDialogLayout.findViewById(R.id.successButton);
+        blueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                allianceColor = "blue";
+                colorDialog.dismiss();
+            }
+        });
+        colorDialog.setContentView(colorDialogLayout);
+        colorDialog.show();
+    }
+
+    public Drawable returnDrawable(){
+        Drawable actionBarBackgroundColor = null;
+        if(allianceColor.equals("red")){
+            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_RED));
+        }else if(allianceColor.equals("blue")){
+            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+        }
+        return actionBarBackgroundColor;
     }
 
 }
