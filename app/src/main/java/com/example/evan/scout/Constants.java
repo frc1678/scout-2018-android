@@ -5,31 +5,61 @@ import java.util.Map;
 
 public class Constants {
     public static final Map<String, String> KEYS_TO_TITLES;
-    public static int highShotAuto = 0;
-    public static int lowShotAuto = 0;
-    public static int highShotTele = 0;
-    public static int lowShotTele = 0;
+    public static int numCubesFumbledAuto = 0;
+    public static int numCubesFumbledTele = 0;
+    public static int numGroundIntakeTele= 0;
+    public static int numPortalIntakeTele = 0;
+    public static int numAlliancePlatformIntakeAuto = 0;
+    public static int numAlliancePlatformIntakeTele = 0;
+    public static int numOpponentPlatformIntakeAuto= 0;
+    public static int numOpponentPlatformIntakeTele = 0;
+    public static int numSpilledCubesAuto = 0;
+    public static int numSpilledCubesTele = 0;
+    public static int numExchageInput = 0;
+    public static int numGroundPortalIntakeTele=0;
+    public static int numHumanPortalIntakeTele= 0;
+    public static int numGroundPyramidIntakeAuto= 0;
+    public static int numnGroundPyramidIntakeTele= 0;
+    public static int numElevatedPyramidIntakeAuto= 0;
+    public static int numElevatedPyramidIntakeTele= 0;
+    public static int numReturnIntake= 0;
     public static final String COLOR_GREEN = "#65C423";
-    public static final String COLOR_RED = "#ff0000";
-    public static final String COLOR_BLUE = "#0000ff";
+    public static final String COLOR_RED = "#ff2200";
+    public static final String COLOR_BLUE = "#0099ff";
+
     static {
         //replace with new datapoints
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
-            put("didStartDisabled", "Disabled");
-            put("didBecomeIncapacitated", "Incapacitated");
-            put("numHoppersUsedAuto", "Hoppers Used Auto");
-            put("highShotAuto", "highShotAuto");
-            put("lowShotAuto", "lowShotAuto");
-            put("highShotTele", "highShotTele");
-            put("lowShotTele", "lowShotTele");
-            put("numGroundGearIntakesTele", "Ground Gear Intakes");
-            put("numHumanGearIntakesTele", "Human Gear Intakes");
-            put("numGearsFumbledTele", "Gears Fumbled Tele");
-            put("numGearsEjectedTele", "Gears Ejected Tele");
-            put("numHoppersUsedTele", "Hoppers Used Tele");
-            put("gearPlacedAuto", "Gear Placed");
-            put("gearPlacedTele", "Gear Placed");
-            put("readyForLiftOff", "Ready For LiftOff");
+            //New constants
+            put("didGetDisabled", "Disabled");
+            put("didGetIncapacitated", "Incapacitated");
+            put("didMakeAutoRun", "Auto Run Made");
+            put("didPark", "Parked");
+            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
+            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
+            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
+            put("numCubesFumbledTele", "Cubes Fumbled Tele");
+            put("numExchangeInput", "Exchange Inputs");
+            put("numGroundIntakeTele", "Ground Intake Tele");
+            put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
+            put("numHumanPortalIntakeTele", "Human Portal Intake Tele");
+            put("numGroundPyramidIntakeAuto", "Ground Pyramid Intakes Auto");
+            put("numGroundPyramidIntakeTele", "Ground Pyramid Intakes Tele");
+            put("numElevatedPyramidIntakeAuto", "Elevated Pyramid Intakes Auto");
+            put("numElevatedPyramidIntakeTele", "Elevated Pyramid Intakes Tele");
+            put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
+            put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
+            put("numReturnIntake", "Return Intake");
+            put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
+            put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
+            put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
+            put("scaleAttemptAuto", "Scale Attempt Auto");
+            put("scaleAttemptTele", "Scale Attempt Tele");
+            put("numSpilledCubesAuto", "Spilled Cubes Auto");
+            put("numSpilledCubesTele", "Spilled Cubes Tele");
+            put("startingPosition", "Starting Position");
+            put("climb", "Climbs");
+            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
 
         //convert constant syntax
