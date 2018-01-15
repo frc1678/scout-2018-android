@@ -219,11 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.allianceColorButton) {
             setAllianceColor();
-            if (actionBar != null) {
-                actionBar.setBackgroundDrawable(returnDrawable());
-            }else{
-                Log.e("NULLLLL", "acitonBar is null!");
-            }
+
             return true;
         }
 
@@ -747,22 +743,33 @@ public class MainActivity extends AppCompatActivity {
         colorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         RelativeLayout colorDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.color_dialog, null);
         //Set Dialog Title
+
         TextView titleTV = (TextView) colorDialogLayout.findViewById(R.id.dialogTitle);
         titleTV.setText("Alliance Color");
 
-        Button redButton = (Button) colorDialogLayout.findViewById(R.id.successButton);
+        Button redButton = (Button) colorDialogLayout.findViewById(R.id.redButton);
         redButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 allianceColor = "red";
+                if (actionBar != null) {
+                    actionBar.setBackgroundDrawable(returnDrawable());
+                }else{
+                    Log.e("NULLLLL", "acitonBar is null!");
+                }
                 colorDialog.dismiss();
             }
         });
-        Button blueButton = (Button) colorDialogLayout.findViewById(R.id.successButton);
+        Button blueButton = (Button) colorDialogLayout.findViewById(R.id.blueButton);
         blueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 allianceColor = "blue";
+                if (actionBar != null) {
+                    actionBar.setBackgroundDrawable(returnDrawable());
+                }else{
+                    Log.e("NULLLLL", "acitonBar is null!");
+                }
                 colorDialog.dismiss();
             }
         });
@@ -772,10 +779,12 @@ public class MainActivity extends AppCompatActivity {
 
     public Drawable returnDrawable(){
         Drawable actionBarBackgroundColor = null;
-        if(allianceColor.equals("red")){
-            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_RED));
-        }else if(allianceColor.equals("blue")){
-            actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+        if(allianceColor != null){
+            if(allianceColor.equals("red")){
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_RED));
+            }else if(allianceColor.equals("blue")){
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            }
         }
         return actionBarBackgroundColor;
     }
