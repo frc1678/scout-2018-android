@@ -2,21 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/successDialogLayout">
+    android:id="@+id/scale_success_dialog">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#000000"
         android:textSize="25dp"
         android:gravity="center_horizontal"
-        android:id="@+id/dialogTitle"/>
+        android:id="@+id/scaleSuccessDialogTitle"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ownershipLayout"
+        android:id="@+id/scaleOwnershipLayout"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/dialogTitle">
+        android:layout_below="@+id/scaleSuccessDialogTitle">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,58 +24,33 @@
             android:textSize="30sp"
             android:paddingLeft="10sp"
             android:text="Ownership:"
-            android:id="@+id/ownershipView" />
+            android:id="@+id/scaleOwnershipView" />
     </LinearLayout>
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ownershipLayout"
+        android:layout_below="@+id/scaleOwnershipLayout"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
-        android:id="@+id/ownershipRadioGroup"
+        android:id="@+id/scaleOwnershipRadioGroup"
         android:orientation="horizontal">
 
         <RadioButton
             android:text="Blue Owned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/ownedBlueRadio"
+            android:id="@+id/scaleOwnedRadio"
             android:padding="5dp"
             android:textSize="25dp"
             android:paddingRight="5dp"
 
-            android:layout_weight="1" />
-
-        <TextView
-            android:text="     "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView1"
             android:layout_weight="1" />
 
         <RadioButton
             android:text="Balanced"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/balancedRadio"
-            android:padding="5dp"
-            android:paddingRight="5dp"
-
-            android:textSize="25dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:text="     "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView2"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:text="Red Owned"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ownedRedRadio"
+            android:id="@+id/scaleBalancedRadio"
             android:padding="5dp"
             android:paddingRight="5dp"
 
@@ -86,10 +61,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layerLayout"
+        android:id="@+id/scaleLayerLayout"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/ownershipRadioGroup">
+        android:layout_below="@+id/scaleOwnershipRadioGroup">
 
         <TextView
             android:layout_width="wrap_content"
@@ -98,58 +73,44 @@
             android:paddingLeft="10sp"
             android:paddingTop="10sp"
             android:text="Layer:"
-            android:id="@+id/layerView" />
+            android:id="@+id/scaleLayerView" />
     </LinearLayout>
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layerLayout"
+        android:layout_below="@+id/scaleLayerLayout"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
-        android:id="@+id/layerRadioGroup"
+        android:id="@+id/scaleLayerRadioGroup"
         android:orientation="horizontal">
 
         <RadioButton
             android:text="Layer 1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/layer1Radio"
+            android:id="@+id/scaleLayer1Radio"
             android:padding="5dp"
             android:textSize="25dp"
             android:paddingRight="5dp"
 
-            android:layout_weight="1" />
-
-        <TextView
-            android:text="     "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewlayer1"
             android:layout_weight="1" />
 
         <RadioButton
             android:text="Layer 2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/layer2Radio"
+            android:id="@+id/scaleLayer2Radio"
             android:padding="5dp"
             android:paddingRight="5dp"
 
             android:textSize="25dp"
             android:layout_weight="1" />
 
-        <TextView
-            android:text="     "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewlayer2"
-            android:layout_weight="1" />
-
         <RadioButton
             android:text="Layer 3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/layer3Radio"
+            android:id="@+id/scaleLayer3Radio"
             android:padding="5dp"
             android:paddingRight="5dp"
 
@@ -161,8 +122,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/buttonLayout"
-        android:layout_below="@+id/layerRadioGroup">
+        android:id="@+id/scaleButtonLayout"
+        android:layout_below="@+id/scaleLayerRadioGroup">
 
         <Button
             android:layout_weight="1"
@@ -170,7 +131,7 @@
             android:backgroundTint="#FAA2A8"
             android:layout_height="wrap_content"
             android:text="Cancel"
-            android:id="@+id/cancelButton"/>
+            android:id="@+id/scaleSuccessCancelButton"/>
 
         <Button
             android:layout_weight="1"
@@ -178,6 +139,6 @@
             android:backgroundTint="#BBEDC5"
             android:layout_height="wrap_content"
             android:text="Done"
-            android:id="@+id/doneButton"/>
+            android:id="@+id/scaleDoneButton"/>
     </LinearLayout>
 </RelativeLayout>

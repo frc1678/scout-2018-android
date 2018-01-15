@@ -451,10 +451,10 @@ public class UIComponentCreator {
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_dialog, null);
-                    TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                    TextView titleTV = (TextView) dialogLayout.findViewById(R.id.scaleDialogTitle);
                     titleTV.setText(name);
 
-                    Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                    Button failure = (Button) dialogLayout.findViewById(R.id.scaleFailButton);
                     failure.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -486,7 +486,7 @@ public class UIComponentCreator {
                         }
                     });
 
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.scaleCancelButton);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -494,7 +494,7 @@ public class UIComponentCreator {
                         }
                     });
 
-                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
+                    Button success = (Button) dialogLayout.findViewById(R.id.scaleSuccessButton);
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -506,26 +506,18 @@ public class UIComponentCreator {
                             final Dialog successDialog = new Dialog(context);
                             successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
-                            TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
+                            TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.scaleSuccessDialogTitle);
                             successTitleTV.setText(name);
 
-                            RadioButton ownedBlueRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.ownedBlueRadio);
-                            ownedBlueRadioButton.setOnClickListener(new View.OnClickListener() {
+                            RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleOwnedRadio);
+                            ownedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "ownedBlue";
+                                    status = "owned";
                                 }
                             });
 
-                            RadioButton ownedRedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.ownedRedRadio);
-                            ownedRedRadioButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    status = "ownedRed";
-                                }
-                            });
-
-                            RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.balancedRadio);
+                            RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleBalancedRadio);
                             balancedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -533,7 +525,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.layer1Radio);
+                            RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleLayer1Radio);
                             layer1RadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -541,7 +533,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            RadioButton layer2RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.layer2Radio);
+                            RadioButton layer2RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleLayer2Radio);
                             layer2RadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -549,7 +541,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            RadioButton layer3RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.layer3Radio);
+                            RadioButton layer3RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleLayer3Radio);
                             layer3RadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -557,7 +549,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            Button cancel = (Button) successDialogLayout.findViewById(R.id.cancelButton);
+                            Button cancel = (Button) successDialogLayout.findViewById(R.id.scaleCancelButton);
                             cancel.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -565,7 +557,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            Button done = (Button) successDialog.findViewById(R.id.doneButton);
+                            Button done = (Button) successDialog.findViewById(R.id.scaleDoneButton);
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
