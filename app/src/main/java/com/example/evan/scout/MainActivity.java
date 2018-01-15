@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
     //the current match number
     public static int matchNumber;
 
+    //alliance color
+    public static String allianceColor;
+
     //boolean if the schedule has been overridden
     public boolean overridden = false;
 
