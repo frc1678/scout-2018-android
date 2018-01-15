@@ -276,6 +276,8 @@ public class UIComponentCreator {
         private boolean switchSuccess;
         private float startTime;
         private float endTime;
+        private String status;
+        private int layer;
         private String name;
         private Activity context;
         private int currentSwitchComponent;
@@ -287,7 +289,7 @@ public class UIComponentCreator {
             this.context = context;
             name = "LOL";
         }
-        public Button addButton(final String switchFBname) {
+        public Button addButton(final String switchFBname, final String colorOfSwitch) {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
             final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
@@ -304,40 +306,109 @@ public class UIComponentCreator {
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_dialog, null);
                     //Set Dialog Title
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText(name);
+                    titleTV.setText(colorOfSwitch+" Switch Attempt");
 
                     Button successButton = (Button) dialogLayout.findViewById(R.id.successButton);
                     successButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                //calculate time
-                                endTime = backgroundTimer.getUpdatedTime();
-                                switchSuccess = true;
+                                    //calculate time
+                                    endTime = backgroundTimer.getUpdatedTime();
+                                    switchSuccess = true;
 
-                                int i = 0;
-                                List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime");
-                                List<Object> switchValues = new ArrayList<>();
-                                switchKeys.clear();
-                                switchValues.add(switchSuccess);
-                                switchValues.add(startTime);
-                                switchValues.add(endTime);
+                                    dialog.dismiss();
 
-                                if(DataManager.collectedData.has(switchFBname)){
-                                    try {
-                                        DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
-                                    DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
-                                }else{
-                                    DataManager.sideData = new JSONObject();
-                                    DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
-                                    DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
+                                    final Dialog successDialog = new Dialog(context);
+                                    successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
+                                    TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
+                                    successTitleTV.setText(name);
+
+                                    RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchOwnedRadio);
+                                    ownedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            status = "ownedBlue";
+                                        }
+                                    });
+
+                                    RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchBalancedRadio);
+                                    balancedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            status = "balanced";
+                                        }
+                                    });
+
+                                    RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer1Radio);
+                                    layer1RadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            layer = 1;
+                                        }
+                                    });
+
+                                    RadioButton layer2RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer2Radio);
+                                    layer2RadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            layer = 2;
+                                        }
+                                    });
+
+                                    RadioButton layer3RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer3Radio);
+                                    layer3RadioButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            layer = 3;
+                                        }
+                                    });
+
+                                    Button cancel = (Button) successDialogLayout.findViewById(R.id.cancelButton);
+                                    cancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            successDialog.dismiss();
+                                        }
+                                    });
+
+                                    Button done = (Button) successDialog.findViewById(R.id.doneButton);
+                                    done.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (status != null && layer != 0) {
+                                                int i = 0;
+                                                List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
+                                                List<Object> scaleValues = new ArrayList<>();
+                                                scaleValues.clear();
+                                                scaleValues.add(switchSuccess);
+                                                scaleValues.add(startTime);
+                                                scaleValues.add(endTime);
+                                                scaleValues.add(status);
+                                                scaleValues.add(layer);
+
+                                                if (DataManager.collectedData.has(switchFBname)) {
+                                                    try {
+                                                        DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                                    DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                                                } else {
+                                                    DataManager.sideData = new JSONObject();
+                                                    DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                                    DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                                                }
+
+                                                successDialog.dismiss();
+
+                                            } else {
+                                                Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                                 }
-
-                                dialog.dismiss();
-                            }
                     });
 
                     Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
@@ -349,12 +420,14 @@ public class UIComponentCreator {
                             switchSuccess = true;
 
                             int i = 0;
-                            List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                            List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                             List<Object> switchValues = new ArrayList<>();
                             switchValues.clear();
                             switchValues.add(switchSuccess);
                             switchValues.add(startTime);
                             switchValues.add(endTime);
+                            switchValues.add(null);
+                            switchValues.add(null);
 
                             if(DataManager.collectedData.has(switchFBname)){
                                 try {
