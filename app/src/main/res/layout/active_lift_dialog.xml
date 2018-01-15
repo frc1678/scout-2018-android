@@ -29,20 +29,20 @@
             android:layout_weight="1" />
 
         <RadioButton
-            android:id="@+id/passistedlyLifts"
+            android:id="@+id/passistLifts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
             android:paddingRight="5dp"
-            android:text="Assistedly Lifts"
+            android:text="Assist Lift"
             android:textSize="23dp" />
 
         <RadioButton
-            android:text="Passively Lifts"
+            android:text="Passive Lift"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ppassivelyLifts"
+            android:id="@+id/ppassiveLifts"
             android:padding="5dp"
             android:paddingRight="5dp"
             android:textSize="23dp"
