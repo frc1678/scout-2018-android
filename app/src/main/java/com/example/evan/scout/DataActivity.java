@@ -83,6 +83,10 @@ public abstract class DataActivity extends AppCompatActivity {
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
+    private UIComponentCreator.UISwitchCreator switchCreator;
+    private UIComponentCreator.UIScaleCreator scaleCreator;
+    private UIComponentCreator.UIPyramidCreator pyramidCreator;
+    private UIComponentCreator.UIEndGameButtonCreator endGameCreator;
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
     DatabaseReference databaseReference;
@@ -169,8 +173,6 @@ public abstract class DataActivity extends AppCompatActivity {
 
                 }
 
-                //xml layout beutification - :D lol
-
 //                for (int i = 0; i < getToggleData().size(); i+=2) {
 //                    toggleLayout.addView(button1);
 //                    if (shouldSpaceToggles()) {
@@ -200,9 +202,6 @@ public abstract class DataActivity extends AppCompatActivity {
                 }
             }
         }
-        //__________________________Adding 12buttons
-
-
         counterLayout.addView(getFillerSpace(1f));
     }
 
