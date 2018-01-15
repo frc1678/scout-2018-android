@@ -83,7 +83,6 @@ public abstract class DataActivity extends AppCompatActivity {
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
-    private UIComponentCreator.UIButtonCreator liftOffCreator;
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
     DatabaseReference databaseReference;
@@ -158,7 +157,7 @@ public abstract class DataActivity extends AppCompatActivity {
                 toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
                 Log.e("toggleSize", toggleDisplayTitles.size()+"");
                 //template version, you can add as many as you want example bellow
-                final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false);
+                final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
 
                 //our game didn't have toggles in auto, so I added this if
                 if(saveTeleData && activityName() == "tele"){
@@ -171,7 +170,6 @@ public abstract class DataActivity extends AppCompatActivity {
                 }
 
                 //xml layout beutification - :D lol
-                liftOffCreator = new UIComponentCreator.UIButtonCreator(this, null);
 
 //                for (int i = 0; i < getToggleData().size(); i+=2) {
 //                    toggleLayout.addView(button1);
@@ -202,6 +200,9 @@ public abstract class DataActivity extends AppCompatActivity {
                 }
             }
         }
+        //__________________________Adding 12buttons
+
+
         counterLayout.addView(getFillerSpace(1f));
     }
 
