@@ -39,7 +39,7 @@ public class Constants {
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
             put("numCubesFumbledAuto", "Cubes Fumbled Auto");
             put("numCubesFumbledTele", "Cubes Fumbled Tele");
-            put("numExchageInput", "Exchange Inputs");
+            put("numExchangeInput", "Exchange Inputs");
             put("numGroundIntakeTele", "Ground Intake Tele");
             put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
             put("numHumanPortalIntakeTele", "Human Portal Intake Tele");
@@ -52,14 +52,14 @@ public class Constants {
             put("numReturnIntake", "Return Intake");
             put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
             put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
-            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
             put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
             put("scaleAttemptAuto", "Scale Attempt Auto");
             put("scaleAttemptTele", "Scale Attempt Tele");
             put("numSpilledCubesAuto", "Spilled Cubes Auto");
             put("numSpilledCubesTele", "Spilled Cubes Tele");
+            put("startingPosition", "Starting Position");
             put("climb", "Climbs");
-
+            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
 
         //convert constant syntax
