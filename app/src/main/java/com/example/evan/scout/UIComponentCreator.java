@@ -70,7 +70,7 @@ public class UIComponentCreator {
         return button;
     }
 
-    public ToggleButton getToggleButton (int width, boolean value, int color) {
+    public ToggleButton getToggleButton(int width, boolean value, int color) {
         ToggleButton toggleButton = new ToggleButton(context);
         toggleButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
         toggleButton.setText(componentNames.get(currentComponent));
@@ -146,133 +146,6 @@ public class UIComponentCreator {
         }
     }
 
-    //sub class specifically for creating defense buttons
-    public static class UIButtonCreator extends UIComponentCreator {
-        double liftoffTime;
-        private Activity context;
-
-        public UIButtonCreator(Activity context, List<String> componentNames) {
-            super(context, componentNames);
-            this.context = context;
-        }
-
-        public Button addButton(final ToggleButton button1, final ToggleButton button2) {
-            //add button to row
-            final Button liftOffButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            liftOffButton.setText("Ready For LiftOff");
-            liftOffButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (DataManager.collectedData.getBoolean("didLiftoff") != true) {
-                            button1.setChecked(false);
-                            button2.setChecked(false);
-
-                            //display custom dialog with big buttons
-                            final Dialog dialog = new Dialog(context);
-                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.dialog, null);
-                            final TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                            title.setText("Lift Off");
-
-                            final TextView liftoffTimeView = (TextView) dialogLayout.findViewById(R.id.liftoffTime);
-                            final CountDownTimer cdt = new CountDownTimer(135000, 100) {
-                                @Override
-                                public void onTick(long millisUntilFinished) {
-                                    double currentSeconds = (135000.0 - millisUntilFinished) / 1000;
-                                    liftoffTimeView.setText(String.valueOf(currentSeconds));
-                                }
-
-                                @Override
-                                public void onFinish() {
-
-                                }
-                            };
-
-                            Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                            success.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
-                            success.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    cdt.cancel();
-
-                                    liftoffTime = Double.valueOf(liftoffTimeView.getText().toString());
-                                    Log.e("scrub", liftoffTime + "");
-
-                                    DataManager.addZeroTierJsonData("didLiftoff", true);
-                                    DataManager.addZeroTierJsonData("liftoffTime", liftoffTime);
-                                    //add to sd card
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
-                            failure.getBackground().setColorFilter(Color.parseColor("#FFC8C8"), PorterDuff.Mode.MULTIPLY);
-                            failure.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    cdt.cancel();
-                                    dialog.dismiss();
-                                }
-                            });
-                            dialog.setContentView(dialogLayout);
-                            dialog.show();
-                            cdt.start();
-                        } else if (DataManager.collectedData.getBoolean("didLiftoff") == true) {
-                            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-                            View liftOffRemoveView = layoutInflater.inflate(R.layout.dialog, null);
-                            try {
-                                if (DataActivity.saveTeleData && DataActivity.activityName.equals("tele")) {
-                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(DataManager.collectedData.getDouble("liftoffTime") + "");
-                                } else {
-                                    ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText(String.valueOf(liftoffTime));
-                                }
-                            } catch (NullPointerException npe) {
-                                ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setText("0.0");
-                            }
-                            ((TextView) liftOffRemoveView.findViewById(R.id.liftoffTime)).setTextColor(Color.parseColor("#FF0000"));
-
-                            final Dialog dialog = new Dialog(context);
-                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            final TextView title = (TextView) liftOffRemoveView.findViewById(R.id.dialogTitle);
-                            title.setText("Undo Liftoff?");
-
-                            Button success = (Button) liftOffRemoveView.findViewById(R.id.successButton);
-                            success.setText("Cancel");
-                            success.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
-                            success.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                            Button failure = (Button) liftOffRemoveView.findViewById(R.id.failButton);
-                            failure.setText("Remove");
-                            failure.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
-                            failure.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    DataManager.addZeroTierJsonData("didLiftoff", false);
-                                    DataManager.addZeroTierJsonData("liftoffTime", 0);
-                                    dialog.cancel();
-                                }
-                            });
-
-                            dialog.setContentView(liftOffRemoveView);
-                            dialog.show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            return liftOffButton;
-        }
-    }
-
-
     public static class UISwitchCreator extends UIComponentCreator {
         private boolean switchSuccess;
         private float startTime;
@@ -290,6 +163,7 @@ public class UIComponentCreator {
             this.context = context;
             name = "LOL";
         }
+
         public Button addButton(final String switchFBname, final String colorOfSwitch) {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
@@ -307,109 +181,109 @@ public class UIComponentCreator {
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_dialog, null);
                     //Set Dialog Title
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText(colorOfSwitch+" Switch Attempt");
+                    titleTV.setText(colorOfSwitch + " Switch Attempt");
 
                     Button successButton = (Button) dialogLayout.findViewById(R.id.successButton);
                     successButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                    //calculate time
-                                    endTime = backgroundTimer.getUpdatedTime();
-                                    switchSuccess = true;
+                            //calculate time
+                            endTime = backgroundTimer.getUpdatedTime();
+                            switchSuccess = true;
 
-                                    dialog.dismiss();
+                            dialog.dismiss();
 
-                                    final Dialog successDialog = new Dialog(context);
-                                    successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                    RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
-                                    TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
-                                    successTitleTV.setText(name);
+                            final Dialog successDialog = new Dialog(context);
+                            successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
+                            TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
+                            successTitleTV.setText(name);
 
-                                    RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchOwnedRadio);
-                                    ownedRadioButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            status = "ownedBlue";
-                                        }
-                                    });
-
-                                    RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchBalancedRadio);
-                                    balancedRadioButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            status = "balanced";
-                                        }
-                                    });
-
-                                    RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer1Radio);
-                                    layer1RadioButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            layer = 1;
-                                        }
-                                    });
-
-                                    RadioButton layer2RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer2Radio);
-                                    layer2RadioButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            layer = 2;
-                                        }
-                                    });
-
-                                    RadioButton layer3RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer3Radio);
-                                    layer3RadioButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            layer = 3;
-                                        }
-                                    });
-
-                                    Button cancel = (Button) successDialogLayout.findViewById(R.id.cancelButton);
-                                    cancel.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            successDialog.dismiss();
-                                        }
-                                    });
-
-                                    Button done = (Button) successDialog.findViewById(R.id.doneButton);
-                                    done.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (status != null && layer != 0) {
-                                                int i = 0;
-                                                List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
-                                                List<Object> scaleValues = new ArrayList<>();
-                                                scaleValues.clear();
-                                                scaleValues.add(switchSuccess);
-                                                scaleValues.add(startTime);
-                                                scaleValues.add(endTime);
-                                                scaleValues.add(status);
-                                                scaleValues.add(layer);
-
-                                                if (DataManager.collectedData.has(switchFBname)) {
-                                                    try {
-                                                        DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                                    DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
-                                                } else {
-                                                    DataManager.sideData = new JSONObject();
-                                                    DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                                    DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
-                                                }
-
-                                                successDialog.dismiss();
-
-                                            } else {
-                                                Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                            RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchOwnedRadio);
+                            ownedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    status = "ownedBlue";
                                 }
+                            });
+
+                            RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchBalancedRadio);
+                            balancedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    status = "balanced";
+                                }
+                            });
+
+                            RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer1Radio);
+                            layer1RadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    layer = 1;
+                                }
+                            });
+
+                            RadioButton layer2RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer2Radio);
+                            layer2RadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    layer = 2;
+                                }
+                            });
+
+                            RadioButton layer3RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer3Radio);
+                            layer3RadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    layer = 3;
+                                }
+                            });
+
+                            Button cancel = (Button) successDialogLayout.findViewById(R.id.cancelButton);
+                            cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    successDialog.dismiss();
+                                }
+                            });
+
+                            Button done = (Button) successDialog.findViewById(R.id.doneButton);
+                            done.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (status != null && layer != 0) {
+                                        int i = 0;
+                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
+                                        List<Object> scaleValues = new ArrayList<>();
+                                        scaleValues.clear();
+                                        scaleValues.add(switchSuccess);
+                                        scaleValues.add(startTime);
+                                        scaleValues.add(endTime);
+                                        scaleValues.add(status);
+                                        scaleValues.add(layer);
+
+                                        if (DataManager.collectedData.has(switchFBname)) {
+                                            try {
+                                                DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                            DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                                        } else {
+                                            DataManager.sideData = new JSONObject();
+                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                            DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                                        }
+
+                                        successDialog.dismiss();
+
+                                    } else {
+                                        Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
                     });
 
                     Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
@@ -417,8 +291,8 @@ public class UIComponentCreator {
                         @Override
                         public void onClick(View v) {
                             //calculate time
-//                                endTime = System.currentTimeMillis();
-                            switchSuccess = true;
+                            endTime = backgroundTimer.getUpdatedTime();
+                            switchSuccess = false;
 
                             int i = 0;
                             List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
@@ -430,18 +304,18 @@ public class UIComponentCreator {
                             switchValues.add(null);
                             switchValues.add(null);
 
-                            if(DataManager.collectedData.has(switchFBname)){
+                            if (DataManager.collectedData.has(switchFBname)) {
                                 try {
                                     DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
-                                DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
-                            }else{
+                                DataManager.addOneTierJsonData(true, i + "", switchKeys, switchValues);
+                                DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                            } else {
                                 DataManager.sideData = new JSONObject();
-                                DataManager.addOneTierJsonData(true, i+"", switchKeys, switchValues);
-                                DataManager.addZeroTierJsonData(switchFBname,DataManager.sideData);
+                                DataManager.addOneTierJsonData(true, i + "", switchKeys, switchValues);
+                                DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
                             }
 
                             dialog.dismiss();
@@ -497,8 +371,8 @@ public class UIComponentCreator {
     public static class UIScaleCreator extends UIComponentCreator {
         private String status;
         private int layer;
-        private long startTime; //TODO time stuff
-        private long endTime;
+        private float startTime;
+        private float endTime;
         private String name;
         private Activity context;
         private int currentScaleComponent;
@@ -519,54 +393,13 @@ public class UIComponentCreator {
             scaleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startTime = System.currentTimeMillis();
-                    final HashMap<String, Object> dataSpace = new HashMap<String, Object>();
+                    startTime = backgroundTimer.getUpdatedTime();
 
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_dialog, null);
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.scaleDialogTitle);
                     titleTV.setText(name);
-
-                    Button failure = (Button) dialogLayout.findViewById(R.id.scaleFailButton);
-                    failure.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            endTime = System.currentTimeMillis(); //TODO time stuff
-                            didSucceed = false;
-
-                            int i = 0;
-                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime"); //TODO time stuff
-                            List<Object> scaleValues = new ArrayList<>();
-                            scaleValues.clear();
-                            scaleValues.add(didSucceed);
-                            scaleValues.add(startTime);
-                            scaleValues.add(endTime);
-
-                           if (DataManager.collectedData.has(scaleFBname)) {
-                                try {
-                                    DataManager.sideData = DataManager.collectedData.getJSONObject(scaleFBname);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
-                            } else {
-                                DataManager.sideData = new JSONObject();
-                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
-                            }
-                            dialog.dismiss();
-                        }
-                    });
-
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.scaleCancelButton);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
 
                     Button success = (Button) dialogLayout.findViewById(R.id.scaleSuccessButton);
                     success.setOnClickListener(new View.OnClickListener() {
@@ -670,6 +503,46 @@ public class UIComponentCreator {
                         }
                     });
 
+                    Button failure = (Button) dialogLayout.findViewById(R.id.scaleFailButton);
+                    failure.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            endTime = backgroundTimer.getUpdatedTime();
+                            didSucceed = false;
+
+                            int i = 0;
+                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                            List<Object> scaleValues = new ArrayList<>();
+                            scaleValues.clear();
+                            scaleValues.add(didSucceed);
+                            scaleValues.add(startTime);
+                            scaleValues.add(endTime);
+
+                            if (DataManager.collectedData.has(scaleFBname)) {
+                                try {
+                                    DataManager.sideData = DataManager.collectedData.getJSONObject(scaleFBname);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                            } else {
+                                DataManager.sideData = new JSONObject();
+                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
+                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.scaleCancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
                     dialog.setContentView(dialogLayout);
                     dialog.show();
                 }
@@ -715,6 +588,7 @@ public class UIComponentCreator {
             super.componentViews.add(scaleButton);
             return scaleButton;
         }
+
         public static class UIPyramidCreator extends UIComponentCreator {
 
             private int numGroundPyramidIntake;
@@ -734,6 +608,7 @@ public class UIComponentCreator {
                 name = "LOL";
 
             }
+
             public Button addButton(final String pyramidFBname) {
                 name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
 
@@ -742,7 +617,7 @@ public class UIComponentCreator {
                 pyramidButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        numElevatedPyramidIntake= 0;
+                        numElevatedPyramidIntake = 0;
                         numGroundPyramidIntake = 0;
 
                         final Dialog dialog = new Dialog(context);
@@ -775,8 +650,7 @@ public class UIComponentCreator {
                         });
 
 
-
-                        if(numGroundPyramidIntake != 0 && numElevatedPyramidIntake!= 0){
+                        if (numGroundPyramidIntake != 0 && numElevatedPyramidIntake != 0) {
 
                             int i = 0;
                             List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake", "numElevatedPyramidIntake");
@@ -785,22 +659,22 @@ public class UIComponentCreator {
                             pyramidValues.add(numElevatedPyramidIntake);
                             pyramidValues.add(numGroundPyramidIntake);
 
-                            if(DataManager.collectedData.has(pyramidFBname)){
+                            if (DataManager.collectedData.has(pyramidFBname)) {
                                 try {
                                     DataManager.sideData = DataManager.collectedData.getJSONObject(pyramidFBname);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                DataManager.addOneTierJsonData(true, i+"", pyramidKeys, pyramidValues);
-                                DataManager.addZeroTierJsonData(pyramidFBname,DataManager.sideData);
-                            }else{
+                                DataManager.addOneTierJsonData(true, i + "", pyramidKeys, pyramidValues);
+                                DataManager.addZeroTierJsonData(pyramidFBname, DataManager.sideData);
+                            } else {
                                 DataManager.sideData = new JSONObject();
-                                DataManager.addOneTierJsonData(true, i+"", pyramidKeys, pyramidValues);
-                                DataManager.addZeroTierJsonData(pyramidFBname,DataManager.sideData);
+                                DataManager.addOneTierJsonData(true, i + "", pyramidKeys, pyramidValues);
+                                DataManager.addZeroTierJsonData(pyramidFBname, DataManager.sideData);
                             }
 
                             dialog.dismiss();
-                        }else{
+                        } else {
                             Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -848,9 +722,8 @@ public class UIComponentCreator {
             }
         }
     }
-    //-----------Adding CLimb
+
     public static class UIEndGameButtonCreator extends UIComponentCreator {
-        double climbTime;
         public boolean didSucceed;
         public boolean didClimb;
         public String liftType;
@@ -873,248 +746,198 @@ public class UIComponentCreator {
             climbButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        //startTime
-                        button1.setChecked(false);
+                    startTime = backgroundTimer.getUpdatedTime();
+                    button1.setChecked(false);
 
-                        final List<String> endKeys = Arrays.asList("didSucceed", "startTime", "endTime");
-                        final List<Object> endValues = new ArrayList<>();
+                    final List<String> endKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                    final List<Object> endValues = new ArrayList<>();
 
-                        //display custom dialog with big buttons
-                        final Dialog dialog = new Dialog(context);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        final RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_dialog, null);
-                        final TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                        title.setText("Face The Boss!");
+                    //display custom dialog with big buttons
+                    final Dialog dialog = new Dialog(context);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    final RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_dialog, null);
+                    final TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                    title.setText("Face The Boss!");
 
-                        Button success = (Button) dialogLayout.findViewById(R.id.successButton);
-                        success.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //climb type dialog
-                                didSucceed = true;
-                                endValues.add(0, didSucceed);
-//                                    endTime
-                                final Dialog climbTypeDialog = new Dialog(context);
-                                climbTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                final RelativeLayout ctDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_type, null);
-                                final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
-                                title.setText("Climb Type");
+                    Button success = (Button) dialogLayout.findViewById(R.id.successButton);
+                    success.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //climb type dialog
+                            endTime = backgroundTimer.getUpdatedTime();
+                            didSucceed = true;
+                            endValues.add(0, didSucceed);
 
-                                RadioButton passiveLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveLiftRadio);
-                                passiveLiftRadioButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        liftType = "passiveLift";
+                            final Dialog climbTypeDialog = new Dialog(context);
+                            climbTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            final RelativeLayout ctDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_type, null);
+                            final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
+                            title.setText("Climb Type");
 
-                                        DataManager.sideData = new JSONObject();
-                                        DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                        DataManager.addZeroTierJsonData("climb",DataManager.sideData);
-                                    }
-                                });
+                            RadioButton passiveLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveLiftRadio);
+                            passiveLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    liftType = "passiveLift";
 
-                                RadioButton assistedLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistLiftRadio);
-                                assistedLiftRadioButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        liftType = "assistLift";
+                                    DataManager.sideData = new JSONObject();
+                                    DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                                    DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                }
+                            });
 
-                                        DataManager.sideData = new JSONObject();
-                                        DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                        DataManager.addZeroTierJsonData("climb",DataManager.sideData);
+                            RadioButton assistedLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistLiftRadio);
+                            assistedLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    liftType = "assistLift";
+
+                                    DataManager.sideData = new JSONObject();
+                                    DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                                    DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                }
+                            });
+
+                            RadioButton activeLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.activeLiftRadio);
+                            activeLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    liftType = "activeLift";
+                                }
+                            });
+
+                            RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.climbRadio);
+                            independentRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    liftType = "climb";
+
+                                    DataManager.sideData = new JSONObject();
+                                    DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                                    DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                }
+                            });
+                            Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
+                            doneButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DataManager.sideData = new JSONObject();
+                                    if (liftType.equals("activeLift")) {
+
+                                        final List<String> activeKeys = Arrays.asList("didSucceed", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
+                                        final List<Object> activeValues = new ArrayList<>();
+
+                                        final Dialog activeLiftDialog = new Dialog(context);
+                                        activeLiftDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                        final RelativeLayout ctDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_type, null);
+                                        final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
+                                        title.setText("Partner Lifts");
+
+                                        RadioButton partnerDidClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.pdidClimbRadio);
+                                        partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                didClimb = true;
                                             }
-                                });
+                                        });
 
-                                RadioButton activeLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.activeLiftRadio);
-                                activeLiftRadioButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        liftType = "activeLift";
-                                    }
-                                });
+                                        RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passistLifts);
+                                        partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                partnerLiftType = "assistLift";
+                                            }
+                                        });
 
-                                RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.climbRadio);
-                                independentRadioButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        liftType = "climb";
+                                        RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.ppassiveLifts);
+                                        partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                partnerLiftType = "passiveLift";
+                                            }
+                                        });
 
-                                        DataManager.sideData = new JSONObject();
+                                        RadioButton failedToLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.failedToLift);
+                                        failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                didFailToLift = true;
+                                            }
+                                        });
+
+                                        final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
+
+                                        Button minusButton = (Button) dialogLayout.findViewById(R.id.minusButton);
+                                        minusButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (numRobotsLifted > 0) {
+                                                    numRobotsLifted -= 1;
+                                                }
+                                                numberView.setText(String.valueOf(numRobotsLifted));
+                                            }
+                                        });
+
+                                        Button plusButton = (Button) dialogLayout.findViewById(R.id.plusButton);
+                                        plusButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                numRobotsLifted += 1;
+                                                numberView.setText(String.valueOf(numRobotsLifted));
+                                            }
+                                        });
+
+                                        Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
+                                        doneButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                DataManager.sideData = new JSONObject();
+                                                endValues.add(0, didSucceed);
+                                                endValues.add(1, startTime);
+                                                endValues.add(2, endTime);
+                                                endValues.add(3, partnerLiftType);
+                                                endValues.add(4, didFailToLift);
+                                                endValues.add(5, numRobotsLifted);
+
+                                                DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                                                DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                                activeLiftDialog.dismiss();
+                                            }
+                                        });
+
+                                    } else {
+                                        endValues.add(0, didSucceed);
+                                        endValues.add(1, startTime);
+                                        endValues.add(2, endTime);
+                                        endValues.add(3, partnerLiftType);
+                                        endValues.add(4, didFailToLift);
+                                        endValues.add(5, numRobotsLifted);
+
                                         DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                        DataManager.addZeroTierJsonData("climb",DataManager.sideData);
+                                        DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                        climbTypeDialog.dismiss();
                                     }
-                                });
-                                Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
-                                doneButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        DataManager.sideData = new JSONObject();
-                                        if (liftType.equals("activeLift")) {
-
-                                            final List<String> activeKeys = Arrays.asList("didSucceed", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
-                                            final List<Object> activeValues = new ArrayList<>();
-
-                                            final Dialog activeLiftDialog = new Dialog(context);
-                                            activeLiftDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                            final RelativeLayout ctDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_type, null);
-                                            final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
-                                            title.setText("Partner Lifts");
-
-                                            RadioButton partnerDidClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.pdidClimbRadio);
-                                            partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    didClimb = true;
-                                                }
-                                            });
-
-                                            RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passistLifts);
-                                            partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    partnerLiftType = "assistLift";
-                                                }
-                                            });
-
-                                            RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.ppassiveLifts);
-                                            partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    partnerLiftType = "passiveLift";
-                                                }
-                                            });
-
-                                            RadioButton failedToLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.failedToLift);
-                                            failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    didFailToLift = true;
-                                                }
-                                            });
-
-                                            final TextView numberView = (TextView) dialogLayout.findViewById(R.id.numberView);
-
-                                            Button minusButton = (Button) dialogLayout.findViewById(R.id.minusButton);
-                                            minusButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    if (numRobotsLifted > 0) {
-                                                        numRobotsLifted -= 1;
-                                                    }
-                                                    numberView.setText(String.valueOf(numRobotsLifted));
-                                                }
-                                            });
-
-                                            Button plusButton = (Button) dialogLayout.findViewById(R.id.plusButton);
-                                            plusButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    numRobotsLifted += 1;
-                                                    numberView.setText(String.valueOf(numRobotsLifted));
-                                                }
-                                            });
-
-                                            Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
-                                            doneButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    DataManager.sideData = new JSONObject();
-                                                    endValues.add(0, didSucceed);
-                                                    endValues.add(1, startTime);
-                                                    endValues.add(2, endTime);
-                                                    endValues.add(3, partnerLiftType);
-                                                    endValues.add(4, didFailToLift);
-                                                    endValues.add(5, numRobotsLifted);
-
-                                                    DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                                    DataManager.addZeroTierJsonData("climb", DataManager.sideData);
-                                                    activeLiftDialog.dismiss();
-                                                }
-                                            });
-
-                                        } else {
-                                            endValues.add(0, didSucceed);
-                                            endValues.add(1, startTime);
-                                            endValues.add(2, endTime);
-                                            endValues.add(3, partnerLiftType);
-                                            endValues.add(4, didFailToLift);
-                                            endValues.add(5, numRobotsLifted);
-
-                                            DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                            DataManager.addZeroTierJsonData("climb", DataManager.sideData);
-                                            climbTypeDialog.dismiss();
-                                        }
-                                    }
+                                }
 
 
+                            });
 
-                                });
+                            Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
+                            failure.getBackground().setColorFilter(Color.parseColor("#FFC8C8"), PorterDuff.Mode.MULTIPLY);
+                            failure.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
 
-                                Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
-                                failure.getBackground().setColorFilter(Color.parseColor("#FFC8C8"), PorterDuff.Mode.MULTIPLY);
-                                failure.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        dialog.dismiss();
-                                    }
-                                });
-
-                                dialog.setContentView(dialogLayout);
-                                dialog.show();
-                            }
-                        });
+                            dialog.setContentView(dialogLayout);
+                            dialog.show();
+                        }
+                    });
                 }
             });
             return climbButton;
         }
     }
 }
-
-//else if(DataManager.collectedData.getBoolean("didLiftoff") == true){
-//        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-//        View climbRemoveView = layoutInflater.inflate(R.layout.dialog, null);
-//        try {
-//        if(DataActivity.saveTeleData && DataActivity.activityName.equals("tele")){
-//        ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setText(DataManager.collectedData.getDouble("climbTime")+"");
-//        }else {
-//        ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setText(String.valueOf(climbTime));
-//        }
-//        } catch(NullPointerException npe){
-//        ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setText("0.0");
-//        }
-//        ((TextView) climbRemoveView.findViewById(R.id.climbTime)).setTextColor(Color.parseColor("#FF0000"));
-//
-//final Dialog dialog = new Dialog(context);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//final TextView title = (TextView) climbRemoveView.findViewById(R.id.dialogTitle);
-//        title.setText("Undo Climb?");
-//
-//        Button success = (Button) climbRemoveView.findViewById(R.id.successButton);
-//        success.setText("Cancel");
-//        success.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
-//        success.setOnClickListener(new View.OnClickListener() {
-//@Override
-//public void onClick(View v) {
-//        dialog.cancel();
-//        }
-//        });
-//
-//        Button failure = (Button) climbRemoveView.findViewById(R.id.failButton);
-//        failure.setText("Remove");
-//        failure.getBackground().setColorFilter(Color.parseColor("#C8FFC8"), PorterDuff.Mode.MULTIPLY);
-//        failure.setOnClickListener(new View.OnClickListener() {
-//@Override
-//public void onClick(View v) {
-//        DataManager.addZeroTierJsonData("didClimb", false);
-//        DataManager.addZeroTierJsonData("climbTime", 0);
-//        DataManager.addZeroTierJsonData("liftType", liftType);
-//        DataManager.addZeroTierJsonData("liftingPartnerType", liftingPartnerType);
-//        dialog.cancel();
-//        }
-//        });
-//
-//        dialog.setContentView(climbRemoveView);
-//        dialog.show();
-//        }
-//        } catch (JSONException e) {
-//        e.printStackTrace();
-//        }
