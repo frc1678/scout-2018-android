@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="match_parent"
+    android:id="@+id/climbTypeDialogLayout">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:id="@+id/dialogTitle"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonLayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/radioGroup"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:text="Passive Lift"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/passiveLiftRadio"
+            android:padding="5dp"
+            android:textSize="23dp"
+            android:paddingRight="5dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/assistLiftRadio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:text="Assisted Lift"
+            android:textSize="23dp" />
+
+        <RadioButton
+            android:text="Active Lift"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/activeLiftRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:textSize="23dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Independent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/climbRadio"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:textSize="23dp"
+            android:layout_weight="1" />
+
+
+    </RadioGroup>
+    <LinearLayout
+
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/doneLine"
+        android:layout_below="@+id/radioGroup">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/doneButton"/>
+
+
+    </LinearLayout>
+</RelativeLayout>
