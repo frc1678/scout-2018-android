@@ -24,8 +24,9 @@ public class Constants {
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
     public static final String COLOR_GREEN = "#65C423";
-    public static final String COLOR_RED = "#ff0000";
-    public static final String COLOR_BLUE = "#0000ff";
+    public static final String COLOR_RED = "#ff2200";
+    public static final String COLOR_BLUE = "#0099ff";
+
     static {
         //replace with new datapoints
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
