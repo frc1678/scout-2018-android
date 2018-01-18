@@ -606,8 +606,8 @@ public class UIComponentCreator {
             numGroundPyramidIntake = 0;
             this.context = context;
             name = "LOL";
-
         }
+
 
         public Button addButton(final String pyramidFBname) {
             name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
@@ -648,7 +648,6 @@ public class UIComponentCreator {
                             dialog.dismiss();
                         }
                     });
-
 
                     if (numGroundPyramidIntake != 0 && numElevatedPyramidIntake != 0) {
 
