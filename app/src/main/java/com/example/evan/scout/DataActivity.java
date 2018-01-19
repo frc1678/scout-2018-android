@@ -389,5 +389,13 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     })
                     .show();
         }
+        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+        List<String> counterNames = new ArrayList<>();
+        for (int i = 0; i < getCounterData().size(); i++) {
+            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+        }
+        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+        for (int i = 0; i < getCounterData().size(); i++)
+        counterLayout.addView(getFillerSpace(1f));
     }
 }

@@ -10,13 +10,13 @@ public class AutoActivity extends DataActivity {
         return null;
     }
     public List<String> getCounterData() {
-        return null;
+        return (Arrays.asList("numSpilledCubes", "numFumbledCubes"));
     }
     public List<String> getSwitchData() { return null; }
     public List<String> getScaleData() { return null; }
     public List<String> getPyramidData() { return null; }
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return null; }
+    public Integer getCounterXML() { return R.id.autoCounterLayout; }
     public Integer getSwitchXML() { return null; }
     public Integer getScaleXML() { return null; }
     public Integer getPyramidXML() { return null; }
