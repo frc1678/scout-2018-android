@@ -321,10 +321,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.e("DANKKKKKK", "DANKKKKKK");
                         if(dataSnapshot != null){
-                            if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                                setActionBarColor(Constants.COLOR_BLUE);
-                                allianceColor = "blue";
-                                Log.e("CALLED!!!", allianceColor);
+                            if(dataSnapshot.getValue() != null){
+                                if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                                    setActionBarColor(Constants.COLOR_BLUE);
+                                    allianceColor = "blue";
+                                    Log.e("CALLED!!!", allianceColor);
+                                }
                             }
                         }
                     }
@@ -339,10 +341,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot != null){
-                            if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                                setActionBarColor(Constants.COLOR_RED);
-                                allianceColor = "red";
-                                Log.e("CALLED!!!", allianceColor);
+                            if(dataSnapshot.getValue() != null){
+                                if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+                                    setActionBarColor(Constants.COLOR_RED);
+                                    allianceColor = "red";
+                                    Log.e("CALLED!!!", allianceColor);
+                                }
                             }
                         }
                     }
