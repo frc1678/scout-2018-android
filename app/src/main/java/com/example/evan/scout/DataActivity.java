@@ -165,17 +165,48 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateData() throws JSONException {
-        if(activityName() == "tele"){
-            List<View> toggleList = toggleCreator.getComponentViews();
-            for (int i = 0; i < toggleList.size(); i++) {
-                ToggleButton toggleButton = (ToggleButton) toggleList.get(i);
-                try {
-                    Log.e("KEYTOGGLE", getToggleData().get(i));
-                    DataManager.addZeroTierJsonData(getToggleData().get(i), toggleButton.isChecked());
-                } catch (Exception e) {
-                    Log.e("Data Error", "Failed to add toggle " + Integer.toString(i) + " to Data");
-                    Toast.makeText(this, "Invalid data in counter" + Integer.toString(i), Toast.LENGTH_LONG).show();
-                    return;
+        private void updateUI() {
+            if (getRadioXML() != null) {
+                LinearLayout radioLayout = (LinearLayout) findViewById(getRadioXML());
+                List<String> radioDisplayTitles = new ArrayList<>();
+                if (getRadioData() != null) {
+                    Log.e("radioSize", getRadioData().size() + "");
+                    for (int i = 0; i < getRadioData().size(); i++) {
+                        radioDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getRadioData().get(i)));
+                    }
+                    radioCreator = new UIComponentCreator(this, radioDisplayTitles);
+                    Log.e("radioSize", radioDisplayTitles.size() + "");
+
+                    final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT, false);
+                    final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", LinearLayout.LayoutParams.MATCH_PARENT, false);
+                    final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT, false);
+
+                    //if(saveTeleData && activityName() == "auto"){
+                    try {
+                        rightStartPosition.setChecked(DataManager.collectedData.getBoolean(getRadioData().get(0)));
+                        leftStartPosition.setChecked(DataManager.collectedData.getBoolean(getRadioData().get(0)));
+                        centerStartPosition.setChecked(DataManager.collectedData.getBoolean(getRadioData().get(0)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    //counters
+                    LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+                    List<String> counterNames = new ArrayList<>();
+                    for (int i = 0; i < getCounterData().size(); i++) {
+                        counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                    }
+                    counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+                    for (int i = 0; i < getCounterData().size(); i++) {
+                        if (i == (getCounterData().size() - 1) && activityName() == "tele") {
+                        } else {
+                            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+                            if (activityName() == "tele") {
+                                Log.e("telecounter", "counterMade" + i);
+                            }
+                        }
+                    }
+                    counterLayout.addView(getFillerSpace(1f));
                 }
             }
         }
