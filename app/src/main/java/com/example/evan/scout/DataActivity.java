@@ -215,50 +215,49 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
 
-                        //some real compicated shit, just kidding - can't find way to custom in menu - if you can then do it :D
-                        @Override
-                        public boolean onCreateOptionsMenu(Menu menu) {
-                            getMenuInflater().inflate(getActionBarMenu(), menu);
-                            final LayoutInflater.Factory existingFactory = getLayoutInflater().getFactory();
-                                    try{
-                                        Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
-                                        field.setAccessible(true);
-                                        field.setBoolean(getLayoutInflater(), false);
-                                        getLayoutInflater().setFactory(new LayoutInflater.Factory() {
-                                                public View onCreateView(String name, Context context, AttributeSet attrs) {
-                                                        try {
-                                                                LayoutInflater li = LayoutInflater.from(context);
-                                                                View view = li.createView(name, null, attrs);
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(getActionBarMenu(), menu);
+    final LayoutInflater.Factory existingFactory = getLayoutInflater().getFactory();
+            try{
+                Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
+                field.setAccessible(true);
+                field.setBoolean(getLayoutInflater(), false);
+                getLayoutInflater().setFactory(new LayoutInflater.Factory() {
+                    public View onCreateView(String name, Context context, AttributeSet attrs) {
+                        try {
+                                LayoutInflater li = LayoutInflater.from(context);
+                                View view = li.createView(name, null, attrs);
 
-                                                                        if (existingFactory != null) {
-                                                                        view = existingFactory.onCreateView(name, context, attrs);
-                                                                    }
-
-                                                                        ((TextView) view).setTextSize(20);
-
-                                                                        // set the text color
-                                                                                Typeface face = Typeface.createFromAsset(getAssets(),"Technoma.otf");
-                                                                ((TextView) view).setTypeface(face);
-                                                                ((TextView) view).setTextColor(Color.WHITE);
-
-                                                                        return view;
-                                                            } catch (InflateException e) {
-                                                                //Handle any inflation exception here
-                                                                    } catch (ClassNotFoundException e) {
-                                                                //Handle any ClassNotFoundException here
-                                                                    }
-                                                        return null;
+                                        if (existingFactory != null) {
+                                        view = existingFactory.onCreateView(name, context, attrs);
                                     }
-                                            });}catch (NoSuchFieldException e) {
-                                        } catch (IllegalArgumentException e) {
-                                        } catch (IllegalAccessException e) {
+
+                                        ((TextView) view).setTextSize(20);
+
+                                        // set the text color
+                                                Typeface face = Typeface.createFromAsset(getAssets(),"Technoma.otf");
+                                ((TextView) view).setTypeface(face);
+                                ((TextView) view).setTextColor(Color.WHITE);
+
+                                        return view;
+                            } catch (InflateException e) {
+                        //Handle any inflation exception here
+                            } catch (ClassNotFoundException e) {
+                        //Handle any ClassNotFoundException here
                             }
-                                            MenuItem textView = (MenuItem)findViewById(R.id.teamNumTextView);
-                                    try {
-                                            textView.setTitle(DataManager.collectedData.getInt("teamNumber"));
-                                        }catch (JSONException je){}
-                            return true;
-                        }
+                        return null;
+            }
+            });}catch (NoSuchFieldException e) {
+            } catch (IllegalArgumentException e) {
+            } catch (IllegalAccessException e) {
+            }
+                MenuItem textView = (MenuItem) menu.findItem(R.id.teamNumTextView);
+            try {
+                textView.setTitle(DataManager.collectedData.getInt("teamNumber")+"");
+            }catch (JSONException je){}
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
