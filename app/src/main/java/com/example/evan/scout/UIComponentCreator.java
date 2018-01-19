@@ -608,7 +608,6 @@ public class UIComponentCreator {
             name = "LOL";
         }
 
-
         public Button addButton(final String pyramidFBname) {
             name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
 
@@ -650,7 +649,6 @@ public class UIComponentCreator {
                     });
 
                     if (numGroundPyramidIntake != 0 && numElevatedPyramidIntake != 0) {
-
                         int i = 0;
                         List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake", "numElevatedPyramidIntake");
                         List<Object> pyramidValues = new ArrayList<>();
