@@ -61,9 +61,14 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
     public abstract List<String> getToggleData();
     public abstract List<String> getCounterData();
-    public abstract List<String> getShotData();
+    public abstract List<String> getSwitchData();
+    public abstract List<String> getScaleData();
+    public abstract List<String> getPyramidData();
     public abstract Integer getToggleXML();
     public abstract Integer getCounterXML();
+    public abstract Integer getSwitchXML();
+    public abstract Integer getScaleXML();
+    public abstract Integer getPyramidXML();
     public abstract Class getNextActivityClass();
     public abstract Class getPreviousActivityClass();
     public abstract int getActionBarMenu();
@@ -149,63 +154,10 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        if(getToggleXML() != null){
-            LinearLayout toggleLayout = (LinearLayout)findViewById(getToggleXML());
-            List<String> toggleDisplayTitles = new ArrayList<>();
-            if(getToggleData() != null) {
-                Log.e("toggleSize", getToggleData().size()+"");
-                for (int i = 0; i < getToggleData().size(); i++) {
-                    toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
-                }
 
-                toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
-                Log.e("toggleSize", toggleDisplayTitles.size()+"");
-                //template version, you can add as many as you want example bellow
-                final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
-
-                //our game didn't have toggles in auto, so I added this if
-                if(saveTeleData && activityName() == "tele"){
-                    try {
-                        button1.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(0)));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-//                for (int i = 0; i < getToggleData().size(); i+=2) {
-//                    toggleLayout.addView(button1);
-//                    if (shouldSpaceToggles()) {
-//                        toggleLayout.addView(getFillerSpace(0.2f));
-//                    }
-//                    if (shouldSpaceToggles() && i+1 != getToggleData().size()-1) {
-//                        toggleLayout.addView(getFillerSpace(0.2f));
-//                    }
-//
-//                }
-            }
-        }
-
-        //counters
-        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
-        List<String> counterNames = new ArrayList<>();
-        for (int i = 0; i < getCounterData().size(); i++) {
-            counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
-        }
-        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-        for (int i = 0; i < getCounterData().size(); i++) {
-            if(i == (getCounterData().size() - 1) && activityName() == "tele"){
-            }else{
-                counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
-                if(activityName() == "tele"){
-                    Log.e("telecounter", "counterMade"+i);
-                }
-            }
-        }
-        counterLayout.addView(getFillerSpace(1f));
     }
 
-    //for beautification
+    //for making space between buttons
     private LinearLayout getFillerSpace(Float weight) {
         LinearLayout fillerSpace = new LinearLayout(this);
         fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
