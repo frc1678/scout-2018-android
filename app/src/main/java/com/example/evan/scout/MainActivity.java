@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 //will set the match number and will update it as long as it exists, if not, a value of -1 will be assigned
                 if(dataSnapshot.getValue() != null && !overridden){
                     teamNumber = Integer.parseInt(dataSnapshot.getValue().toString());
+                    DataManager.addZeroTierJsonData("teamNumber", teamNumber);
 
                     EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
                     teamNumberEditText.setText(String.valueOf(teamNumber));
