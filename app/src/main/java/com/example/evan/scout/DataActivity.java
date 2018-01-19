@@ -155,7 +155,7 @@ public abstract class DataActivity extends AppCompatActivity {
 
     private void updateUI() {
 
-        }
+    }
 
     //for making space between buttons
     private LinearLayout getFillerSpace(Float weight) {
