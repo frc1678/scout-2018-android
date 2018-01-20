@@ -12,37 +12,38 @@
         android:gravity="center_horizontal"
         android:id="@+id/scaleDialogTitle"/>
     <LinearLayout
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:orientation="horizontal"
         android:id="@+id/scaleButtonLayout"
+        android:paddingBottom="10dp"
         android:layout_centerVertical="true">
-    <Button
-    android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:backgroundTint="#FAA2A8"
-        android:layout_height="match_parent"
-        android:textSize="20dp"
-        android:text="FAIL"
-        android:id="@+id/scaleFailButton"/>
-    <Button
-    android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:backgroundTint="#BBEDC5"
-        android:layout_height="match_parent"
-        android:textSize="20dp"
-        android:text="SUCCESS"
-        android:id="@+id/scaleSuccessButton"/>
-        </LinearLayout>
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#FAA2A8"
+            android:layout_height="match_parent"
+            android:textSize="20dp"
+            android:text="FAIL"
+            android:id="@+id/scaleFailButton"/>
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="match_parent"
+            android:textSize="20dp"
+            android:text="SUCCESS"
+            android:id="@+id/scaleSuccessButton"/>
+    </LinearLayout>
     <LinearLayout
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/scaleButtonLayout">
-    <Button
-    android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="17dp"
-        android:text="CANCEL"
-        android:id="@+id/scaleCancelButton"/>
-        </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="17dp"
+            android:text="CANCEL"
+            android:id="@+id/cancelButton"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -5,21 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TeleopActivity extends DataActivity {
-    public String activityName(){   return "tele"; }
-    public List<String> getToggleData() {
-        return null;
-    }
-    public List<String> getCounterData() {
-        return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake",
-                "numGroundIntakeTele", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele")); }
-    public List<String> getSwitchData() { return null; }
-    public List<String> getScaleData() { return null; }
-    public List<String> getPyramidData() { return null; }
-    public Integer getToggleXML() { return null; }
+    public String activityName(){ return "tele"; }
+    public List<String> getToggleData() { return null; }
+    public List<String> getCounterData() { return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake", "numGroundIntakeTele", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele")); }
+    public List<String> getRadioData(){ return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft"));}
+
     public Integer getCounterXML() { return R.id.teleCounterLayout; }
-    public Integer getSwitchXML() { return null; }
-    public Integer getScaleXML() { return null; }
-    public Integer getPyramidXML() { return null; }
+    public Integer getRadioXML(){return R.id.autoStartPositionLayout;}
+    public Integer getToggleXML() { return null; }
+    public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
 
     public Class getNextActivityClass() {return MainActivity.class;}
     public Class getPreviousActivityClass() {return AutoActivity.class;}
