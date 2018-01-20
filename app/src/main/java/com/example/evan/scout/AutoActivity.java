@@ -12,13 +12,11 @@ public class AutoActivity extends DataActivity {
     public List<String> getCounterData() {
         return null;
     }
-    public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
-    public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
-    public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptAuto")); }
+    public List<String> getRadioData() {return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft")); }
+
     public Integer getToggleXML() { return null; }
     public Integer getCounterXML() { return null; }
     public Integer getAttemptXML() {return R.id.autoAttemptLayout; }
-
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}
