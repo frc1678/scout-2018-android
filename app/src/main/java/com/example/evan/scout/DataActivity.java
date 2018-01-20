@@ -59,24 +59,42 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
+
     public abstract List<String> getToggleData();
+
     public abstract List<String> getCounterData();
+
     public abstract List<String> getSwitchData();
+
     public abstract List<String> getScaleData();
+
     public abstract List<String> getPyramidData();
+
     public abstract Integer getToggleXML();
+
     public abstract Integer getCounterXML();
+
     public abstract Integer getSwitchXML();
+
     public abstract Integer getScaleXML();
+
     public abstract Integer getPyramidXML();
+
     public abstract Class getNextActivityClass();
+
     public abstract Class getPreviousActivityClass();
+
     public abstract int getActionBarMenu();
 
     public static boolean saveTeleData = false;
     public static boolean saveAutoData = false;
     public static String activityName;
     public static boolean rejected = false;
+    public static boolean[] isRedPlatformTaken = new boolean[6];
+    public static boolean[] isBluePlatformTaken = new boolean[6];
+    public static boolean[] isRedPlatformTakenAuto = new boolean[6];
+    public static boolean[] isBluePlatformTakenAuto = new boolean[6];
+    public static int i;
 
     private boolean sent;
 
@@ -103,13 +121,13 @@ public abstract class DataActivity extends AppCompatActivity {
         sent = false;
 
         //check for whether they want to save data
-        if(!saveTeleData){
+        if (!saveTeleData) {
 
         }
 
-        if(activityName() == "auto"){
+        if (activityName() == "auto") {
             setContentView(R.layout.activity_auto);
-        }else if(activityName() == "tele"){
+        } else if (activityName() == "tele") {
             setContentView(R.layout.activity_teleop);
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -119,24 +137,24 @@ public abstract class DataActivity extends AppCompatActivity {
 
         numSendClicks = 0;
 
-                        Drawable actionBarBackgroundColor;
+        Drawable actionBarBackgroundColor;
 
-                        if(MainActivity.allianceColor != null){
-                            if(MainActivity.allianceColor.equals("blue")){
-                                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-                            }else if(MainActivity.allianceColor.equals("red")){
-                                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
-                            }else{
-                                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-                            }
-                        }else{
-                            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-                        }
+        if (MainActivity.allianceColor != null) {
+            if (MainActivity.allianceColor.equals("blue")) {
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            } else if (MainActivity.allianceColor.equals("red")) {
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+            } else {
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+            }
+        } else {
+            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+        }
 
-                        ActionBar actionBar = getSupportActionBar();
-                        if (actionBar != null) {
-                            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
-                        }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
+        }
 
         dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
 
@@ -154,14 +172,189 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+        if (getToggleXML() != null) {
+            LinearLayout toggleLayout = (LinearLayout) findViewById(getToggleXML());
+            List<String> toggleDisplayTitles = new ArrayList<>();
+            if (getToggleData() != null) {
+                Log.e("toggleSize", getToggleData().size() + "");
+                for (int i = 0; i < getToggleData().size(); i++) {
+                    toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
+                }
 
-    }
+                toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
+                Log.e("toggleSize", toggleDisplayTitles.size() + "");
+                //template version, you can add as many as you want example bellow
+                final ToggleButton button1 = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
 
-    //for making space between buttons
-    private LinearLayout getFillerSpace(Float weight) {
-        LinearLayout fillerSpace = new LinearLayout(this);
-        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
-        return fillerSpace;
+                //our game didn't have toggles in auto, so I added this if
+                if (saveTeleData && activityName() == "tele") {
+                    try {
+                        button1.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(0)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+//                for (int i = 0; i < getToggleData().size(); i+=2) {
+//                    toggleLayout.addView(button1);
+//                    if (shouldSpaceToggles()) {
+//                        toggleLayout.addView(getFillerSpace(0.2f));
+//                    }
+//                    if (shouldSpaceToggles() && i+1 != getToggleData().size()-1) {
+//                        toggleLayout.addView(getFillerSpace(0.2f));
+//                    }
+//
+//                }
+            }
+        }
+
+        //counters
+        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+        List<String> counterNames = new ArrayList<>();
+        for (int i = 0; i < getCounterData().size(); i++) {
+            counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+        }
+        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+        for (int i = 0; i < getCounterData().size(); i++) {
+            if (i == (getCounterData().size() - 1) && activityName() == "tele") {
+            } else {
+                counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+                if (activityName() == "tele") {
+                    Log.e("telecounter", "counterMade" + i);
+                }
+            }
+        }
+        //-----------------------------Add 12 buttons
+        if (getToggleXML() != null) {
+            final List<String> opponentPlatformKeys = Arrays.asList("0", "1", "2", "3", "4", "5");
+            final List<Object> opponentPlatformValues = new ArrayList<>();
+            final List<String> alliancePlatformKeys = Arrays.asList("0", "1", "2", "3", "4", "5");
+            final List<Object> alliancePlatformValues = new ArrayList<>();
+
+            LinearLayout toggleLayout = (LinearLayout) findViewById(getToggleXML());
+            List<String> toggleDisplayTitles = new ArrayList<>();
+            if (getToggleData() != null) {
+                Log.e("toggleSize", getToggleData().size() + "");
+                if (MainActivity.allianceColor.equals("red") && DataActivity.activityName.equals("auto")) {
+                    for (i = 0; i <= 5; i++) {
+                        final ToggleButton platformButtonRed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_RED));
+                        toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i + 1)));
+                        platformButtonRed.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                isRedPlatformTaken[i + 1] = true;
+                                isRedPlatformTakenAuto[i + 1] = true;
+                                opponentPlatformValues.add(i, isRedPlatformTaken[i]);
+                                alliancePlatformValues.add(i, isBluePlatformTaken[i]);
+                                DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                                DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+                            }
+                        });
+                    }
+                } else if (MainActivity.allianceColor.equals("blue") && DataActivity.activityName.equals("auto")) {
+                    for (i = 0; i <= 5; i++) {
+                        final ToggleButton platformButtonBlue = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_RED));
+                        toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i + 1)));
+                        platformButtonBlue.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                isBluePlatformTaken[i + 1] = true;
+                                isBluePlatformTakenAuto[i + 1] = true;
+                                opponentPlatformValues.add(i, isBluePlatformTaken[i]);
+                                alliancePlatformValues.add(i, isRedPlatformTaken[i]);
+                                DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                                DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+
+                            }
+                        });
+                    }
+                } else if (DataActivity.activityName.equals("tele")) {
+                    for (i = 0; i <= 5; i++) {
+                        final ToggleButton platformButtonRed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_RED));
+                        toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
+                        platformButtonRed.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                isRedPlatformTaken[i + 1] = true;
+                                if (isRedPlatformTakenAuto[i + 1] == true) {
+                                    platformButtonRed.setEnabled(false);
+                                    platformButtonRed.setBackgroundColor(Color.GRAY);
+                                }
+                                if (MainActivity.allianceColor.equals("blue")) {
+                                    //DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                                    opponentPlatformValues.add(i, isRedPlatformTaken[i]);
+                                    alliancePlatformValues.add(i, isBluePlatformTaken[i]);
+                                    DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                                    DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+                                }
+                                if (MainActivity.allianceColor.equals("red")) {
+                                    opponentPlatformValues.add(i, isBluePlatformTaken[i]);
+                                    alliancePlatformValues.add(i, isRedPlatformTaken[i]);
+                                    DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                                    DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+
+                                }
+                            }
+                        });
+                    }
+                    for (i = 0; i <= 5; i++) {
+                        final ToggleButton platformButtonBlue = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
+                        toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i + 1)));
+                        platformButtonBlue.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                isBluePlatformTaken[i + 1] = true;
+                                if (isBluePlatformTakenAuto[i + 1] == true) {
+                                    platformButtonBlue.setEnabled(false);
+                                    platformButtonBlue.setBackgroundColor(Color.GRAY);
+                                }
+                                if (MainActivity.allianceColor.equals("blue")) {
+                                    //DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                                    opponentPlatformValues.add(i, isRedPlatformTaken[i]);
+                                    alliancePlatformValues.add(i, isBluePlatformTaken[i]);
+                                    DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                                    DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+                                }
+                                if (MainActivity.allianceColor.equals("red")) {
+                                    opponentPlatformValues.add(i, isBluePlatformTaken[i]);
+                                    alliancePlatformValues.add(i, isRedPlatformTaken[i]);
+                                    DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                                    DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+                                }
+                            }
+                        });
+                    }
+                }
+                if (MainActivity.allianceColor.equals("blue")) {
+                    //DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
+                    opponentPlatformValues.add(i, isRedPlatformTaken[i]);
+                    alliancePlatformValues.add(i, isBluePlatformTaken[i]);
+                    DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                    DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+
+
+                }
+                if (MainActivity.allianceColor.equals("red")) {
+                    opponentPlatformValues.add(i, isBluePlatformTaken[i]);
+                    alliancePlatformValues.add(i, isRedPlatformTaken[i]);
+                    DataManager.addOneTierJsonData(false, "opponentPlatformIntake", opponentPlatformKeys, opponentPlatformValues);
+                    DataManager.addOneTierJsonData(false, "alliancePlatformIntake", alliancePlatformKeys, alliancePlatformValues);
+
+                }
+                toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
+                Log.e("toggleSize", toggleDisplayTitles.size() + "");
+                //template version, you can add as many as you want example bellow
+                //  final ToggleButton cubePostionButton = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
+
+                //our game didn't have toggles in auto, so I added this if
+//                if (saveTeleData && activityName() == "tele") {
+//                    try {
+//                        cubePostion.setChecked(DataManager.collectedData.getBoolean(getToggleData().get(0)));
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+            }
+        }
+        //counterLayout.addView(getFillerSpace(1f));
     }
 
     private void updateData() throws JSONException {
