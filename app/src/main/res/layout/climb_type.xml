@@ -50,10 +50,10 @@
             android:layout_weight="1" />
 
         <RadioButton
-            android:text="Independent"
+            android:text="Solo Climb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/climbRadio"
+            android:id="@+id/soloClimbRadio"
             android:padding="5dp"
             android:paddingRight="5dp"
             android:textSize="23dp"

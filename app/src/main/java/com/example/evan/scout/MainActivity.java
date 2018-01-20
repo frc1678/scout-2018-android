@@ -658,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
         }
         final File[] files = dir.listFiles();
         adapter.clear();
-//        Log.e("DEBUGGING", files.toString());
+        Log.e("DEBUGGING", files.toString());
         for (File tmpFile : files) {
             adapter.add(tmpFile.getName());
         }
