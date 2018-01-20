@@ -10,12 +10,12 @@ public class AutoActivity extends DataActivity {
         return null;
     }
     public List<String> getCounterData() {
-        return null;
+        return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
     }
     public List<String> getRadioData() {return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft")); }
 
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return null; }
+    public Integer getCounterXML() { return R.id.autoCounterLayout; }
     public Integer getAttemptXML() {return R.id.autoAttemptLayout; }
 
     @Override

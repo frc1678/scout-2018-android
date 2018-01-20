@@ -35,10 +35,10 @@ public class Constants {
             put("didGetIncapacitated", "Incapacitated");
             put("didMakeAutoRun", "Auto Run Made");
             put("didPark", "Parked");
-            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
-            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
-            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
-            put("numCubesFumbledTele", "Cubes Fumbled Tele");
+            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake");
+            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake");
+            put("numCubesFumbledAuto", "Cubes Fumbled");
+            put("numCubesFumbledTele", "Cubes Fumbled");
             put("numExchangeInput", "Exchange Inputs");
             put("numGroundIntakeTele", "Ground Intake Tele");
             put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");

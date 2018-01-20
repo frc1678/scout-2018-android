@@ -162,6 +162,15 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+        List<String> counterNames = new ArrayList<>();
+        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+        for (int i = 0; i < getCounterData().size(); i++) {
+            counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+        }
+        counterLayout.addView(getFillerSpace(1f));
+
         if (getRadioXML() != null) {
             RadioGroup radioLayout = (RadioGroup) findViewById(getRadioXML());
             List<String> radioDisplayTitles = new ArrayList<>();
