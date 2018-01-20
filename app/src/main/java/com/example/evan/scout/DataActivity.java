@@ -154,7 +154,14 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-
+        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+        List<String> counterNames = new ArrayList<>();
+        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+        for (int i = 0; i < getCounterData().size(); i++) {
+            counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+        }
+        counterLayout.addView(getFillerSpace(1f));
     }
 
     //for making space between buttons
@@ -389,13 +396,5 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     })
                     .show();
         }
-        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
-        List<String> counterNames = new ArrayList<>();
-        for (int i = 0; i < getCounterData().size(); i++) {
-            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
-        }
-        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-        for (int i = 0; i < getCounterData().size(); i++)
-        counterLayout.addView(getFillerSpace(1f));
     }
 }

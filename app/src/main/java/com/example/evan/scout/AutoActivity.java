@@ -10,7 +10,7 @@ public class AutoActivity extends DataActivity {
         return null;
     }
     public List<String> getCounterData() {
-        return (Arrays.asList("numSpilledCubes", "numFumbledCubes"));
+        return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
     }
     public List<String> getSwitchData() { return null; }
     public List<String> getScaleData() { return null; }

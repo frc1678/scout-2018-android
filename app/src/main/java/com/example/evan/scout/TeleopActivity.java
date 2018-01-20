@@ -11,8 +11,7 @@ public class TeleopActivity extends DataActivity {
     }
     public List<String> getCounterData() {
         return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake",
-                "numGroundIntakeTele", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele"));
-    }
+                "numGroundIntakeTele", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele")); }
     public List<String> getSwitchData() { return null; }
     public List<String> getScaleData() { return null; }
     public List<String> getPyramidData() { return null; }
