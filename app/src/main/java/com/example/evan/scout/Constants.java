@@ -43,10 +43,8 @@ public class Constants {
             put("numGroundIntakeTele", "Ground Intake Tele");
             put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
             put("numHumanPortalIntakeTele", "Human Portal Intake Tele");
-            put("numGroundPyramidIntakeAuto", "Ground Pyramid Intakes Auto");
-            put("numGroundPyramidIntakeTele", "Ground Pyramid Intakes Tele");
-            put("numElevatedPyramidIntakeAuto", "Elevated Pyramid Intakes Auto");
-            put("numElevatedPyramidIntakeTele", "Elevated Pyramid Intakes Tele");
+            put("pyramidAttemptAuto", "Pyramid Attempt");
+            put("pyramidAttemptTele", "Pyramid Attempt");
             put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
             put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
             put("numReturnIntake", "Return Intake");

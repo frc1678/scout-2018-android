@@ -12,14 +12,13 @@ public class TeleopActivity extends DataActivity {
     public List<String> getCounterData() {
         return null;
     }
-    public List<String> getSwitchData() { return null; }
-    public List<String> getScaleData() { return null; }
-    public List<String> getPyramidData() { return null; }
+    public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptTele", "opponentSwitchAttemptTele")); }
+    public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptTele")); }
+    public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptTele")); }
     public Integer getToggleXML() { return null; }
     public Integer getCounterXML() { return null; }
-    public Integer getSwitchXML() { return null; }
-    public Integer getScaleXML() { return null; }
-    public Integer getPyramidXML() { return null; }
+    public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
+
 
     public Class getNextActivityClass() {return MainActivity.class;}
     public Class getPreviousActivityClass() {return AutoActivity.class;}
