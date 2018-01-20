@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class UIComponentCreator {
     //list of views that hold data that I need to access later
     private List<View> componentViews;
+    private List<RadioButton> radioViews;
     //list of names of buttons, textviews, etc
     private List<String> componentNames;
     private Activity context;
@@ -55,6 +57,7 @@ public class UIComponentCreator {
 
     public UIComponentCreator(Activity context, List<String> componentNames) {
         componentViews = new ArrayList<>();
+        radioViews = new ArrayList<>();
         this.componentNames = componentNames;
         this.context = context;
         currentComponent = 0;
@@ -84,8 +87,28 @@ public class UIComponentCreator {
         return toggleButton;
     }
 
+    public RadioButton getRadioButton (String radioFBName, String radioFBValue,int width){
+        RadioButton radioButton = new RadioButton(context);
+        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
+        radioButton.setTextSize(radioButton.getTextSize() * 1f);
+        //radioButton.setClickable(true);
+        //radioButton.setChecked(false);
+        currentComponent++;
+        radioViews.add(radioButton);
+        return radioButton;
+    }
+
+    private View.OnClickListener radioListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            DataManager.addZeroTierJsonData("radioFBName", "radioFBValue" );
+        }
+    };
     public List<View> getComponentViews() {
         return componentViews;
+    }
+    public List<RadioButton> getRadioViews() {
+        return radioViews;
     }
 
     public static class UICounterCreator extends UIComponentCreator {

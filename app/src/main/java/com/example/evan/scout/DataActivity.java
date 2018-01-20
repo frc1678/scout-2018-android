@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,11 +67,13 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract List<String> getSwitchData();
     public abstract List<String> getScaleData();
     public abstract List<String> getPyramidData();
+    public abstract List<String> getRadioData();
     public abstract Integer getToggleXML();
     public abstract Integer getCounterXML();
     public abstract Integer getSwitchXML();
     public abstract Integer getScaleXML();
     public abstract Integer getPyramidXML();
+    public abstract Integer getRadioXML();
     public abstract Class getNextActivityClass();
     public abstract Class getPreviousActivityClass();
     public abstract int getActionBarMenu();
@@ -87,6 +92,7 @@ public abstract class DataActivity extends AppCompatActivity {
 
     private Intent intent;
     private UIComponentCreator toggleCreator;
+    private UIComponentCreator radioCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
     private UIComponentCreator.UISwitchCreator switchCreator;
     private UIComponentCreator.UIScaleCreator scaleCreator;
@@ -154,7 +160,39 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+        if (getRadioXML() != null) {
+            RadioGroup radioLayout = (RadioGroup) findViewById(getRadioXML());
+            List<String> radioDisplayTitles = new ArrayList<>();
+            if (getRadioData() != null) {
+                if (activityName().equals("auto")) {
 
+                    Log.e("radioSize", getRadioData().size() + "");
+
+                    if(getRadioData() != null){
+                        Log.e("AttemptSIZE-Sw",getSwitchData()+"");
+                        for(int i=0; i< getRadioData().size(); i++){
+                            radioDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getRadioData().get(i)));
+                        }
+                    }
+
+                    radioCreator = new UIComponentCreator(this, radioDisplayTitles);
+                    Log.e("radioSize", radioDisplayTitles.size() + "");
+
+                    final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
+                    final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", LinearLayout.LayoutParams.MATCH_PARENT);
+                    final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
+
+
+                    radioLayout.addView(rightStartPosition);
+                    radioLayout.addView(centerStartPosition);
+                    radioLayout.addView(leftStartPosition);
+
+                    rightStartPosition.setText("Right");
+                    centerStartPosition.setText("Center");
+                    leftStartPosition.setText("Left");
+                }
+            }
+        }
     }
 
     //for making space between buttons
@@ -165,63 +203,14 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateData() throws JSONException {
-        private void updateUI() {
-            if (getRadioXML() != null) {
-                LinearLayout radioLayout = (LinearLayout) findViewById(getRadioXML());
-                List<String> radioDisplayTitles = new ArrayList<>();
-                if (getRadioData() != null) {
-                    Log.e("radioSize", getRadioData().size() + "");
-                    for (int i = 0; i < getRadioData().size(); i++) {
-                        radioDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getRadioData().get(i)));
+        List<RadioButton> currentRadios = radioCreator.getRadioViews();
+        for (int i = 0; i < currentRadios.size(); i++){
+            if(currentRadios.get(i) != null){
+                if(currentRadios.get(i).isChecked()){
+                    try{DataManager.addZeroTierJsonData("startPosition", currentRadios.get(i).getText().toString().toLowerCase());
+                    }catch (Exception e){
                     }
-                    radioCreator = new UIComponentCreator(this, radioDisplayTitles);
-                    Log.e("radioSize", radioDisplayTitles.size() + "");
-
-                    final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT, false);
-                    final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", LinearLayout.LayoutParams.MATCH_PARENT, false);
-                    final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT, false);
-
-                    //if(saveTeleData && activityName() == "auto"){
-                    try {
-                        rightStartPosition.setChecked(DataManager.collectedData.getBoolean(getRadioData().get(0)));
-                        leftStartPosition.setChecked(DataManager.collectedData.getBoolean(getRadioData().get(0)));
-                        centerStartPosition.setChecked(DataManager.collectedData.getBoolean(getRadioData().get(0)));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    //counters
-                    LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
-                    List<String> counterNames = new ArrayList<>();
-                    for (int i = 0; i < getCounterData().size(); i++) {
-                        counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
-                    }
-                    counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-                    for (int i = 0; i < getCounterData().size(); i++) {
-                        if (i == (getCounterData().size() - 1) && activityName() == "tele") {
-                        } else {
-                            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
-                            if (activityName() == "tele") {
-                                Log.e("telecounter", "counterMade" + i);
-                            }
-                        }
-                    }
-                    counterLayout.addView(getFillerSpace(1f));
                 }
-            }
-        }
-
-        List<View> currentTextViews = counterCreator.getComponentViews();
-        for (int i = 0; i < currentTextViews.size(); i++) {
-            if(currentTextViews.get(i) != null){
-            }
-            try {
-                Log.e("keyCOUNTER", getCounterData().get(i));
-                DataManager.addZeroTierJsonData(getCounterData().get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
-            } catch (Exception e) {
-                Log.e("Data Error", "Failed to add counter" + Integer.toString(i) + " num to Data");
-                Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
-                return;
             }
         }
     }

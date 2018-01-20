@@ -57,7 +57,9 @@ public class Constants {
             put("scaleAttemptTele", "Scale Attempt Tele");
             put("numSpilledCubesAuto", "Spilled Cubes Auto");
             put("numSpilledCubesTele", "Spilled Cubes Tele");
-            put("startingPosition", "Starting Position");
+            put("startingPositionLeft", "Left");
+            put("startingPositionCenter", "Center");
+            put("startingPositionRight", "Right");
             put("climb", "Climbs");
             //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
