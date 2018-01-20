@@ -168,7 +168,8 @@ public class UIComponentCreator {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
             final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            switchButton.setText(name);
+            if(colorOfSwitch.equals("red")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));     switchButton.setText(MainActivity.capAllianceColor + " Switch Attempt"); }
+            else if(colorOfSwitch.equals("blue")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));     switchButton.setText(MainActivity.capAllianceColor + " Switch Attempt"); }
             switchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -181,7 +182,8 @@ public class UIComponentCreator {
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_dialog, null);
                     //Set Dialog Title
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-                    titleTV.setText(colorOfSwitch + " Switch Attempt");
+                    String colorString = colorOfSwitch.substring(0,1).toUpperCase() + colorOfSwitch.substring(1);
+                    titleTV.setText(colorString + " Switch Attempt");
 
                     Button successButton = (Button) dialogLayout.findViewById(R.id.successButton);
                     successButton.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +197,7 @@ public class UIComponentCreator {
 
                             final Dialog successDialog = new Dialog(context);
                             successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
+                            RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_success_dialog, null);
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
                             successTitleTV.setText(name);
 
@@ -247,7 +249,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            Button done = (Button) successDialog.findViewById(R.id.doneButton);
+                            Button done = (Button) successDialogLayout.findViewById(R.id.doneButton);
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -283,6 +285,8 @@ public class UIComponentCreator {
                                     }
                                 }
                             });
+                            successDialog.setContentView(successDialogLayout);
+                            successDialog.show();
                         }
                     });
 
@@ -322,6 +326,13 @@ public class UIComponentCreator {
                         }
                     });
 
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
                     dialog.setContentView(dialogLayout);
                     dialog.show();
                 }
@@ -456,7 +467,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            Button cancel = (Button) successDialogLayout.findViewById(R.id.scaleCancelButton);
+                            Button cancel = (Button) successDialogLayout.findViewById(R.id.cancelButton);
                             cancel.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -464,7 +475,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            Button done = (Button) successDialog.findViewById(R.id.scaleDoneButton);
+                            Button done = (Button) successDialogLayout.findViewById(R.id.scaleDoneButton);
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -500,6 +511,8 @@ public class UIComponentCreator {
                                     }
                                 }
                             });
+                            successDialog.setContentView(successDialogLayout);
+                            successDialog.show();
                         }
                     });
 
@@ -535,7 +548,7 @@ public class UIComponentCreator {
                         }
                     });
 
-                    Button cancel = (Button) dialogLayout.findViewById(R.id.scaleCancelButton);
+                    Button cancel = (Button) dialogLayout.findViewById(R.id.cancelButton);
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -608,7 +621,10 @@ public class UIComponentCreator {
             name = "LOL";
         }
 
-        public Button addButton(final String pyramidFBname) {
+        public Button addButton() {
+            numElevatedPyramidIntake = 0;
+            numGroundPyramidIntake = 0;
+
             name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
 
             final Button pyramidButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
@@ -616,9 +632,6 @@ public class UIComponentCreator {
             pyramidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    numElevatedPyramidIntake = 0;
-                    numGroundPyramidIntake = 0;
-
                     final Dialog dialog = new Dialog(context);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.pyramid_dialog, null);
@@ -626,18 +639,46 @@ public class UIComponentCreator {
                     titleTV.setText(name);
 
                     Button groundButton = (Button) dialogLayout.findViewById(R.id.elevatedButton);
+                    groundButton.setText("Ground" + " ("+numGroundPyramidIntake+")");
                     groundButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            numElevatedPyramidIntake += 1;
+                            numGroundPyramidIntake += 1;
+                            if (numGroundPyramidIntake != 0 || numElevatedPyramidIntake != 0) {
+                                List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake"+DataActivity.capActivityName, "numElevatedPyramidIntake"+DataActivity.capActivityName);
+                                List<Object> pyramidValues = new ArrayList<>();
+                                pyramidValues.clear();
+                                pyramidValues.add(numGroundPyramidIntake);
+                                pyramidValues.add(numElevatedPyramidIntake);
+
+                                for(int i = 0; i < 2; i++){     DataManager.addZeroTierJsonData(pyramidKeys.get(i), pyramidValues.get(i)); }
+
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
                     Button elevatedButton = (Button) dialogLayout.findViewById(R.id.groundButton);
+                    elevatedButton.setText("Elevated" + " ("+numElevatedPyramidIntake+")");
                     elevatedButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            numGroundPyramidIntake += 1;
+                            numElevatedPyramidIntake += 1;
+                            if (numGroundPyramidIntake != 0 || numElevatedPyramidIntake != 0) {
+                                List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake"+DataActivity.capActivityName, "numElevatedPyramidIntake"+DataActivity.capActivityName);
+                                List<Object> pyramidValues = new ArrayList<>();
+                                pyramidValues.clear();
+                                pyramidValues.add(numGroundPyramidIntake);
+                                pyramidValues.add(numElevatedPyramidIntake);
+
+                                for(int i = 0; i < 2; i++){     DataManager.addZeroTierJsonData(pyramidKeys.get(i), pyramidValues.get(i)); }
+
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
@@ -647,33 +688,8 @@ public class UIComponentCreator {
                             dialog.dismiss();
                         }
                     });
-
-                    if (numGroundPyramidIntake != 0 && numElevatedPyramidIntake != 0) {
-                        int i = 0;
-                        List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake", "numElevatedPyramidIntake");
-                        List<Object> pyramidValues = new ArrayList<>();
-                        pyramidValues.clear();
-                        pyramidValues.add(numElevatedPyramidIntake);
-                        pyramidValues.add(numGroundPyramidIntake);
-
-                        if (DataManager.collectedData.has(pyramidFBname)) {
-                            try {
-                                DataManager.sideData = DataManager.collectedData.getJSONObject(pyramidFBname);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            DataManager.addOneTierJsonData(true, i + "", pyramidKeys, pyramidValues);
-                            DataManager.addZeroTierJsonData(pyramidFBname, DataManager.sideData);
-                        } else {
-                            DataManager.sideData = new JSONObject();
-                            DataManager.addOneTierJsonData(true, i + "", pyramidKeys, pyramidValues);
-                            DataManager.addZeroTierJsonData(pyramidFBname, DataManager.sideData);
-                        }
-
-                        dialog.dismiss();
-                    } else {
-                        Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
-                    }
+                    dialog.setContentView(dialogLayout);
+                    dialog.show();
                 }
             });
             /*shotButton.setOnLongClickListener(new View.OnLongClickListener() {

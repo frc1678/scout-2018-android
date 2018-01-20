@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
     public static String allianceColor;
+    public static String capAllianceColor;
+
     private ActionBar actionBar;
 
     //the id of the scout.  1-3 is red, 4+ is blue
@@ -326,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
                                 if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
                                     setActionBarColor(Constants.COLOR_BLUE);
                                     allianceColor = "blue";
+                                    capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
                                     Log.e("CALLED!!!", allianceColor);
                                 }
                             }
@@ -346,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
                                 if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
                                     setActionBarColor(Constants.COLOR_RED);
                                     allianceColor = "red";
+                                    capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
                                     Log.e("CALLED!!!", allianceColor);
                                 }
                             }
@@ -757,6 +761,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 allianceColor = "red";
+                capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+
                 if (actionBar != null) {
                     actionBar.setBackgroundDrawable(returnDrawable());
                 }else{
@@ -770,6 +776,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 allianceColor = "blue";
+                capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+
                 if (actionBar != null) {
                     actionBar.setBackgroundDrawable(returnDrawable());
                 }else{
