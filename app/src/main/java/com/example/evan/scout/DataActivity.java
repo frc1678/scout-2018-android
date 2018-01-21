@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,17 +74,15 @@ public abstract class DataActivity extends AppCompatActivity {
 
     public abstract List<String> getPyramidData();
 
+    public abstract List<String> getRadioData();
+  
     public abstract Integer getToggleXML();
 
     public abstract Integer getCounterXML();
 
-    public abstract Integer getSwitchXML();
-
-    public abstract Integer getScaleXML();
-
-    public abstract Integer getPyramidXML();
-    public abstract Integer getPlatformOneXML();
-    public abstract Integer getPlatformTwoXML();
+    public abstract Integer getRadioXML();
+  
+    public abstract Integer getAttemptXML();
 
     public abstract Class getNextActivityClass();
 
@@ -92,6 +93,7 @@ public abstract class DataActivity extends AppCompatActivity {
     public static boolean saveTeleData = false;
     public static boolean saveAutoData = false;
     public static String activityName;
+    public static String capActivityName;
     public static boolean rejected = false;
     public static boolean[] alliancePlatformTaken = new boolean[6];
     public static boolean[] opponentPlatformTaken = new boolean[6];
@@ -109,6 +111,7 @@ public abstract class DataActivity extends AppCompatActivity {
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator platformCreator;
+    private UIComponentCreator radioCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
     private UIComponentCreator.UISwitchCreator switchCreator;
     private UIComponentCreator.UIScaleCreator scaleCreator;
@@ -136,6 +139,8 @@ public abstract class DataActivity extends AppCompatActivity {
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         activityName = activityName();
+        capActivityName = activityName.substring(0,1).toUpperCase() + activityName.substring(1);
+
         intent = getIntent();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -339,6 +344,126 @@ public abstract class DataActivity extends AppCompatActivity {
                 platformLayoutTwo.addView(platformButtonBlue);
                 platformLayoutTwo.addView(getFillerSpace(1f));
 
+            }
+        LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+        List<String> counterNames = new ArrayList<>();
+        counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+        for (int i = 0; i < getCounterData().size(); i++) {
+            counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+            counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+        }
+        counterLayout.addView(getFillerSpace(1f));
+
+        if (getRadioXML() != null) {
+            RadioGroup radioLayout = (RadioGroup) findViewById(getRadioXML());
+            List<String> radioDisplayTitles = new ArrayList<>();
+            if (getRadioData() != null) {
+                if (activityName().equals("auto")) {
+
+                    Log.e("radioSize", getRadioData().size() + "");
+
+                    if(getRadioData() != null){
+                        Log.e("AttemptSIZE-Sw",getSwitchData()+"");
+                        for(int i=0; i< getRadioData().size(); i++){
+                            radioDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getRadioData().get(i)));
+                        }
+                    }
+
+                    radioCreator = new UIComponentCreator(this, radioDisplayTitles);
+                    Log.e("radioSize", radioDisplayTitles.size() + "");
+
+                    final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
+                    final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", LinearLayout.LayoutParams.MATCH_PARENT);
+                    final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
+
+
+                    radioLayout.addView(rightStartPosition);
+                    radioLayout.addView(centerStartPosition);
+                    radioLayout.addView(leftStartPosition);
+
+                    rightStartPosition.setText("Right");
+                    centerStartPosition.setText("Center");
+                    leftStartPosition.setText("Left");
+                }
+            }
+        }
+
+      LinearLayout attemptLayout = (LinearLayout)findViewById(getAttemptXML());
+
+        List<String> switchDisplayTitles = new ArrayList<>();
+        List<String> scaleDisplayTitles = new ArrayList<>();
+        List<String> pyramidDisplayTitles = new ArrayList<>();
+
+        if(getSwitchData() != null) {
+            Log.e("AttemptSIZE-Sw", getSwitchData().size() + "");
+            for (int i = 0; i < getSwitchData().size(); i++) {
+                switchDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getSwitchData().get(i)));
+            }
+        }if(getScaleData() != null) {
+            Log.e("AttemptSIZE-Sc", getScaleData().size() + "");
+            for (int i = 0; i < getScaleData().size(); i++) {
+                scaleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getScaleData().get(i)));
+            }
+        }if(getPyramidData() != null) {
+            Log.e("AttemptSIZE-P", getPyramidData().size() + "");
+            for (int i = 0; i < getPyramidData().size(); i++) {
+                pyramidDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getPyramidData().get(i)));
+            }
+        }
+
+        switchCreator = new UIComponentCreator.UISwitchCreator(this, switchDisplayTitles);
+        scaleCreator = new UIComponentCreator.UIScaleCreator(this, scaleDisplayTitles);
+        pyramidCreator = new UIComponentCreator.UIPyramidCreator(this, pyramidDisplayTitles);
+
+        Log.e("AttemptSIZE-Sw", switchDisplayTitles.size() + "");
+        Log.e("AttemptSIZE-Sc", scaleDisplayTitles.size() + "");
+        Log.e("AttemptSIZE-P", pyramidDisplayTitles.size() + "");
+
+        for (int i = 0; i < getSwitchData().size(); i++) {
+            if(activityName().equals("auto")){
+                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor);
+                attemptLayout.addView(a_switchButton);
+            }else if(activityName().equals("tele")){
+                if(MainActivity.allianceColor.equals("red")){
+                    Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red");
+                    Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue");
+                    attemptLayout.addView(a_switchButton);
+                    attemptLayout.addView(o_switchButton);
+                }else if(MainActivity.allianceColor.equals("blue")){
+                    Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue");
+                    Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red");
+                    attemptLayout.addView(o_switchButton);
+                    attemptLayout.addView(a_switchButton);
+                }
+            }
+        }
+        if(activityName().equals("auto")){
+            Button scaleButton = scaleCreator.addButton("scaleAttemptAuto");
+            attemptLayout.addView(scaleButton);
+        }else if(activityName().equals("tele")){
+            Button scaleButton = scaleCreator.addButton("scaleAttemptTele");
+            attemptLayout.addView(scaleButton);
+        }
+        Button pyramidButton = pyramidCreator.addButton();
+        attemptLayout.addView(pyramidButton);
+    }
+
+    //for making space between buttons
+    private LinearLayout getFillerSpace(Float weight) {
+        LinearLayout fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
+        return fillerSpace;
+    }
+
+    private void updateData() throws JSONException {
+        List<RadioButton> currentRadios = radioCreator.getRadioViews();
+        for (int i = 0; i < currentRadios.size(); i++){
+            if(currentRadios.get(i) != null){
+                if(currentRadios.get(i).isChecked()){
+                    try{DataManager.addZeroTierJsonData("startPosition", currentRadios.get(i).getText().toString().toLowerCase());
+                    }catch (Exception e){
+                    }
+                }
             }
         }
     }
