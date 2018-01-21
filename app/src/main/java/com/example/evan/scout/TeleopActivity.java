@@ -5,6 +5,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TeleopActivity extends DataActivity {
+    public String activityName(){   return "tele"; }
+    public List<String> getPlatformData() {
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
+    public List<String> getToggleData() { return null;}
+    public List<String> getCounterData() {
+        return null;
+    }
+    public Integer getToggleXML() { return null; }
+    public Integer getCounterXML() { return null; }
+    public Integer getPlatformOneXML() { return R.id.telePlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return R.id.telePlatformCubeLayoutTwo; }
     public String activityName(){ return "tele"; }
     public List<String> getToggleData() { return null; }
     public List<String> getCounterData() { return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake", "numGroundIntakeTele", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele")); }

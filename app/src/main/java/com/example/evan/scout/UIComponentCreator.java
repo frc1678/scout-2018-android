@@ -841,11 +841,11 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.climbRadio);
+                            RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
                             independentRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    liftType = "climb";
+                                    liftType = "soloClimb";
 
                                     DataManager.sideData = new JSONObject();
                                     DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
@@ -974,5 +974,9 @@ public class UIComponentCreator {
             });
             return climbButton;
         }
+    }
+
+    public void resetCurrentComponent(){
+        currentComponent = 0;
     }
 }

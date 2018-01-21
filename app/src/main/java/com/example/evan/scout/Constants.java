@@ -24,8 +24,11 @@ public class Constants {
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
     public static final String COLOR_GREEN = "#65C423";
-    public static final String COLOR_RED = "#ff2200";
-    public static final String COLOR_BLUE = "#0099ff";
+    public static final String COLOR_RED = "#F9613F";
+    public static final String COLOR_BLUE = "#53A4F7";
+    public static final String COLOR_LIGHTBLUE = "#A1CCF8";
+    public static final String COLOR_LIGHTRED = "#FA9B86";
+    public static final String COLOR_GREY = "#cec8c8";
 
     static {
         //replace with new datapoints
@@ -43,10 +46,16 @@ public class Constants {
             put("numGroundIntakeTele", "Ground Intake Tele");
             put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
             put("numHumanPortalIntakeTele", "Human Portal Intake Tele");
-            put("pyramidAttemptAuto", "Pyramid Attempt");
-            put("pyramidAttemptTele", "Pyramid Attempt");
-            put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
-            put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
+            put("numGroundPyramidIntakeAuto", "Ground Pyramid Intakes Auto");
+            put("numGroundPyramidIntakeTele", "Ground Pyramid Intakes Tele");
+            put("numElevatedPyramidIntakeAuto", "Elevated Pyramid Intakes Auto");
+            put("numElevatedPyramidIntakeTele", "Elevated Pyramid Intakes Tele");
+            put("1", "1");
+            put("2", "2");
+            put("3", "3");
+            put("4", "4");
+            put("5", "5");
+            put("6", "6");
             put("numReturnIntake", "Return Intake");
             put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
             put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");

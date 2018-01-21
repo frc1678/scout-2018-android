@@ -62,19 +62,32 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
+
     public abstract List<String> getToggleData();
+    public abstract List<String> getPlatformData();
+
     public abstract List<String> getCounterData();
+
     public abstract List<String> getSwitchData();
+
     public abstract List<String> getScaleData();
+
     public abstract List<String> getPyramidData();
+
     public abstract List<String> getRadioData();
+  
     public abstract Integer getToggleXML();
+
     public abstract Integer getCounterXML();
+
     public abstract Integer getRadioXML();
+  
     public abstract Integer getAttemptXML();
 
     public abstract Class getNextActivityClass();
+
     public abstract Class getPreviousActivityClass();
+
     public abstract int getActionBarMenu();
 
     public static boolean saveTeleData = false;
@@ -82,8 +95,13 @@ public abstract class DataActivity extends AppCompatActivity {
     public static String activityName;
     public static String capActivityName;
     public static boolean rejected = false;
+    public static boolean[] alliancePlatformTaken = new boolean[6];
+    public static boolean[] opponentPlatformTaken = new boolean[6];
+    public List<Map<Integer, Boolean>> alliancePlatformValueMapList = new ArrayList<>();
+    public List<Map<Integer, Boolean>> opponentPlatformValueMapList = new ArrayList<>();
 
     private boolean sent;
+    private boolean instantiatedPlatformBools = false;
 
     private int numSendClicks;
     public final Activity context = this;
@@ -92,6 +110,7 @@ public abstract class DataActivity extends AppCompatActivity {
 
     private Intent intent;
     private UIComponentCreator toggleCreator;
+    private UIComponentCreator platformCreator;
     private UIComponentCreator radioCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
     private UIComponentCreator.UISwitchCreator switchCreator;
@@ -109,13 +128,13 @@ public abstract class DataActivity extends AppCompatActivity {
         sent = false;
 
         //check for whether they want to save data
-        if(!saveTeleData){
+        if (!saveTeleData) {
 
         }
 
-        if(activityName() == "auto"){
+        if (activityName() == "auto") {
             setContentView(R.layout.activity_auto);
-        }else if(activityName() == "tele"){
+        } else if (activityName() == "tele") {
             setContentView(R.layout.activity_teleop);
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -127,24 +146,24 @@ public abstract class DataActivity extends AppCompatActivity {
 
         numSendClicks = 0;
 
-                        Drawable actionBarBackgroundColor;
+        Drawable actionBarBackgroundColor;
 
-                        if(MainActivity.allianceColor != null){
-                            if(MainActivity.allianceColor.equals("blue")){
-                                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
-                            }else if(MainActivity.allianceColor.equals("red")){
-                                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
-                            }else{
-                                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-                            }
-                        }else{
-                            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
-                        }
+        if (MainActivity.allianceColor != null) {
+            if (MainActivity.allianceColor.equals("blue")) {
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            } else if (MainActivity.allianceColor.equals("red")) {
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_RED)));
+            } else {
+                actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+            }
+        } else {
+            actionBarBackgroundColor = new ColorDrawable((Color.parseColor(Constants.COLOR_GREEN)));
+        }
 
-                        ActionBar actionBar = getSupportActionBar();
-                        if (actionBar != null) {
-                            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
-                        }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(actionBarBackgroundColor);
+        }
 
         dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
 
@@ -162,6 +181,170 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+        if(activityName().equals("auto") && !instantiatedPlatformBools){      for(int i = 0; i <=5; i++){     alliancePlatformTaken[i] = false; opponentPlatformTaken[i] = false;} instantiatedPlatformBools = true;}
+        //-----------------------------Add 12 buttons
+        if ((getPlatformOneXML() != null && activityName().equals("auto"))){
+            LinearLayout platformLayoutOne = (LinearLayout) findViewById(getPlatformOneXML());
+            List<String> platformDisplayTitles = new ArrayList<>();
+            if (getPlatformData() != null){
+                Log.e("platFormOneSizeAuto", getPlatformData().size() + "");
+                for (int i = 0; i < getPlatformData().size(); i++) {
+                    platformDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getPlatformData().get(i)));
+                }
+                platformCreator = new UIComponentCreator(this, platformDisplayTitles);
+                Log.e("platFormOneSizeAuto", platformDisplayTitles.size() + "");
+
+                if (MainActivity.allianceColor.equals("red")) {
+                    for (int i = 0; i <= 5; i++) {
+                        final int ii = i;
+                        final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED));
+                        platformButtonRed.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                if(!alliancePlatformTaken[ii]){
+                                    alliancePlatformTaken[ii]=true;
+                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                    platformMap.put(ii, alliancePlatformTaken[ii]);
+                                    alliancePlatformValueMapList.add(platformMap);
+                                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                                }else if(alliancePlatformTaken[ii]){
+                                    alliancePlatformTaken[ii]=false;
+                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                    platformMap.put(ii, alliancePlatformTaken[ii]);
+                                    alliancePlatformValueMapList.add(platformMap);
+                                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
+                                }
+                            }
+                        });
+                        platformLayoutOne.addView(platformButtonRed);
+                        platformLayoutOne.addView(getFillerSpace(0.1f));
+                    }
+                } else if (MainActivity.allianceColor.equals("blue")) {
+                    for (int i = 0; i <= 5; i++) {
+                        final int ii = i;
+                        final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                        platformButtonBlue.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                if(!alliancePlatformTaken[ii]){
+                                    alliancePlatformTaken[ii]=true;
+                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                    platformMap.put(ii, alliancePlatformTaken[ii]);
+                                    alliancePlatformValueMapList.add(platformMap);
+                                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                                }else if(alliancePlatformTaken[ii]){
+                                    alliancePlatformTaken[ii]=false;
+                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                    platformMap.put(ii, alliancePlatformTaken[ii]);
+                                    alliancePlatformValueMapList.add(platformMap);
+                                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                                }
+                            }
+                        });
+                        platformLayoutOne.addView(platformButtonBlue);
+                        platformLayoutOne.addView(getFillerSpace(0.1f));
+                    }
+                }
+            }
+        }else if(((getPlatformOneXML()!=null && getPlatformTwoXML()!=null) && activityName().equals("tele"))) {
+            LinearLayout platformLayoutOne = (LinearLayout) findViewById(getPlatformOneXML());
+            LinearLayout platformLayoutTwo = (LinearLayout) findViewById(getPlatformTwoXML());
+            List<String> platformDisplayTitles = new ArrayList<>();
+            if (getPlatformData() != null){
+                Log.e("platFormOneSizeTele", getPlatformData().size() + "");
+                for (int i = 0; i < getPlatformData().size(); i++) {
+                    platformDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getPlatformData().get(i)));
+                }
+                platformCreator = new UIComponentCreator(this, platformDisplayTitles);
+                Log.e("platFormOneSizeTele", platformDisplayTitles.size() + "");
+            }
+            for (int i = 0; i <= 5; i++) {
+                final int ii = i;
+                final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED));
+                if(MainActivity.allianceColor.equals("red") && alliancePlatformTaken[ii]){
+                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                    platformButtonRed.setEnabled(false);
+                }
+                platformButtonRed.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        if(MainActivity.allianceColor.equals("red")){
+                            if(!alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=true;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                            }else if(alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=false;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
+                            }
+                        }else if(MainActivity.allianceColor.equals("blue")){
+                            if(!alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=true;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                            }else if(alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=false;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
+                            }
+                        }
+                    }
+                });
+                platformLayoutOne.addView(platformButtonRed);
+                platformLayoutOne.addView(getFillerSpace(1f));
+
+            }
+            platformCreator.resetCurrentComponent();
+            for (int i = 0; i <= 5; i++) {
+                final int ii = i;
+                final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                if(MainActivity.allianceColor.equals("blue") && alliancePlatformTaken[ii]){
+                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                    platformButtonBlue.setEnabled(false);
+                }
+                platformButtonBlue.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        if(MainActivity.allianceColor.equals("blue")){
+                            if(!alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=true;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                            }else if(alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=false;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                            }
+                        }else if(MainActivity.allianceColor.equals("red")){
+                            if(!alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=true;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                            }else if(alliancePlatformTaken[ii]){
+                                alliancePlatformTaken[ii]=false;
+                                Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
+                                platformMap.put(ii, alliancePlatformTaken[ii]);
+                                alliancePlatformValueMapList.add(platformMap);
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                            }
+                        }
+                    }
+                });
+                platformLayoutTwo.addView(platformButtonBlue);
+                platformLayoutTwo.addView(getFillerSpace(1f));
+
+            }
         LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
         List<String> counterNames = new ArrayList<>();
         counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
@@ -283,6 +466,9 @@ public abstract class DataActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void updateData() throws JSONException {
     }
 
     private Intent prepareIntent(Class clazz) {
@@ -479,5 +665,11 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     })
                     .show();
         }
+    }
+
+    private LinearLayout getFillerSpace(Float weight) {
+        LinearLayout fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
+        return fillerSpace;
     }
 }

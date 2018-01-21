@@ -12,6 +12,9 @@ public class AutoActivity extends DataActivity {
     public List<String> getCounterData() {
         return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
     }
+    public List<String> getPlatformData(){
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
     public List<String> getRadioData() {return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft")); }
 
     public Integer getToggleXML() { return null; }
