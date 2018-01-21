@@ -192,7 +192,7 @@ public abstract class DataActivity extends AppCompatActivity {
                 if (MainActivity.allianceColor.equals("red")) {
                     for (int i = 0; i <= 5; i++) {
                         final int ii = i;
-                        final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_RED));
+                        final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED));
                         platformButtonRed.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 if(!alliancePlatformTaken[ii]){
@@ -200,22 +200,23 @@ public abstract class DataActivity extends AppCompatActivity {
                                     Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                     platformMap.put(ii, alliancePlatformTaken[ii]);
                                     alliancePlatformValueMapList.add(platformMap);
-                                    platformButtonRed.setBackgroundColor(Color.GRAY);
+                                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                 }else if(alliancePlatformTaken[ii]){
                                     alliancePlatformTaken[ii]=false;
                                     Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                     platformMap.put(ii, alliancePlatformTaken[ii]);
                                     alliancePlatformValueMapList.add(platformMap);
-                                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                 }
                             }
                         });
                         platformLayoutOne.addView(platformButtonRed);
+                        platformLayoutOne.addView(getFillerSpace(0.1f));
                     }
                 } else if (MainActivity.allianceColor.equals("blue")) {
                     for (int i = 0; i <= 5; i++) {
                         final int ii = i;
-                        final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
+                        final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE));
                         platformButtonBlue.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 if(!alliancePlatformTaken[ii]){
@@ -223,17 +224,18 @@ public abstract class DataActivity extends AppCompatActivity {
                                     Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                     platformMap.put(ii, alliancePlatformTaken[ii]);
                                     alliancePlatformValueMapList.add(platformMap);
-                                    platformButtonBlue.setBackgroundColor(Color.GRAY);
+                                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                 }else if(alliancePlatformTaken[ii]){
                                     alliancePlatformTaken[ii]=false;
                                     Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                     platformMap.put(ii, alliancePlatformTaken[ii]);
                                     alliancePlatformValueMapList.add(platformMap);
-                                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                 }
                             }
                         });
                         platformLayoutOne.addView(platformButtonBlue);
+                        platformLayoutOne.addView(getFillerSpace(0.1f));
                     }
                 }
             }
@@ -251,9 +253,9 @@ public abstract class DataActivity extends AppCompatActivity {
             }
             for (int i = 0; i <= 5; i++) {
                 final int ii = i;
-                final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_RED));
+                final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED));
                 if(MainActivity.allianceColor.equals("red") && alliancePlatformTaken[ii]){
-                    platformButtonRed.setBackgroundColor(Color.GRAY);
+                    platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                     platformButtonRed.setEnabled(false);
                 }
                 platformButtonRed.setOnClickListener(new View.OnClickListener() {
@@ -264,13 +266,13 @@ public abstract class DataActivity extends AppCompatActivity {
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonRed.setBackgroundColor(Color.GRAY);
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                             }else if(alliancePlatformTaken[ii]){
                                 alliancePlatformTaken[ii]=false;
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                             }
                         }else if(MainActivity.allianceColor.equals("blue")){
                             if(!alliancePlatformTaken[ii]){
@@ -278,25 +280,27 @@ public abstract class DataActivity extends AppCompatActivity {
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonRed.setBackgroundColor(Color.GRAY);
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                             }else if(alliancePlatformTaken[ii]){
                                 alliancePlatformTaken[ii]=false;
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                                platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                             }
                         }
                     }
                 });
                 platformLayoutOne.addView(platformButtonRed);
+                platformLayoutOne.addView(getFillerSpace(1f));
+
             }
             platformCreator.resetCurrentComponent();
             for (int i = 0; i <= 5; i++) {
                 final int ii = i;
-                final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_BLUE));
+                final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE));
                 if(MainActivity.allianceColor.equals("blue") && alliancePlatformTaken[ii]){
-                    platformButtonBlue.setBackgroundColor(Color.GRAY);
+                    platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                     platformButtonBlue.setEnabled(false);
                 }
                 platformButtonBlue.setOnClickListener(new View.OnClickListener() {
@@ -307,13 +311,13 @@ public abstract class DataActivity extends AppCompatActivity {
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonBlue.setBackgroundColor(Color.GRAY);
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                             }else if(alliancePlatformTaken[ii]){
                                 alliancePlatformTaken[ii]=false;
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                             }
                         }else if(MainActivity.allianceColor.equals("red")){
                             if(!alliancePlatformTaken[ii]){
@@ -321,18 +325,20 @@ public abstract class DataActivity extends AppCompatActivity {
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonBlue.setBackgroundColor(Color.GRAY);
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                             }else if(alliancePlatformTaken[ii]){
                                 alliancePlatformTaken[ii]=false;
                                 Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
                                 platformMap.put(ii, alliancePlatformTaken[ii]);
                                 alliancePlatformValueMapList.add(platformMap);
-                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                                platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                             }
                         }
                     }
                 });
                 platformLayoutTwo.addView(platformButtonBlue);
+                platformLayoutTwo.addView(getFillerSpace(1f));
+
             }
         }
     }
@@ -534,5 +540,11 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     })
                     .show();
         }
+    }
+
+    private LinearLayout getFillerSpace(Float weight) {
+        LinearLayout fillerSpace = new LinearLayout(this);
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
+        return fillerSpace;
     }
 }
