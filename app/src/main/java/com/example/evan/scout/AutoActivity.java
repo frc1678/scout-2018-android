@@ -15,11 +15,17 @@ public class AutoActivity extends DataActivity {
     public List<String> getSwitchData() { return null; }
     public List<String> getScaleData() { return null; }
     public List<String> getPyramidData() { return null; }
+    public List<String> getPlatformData(){
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
+
     public Integer getToggleXML() { return null; }
     public Integer getCounterXML() { return null; }
     public Integer getSwitchXML() { return null; }
     public Integer getScaleXML() { return null; }
     public Integer getPyramidXML() { return null; }
+    public Integer getPlatformOneXML() { return R.id.autoPlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return null; }
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}

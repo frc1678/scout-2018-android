@@ -936,4 +936,8 @@ public class UIComponentCreator {
             return climbButton;
         }
     }
+
+    public void resetCurrentComponent(){
+        currentComponent = 0;
+    }
 }
