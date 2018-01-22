@@ -24,8 +24,11 @@ public class Constants {
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
     public static final String COLOR_GREEN = "#65C423";
-    public static final String COLOR_RED = "#ff2200";
-    public static final String COLOR_BLUE = "#0099ff";
+    public static final String COLOR_RED = "#F9613F";
+    public static final String COLOR_BLUE = "#53A4F7";
+    public static final String COLOR_LIGHTBLUE = "#A1CCF8";
+    public static final String COLOR_LIGHTRED = "#FA9B86";
+    public static final String COLOR_GREY = "#cec8c8";
 
     static {
         //replace with new datapoints
@@ -35,10 +38,10 @@ public class Constants {
             put("didGetIncapacitated", "Incapacitated");
             put("didMakeAutoRun", "Auto Run Made");
             put("didPark", "Parked");
-            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
-            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
-            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
-            put("numCubesFumbledTele", "Cubes Fumbled Tele");
+            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake");
+            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake");
+            put("numCubesFumbledAuto", "Cubes Fumbled");
+            put("numCubesFumbledTele", "Cubes Fumbled");
             put("numExchangeInput", "Exchange Inputs");
             put("numGroundIntakeTele", "Ground Intake Tele");
             put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
@@ -47,8 +50,12 @@ public class Constants {
             put("numGroundPyramidIntakeTele", "Ground Pyramid Intakes Tele");
             put("numElevatedPyramidIntakeAuto", "Elevated Pyramid Intakes Auto");
             put("numElevatedPyramidIntakeTele", "Elevated Pyramid Intakes Tele");
-            put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
-            put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
+            put("1", "1");
+            put("2", "2");
+            put("3", "3");
+            put("4", "4");
+            put("5", "5");
+            put("6", "6");
             put("numReturnIntake", "Return Intake");
             put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
             put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
@@ -57,7 +64,9 @@ public class Constants {
             put("scaleAttemptTele", "Scale Attempt Tele");
             put("numSpilledCubesAuto", "Spilled Cubes Auto");
             put("numSpilledCubesTele", "Spilled Cubes Tele");
-            put("startingPosition", "Starting Position");
+            put("startingPositionLeft", "Left");
+            put("startingPositionCenter", "Center");
+            put("startingPositionRight", "Right");
             put("climb", "Climbs");
             //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};

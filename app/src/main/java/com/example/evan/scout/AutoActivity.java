@@ -10,16 +10,22 @@ public class AutoActivity extends DataActivity {
         return null;
     }
     public List<String> getCounterData() {
-        return null;
+        return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
     }
-    public List<String> getSwitchData() { return null; }
-    public List<String> getScaleData() { return null; }
-    public List<String> getPyramidData() { return null; }
+    public Integer getPlatformOneXML() { return R.id.autoPlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return null; }
+    public Integer getRadioXML(){return R.id.autoStartPositionLayout;}
+    public List<String> getSwitchData() {return formatList(Arrays.asList("allianceSwitchAttemptAuto"));}
+    public List<String> getScaleData() {return formatList(Arrays.asList("scaleAttemptAuto"));}
+    public List<String> getPyramidData() {return formatList(Arrays.asList("pyramidAttemptAuto"));}
+    public List<String> getPlatformData(){
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
+    public List<String> getRadioData() {return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft")); }
+
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return null; }
-    public Integer getSwitchXML() { return null; }
-    public Integer getScaleXML() { return null; }
-    public Integer getPyramidXML() { return null; }
+    public Integer getCounterXML() { return R.id.autoCounterLayout; }
+    public Integer getAttemptXML() {return R.id.autoAttemptLayout; }
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}
