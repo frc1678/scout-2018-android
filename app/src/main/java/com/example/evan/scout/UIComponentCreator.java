@@ -47,6 +47,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class UIComponentCreator {
     //list of views that hold data that I need to access later
     private List<View> componentViews;
+    private List<RadioButton> radioViews;
     //list of names of buttons, textviews, etc
     private List<String> componentNames;
     private Activity context;
@@ -83,6 +84,8 @@ public class UIComponentCreator {
         componentViews.add(toggleButton);
         return toggleButton;
     }
+
+
 
     public List<View> getComponentViews() {
         return componentViews;
