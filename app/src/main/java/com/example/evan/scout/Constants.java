@@ -24,8 +24,10 @@ public class Constants {
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
     public static final String COLOR_GREEN = "#65C423";
-    public static final String COLOR_RED = "#ff2200";
-    public static final String COLOR_BLUE = "#0099ff";
+    public static final String COLOR_RED = "#F9613F";
+    public static final String COLOR_BLUE = "#53A4F7";
+    public static final String COLOR_LIGHTBLUE = "#A1CCF8";
+    public static final String COLOR_LIGHTRED = "#FA9B86";
 
     static {
         //replace with new datapoints
@@ -45,7 +47,14 @@ public class Constants {
             put("startingPositionLeft", "Left");
             put("startingPositionCenter", "Center");
             put("startingPositionRight", "Right");
-            //end startpositions
+            //platform ids
+            put("1", "1");
+            put("2", "2");
+            put("3", "3");
+            put("4", "4");
+            put("5", "5");
+            put("6", "6");
+
             put("didGetDisabled", "Disabled");
             put("didGetIncapacitated", "Incapacitated");
             put("didMakeAutoRun", "Auto Run Made");
