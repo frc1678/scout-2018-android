@@ -14,11 +14,16 @@ public class AutoActivity extends DataActivity {
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptAuto")); }
     public List<String> getRadioData() { return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft")); }
+    public List<String> getPlatformData(){
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
 
     public Integer getToggleXML() { return null; }
     public Integer getCounterXML() { return R.id.autoCounterLayout; }
     public Integer getAttemptXML() { return R.id.autoAttemptLayout; }
     public Integer getRadioXML() { return R.id.autoStartPositionLayout;}
+    public Integer getPlatformOneXML() { return R.id.autoPlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return null; }
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}

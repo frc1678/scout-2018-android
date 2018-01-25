@@ -17,11 +17,16 @@ public class TeleopActivity extends DataActivity {
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptTele")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptTele")); }
     public List<String> getRadioData() { return null; }
+    public List<String> getPlatformData(){
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
 
     public Integer getToggleXML() { return null; }
     public Integer getCounterXML() { return R.id.teleCounterLayout; }
     public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
     public Integer getRadioXML() { return null; }
+    public Integer getPlatformOneXML() { return R.id.telePlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return R.id.telePlatformCubeLayoutTwo; }
 
     public Class getNextActivityClass() {return MainActivity.class;}
     public Class getPreviousActivityClass() {return AutoActivity.class;}

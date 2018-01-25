@@ -968,5 +968,7 @@ public class UIComponentCreator {
         }
     }
 
-
+    public void resetCurrentComponent(){
+        currentComponent = 0;
+    }
 }
