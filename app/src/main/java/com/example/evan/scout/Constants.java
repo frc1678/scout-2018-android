@@ -31,30 +31,33 @@ public class Constants {
         //replace with new datapoints
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             //New constants
+            //counters
+            put("numCubesFumbledAuto", "Cubes Fumbled");
+            put("numCubesFumbledTele", "Cubes Fumbled");
+            put("numExchangeInput", "Exchange Inputs");
+            put("numGroundIntakeTele", "Ground Intake");
+            put("numGroundPortalIntakeTele", "Ground Portal Intake");
+            put("numHumanPortalIntakeTele", "Human Portal Intake");
+            put("numReturnIntake", "Return Intake");
+            put("numSpilledCubesAuto", "Spilled Cubes Auto");
+            put("numSpilledCubesTele", "Spilled Cubes Tele");
+
+            //end counter
             put("didGetDisabled", "Disabled");
             put("didGetIncapacitated", "Incapacitated");
             put("didMakeAutoRun", "Auto Run Made");
             put("didPark", "Parked");
             put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
-            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
-            put("numCubesFumbledTele", "Cubes Fumbled Tele");
-            put("numExchangeInput", "Exchange Inputs");
-            put("numGroundIntakeTele", "Ground Intake Tele");
-            put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
-            put("numHumanPortalIntakeTele", "Human Portal Intake Tele");
             put("pyramidAttemptAuto", "Pyramid Attempt");
             put("pyramidAttemptTele", "Pyramid Attempt");
             put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
             put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
-            put("numReturnIntake", "Return Intake");
             put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
             put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
             put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
             put("scaleAttemptAuto", "Scale Attempt Auto");
             put("scaleAttemptTele", "Scale Attempt Tele");
-            put("numSpilledCubesAuto", "Spilled Cubes Auto");
-            put("numSpilledCubesTele", "Spilled Cubes Tele");
             put("startingPosition", "Starting Position");
             put("climb", "Climbs");
             //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");

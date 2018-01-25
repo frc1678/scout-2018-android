@@ -10,15 +10,14 @@ public class AutoActivity extends DataActivity {
         return null;
     }
     public List<String> getCounterData() {
-        return null;
+        return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
     }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptAuto")); }
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return null; }
+    public Integer getCounterXML() { return R.id.autoCounterLayout; }
     public Integer getAttemptXML() {return R.id.autoAttemptLayout; }
-
 
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}

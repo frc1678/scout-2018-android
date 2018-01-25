@@ -10,13 +10,14 @@ public class TeleopActivity extends DataActivity {
         return null;
     }
     public List<String> getCounterData() {
-        return null;
+        return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake", "numGroundIntakeTele",
+                "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele"));
     }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptTele", "opponentSwitchAttemptTele")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptTele")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptTele")); }
     public Integer getToggleXML() { return null; }
-    public Integer getCounterXML() { return null; }
+    public Integer getCounterXML() { return R.id.teleCounterLayout; }
     public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
 
 

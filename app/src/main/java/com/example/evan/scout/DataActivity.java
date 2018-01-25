@@ -155,64 +155,68 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        LinearLayout attemptLayout = (LinearLayout)findViewById(getAttemptXML());
+                                            LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
+                                            List<String> counterNames = new ArrayList<>();
+                                            counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+                                            for (int i = 0; i < getCounterData().size(); i++) {
+                                                counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
+                                            }counterLayout.addView(getFillerSpace(1f));
 
-        List<String> switchDisplayTitles = new ArrayList<>();
-        List<String> scaleDisplayTitles = new ArrayList<>();
-        List<String> pyramidDisplayTitles = new ArrayList<>();
-
-        if(getSwitchData() != null) {
-            Log.e("AttemptSIZE-Sw", getSwitchData().size() + "");
-            for (int i = 0; i < getSwitchData().size(); i++) {
-                switchDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getSwitchData().get(i)));
-            }
-        }if(getScaleData() != null) {
-            Log.e("AttemptSIZE-Sc", getScaleData().size() + "");
-            for (int i = 0; i < getScaleData().size(); i++) {
-                scaleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getScaleData().get(i)));
-            }
-        }if(getPyramidData() != null) {
-            Log.e("AttemptSIZE-P", getPyramidData().size() + "");
-            for (int i = 0; i < getPyramidData().size(); i++) {
-                pyramidDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getPyramidData().get(i)));
-            }
-        }
-
-        switchCreator = new UIComponentCreator.UISwitchCreator(this, switchDisplayTitles);
-        scaleCreator = new UIComponentCreator.UIScaleCreator(this, scaleDisplayTitles);
-        pyramidCreator = new UIComponentCreator.UIPyramidCreator(this, pyramidDisplayTitles);
-
-        Log.e("AttemptSIZE-Sw", switchDisplayTitles.size() + "");
-        Log.e("AttemptSIZE-Sc", scaleDisplayTitles.size() + "");
-        Log.e("AttemptSIZE-P", pyramidDisplayTitles.size() + "");
-
-        for (int i = 0; i < getSwitchData().size(); i++) {
-            if(activityName().equals("auto")){
-                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor);
-                attemptLayout.addView(a_switchButton);
-            }else if(activityName().equals("tele")){
-                if(MainActivity.allianceColor.equals("red")){
-                    Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red");
-                    Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue");
-                    attemptLayout.addView(a_switchButton);
-                    attemptLayout.addView(o_switchButton);
-                }else if(MainActivity.allianceColor.equals("blue")){
-                    Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue");
-                    Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red");
-                    attemptLayout.addView(o_switchButton);
-                    attemptLayout.addView(a_switchButton);
-                }
-            }
-        }
-        if(activityName().equals("auto")){
-            Button scaleButton = scaleCreator.addButton("scaleAttemptAuto");
-            attemptLayout.addView(scaleButton);
-        }else if(activityName().equals("tele")){
-            Button scaleButton = scaleCreator.addButton("scaleAttemptTele");
-            attemptLayout.addView(scaleButton);
-        }
-        Button pyramidButton = pyramidCreator.addButton();
-        attemptLayout.addView(pyramidButton);
+                    LinearLayout attemptLayout = (LinearLayout)findViewById(getAttemptXML());
+                    List<String> switchDisplayTitles = new ArrayList<>();
+                    List<String> scaleDisplayTitles = new ArrayList<>();
+                    List<String> pyramidDisplayTitles = new ArrayList<>();
+                    if(getSwitchData() != null) {
+                        Log.e("AttemptSIZE-Sw", getSwitchData().size() + "");
+                        for (int i = 0; i < getSwitchData().size(); i++) {
+                            switchDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getSwitchData().get(i)));
+                        }
+                    }if(getScaleData() != null) {
+                        Log.e("AttemptSIZE-Sc", getScaleData().size() + "");
+                        for (int i = 0; i < getScaleData().size(); i++) {
+                            scaleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getScaleData().get(i)));
+                        }
+                    }if(getPyramidData() != null) {
+                        Log.e("AttemptSIZE-P", getPyramidData().size() + "");
+                        for (int i = 0; i < getPyramidData().size(); i++) {
+                            pyramidDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getPyramidData().get(i)));
+                        }
+                    }
+                    switchCreator = new UIComponentCreator.UISwitchCreator(this, switchDisplayTitles);
+                    scaleCreator = new UIComponentCreator.UIScaleCreator(this, scaleDisplayTitles);
+                    pyramidCreator = new UIComponentCreator.UIPyramidCreator(this, pyramidDisplayTitles);
+                    //add reset
+                    Log.e("AttemptSIZE-Sw", switchDisplayTitles.size() + "");
+                    Log.e("AttemptSIZE-Sc", scaleDisplayTitles.size() + "");
+                    Log.e("AttemptSIZE-P", pyramidDisplayTitles.size() + "");
+                    for (int i = 0; i < getSwitchData().size(); i++) {
+                        if(activityName().equals("auto")){
+                            Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor);
+                            attemptLayout.addView(a_switchButton);
+                        }else if(activityName().equals("tele")){
+                            if(MainActivity.allianceColor.equals("red")){
+                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red");
+                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue");
+                                attemptLayout.addView(a_switchButton);
+                                attemptLayout.addView(o_switchButton);
+                            }else if(MainActivity.allianceColor.equals("blue")){
+                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue");
+                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red");
+                                attemptLayout.addView(o_switchButton);
+                                attemptLayout.addView(a_switchButton);
+                            }
+                        }
+                    }
+                    if(activityName().equals("auto")){
+                        Button scaleButton = scaleCreator.addButton("scaleAttemptAuto");
+                        attemptLayout.addView(scaleButton);
+                    }else if(activityName().equals("tele")){
+                        Button scaleButton = scaleCreator.addButton("scaleAttemptTele");
+                        attemptLayout.addView(scaleButton);
+                    }
+                    Button pyramidButton = pyramidCreator.addButton();
+                    attemptLayout.addView(pyramidButton);
     }
 
     //for making space between buttons
