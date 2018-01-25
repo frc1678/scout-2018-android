@@ -41,8 +41,11 @@ public class Constants {
             put("numReturnIntake", "Return Intake");
             put("numSpilledCubesAuto", "Spilled Cubes Auto");
             put("numSpilledCubesTele", "Spilled Cubes Tele");
-
-            //end counter
+            //start positions
+            put("startingPositionLeft", "Left");
+            put("startingPositionCenter", "Center");
+            put("startingPositionRight", "Right");
+            //end startpositions
             put("didGetDisabled", "Disabled");
             put("didGetIncapacitated", "Incapacitated");
             put("didMakeAutoRun", "Auto Run Made");

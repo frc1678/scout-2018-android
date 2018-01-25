@@ -56,6 +56,7 @@ public class UIComponentCreator {
 
     public UIComponentCreator(Activity context, List<String> componentNames) {
         componentViews = new ArrayList<>();
+        radioViews = new ArrayList<>();
         this.componentNames = componentNames;
         this.context = context;
         currentComponent = 0;
@@ -85,7 +86,18 @@ public class UIComponentCreator {
         return toggleButton;
     }
 
+    public RadioButton getRadioButton (String radioFBName, String radioFBValue,int width){
+        RadioButton radioButton = new RadioButton(context);
+        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
+        radioButton.setTextSize(radioButton.getTextSize() * 1f);
+        radioViews.add(radioButton);
+        currentComponent++;
+        return radioButton;
+    }
 
+    public List<RadioButton> getRadioViews() {
+        return radioViews;
+    }
 
     public List<View> getComponentViews() {
         return componentViews;

@@ -92,6 +92,7 @@ public abstract class DataActivity extends AppCompatActivity {
 
     private Intent intent;
     private UIComponentCreator toggleCreator;
+    private UIComponentCreator radioCreator;
     private UIComponentCreator.UICounterCreator counterCreator;
     private UIComponentCreator.UISwitchCreator switchCreator;
     private UIComponentCreator.UIScaleCreator scaleCreator;
