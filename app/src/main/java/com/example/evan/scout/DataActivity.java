@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,9 +66,13 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract List<String> getSwitchData();
     public abstract List<String> getScaleData();
     public abstract List<String> getPyramidData();
+    public abstract List<String> getRadioData();
+
     public abstract Integer getToggleXML();
     public abstract Integer getCounterXML();
     public abstract Integer getAttemptXML();
+    public abstract Integer getRadioXML();
+
     public abstract Class getNextActivityClass();
     public abstract Class getPreviousActivityClass();
     public abstract int getActionBarMenu();
@@ -155,6 +161,39 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+                    if (getRadioXML() != null) {
+                        RadioGroup radioLayout = (RadioGroup) findViewById(getRadioXML());
+                        List<String> radioDisplayTitles = new ArrayList<>();
+                        if (getRadioData() != null) {
+                            if (activityName().equals("auto")) {
+
+                                Log.e("radioSize", getRadioData().size() + "");
+
+                                if(getRadioData() != null){
+                                    Log.e("AttemptSIZE-Sw",getSwitchData()+"");
+                                    for(int i=0; i< getRadioData().size(); i++){
+                                        radioDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getRadioData().get(i)));
+                                    }
+                                }
+
+                                radioCreator = new UIComponentCreator(this, radioDisplayTitles);
+                                Log.e("radioSize", radioDisplayTitles.size() + "");
+
+                                final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
+                                final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", LinearLayout.LayoutParams.MATCH_PARENT);
+                                final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
+
+
+                                radioLayout.addView(rightStartPosition);
+                                radioLayout.addView(centerStartPosition);
+                                radioLayout.addView(leftStartPosition);
+
+                                rightStartPosition.setText("Right");
+                                centerStartPosition.setText("Center");
+                                leftStartPosition.setText("Left");
+                            }
+                        }
+                    }
                                             LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
                                             List<String> counterNames = new ArrayList<>();
                                             counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
