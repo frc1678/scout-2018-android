@@ -9,6 +9,7 @@ public class TeleopActivity extends DataActivity {
     public List<String> getPlatformData() {
         return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
     }
+<<<<<<< HEAD
     public Integer getPlatformOneXML() { return R.id.telePlatformCubeLayoutOne; }
     public Integer getPlatformTwoXML() { return R.id.telePlatformCubeLayoutTwo; }
     public List<String> getToggleData() { return null; }
@@ -21,6 +22,24 @@ public class TeleopActivity extends DataActivity {
     public Integer getCounterXML() { return R.id.teleCounterLayout; }
     public Integer getRadioXML(){return R.id.autoStartPositionLayout;}
     public Integer getToggleXML() { return null; }
+=======
+    public List<String> getToggleData() { return null;}
+    public List<String> getCounterData() {
+        return null;
+    }
+    public Integer getToggleXML() { return null; }
+    public Integer getCounterXML() { return null; }
+    public Integer getPlatformOneXML() { return R.id.telePlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return R.id.telePlatformCubeLayoutTwo; }
+    public String activityName(){ return "tele"; }
+    public List<String> getToggleData() { return null; }
+    public List<String> getCounterData() { return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake", "numGroundIntakeTele", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele")); }
+    public List<String> getRadioData(){ return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft"));}
+
+    public Integer getCounterXML() { return R.id.teleCounterLayout; }
+    public Integer getRadioXML(){return R.id.autoStartPositionLayout;}
+    public Integer getToggleXML() { return null; }
+>>>>>>> fbe7bc7fb2a715092d41eb9bb059c28460aca6ca
     public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
 
     public Class getNextActivityClass() {return MainActivity.class;}

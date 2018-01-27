@@ -12,12 +12,15 @@ public class AutoActivity extends DataActivity {
     public List<String> getCounterData() {
         return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
     }
+<<<<<<< HEAD
     public Integer getPlatformOneXML() { return R.id.autoPlatformCubeLayoutOne; }
     public Integer getPlatformTwoXML() { return null; }
     public Integer getRadioXML(){return R.id.autoStartPositionLayout;}
     public List<String> getSwitchData() {return formatList(Arrays.asList("allianceSwitchAttemptAuto"));}
     public List<String> getScaleData() {return formatList(Arrays.asList("scaleAttemptAuto"));}
     public List<String> getPyramidData() {return formatList(Arrays.asList("pyramidAttemptAuto"));}
+=======
+>>>>>>> fbe7bc7fb2a715092d41eb9bb059c28460aca6ca
     public List<String> getPlatformData(){
         return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
     }
