@@ -8,65 +8,70 @@
     tools:context="com.example.evan.scout.TeleopActivity">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/LeftLayout">
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:id="@+id/LeftUpLayout"
-            android:orientation="horizontal">
+            android:layout_weight="0.3"
+            android:orientation="vertical"
+            android:id="@+id/LeftLayout">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/teleAttemptLayout"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_weight="0.5"
+                android:id="@+id/LeftUpLayout"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/teleAttemptLayout"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/telePlatformCubeLayoutOne"
+                    android:orientation="vertical">
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/telePlatformCubeLayoutTwo"
+                    android:orientation="vertical">
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_below="@id/LeftUpLayout"
                 android:layout_weight="1"
-                android:id="@+id/telePlatformCubeLayoutOne"
-                android:orientation="vertical">
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/telePlatformCubeLayoutTwo"
-                android:orientation="vertical">
+                android:id="@+id/LeftDownLayout"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/teleToggleLayout">
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:id="@+id/endGameLayout">
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/LeftUpLayout"
             android:layout_weight="1"
-            android:id="@+id/LeftDownLayout"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:id="@+id/teleToggleLayout">
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:id="@+id/endGameLayout">
-            </LinearLayout>
+            android:id="@+id/teleCounterLayout"
+            android:orientation="vertical">
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@id/LeftLayout"
-        android:id="@+id/teleCounterLayout"
-        android:orientation="vertical">
     </LinearLayout>
 </RelativeLayout>

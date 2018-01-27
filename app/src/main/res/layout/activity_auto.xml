@@ -9,42 +9,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/autoAttemptLayout"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:id="@+id/aboveToggleLayout"
+            android:layout_weight="0.2"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/autoAttemptLayout"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/autoPlatformCubeLayoutOne"
+                android:orientation="vertical">
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:id="@+id/autoCounterLayout"
+                android:orientation="vertical">
+            </LinearLayout>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:id="@+id/autoStartPositionLayout"
+                android:orientation="vertical">
+            </RadioGroup>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/autoPlatformCubeLayoutOne"
-            android:orientation="vertical">
+            android:id="@+id/autoToggleLayout"
+            android:orientation="horizontal">
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:id="@+id/autoCounterLayout"
-            android:orientation="vertical">
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:id="@+id/autoStartPositionLayout"
-            android:orientation="vertical">
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0"
-        android:id="@+id/autoToggleLayout"
-        android:orientation="horizontal">
     </LinearLayout>
 </RelativeLayout>

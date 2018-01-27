@@ -172,6 +172,55 @@ public abstract class DataActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+
+                    if(getToggleXML()!=null) {
+                        LinearLayout toggleLayout = (LinearLayout) findViewById(getToggleXML());
+                        List<String> toggleDisplayTitles = new ArrayList<>();
+                        if (activityName().equals("auto")) {
+
+
+                            if (getToggleData() != null) {
+                                Log.e("toggleSize", getToggleData().size() + "");
+                                for (int i = 0; i < getToggleData().size(); i++) {
+                                    toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
+                                }
+                                toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
+                                final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0);
+                                autoLinePassed.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        DataManager.addZeroTierJsonData("didMakeAutoRun", autoLinePassed.isChecked());
+                                    }
+                                });
+                                toggleLayout.addView(autoLinePassed);
+                            }
+                        } else if (activityName().equals("tele")) {
+                            if (getToggleData() != null) {
+                                Log.e("toggleSize", getToggleData().size() + "");
+                                for (int i = 0; i < getToggleData().size(); i++) {
+                                    toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
+                                }
+                                toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
+                                final ToggleButton incap = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0);
+                                final ToggleButton disabled = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0);
+                                incap.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
+                                    }
+                                });
+                                disabled.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
+                                    }
+                                });
+                                toggleLayout.addView(incap);
+                                toggleLayout.addView(disabled);
+                            }
+                        }
+                    }
+
                                             if(activityName().equals("auto") && !instantiatedPlatformBools){      for(int i = 0; i <=5; i++){     alliancePlatformTaken[i] = false; opponentPlatformTaken[i] = false;} instantiatedPlatformBools = true;}
                                             //-----------------------------Add 12 buttons
                                             if ((getPlatformOneXML() != null && activityName().equals("auto"))){
@@ -407,29 +456,36 @@ public abstract class DataActivity extends AppCompatActivity {
                     Log.e("AttemptSIZE-P", pyramidDisplayTitles.size() + "");
                     for (int i = 0; i < getSwitchData().size(); i++) {
                         if(activityName().equals("auto")){
+                            switchCreator.resetSwitchComponent();
                             Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor);
                             attemptLayout.addView(a_switchButton);
                         }else if(activityName().equals("tele")){
-                            if(MainActivity.allianceColor.equals("red")){
+                            Log.e("REEEEEEEt", activityName());
+                            if(MainActivity.allianceColor.equals("red") && (attemptLayout.getChildAt(0)==null && attemptLayout.getChildAt(1)==null)){
+                                switchCreator.resetSwitchComponent();
                                 Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red");
                                 Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue");
-                                attemptLayout.addView(a_switchButton);
-                                attemptLayout.addView(o_switchButton);
-                            }else if(MainActivity.allianceColor.equals("blue")){
+                                attemptLayout.addView(a_switchButton,0);
+                                attemptLayout.addView(o_switchButton,1);
+                            }else if(MainActivity.allianceColor.equals("blue") && (attemptLayout.getChildAt(0)==null && attemptLayout.getChildAt(1)==null)){
+                                switchCreator.resetSwitchComponent();
                                 Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue");
                                 Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red");
-                                attemptLayout.addView(o_switchButton);
-                                attemptLayout.addView(a_switchButton);
+                                attemptLayout.addView(o_switchButton,0);
+                                attemptLayout.addView(a_switchButton,1);
                             }
                         }
                     }
                     if(activityName().equals("auto")){
+                        scaleCreator.resetScaleComponenet();
                         Button scaleButton = scaleCreator.addButton("scaleAttemptAuto");
                         attemptLayout.addView(scaleButton);
                     }else if(activityName().equals("tele")){
+                        scaleCreator.resetScaleComponenet();
                         Button scaleButton = scaleCreator.addButton("scaleAttemptTele");
                         attemptLayout.addView(scaleButton);
                     }
+                    pyramidCreator.resetPyramidComponent();
                     Button pyramidButton = pyramidCreator.addButton();
                     attemptLayout.addView(pyramidButton);
     }

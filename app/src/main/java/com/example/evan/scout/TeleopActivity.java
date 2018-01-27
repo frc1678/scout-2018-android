@@ -7,7 +7,7 @@ import java.util.List;
 public class TeleopActivity extends DataActivity {
     public String activityName(){   return "tele"; }
     public List<String> getToggleData() {
-        return null;
+        return formatList(Arrays.asList("didGetIncapacitated", "didGetDisabled"));
     }
     public List<String> getCounterData() {
         return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake", "numGroundIntakeTele",
@@ -21,7 +21,7 @@ public class TeleopActivity extends DataActivity {
         return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
     }
 
-    public Integer getToggleXML() { return null; }
+    public Integer getToggleXML() { return R.id.teleToggleLayout; }
     public Integer getCounterXML() { return R.id.teleCounterLayout; }
     public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
     public Integer getRadioXML() { return null; }

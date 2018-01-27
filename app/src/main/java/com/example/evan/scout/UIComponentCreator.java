@@ -79,7 +79,7 @@ public class UIComponentCreator {
         toggleButton.setTextOn(componentNames.get(currentComponent));
         toggleButton.setTextOff(componentNames.get(currentComponent));
         toggleButton.setTextSize(toggleButton.getTextSize() * 1f);
-        toggleButton.setBackgroundColor(color);
+        if(color == 0){     }else{      toggleButton.setBackgroundColor(color); }
         toggleButton.setChecked(value);
         currentComponent++;
         componentViews.add(toggleButton);
@@ -179,12 +179,15 @@ public class UIComponentCreator {
             name = "LOL";
         }
 
+        public void resetSwitchComponent(){     currentSwitchComponent = 0; }
+        public int returnSwitchComponent(){     return currentSwitchComponent; }
+
         public Button addButton(final String switchFBname, final String colorOfSwitch) {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
             final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-            if(colorOfSwitch.equals("red")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));     switchButton.setText(MainActivity.capAllianceColor + " Switch Attempt"); }
-            else if(colorOfSwitch.equals("blue")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));     switchButton.setText(MainActivity.capAllianceColor + " Switch Attempt"); }
+            if(colorOfSwitch.equals("red")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));     switchButton.setText("Red Switch Attempt"); }
+            else if(colorOfSwitch.equals("blue")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));     switchButton.setText("Blue Switch Attempt"); }
             switchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -412,6 +415,9 @@ public class UIComponentCreator {
             layer = 0;
         }
 
+        public void resetScaleComponenet(){     currentScaleComponent = 0; }
+        public int returnScaleComponenet(){     return currentScaleComponent; }
+
         public Button addButton(final String scaleFBname) {
 
             final Button scaleButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
@@ -636,6 +642,9 @@ public class UIComponentCreator {
             name = "LOL";
         }
 
+        public void resetPyramidComponent(){     currentPyramidComponent = 0; }
+        public int returnPyramidComponent(){     return currentPyramidComponent; }
+
         public Button addButton() {
             numElevatedPyramidIntake = 0;
             numGroundPyramidIntake = 0;
@@ -833,7 +842,7 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.climbRadio);
+                            RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
                             independentRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

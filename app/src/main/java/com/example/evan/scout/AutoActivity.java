@@ -7,9 +7,9 @@ import java.util.List;
 public class AutoActivity extends DataActivity {
     public String activityName(){   return "auto"; }
     public List<String> getToggleData() {
-        return null;
+        return formatList(Arrays.asList("didMakeAutoRun"));
     }
-    public List<String> getCounterData() { return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto")); }
+    public List<String> getCounterData() { return formatList(Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto")); }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptAuto")); }
@@ -18,7 +18,7 @@ public class AutoActivity extends DataActivity {
         return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
     }
 
-    public Integer getToggleXML() { return null; }
+    public Integer getToggleXML() { return R.id.autoToggleLayout; }
     public Integer getCounterXML() { return R.id.autoCounterLayout; }
     public Integer getAttemptXML() { return R.id.autoAttemptLayout; }
     public Integer getRadioXML() { return R.id.autoStartPositionLayout;}
