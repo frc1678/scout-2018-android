@@ -17,7 +17,7 @@
         android:orientation="horizontal"
         android:id="@+id/scaleButtonLayout"
         android:paddingBottom="10dp"
-        android:layout_centerVertical="true">
+        android:layout_below="@+id/scaleDialogTitle">
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
