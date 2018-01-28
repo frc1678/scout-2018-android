@@ -28,16 +28,42 @@ public class Constants {
     public static final String COLOR_BLUE = "#53A4F7";
     public static final String COLOR_LIGHTBLUE = "#A1CCF8";
     public static final String COLOR_LIGHTRED = "#FA9B86";
+<<<<<<< HEAD
     public static final String COLOR_GREY = "#cec8c8";
+=======
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
 
     static {
         //replace with new datapoints
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             //New constants
+            //counters
+            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
+            put("numCubesFumbledTele", "Cubes Fumbled");
+            put("numExchangeInput", "Exchange Input");
+            put("numGroundIntakeTele", "Ground Intake");
+            put("numGroundPortalIntakeTele", "Ground Portal Intake");
+            put("numHumanPortalIntakeTele", "Human Portal Intake");
+            put("numReturnIntake", "Return Intake");
+            put("numSpilledCubesAuto", "Cubes Spilled Auto");
+            put("numSpilledCubesTele", "Cubes Spilled");
+            //start positions
+            put("startingPositionLeft", "Left");
+            put("startingPositionCenter", "Center");
+            put("startingPositionRight", "Right");
+            //platform ids
+            put("1", "1");
+            put("2", "2");
+            put("3", "3");
+            put("4", "4");
+            put("5", "5");
+            put("6", "6");
+
             put("didGetDisabled", "Disabled");
-            put("didGetIncapacitated", "Incapacitated");
+            put("didGetIncapacitated", "Incap");
             put("didMakeAutoRun", "Auto Run Made");
             put("didPark", "Parked");
+<<<<<<< HEAD
             put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake");
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake");
             put("numCubesFumbledAuto", "Cubes Fumbled");
@@ -67,6 +93,20 @@ public class Constants {
             put("startingPositionLeft", "Left");
             put("startingPositionCenter", "Center");
             put("startingPositionRight", "Right");
+=======
+            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
+            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
+            put("pyramidAttemptAuto", "Pyramid");
+            put("pyramidAttemptTele", "Pyramid");
+            put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
+            put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
+            put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
+            put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
+            put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
+            put("scaleAttemptAuto", "Scale");
+            put("scaleAttemptTele", "Scale");
+            put("startingPosition", "Starting Position");
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
             put("climb", "Climbs");
             //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};

@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     //boolean if the schedule has been overridden
     public boolean overridden = false;
 
-    public backgroundTimer bgTimer;
+    public static backgroundTimer bgTimer;
 
     //all of the menuItems
     MenuItem overrideItem;
