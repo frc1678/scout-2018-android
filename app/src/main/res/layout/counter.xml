@@ -5,7 +5,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:id="@+id/counterTitle"
         android:gravity="center"/>
 
@@ -17,25 +17,25 @@
         android:layout_below="@+id/counterTitle">
 
         <Button
-            android:layout_width="70sp"
-            android:layout_height="43sp"
+            android:layout_width="90sp"
+            android:layout_height="45sp"
             android:text="-"
             android:gravity="center"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:id="@+id/minus" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:padding="5sp"
+            android:textSize="20sp"
+            android:padding="10sp"
             android:text="0"
             android:id="@+id/value" />
 
         <Button
-            android:layout_width="70sp"
-            android:layout_height="43sp"
-            android:textSize="15sp"
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
             android:text="+"
             android:gravity="center"
             android:id="@+id/plus" />

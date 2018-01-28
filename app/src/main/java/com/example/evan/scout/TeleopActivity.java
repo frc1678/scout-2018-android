@@ -10,8 +10,9 @@ public class TeleopActivity extends DataActivity {
         return formatList(Arrays.asList("didGetIncapacitated", "didGetDisabled"));
     }
     public List<String> getCounterData() {
-        return formatList(Arrays.asList("numCubesFumbledTele", "numExchangeInput", "numReturnIntake", "numGroundIntakeTele",
-                "numGroundPortalIntakeTele", "numHumanPortalIntakeTele", "numSpilledCubesTele"));
+        return formatList(Arrays.asList("numCubesFumbledTele", "numCubesSpilledTele", "numGroundIntakeTele",
+                "numExchangeInput", "numReturnIntake",
+                "numGroundPortalIntakeTele", "numHumanPortalIntakeTele"));
     }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptTele", "opponentSwitchAttemptTele")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptTele")); }
@@ -22,11 +23,14 @@ public class TeleopActivity extends DataActivity {
     }
 
     public Integer getToggleXML() { return R.id.teleToggleLayout; }
-    public Integer getCounterXML() { return R.id.teleCounterLayout; }
-    public Integer getAttemptXML() { return R.id.teleAttemptLayout; }
+    public Integer getCounterOneXML() { return R.id.teleCounterLayoutOne; }
+    public Integer getCounterTwoXML() { return R.id.teleCounterLayoutTwo; }
+    public Integer getAttemptOneXML() { return R.id.teleAttemptLayoutOne; }
+    public Integer getAttemptTwoXML() { return R.id.teleAttemptLayoutTwo; }
     public Integer getRadioXML() { return null; }
     public Integer getPlatformOneXML() { return R.id.telePlatformCubeLayoutOne; }
     public Integer getPlatformTwoXML() { return R.id.telePlatformCubeLayoutTwo; }
+    public Integer getEndGameXML() { return R.id.endGameLayout; }
 
     public Class getNextActivityClass() {return MainActivity.class;}
     public Class getPreviousActivityClass() {return AutoActivity.class;}

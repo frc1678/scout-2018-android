@@ -34,15 +34,15 @@ public class Constants {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             //New constants
             //counters
-            put("numCubesFumbledAuto", "Cubes Fumbled");
+            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
             put("numCubesFumbledTele", "Cubes Fumbled");
-            put("numExchangeInput", "Exchange Inputs");
+            put("numExchangeInput", "Exchange Input");
             put("numGroundIntakeTele", "Ground Intake");
             put("numGroundPortalIntakeTele", "Ground Portal Intake");
             put("numHumanPortalIntakeTele", "Human Portal Intake");
             put("numReturnIntake", "Return Intake");
-            put("numSpilledCubesAuto", "Spilled Cubes Auto");
-            put("numSpilledCubesTele", "Spilled Cubes Tele");
+            put("numCubesSpilledAuto", "Cubes Spilled Auto");
+            put("numCubesSpilledTele", "Cubes Spilled");
             //start positions
             put("startingPositionLeft", "Left");
             put("startingPositionCenter", "Center");
@@ -56,20 +56,20 @@ public class Constants {
             put("6", "6");
 
             put("didGetDisabled", "Disabled");
-            put("didGetIncapacitated", "Incapacitated");
+            put("didGetIncapacitated", "Incap");
             put("didMakeAutoRun", "Auto Run Made");
             put("didPark", "Parked");
             put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
-            put("pyramidAttemptAuto", "Pyramid Attempt");
-            put("pyramidAttemptTele", "Pyramid Attempt");
+            put("pyramidAttemptAuto", "Pyramid");
+            put("pyramidAttemptTele", "Pyramid");
             put("numAlliancePlatformIntakeAuto", "Alliance Platform Intake Auto");
             put("numAlliancePlatformIntakeTele", "Alliance Platform Intake Tele");
             put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
             put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
             put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
-            put("scaleAttemptAuto", "Scale Attempt Auto");
-            put("scaleAttemptTele", "Scale Attempt Tele");
+            put("scaleAttemptAuto", "Scale");
+            put("scaleAttemptTele", "Scale");
             put("startingPosition", "Starting Position");
             put("climb", "Climbs");
             //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");

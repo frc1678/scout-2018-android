@@ -4,7 +4,7 @@
     <item
         android:title="Start Timer"
         android:id="@+id/beginTimerButton"
-        android:checkable="true"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:title=""
         android:id="@+id/teamNumTextView"

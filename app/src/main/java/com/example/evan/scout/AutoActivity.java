@@ -9,7 +9,7 @@ public class AutoActivity extends DataActivity {
     public List<String> getToggleData() {
         return formatList(Arrays.asList("didMakeAutoRun"));
     }
-    public List<String> getCounterData() { return formatList(Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto")); }
+    public List<String> getCounterData() { return formatList(Arrays.asList("numCubesSpilledAuto", "numCubesFumbledAuto")); }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptAuto")); }
@@ -19,12 +19,14 @@ public class AutoActivity extends DataActivity {
     }
 
     public Integer getToggleXML() { return R.id.autoToggleLayout; }
-    public Integer getCounterXML() { return R.id.autoCounterLayout; }
-    public Integer getAttemptXML() { return R.id.autoAttemptLayout; }
+    public Integer getCounterOneXML() { return R.id.autoCounterLayout; }
+    public Integer getCounterTwoXML() { return null; }
+    public Integer getAttemptOneXML() { return R.id.autoAttemptLayout; }
+    public Integer getAttemptTwoXML() { return null; }
     public Integer getRadioXML() { return R.id.autoStartPositionLayout;}
     public Integer getPlatformOneXML() { return R.id.autoPlatformCubeLayoutOne; }
     public Integer getPlatformTwoXML() { return null; }
-
+    public Integer getEndGameXML() { return null; }
     @Override
     public Class getNextActivityClass() {return TeleopActivity.class;}
     public Class getPreviousActivityClass() {return MainActivity.class;}

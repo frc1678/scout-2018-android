@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -117,11 +118,12 @@ public class bgLoopThread extends Thread {
                 if (!main.internetCheck()){
                     View dialogView = LayoutInflater.from(context).inflate(R.layout.internetdialog, null);
                     final TextView textView = (TextView) dialogView.findViewById(R.id.messageTextView);
-                    textView.setText("WARNING!");
+                    textView.setText("WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!");
+                    textView.setTextColor(Color.parseColor(Constants.COLOR_RED));
                     new AlertDialog.Builder(context)
                             .setView(dialogView)
-                            .setTitle("")
-                            .setMessage("YOU ARE NOT CONNECTED TO INTERNET! PLEASE RESEND MATCH!")
+                            .setTitle("WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!")
+                            .setMessage("YOU ARE NOT CONNECTED TO INTERNET")
                             .setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -132,8 +134,7 @@ public class bgLoopThread extends Thread {
                 }
             } // This is your code
         };
-        handler.postDelayed(runnable, delay);
-
+            handler.postDelayed(runnable, delay);
     }
 
     public void toasts(final String message) {

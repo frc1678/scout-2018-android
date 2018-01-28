@@ -70,11 +70,14 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract List<String> getPlatformData();
 
     public abstract Integer getToggleXML();
-    public abstract Integer getCounterXML();
-    public abstract Integer getAttemptXML();
+    public abstract Integer getCounterOneXML();
+    public abstract Integer getCounterTwoXML();
+    public abstract Integer getAttemptOneXML();
+    public abstract Integer getAttemptTwoXML();
     public abstract Integer getRadioXML();
     public abstract Integer getPlatformOneXML();
     public abstract Integer getPlatformTwoXML();
+    public abstract Integer getEndGameXML();
 
     public abstract Class getNextActivityClass();
     public abstract Class getPreviousActivityClass();
@@ -185,11 +188,17 @@ public abstract class DataActivity extends AppCompatActivity {
                                     toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
                                 }
                                 toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
-                                final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0);
+                                final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0,true);
+                                autoLinePassed.setBackgroundColor(Color.parseColor("#cccccc"));
                                 autoLinePassed.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         DataManager.addZeroTierJsonData("didMakeAutoRun", autoLinePassed.isChecked());
+                                        if(autoLinePassed.isChecked()){
+                                            autoLinePassed.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                                        }else if(!autoLinePassed.isChecked()){
+                                            autoLinePassed.setBackgroundColor(Color.parseColor("#cccccc"));
+                                        }
                                     }
                                 });
                                 toggleLayout.addView(autoLinePassed);
@@ -201,8 +210,8 @@ public abstract class DataActivity extends AppCompatActivity {
                                     toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
                                 }
                                 toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
-                                final ToggleButton incap = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0);
-                                final ToggleButton disabled = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0);
+                                final ToggleButton incap = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0,true);
+                                final ToggleButton disabled = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false,0,true);
                                 incap.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -237,7 +246,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                     if (MainActivity.allianceColor.equals("red")) {
                                                         for (int i = 0; i <= 5; i++) {
                                                             final int ii = i;
-                                                            final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED));
+                                                            final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED), true);
                                                             platformButtonRed.setOnClickListener(new View.OnClickListener() {
                                                                 public void onClick(View v) {
                                                                     if(!alliancePlatformTaken[ii]){
@@ -256,12 +265,12 @@ public abstract class DataActivity extends AppCompatActivity {
                                                                 }
                                                             });
                                                             platformLayoutOne.addView(platformButtonRed);
-                                                            platformLayoutOne.addView(getFillerSpace(0.1f));
+                                                            platformLayoutOne.addView(getFillerSpace(5));
                                                         }
                                                     } else if (MainActivity.allianceColor.equals("blue")) {
                                                         for (int i = 0; i <= 5; i++) {
                                                             final int ii = i;
-                                                            final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                                                            final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE), true);
                                                             platformButtonBlue.setOnClickListener(new View.OnClickListener() {
                                                                 public void onClick(View v) {
                                                                     if(!alliancePlatformTaken[ii]){
@@ -280,7 +289,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                                 }
                                                             });
                                                             platformLayoutOne.addView(platformButtonBlue);
-                                                            platformLayoutOne.addView(getFillerSpace(0.1f));
+                                                            platformLayoutOne.addView(getFillerSpace(5));
                                                         }
                                                     }
                                                 }
@@ -298,7 +307,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                 }
                                                 for (int i = 0; i <= 5; i++) {
                                                     final int ii = i;
-                                                    final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED));
+                                                    final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED), true);
                                                     if(MainActivity.allianceColor.equals("red") && alliancePlatformTaken[ii]){
                                                         platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                         platformButtonRed.setEnabled(false);
@@ -337,13 +346,12 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         }
                                                     });
                                                     platformLayoutOne.addView(platformButtonRed);
-                                                    platformLayoutOne.addView(getFillerSpace(1f));
-
+                                                    platformLayoutOne.addView(getFillerSpace(5));
                                                 }
                                                 platformCreator.resetCurrentComponent();
                                                 for (int i = 0; i <= 5; i++) {
                                                     final int ii = i;
-                                                    final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE));
+                                                    final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE), true);
                                                     if(MainActivity.allianceColor.equals("blue") && alliancePlatformTaken[ii]){
                                                         platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                         platformButtonBlue.setEnabled(false);
@@ -382,7 +390,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         }
                                                     });
                                                     platformLayoutTwo.addView(platformButtonBlue);
-                                                    platformLayoutTwo.addView(getFillerSpace(1f));
+                                                    platformLayoutTwo.addView(getFillerSpace(5));
 
                                                 }
                                             }
@@ -391,43 +399,59 @@ public abstract class DataActivity extends AppCompatActivity {
                         List<String> radioDisplayTitles = new ArrayList<>();
                         if (getRadioData() != null) {
                             if (activityName().equals("auto")) {
-
                                 Log.e("radioSize", getRadioData().size() + "");
-
                                 if(getRadioData() != null){
-                                    Log.e("AttemptSIZE-Sw",getSwitchData()+"");
                                     for(int i=0; i< getRadioData().size(); i++){
                                         radioDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getRadioData().get(i)));
                                     }
                                 }
-
                                 radioCreator = new UIComponentCreator(this, radioDisplayTitles);
                                 Log.e("radioSize", radioDisplayTitles.size() + "");
-
-                                final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
-                                final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", LinearLayout.LayoutParams.MATCH_PARENT);
-                                final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", LinearLayout.LayoutParams.MATCH_PARENT);
-
-
+                                final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
+                                final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", ViewGroup.LayoutParams.MATCH_PARENT, 60);
+                                final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                 radioLayout.addView(rightStartPosition);
                                 radioLayout.addView(centerStartPosition);
                                 radioLayout.addView(leftStartPosition);
-
                                 rightStartPosition.setText("Right");
                                 centerStartPosition.setText("Center");
                                 leftStartPosition.setText("Left");
                             }
                         }
                     }
-                                            LinearLayout counterLayout = (LinearLayout) findViewById(getCounterXML());
-                                            List<String> counterNames = new ArrayList<>();
-                                            counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-                                            for (int i = 0; i < getCounterData().size(); i++) {
-                                                counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
-                                                counterLayout.addView(counterCreator.addCounter(getCounterData().get(i)));
-                                            }counterLayout.addView(getFillerSpace(1f));
 
-                    LinearLayout attemptLayout = (LinearLayout)findViewById(getAttemptXML());
+                                            if(activityName().equals("auto")){
+                                                LinearLayout counterLayoutOne = (LinearLayout) findViewById(getCounterOneXML());
+                                                List<String> counterNames = new ArrayList<>();
+                                                counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
+                                                for (int i = 0; i < getCounterData().size(); i++) {
+                                                    Log.e("COUNTERSIZE", getCounterData().get(i)+"");
+                                                    counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                    counterLayoutOne.addView(counterCreator.addCounter(getCounterData().get(i)));
+                                                    counterLayoutOne.addView(getFillerSpace(15));
+                                                }
+                                            }else if(activityName().equals("tele")){
+                                                LinearLayout counterLayoutOne = (LinearLayout) findViewById(getCounterOneXML());
+                                                LinearLayout counterLayoutTwo = (LinearLayout) findViewById(getCounterTwoXML());
+                                                List<String> counterNamesOne = new ArrayList<>();
+                                                List<String> counterNamesTwo = new ArrayList<>();
+                                                counterCreator = new UIComponentCreator.UICounterCreator(this, counterNamesOne);
+                                                for (int i = 0; i < 3; i++) {
+                                                    counterNamesOne.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                    counterLayoutOne.addView(counterCreator.addCounter(getCounterData().get(i)));
+                                                }
+                                                counterCreator = new UIComponentCreator.UICounterCreator(this, counterNamesTwo);
+                                                for (int i = 3; i < getCounterData().size(); i++) {
+                                                    counterNamesTwo.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                    counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
+                                                }
+                                            }
+
+                    LinearLayout attemptLayoutOne = (LinearLayout)findViewById(getAttemptOneXML());
+                    LinearLayout attemptLayoutTwo = null;
+                    if(getAttemptTwoXML() != null){
+                        attemptLayoutTwo = (LinearLayout)findViewById(getAttemptTwoXML());
+                    }
                     List<String> switchDisplayTitles = new ArrayList<>();
                     List<String> scaleDisplayTitles = new ArrayList<>();
                     List<String> pyramidDisplayTitles = new ArrayList<>();
@@ -458,42 +482,60 @@ public abstract class DataActivity extends AppCompatActivity {
                         if(activityName().equals("auto")){
                             switchCreator.resetSwitchComponent();
                             Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor);
-                            attemptLayout.addView(a_switchButton);
+                            attemptLayoutOne.addView(a_switchButton);
                         }else if(activityName().equals("tele")){
                             Log.e("REEEEEEEt", activityName());
-                            if(MainActivity.allianceColor.equals("red") && (attemptLayout.getChildAt(0)==null && attemptLayout.getChildAt(1)==null)){
+                            if(MainActivity.allianceColor.equals("red") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
                                 Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red");
                                 Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue");
-                                attemptLayout.addView(a_switchButton,0);
-                                attemptLayout.addView(o_switchButton,1);
-                            }else if(MainActivity.allianceColor.equals("blue") && (attemptLayout.getChildAt(0)==null && attemptLayout.getChildAt(1)==null)){
+                                attemptLayoutOne.addView(a_switchButton,0);
+                                attemptLayoutOne.addView(getFillerSpace(5),1);
+                                attemptLayoutOne.addView(o_switchButton,2);
+                            }else if(MainActivity.allianceColor.equals("blue") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
                                 Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue");
                                 Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red");
-                                attemptLayout.addView(o_switchButton,0);
-                                attemptLayout.addView(a_switchButton,1);
+                                attemptLayoutOne.addView(o_switchButton,0);
+                                attemptLayoutOne.addView(getFillerSpace(5),1);
+                                attemptLayoutOne.addView(a_switchButton,2);
                             }
                         }
                     }
                     if(activityName().equals("auto")){
                         scaleCreator.resetScaleComponenet();
                         Button scaleButton = scaleCreator.addButton("scaleAttemptAuto");
-                        attemptLayout.addView(scaleButton);
+                        attemptLayoutOne.addView(scaleButton);
                     }else if(activityName().equals("tele")){
                         scaleCreator.resetScaleComponenet();
                         Button scaleButton = scaleCreator.addButton("scaleAttemptTele");
-                        attemptLayout.addView(scaleButton);
+                        attemptLayoutTwo.addView(scaleButton);
                     }
-                    pyramidCreator.resetPyramidComponent();
-                    Button pyramidButton = pyramidCreator.addButton();
-                    attemptLayout.addView(pyramidButton);
+                    if(activityName().equals("auto")){
+                        pyramidCreator.resetPyramidComponent();
+                        Button pyramidButton = pyramidCreator.addButton();
+                        attemptLayoutOne.addView(pyramidButton);
+                    }else if(activityName().equals("tele")){
+                        pyramidCreator.resetPyramidComponent();
+                        Button pyramidButton = pyramidCreator.addButton();
+                        attemptLayoutTwo.addView(pyramidButton);
+                    }
+
+
+                                            if(getEndGameXML() != null){
+                                                LinearLayout endGameLayout = (LinearLayout) findViewById(getEndGameXML());
+                                                endGameCreator = new UIComponentCreator.UIEndGameButtonCreator(this, switchDisplayTitles);
+                                                Button climbButton = (Button) endGameCreator.addButton(false);
+                                                ToggleButton parkButton = (ToggleButton) endGameCreator.addButton(true);
+                                                endGameLayout.addView(climbButton);
+                                                endGameLayout.addView(parkButton);
+                                            }
     }
 
     //for making space between buttons
-    private LinearLayout getFillerSpace(Float weight) {
+    private LinearLayout getFillerSpace(int height) {
         LinearLayout fillerSpace = new LinearLayout(this);
-        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
+        fillerSpace.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
         return fillerSpace;
     }
 
@@ -589,11 +631,21 @@ public boolean onCreateOptionsMenu(Menu menu) {
             try {
                 textView.setTitle(DataManager.collectedData.getInt("teamNumber")+"");
             }catch (JSONException je){}
+
+        if(MainActivity.bgTimer.timerReady && activityName().equals("auto")) {
+            menu.findItem(R.id.beginTimerButton).setEnabled(false);
+        }
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.beginTimerButton && MainActivity.bgTimer.timerReady) {
+            MainActivity.bgTimer.setMatchTimer();
+            item.setEnabled(false);
+        }
+
         if (item.getItemId() == R.id.buttonNext) {
             rejected = false;
 
