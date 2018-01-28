@@ -941,6 +941,8 @@ public class UIComponentCreator {
                                             activeLiftDialog.setContentView(alDialogLayout);
                                             activeLiftDialog.show();
                                         } else {
+                                            Log.e("TIMEITMETIEMTEITEMI", startTime+"");
+                                            Log.e("TIMEITMETIEMTEITEMI", endTime+"");
                                             endValues.add(0, didSucceed);
                                             endValues.add(1, startTime);
                                             endValues.add(2, endTime);

@@ -41,8 +41,8 @@ public class Constants {
             put("numGroundPortalIntakeTele", "Ground Portal Intake");
             put("numHumanPortalIntakeTele", "Human Portal Intake");
             put("numReturnIntake", "Return Intake");
-            put("numCubesSpilledAuto", "Cubes Spilled Auto");
-            put("numCubesSpilledTele", "Cubes Spilled");
+            put("numSpilledCubesAuto", "Cubes Spilled Auto");
+            put("numSpilledCubesTele", "Cubes Spilled");
             //start positions
             put("startingPositionLeft", "Left");
             put("startingPositionCenter", "Center");
