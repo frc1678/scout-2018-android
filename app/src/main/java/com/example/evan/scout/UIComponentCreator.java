@@ -416,7 +416,7 @@ public class UIComponentCreator {
             super(context, componentNames);
             currentScaleComponent = 0;
             this.context = context;
-            name = "Scale";
+            name = "Scale Attempt";
             layer = 0;
         }
 
@@ -430,8 +430,8 @@ public class UIComponentCreator {
             scaleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startTime = backgroundTimer.getUpdatedTime()/1000; //Added /1000
-                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>(); //Added this line.
+                    startTime = backgroundTimer.getUpdatedTime()/1000;
+                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
 
                     final Dialog dialog = new Dialog(context);
                     dialog.setCanceledOnTouchOutside(false);
@@ -444,12 +444,10 @@ public class UIComponentCreator {
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            endTime = System.currentTimeMillis()/1000; //Added /1000
-                            didSucceed = true;
-
                             dialog.dismiss();
 
                             final Dialog successDialog = new Dialog(context);
+                            successDialog.setCanceledOnTouchOutside(false);
                             successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.scaleSuccessDialogTitle);
@@ -459,7 +457,7 @@ public class UIComponentCreator {
                             ownedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "Owned"; //Capitalized O in "Owned"
+                                    status = "Owned";
                                 }
                             });
 
@@ -467,7 +465,7 @@ public class UIComponentCreator {
                             balancedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "Balanced"; //Capitalized B in "Balanced"
+                                    status = "Balanced";
                                 }
                             });
 
@@ -507,9 +505,10 @@ public class UIComponentCreator {
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    didSucceed = true;
                                     if (status != null && layer != 0) {
                                         int i = 0;
-                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
+                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                         List<Object> scaleValues = new ArrayList<>();
                                         scaleValues.clear();
                                         scaleValues.add(didSucceed);
@@ -531,14 +530,14 @@ public class UIComponentCreator {
                                             DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
                                             DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
                                         }
-                                        //START HERE
+//START HERE
                                         dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
                                         dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
                                         dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
                                         dataSpace.put(scaleKeys.get(3), scaleValues.get(3));
                                         dataSpace.put(scaleKeys.get(4), scaleValues.get(4));
 
-                                        scaleDataList.add(dataSpace); //END HERE
+                                        scaleDataList.add(dataSpace); //END HERE (or one line above)
                                         successDialog.dismiss();
 
                                     } else {
@@ -559,7 +558,7 @@ public class UIComponentCreator {
                             didSucceed = false;
 
                             int i = 0;
-                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //Added "status" and "layer"
+                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                             List<Object> scaleValues = new ArrayList<>();
                             scaleValues.clear();
                             scaleValues.add(didSucceed);
@@ -581,14 +580,14 @@ public class UIComponentCreator {
                                 DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
                                 DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
                             }
-                            //START HERE
+//START HERE
                             dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
                             dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
                             dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
                             dataSpace.put(scaleKeys.get(3), scaleValues.get(3));
                             dataSpace.put(scaleKeys.get(4), scaleValues.get(4));
 
-                            scaleDataList.add(dataSpace); //END HERE
+                            scaleDataList.add(dataSpace); //END HERE (or one line above)
                             dialog.dismiss();
                         }
                     });
@@ -605,7 +604,7 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-
+//START HERE
             scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View v) {

@@ -75,13 +75,12 @@ public class ScaleListAdapter extends BaseAdapter {
         if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("true")) {
             ((TextView) convertView.findViewById(R.id.cvResult)).setText("Success");
             ((TextView) convertView.findViewById(R.id.cvLayer)).setText("Layer " + (String.valueOf(dataList.get(inversePosition).get("layer"))));
-            ((TextView) convertView.findViewById(R.id.cvStatus)).setText(String.valueOf(dataList.get(inversePosition).get("status")));
         }
         else if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("false")) {
             ((TextView) convertView.findViewById(R.id.cvResult)).setText("Fail");
-            ((TextView) convertView.findViewById(R.id.cvLayer)).setText("null");
-            ((TextView) convertView.findViewById(R.id.cvStatus)).setText("null");
+            ((TextView) convertView.findViewById(R.id.cvLayer)).setText(String.valueOf(dataList.get(inversePosition).get("layer")));
         }
+        ((TextView) convertView.findViewById(R.id.cvStatus)).setText(String.valueOf(dataList.get(inversePosition).get("status")));
         ((TextView) convertView.findViewById(R.id.cvStartTime)).setText(String.valueOf(dataList.get(inversePosition).get("startTime")) + " sec");
         ((TextView) convertView.findViewById(R.id.cvEndTime)).setText(String.valueOf(dataList.get(inversePosition).get("endTime")) + " sec");
         ((ImageButton) convertView.findViewById(R.id.cvDelButton)).setOnClickListener(new View.OnClickListener() {
@@ -173,6 +172,8 @@ public class ScaleListAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
                         dataList.get(inversePosition).put("didSucceed", false);
+                        dataList.get(inversePosition).put("layer", null);
+                        dataList.get(inversePosition).put("status", null);
                         dialog.dismiss();
                         listDialog.cancel();
                     }
