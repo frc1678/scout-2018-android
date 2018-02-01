@@ -415,7 +415,7 @@ public class UIComponentCreator {
             super(context, componentNames);
             currentScaleComponent = 0;
             this.context = context;
-            name = "Scale";
+            name = "Scale Attempt";
             layer = 0;
         }
 
@@ -430,8 +430,10 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     startTime = backgroundTimer.getUpdatedTime();
+                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
 
                     final Dialog dialog = new Dialog(context);
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_dialog, null);
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.scaleDialogTitle);
@@ -441,22 +443,26 @@ public class UIComponentCreator {
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            endTime = System.currentTimeMillis(); //TODO time stuff
-                            didSucceed = true;
-
                             dialog.dismiss();
 
                             final Dialog successDialog = new Dialog(context);
+                            successDialog.setCanceledOnTouchOutside(false);
                             successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.scaleSuccessDialogTitle);
                             successTitleTV.setText(name);
 
                             RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleOwnedRadio);
+                            if(MainActivity.allianceColor.equals("blue")) {
+                                ownedRadioButton.setText("Red Owned");
+                            }
+                            else if(MainActivity.allianceColor.equals("red")) {
+                                ownedRadioButton.setText("Blue Owned");
+                            }
                             ownedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "owned";
+                                    status = "Owned";
                                 }
                             });
 
@@ -464,7 +470,7 @@ public class UIComponentCreator {
                             balancedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "balanced";
+                                    status = "Balanced";
                                 }
                             });
 
@@ -504,9 +510,13 @@ public class UIComponentCreator {
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (status != null && layer != 0) {
+                                    if (layer == 0) {
+                                        Toast.makeText(context, "No Layer Radio Button was checked.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        didSucceed = true;
                                         int i = 0;
-                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
+                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                         List<Object> scaleValues = new ArrayList<>();
                                         scaleValues.clear();
                                         scaleValues.add(didSucceed);
@@ -528,11 +538,17 @@ public class UIComponentCreator {
                                             DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
                                             DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
                                         }
+//START HERE
+                                        dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
+                                        dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
+                                        dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
+                                        dataSpace.put(scaleKeys.get(3), scaleValues.get(3));
+                                        dataSpace.put(scaleKeys.get(4), scaleValues.get(4));
 
+                                        if(DataActivity.activityName.equals("auto")) { DataManager.autoScaleDataList.add(dataSpace); }
+                                        else if(DataActivity.activityName.equals("tele")) { DataManager.teleScaleDataList.add(dataSpace); } //END HERE (or one line above)
                                         successDialog.dismiss();
 
-                                    } else {
-                                        Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -549,12 +565,14 @@ public class UIComponentCreator {
                             didSucceed = false;
 
                             int i = 0;
-                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                             List<Object> scaleValues = new ArrayList<>();
                             scaleValues.clear();
                             scaleValues.add(didSucceed);
                             scaleValues.add(startTime);
                             scaleValues.add(endTime);
+                            scaleValues.add(null);
+                            scaleValues.add(null);
 
                             if (DataManager.collectedData.has(scaleFBname)) {
                                 try {
@@ -569,6 +587,15 @@ public class UIComponentCreator {
                                 DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
                                 DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
                             }
+//START HERE
+                            dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
+                            dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
+                            dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
+                            dataSpace.put(scaleKeys.get(3), scaleValues.get(3));
+                            dataSpace.put(scaleKeys.get(4), scaleValues.get(4));
+
+                            if(DataActivity.activityName.equals("auto")) { DataManager.autoScaleDataList.add(dataSpace); }
+                            else if(DataActivity.activityName.equals("tele")) { DataManager.teleScaleDataList.add(dataSpace); } //END HERE (or one line above)
                             dialog.dismiss();
                         }
                     });
@@ -585,19 +612,14 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-
-            /*scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
+//START HERE
+            scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View v) {
-                    if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
-                        if (DataActivity.activityName.equals("auto")) {
-                            DataActivity.saveAutoData = false;
-                        } else if (DataActivity.activityName.equals("tele")) {
-                            DataActivity.saveTeleData = false;
-                        }
-                    }
 
                     int latest = 0;
+                    if(DataActivity.activityName.equals("auto")){latest = DataManager.autoScaleDataList.size();Log.e("sizeLatest", latest+"");}
+                    else if(DataActivity.activityName.equals("tele")){latest = DataManager.teleScaleDataList.size();}
 
                     if (latest > 0) {
                         View scaleHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.scale_history_dialog, null);
@@ -615,13 +637,30 @@ public class UIComponentCreator {
                         scaleBuilder.setCancelable(false);
                         AlertDialog scaleDialog = scaleBuilder.create();
 
+                        if(DataActivity.activityName.equals("auto")){
+                            scaleList.setAdapter(new ScaleListAdapter(context, DataManager.autoScaleDataList, scaleDialog, name, new ScaleListAdapter.ListModificationListener() {
+                                @Override
+                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                    DataManager.autoScaleDataList = returnList;
+                                }
+                            }));
+                        }
+                        else if(DataActivity.activityName.equals("tele")){
+                            scaleList.setAdapter(new ScaleListAdapter(context, DataManager.teleScaleDataList, scaleDialog, name, new ScaleListAdapter.ListModificationListener() {
+                                @Override
+                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                    DataManager.teleScaleDataList = returnList;
+                                }
+                            }));
+                        }
+
                         scaleDialog.show();
                     } else {
                         Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
                     }
                     return true;
-                }
-            });*/
+                } //END HERE (end of onLongClick)
+            });
             currentScaleComponent++;
             super.componentViews.add(scaleButton);
             return scaleButton;
