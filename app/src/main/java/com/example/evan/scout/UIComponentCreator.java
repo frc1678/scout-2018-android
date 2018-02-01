@@ -430,7 +430,7 @@ public class UIComponentCreator {
             scaleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startTime = backgroundTimer.getUpdatedTime()/1000;
+                    startTime = backgroundTimer.getUpdatedTime();
                     final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
 
                     final Dialog dialog = new Dialog(context);
@@ -610,14 +610,16 @@ public class UIComponentCreator {
                 public boolean onLongClick(View v) {
                     if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
                         try {
+                            Log.e("HARAMBE", DataManager.collectedData.getJSONObject(scaleFBname).toString());
                             for(int i = 0; i < DataManager.collectedData.getJSONObject(scaleFBname).length();i++){
+
                                 JSONObject tempContainer = DataManager.collectedData.getJSONObject(scaleFBname).getJSONObject(i+"");
                                 final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
                                 dataSpace.put("didSucceed", tempContainer.getBoolean("didSucceed"));
                                 dataSpace.put("status", tempContainer.getString("status"));
                                 dataSpace.put("layer", tempContainer.getInt("layer"));
-                                dataSpace.put("startTime", tempContainer.getLong("startTime"));
-                                dataSpace.put("endTime", tempContainer.getLong("endTime"));
+                                dataSpace.put("startTime", tempContainer.get("startTime")); //TODO somehow make this a Float?
+                                dataSpace.put("endTime", tempContainer.get("endTime"));
                                 scaleDataList.add(dataSpace);
                             }
                         } catch (JSONException e){
@@ -626,8 +628,7 @@ public class UIComponentCreator {
                     }
 
                     int latest = 0;
-
-                    latest = scaleDataList.size();
+                    latest = scaleDataList.size();Log.e("sizeLatest", latest+"");
 
                     if (latest > 0) {
                         View scaleHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.scale_history_dialog, null);
@@ -651,7 +652,6 @@ public class UIComponentCreator {
                                 scaleDataList = returnList;
                             }
                         }));
-
                         scaleDialog.show();
                     } else {
                         Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();

@@ -84,7 +84,7 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract int getActionBarMenu();
 
     public static boolean saveTeleData = false;
-    public static boolean saveAutoData = false;
+    public static boolean saveAutoData = true;
     public static String activityName;
     public static String capActivityName;
     public static boolean rejected = false;
