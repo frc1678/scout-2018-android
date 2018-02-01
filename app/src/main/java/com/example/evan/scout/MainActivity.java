@@ -133,6 +133,9 @@ public class MainActivity extends AppCompatActivity {
 
         bgTimer = new backgroundTimer(context);
 
+        DataManager.autoScaleDataList.clear();
+        DataManager.teleScaleDataList.clear();
+
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
 
         databaseReference = FirebaseDatabase.getInstance().getReference();

@@ -37,6 +37,8 @@ public class DataManager {
     public static String subTitle = "";
     public static JSONObject collectedData = new JSONObject();
     public static JSONObject sideData = new JSONObject();
+    public static ArrayList<HashMap<String, Object>> autoScaleDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> teleScaleDataList = new ArrayList<HashMap<String, Object>>();
 
     public static void addZeroTierJsonData(String key0, Object value0){     addToCollectedData(key0, null, value0); }
 

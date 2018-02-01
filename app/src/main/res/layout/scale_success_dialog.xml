@@ -36,7 +36,7 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:text="Owned"
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/scaleOwnedRadio"

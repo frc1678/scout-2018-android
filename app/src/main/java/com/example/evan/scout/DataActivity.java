@@ -84,7 +84,7 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract int getActionBarMenu();
 
     public static boolean saveTeleData = false;
-    public static boolean saveAutoData = true;
+    public static boolean saveAutoData = false;
     public static String activityName;
     public static String capActivityName;
     public static boolean rejected = false;
@@ -752,6 +752,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                             rejected = true;
                             saveAutoData = true;
                             saveTeleData = false;
+                            DataManager.teleScaleDataList.clear();
                             Intent intent = prepareIntent(getPreviousActivityClass());
                             if (getPreviousActivityClass() == MainActivity.class) {
                                 intent.putExtra("previousData", (String) null);
