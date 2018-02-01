@@ -9,12 +9,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+<<<<<<< HEAD
+        android:orientation="vertical"
+        android:id="@+id/LeftLayout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:id="@+id/LeftUpLayout"
+            android:orientation="horizontal">
+=======
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.9"
             android:orientation="vertical">
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -27,16 +38,39 @@
                 android:layout_height="match_parent"
                 android:id="@+id/teleAttemptLayoutOne"
                 android:layout_weight="1"
+<<<<<<< HEAD
+                android:id="@+id/telePlatformCubeLayoutOne"
+                android:orientation="vertical">
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/telePlatformCubeLayoutTwo"
+=======
                 android:paddingRight="30dp"
                 android:paddingLeft="30dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
                 android:orientation="vertical">
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+<<<<<<< HEAD
+            android:layout_below="@id/LeftUpLayout"
+            android:layout_weight="1"
+            android:id="@+id/LeftDownLayout"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:id="@+id/teleToggleLayout">
+=======
             android:layout_weight="1"
             android:orientation="vertical">
             <LinearLayout
@@ -59,11 +93,25 @@
                     android:id="@+id/telePlatformCubeLayoutTwo"
                     android:orientation="vertical">
                 </LinearLayout>
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+<<<<<<< HEAD
+                android:orientation="vertical"
+                android:id="@+id/endGameLayout">
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/LeftLayout"
+        android:id="@+id/teleCounterLayout"
+        android:orientation="vertical">
+=======
                 android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,5 +151,6 @@
                 android:orientation="vertical">
             </LinearLayout>
         </LinearLayout>
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
     </LinearLayout>
 </RelativeLayout>

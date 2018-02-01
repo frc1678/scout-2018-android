@@ -9,6 +9,28 @@ public class AutoActivity extends DataActivity {
     public List<String> getToggleData() {
         return formatList(Arrays.asList("didMakeAutoRun"));
     }
+<<<<<<< HEAD
+    public List<String> getCounterData() {
+        return (Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto"));
+    }
+<<<<<<< HEAD
+    public Integer getPlatformOneXML() { return R.id.autoPlatformCubeLayoutOne; }
+    public Integer getPlatformTwoXML() { return null; }
+    public Integer getRadioXML(){return R.id.autoStartPositionLayout;}
+    public List<String> getSwitchData() {return formatList(Arrays.asList("allianceSwitchAttemptAuto"));}
+    public List<String> getScaleData() {return formatList(Arrays.asList("scaleAttemptAuto"));}
+    public List<String> getPyramidData() {return formatList(Arrays.asList("pyramidAttemptAuto"));}
+=======
+>>>>>>> fbe7bc7fb2a715092d41eb9bb059c28460aca6ca
+    public List<String> getPlatformData(){
+        return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
+    }
+    public List<String> getRadioData() {return formatList(Arrays.asList("startPositionRight", "startPositionCenter", "startPositionLeft")); }
+
+    public Integer getToggleXML() { return null; }
+    public Integer getCounterXML() { return R.id.autoCounterLayout; }
+    public Integer getAttemptXML() {return R.id.autoAttemptLayout; }
+=======
     public List<String> getCounterData() { return formatList(Arrays.asList("numCubesSpilledAuto", "numCubesFumbledAuto")); }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
@@ -17,6 +39,7 @@ public class AutoActivity extends DataActivity {
     public List<String> getPlatformData(){
         return formatList(Arrays.asList("1", "2", "3", "4", "5", "6"));
     }
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
 
     public Integer getToggleXML() { return R.id.autoToggleLayout; }
     public Integer getCounterOneXML() { return R.id.autoCounterLayout; }

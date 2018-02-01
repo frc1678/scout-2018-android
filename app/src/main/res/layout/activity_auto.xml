@@ -87,9 +87,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+<<<<<<< HEAD
+            android:id="@+id/autoPlatformCubeLayoutOne"
+            android:orientation="vertical">
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:id="@+id/autoCounterLayout"
+            android:orientation="vertical">
+        </LinearLayout>
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:id="@+id/autoStartPositionLayout"
+            android:orientation="vertical">
+        </RadioGroup>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:id="@+id/autoToggleLayout"
+        android:orientation="horizontal">
+=======
             android:paddingTop="20dp"
             android:id="@+id/autoToggleLayout"
             android:orientation="horizontal">
         </LinearLayout>
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
     </LinearLayout>
 </RelativeLayout>

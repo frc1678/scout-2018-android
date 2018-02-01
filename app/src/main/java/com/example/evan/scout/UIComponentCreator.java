@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,6 +91,25 @@ public class UIComponentCreator {
         return toggleButton;
     }
 
+<<<<<<< HEAD
+    public RadioButton getRadioButton (String radioFBName, String radioFBValue,int width){
+        RadioButton radioButton = new RadioButton(context);
+        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 0.6f));
+        radioButton.setTextSize(radioButton.getTextSize() * 1f);
+        //radioButton.setClickable(true);
+        //radioButton.setChecked(false);
+        currentComponent++;
+        radioViews.add(radioButton);
+        return radioButton;
+    }
+
+    private View.OnClickListener radioListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            DataManager.addZeroTierJsonData("radioFBName", "radioFBValue" );
+        }
+    };
+=======
     public RadioButton getRadioButton (String radioFBName, String radioFBValue,int width,int height){
         RadioButton radioButton = new RadioButton(context);
         radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, height, 1f));
@@ -103,8 +123,12 @@ public class UIComponentCreator {
         return radioViews;
     }
 
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
     public List<View> getComponentViews() {
         return componentViews;
+    }
+    public List<RadioButton> getRadioViews() {
+        return radioViews;
     }
 
     public static class UICounterCreator extends UIComponentCreator {
@@ -188,10 +212,17 @@ public class UIComponentCreator {
 
         public Button addButton(final String switchFBname, final String colorOfSwitch) {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
+<<<<<<< HEAD
+            Log.e("nameProblem", name);
+            final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, 1f);
+            if(colorOfSwitch.equals("red")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));     switchButton.setText(MainActivity.capAllianceColor + " Switch Attempt"); }
+            else if(colorOfSwitch.equals("blue")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));     switchButton.setText(MainActivity.capAllianceColor + " Switch Attempt"); }
+=======
 
             final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             if(colorOfSwitch.equals("red")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));     switchButton.setText("Red Switch"); }
             else if(colorOfSwitch.equals("blue")){    switchButton.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));     switchButton.setText("Blue Switch"); }
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
             switchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -646,9 +677,12 @@ public class UIComponentCreator {
             name = "LOL";
         }
 
+<<<<<<< HEAD
+=======
         public void resetPyramidComponent(){     currentPyramidComponent = 0; }
         public int returnPyramidComponent(){     return currentPyramidComponent; }
 
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
         public Button addButton() {
             numElevatedPyramidIntake = 0;
             numGroundPyramidIntake = 0;
@@ -959,10 +993,18 @@ public class UIComponentCreator {
 
                                 });
 
+<<<<<<< HEAD
+                            RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
+                            independentRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    liftType = "soloClimb";
+=======
                                 climbTypeDialog.setContentView(ctDialogLayout);
                                 climbTypeDialog.show();
                             }
                         });
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
 
                         Button failure = (Button) dialogLayout.findViewById(R.id.failButton);
                         failure.setOnClickListener(new View.OnClickListener() {

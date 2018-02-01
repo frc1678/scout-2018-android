@@ -28,6 +28,10 @@ public class Constants {
     public static final String COLOR_BLUE = "#53A4F7";
     public static final String COLOR_LIGHTBLUE = "#A1CCF8";
     public static final String COLOR_LIGHTRED = "#FA9B86";
+<<<<<<< HEAD
+    public static final String COLOR_GREY = "#cec8c8";
+=======
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
 
     static {
         //replace with new datapoints
@@ -59,6 +63,37 @@ public class Constants {
             put("didGetIncapacitated", "Incap");
             put("didMakeAutoRun", "Auto Run Made");
             put("didPark", "Parked");
+<<<<<<< HEAD
+            put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake");
+            put("numOpponentPlatformIntakeTele", "Opponent Platform Intake");
+            put("numCubesFumbledAuto", "Cubes Fumbled");
+            put("numCubesFumbledTele", "Cubes Fumbled");
+            put("numExchangeInput", "Exchange Inputs");
+            put("numGroundIntakeTele", "Ground Intake Tele");
+            put("numGroundPortalIntakeTele", "Ground Portal Intake Tele");
+            put("numHumanPortalIntakeTele", "Human Portal Intake Tele");
+            put("numGroundPyramidIntakeAuto", "Ground Pyramid Intakes Auto");
+            put("numGroundPyramidIntakeTele", "Ground Pyramid Intakes Tele");
+            put("numElevatedPyramidIntakeAuto", "Elevated Pyramid Intakes Auto");
+            put("numElevatedPyramidIntakeTele", "Elevated Pyramid Intakes Tele");
+            put("1", "1");
+            put("2", "2");
+            put("3", "3");
+            put("4", "4");
+            put("5", "5");
+            put("6", "6");
+            put("numReturnIntake", "Return Intake");
+            put("allianceSwitchAttemptAuto", "Alliance Switch Attempt Auto");
+            put("allianceSwitchAttemptTele", "Alliance Switch Attempt Tele");
+            put("opponentSwitchAttemptTele", "Opponent Switch Attempt Tele");
+            put("scaleAttemptAuto", "Scale Attempt Auto");
+            put("scaleAttemptTele", "Scale Attempt Tele");
+            put("numSpilledCubesAuto", "Spilled Cubes Auto");
+            put("numSpilledCubesTele", "Spilled Cubes Tele");
+            put("startingPositionLeft", "Left");
+            put("startingPositionCenter", "Center");
+            put("startingPositionRight", "Right");
+=======
             put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");
             put("pyramidAttemptAuto", "Pyramid");
@@ -71,6 +106,7 @@ public class Constants {
             put("scaleAttemptAuto", "Scale");
             put("scaleAttemptTele", "Scale");
             put("startingPosition", "Starting Position");
+>>>>>>> 218ba1175287289a3ded61a29e3505323e15c509
             put("climb", "Climbs");
             //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
