@@ -17,6 +17,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -26,8 +28,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Calvin on 7/14/17.
@@ -133,5 +138,72 @@ public class Utils {
         }
         Log.i("JSON after read", text);
         return text;
+    }
+
+    public static void resetAllDataNull(){
+
+        DataManager.sideData = new JSONObject();
+        DataManager.climbDataArray = new JSONArray();
+        DataManager.autoAllianceSwitchDataArray = new JSONArray();
+        DataManager.teleAllianceSwitchDataArray = new JSONArray();
+        DataManager.teleOpponentSwitchDataArray = new JSONArray();
+        DataManager.autoScaleDataArray = new JSONArray();
+        DataManager.teleScaleDataArray = new JSONArray();
+
+        DataManager.addZeroTierJsonData("teamNumber", null);
+        DataManager.addZeroTierJsonData("matchNumber", null);
+        DataManager.addZeroTierJsonData("scoutName", null);
+        DataManager.addZeroTierJsonData("allianceSwitchAttemptAuto", null);
+        DataManager.addZeroTierJsonData("allianceSwitchAttemptTele", null);
+        DataManager.addZeroTierJsonData("opponentSwitchAttemptTele", null);
+        DataManager.addZeroTierJsonData("scaleAttemptAuto", null);
+        DataManager.addZeroTierJsonData("scaleAttemptTele", null);
+        DataManager.addZeroTierJsonData("climb", null);
+        DataManager.addZeroTierJsonData("didGetDisabled", null);
+        DataManager.addZeroTierJsonData("didGetIncapacitated", null);
+        DataManager.addZeroTierJsonData("didMakeAutoRun", null);
+        DataManager.addZeroTierJsonData("didPark", null);
+        DataManager.addZeroTierJsonData("didCrossAutoZone", null);
+        DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
+        DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
+        DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
+        DataManager.addZeroTierJsonData("numCubesFumbledAuto", null);
+        DataManager.addZeroTierJsonData("numCubesFumbledTele", null);
+        DataManager.addZeroTierJsonData("numExchangeInput", null);
+        DataManager.addZeroTierJsonData("numGroundIntakeTele", null);
+        DataManager.addZeroTierJsonData("numGroundPortalIntakeTele", null);
+        DataManager.addZeroTierJsonData("numHumanPortalIntakeTele", null);
+        DataManager.addZeroTierJsonData("numGroundPyramidIntakeAuto", null);
+        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", null);
+        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeAuto", null);
+        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeTele", null);
+        DataManager.addZeroTierJsonData("numReturnIntake", null);
+        DataManager.addZeroTierJsonData("numSpilledCubesAuto", null);
+        DataManager.addZeroTierJsonData("numSpilledCubesTele", null);
+        DataManager.addZeroTierJsonData("startingPosition", null);
+    }
+
+    public static JSONArray returnJSONArray(List<Integer> intList, List<Boolean> boolList){
+        JSONArray jsonArray = new JSONArray();
+        for(int i = 0; i < intList.size(); i++){
+            try {
+                jsonArray.put(intList.get(i), (Object) boolList.get(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonArray;
+    }
+
+    public static JSONObject returnJSONObject(List<String> keyList, List<Object> valueList){
+        JSONObject tempObject = new JSONObject();
+        for(int i = 0; i < keyList.size(); i++){
+            try {
+                tempObject.put(keyList.get(i), valueList.get(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return  tempObject;
     }
 }

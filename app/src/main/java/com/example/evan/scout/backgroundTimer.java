@@ -3,6 +3,9 @@ package com.example.evan.scout;
 import android.app.Activity;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -14,7 +17,9 @@ import java.util.TimerTask;
  */
 
 public class backgroundTimer extends Thread{
+    public Menu currentMenu;
     public boolean timerReady = true;
+    public int showTime;
     public static float updatedTime;
     public CountDownTimer matchTimer;
     Activity context;
@@ -28,12 +33,16 @@ public class backgroundTimer extends Thread{
     }
     private void startTimer(){
         Log.e("TIMERCALLED","CALLED START TIMER!!!!!");
-        updatedTime = 0;
+        updatedTime = 0f;
         matchTimer = new CountDownTimer(15000, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
-                updatedTime = (15000 - millisUntilFinished)/1000;
-                Log.e("updatedTime", (15000 - millisUntilFinished)+"");
+                float MUF = millisUntilFinished;
+                updatedTime = (15000f - MUF)/1000f;
+                updatedTime = Float.parseFloat(String.format("%.2f", updatedTime));
+                showTime = (int) updatedTime;
+                MenuItem timerView = currentMenu.findItem(R.id.timerView);
+                timerView.setTitle("AutoTime: "+showTime+" / 15");
             }
 
             @Override
@@ -45,12 +54,16 @@ public class backgroundTimer extends Thread{
     }
     private void startTimerTele(){
         Log.e("TIMERCALLED","CALLED tele START TIMER!!!!!");
-        updatedTime = 0;
+        updatedTime = 0f;
         matchTimer = new CountDownTimer(135000, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
-                updatedTime = (135000 - millisUntilFinished)/1000;
-                Log.e("updatedTime", (135000 - millisUntilFinished)+"");
+                float MUF = millisUntilFinished;
+                updatedTime = (135000f - MUF)/1000f;
+                updatedTime = Float.parseFloat(String.format("%.2f", updatedTime));
+                showTime = (int) updatedTime;
+                MenuItem timerView = currentMenu.findItem(R.id.timerView);
+                timerView.setTitle("TeleTime: "+showTime+" / 135");
             }
 
             @Override

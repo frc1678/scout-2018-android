@@ -20,17 +20,17 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:text="Passive Lift"
+            android:text="Passive Climb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/passiveLiftRadio"
+            android:id="@+id/passiveClimbRadio"
             android:padding="5dp"
             android:textSize="23dp"
             android:paddingRight="5dp"
             android:layout_weight="1" />
 
         <RadioButton
-            android:id="@+id/assistLiftRadio"
+            android:id="@+id/assistedClimbRadio"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

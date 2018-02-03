@@ -127,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //resets all firebase datanames
+        Utils.resetAllDataNull();
+
+        Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         MainActivity main = this;
@@ -160,18 +165,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Last Scout name used", scoutName);
         }
 
-        matchNumber = -1;
-        new MatchNumListener(new MatchNumListener.MatchFirebaseInterface() {
-            @Override
-            public void onMatchChanged() {
-                matchNumber = MatchNumListener.currentMatchNumber;
-                Log.e("MEME", matchNumber+"");
-                if(!overridden) {
-                    setMatchNumber();
-                }
-            }
-        });
-
         findColor();
         if(allianceColor == null){
             setAllianceColor();
@@ -181,6 +174,17 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(returnDrawable());
         }
+
+        matchNumber = -1;
+        new MatchNumListener(new MatchNumListener.MatchFirebaseInterface() {
+            @Override
+            public void onMatchChanged() {
+                if(!overridden) {
+                    matchNumber = MatchNumListener.currentMatchNumber;
+                    Log.e("MEME", matchNumber+"");
+                }
+            }
+        });
 
         teamNumber = sharedPreferences.getInt("teamNumber", -1);
         matchNumber = sharedPreferences.getInt("matchNumber", -1);
@@ -207,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        bgTimer.currentMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
         overrideItem = menu.findItem(R.id.mainOverride);
         return true;
@@ -227,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
-            item.setCheckable(false);
+            item.setEnabled(false);
         }
 
         //noinspection SimplifiableIfStatement
@@ -287,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
     //this method will get the match number and set it from firebase
     public void setMatchNumber(){
         EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
+        Log.e("MEME4444", matchNumber+"");
         matchNumberEditText.setText(String.valueOf(matchNumber));
         matchNumberEditText.setTextColor(Color.parseColor("black"));
     }
@@ -456,10 +462,10 @@ public class MainActivity extends AppCompatActivity {
                                         if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
                                             Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
                                             if(ovrrdTeamNum > 0) {
-                                                Log.e("MATCHNUMBER3", matchNumber+"");
+                                                matchNumber = Integer.parseInt(matchNumberEditText.getText().toString());
                                                 DataManager.subTitle = ovrrdTeamNum + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                                                 DataManager.addZeroTierJsonData("scoutName", scoutName);
-                                                intent.putExtra("matchNumber", Integer.parseInt(matchNumberEditText.getText().toString())).putExtra("overridden", overridden)
+                                                intent.putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                                                 .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
                                                 intent.setAction("returningNoSavedData");
                                                 spfe.putInt("teamNumber", teamNumber);
@@ -467,6 +473,7 @@ public class MainActivity extends AppCompatActivity {
                                                 spfe.commit();
                                                 DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                                                 DataManager.addZeroTierJsonData("matchNumber", matchNumber);
+                                                if(bgTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
                                                 startActivity(intent);
                                             } else {
                                                 Toast.makeText(getBaseContext(), "Choose a Valid Team", Toast.LENGTH_SHORT).show();
@@ -500,6 +507,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                             Toast.LENGTH_LONG).show();
                 } else {
+                    matchNumber = Integer.parseInt(matchNumberEditText.getText().toString());
                     Intent intent = new Intent(this, AutoActivity.class);
                     EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
                     Log.e("MATCHNUMBER5", matchNumber+"");
@@ -512,6 +520,7 @@ public class MainActivity extends AppCompatActivity {
                     spfe.commit();
                     DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                     DataManager.addZeroTierJsonData("matchNumber", matchNumber);
+                    if(bgTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
                     startActivity(intent);
                 }
             }

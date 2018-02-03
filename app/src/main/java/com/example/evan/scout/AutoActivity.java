@@ -9,7 +9,7 @@ public class AutoActivity extends DataActivity {
     public List<String> getToggleData() {
         return formatList(Arrays.asList("didMakeAutoRun"));
     }
-    public List<String> getCounterData() { return formatList(Arrays.asList("numCubesSpilledAuto", "numCubesFumbledAuto")); }
+    public List<String> getCounterData() { return formatList(Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto")); }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptAuto")); }
     public List<String> getPyramidData() { return formatList(Arrays.asList("pyramidAttemptAuto")); }

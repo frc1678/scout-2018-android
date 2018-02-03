@@ -10,9 +10,8 @@ public class TeleopActivity extends DataActivity {
         return formatList(Arrays.asList("didGetIncapacitated", "didGetDisabled"));
     }
     public List<String> getCounterData() {
-        return formatList(Arrays.asList("numCubesFumbledTele", "numCubesSpilledTele", "numGroundIntakeTele",
-                "numExchangeInput", "numReturnIntake",
-                "numGroundPortalIntakeTele", "numHumanPortalIntakeTele"));
+        return formatList(Arrays.asList("numCubesFumbledTele", "numSpilledCubesTele", "numGroundIntakeTele",
+                "numExchangeInput", "numReturnIntake", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele"));
     }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptTele", "opponentSwitchAttemptTele")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptTele")); }

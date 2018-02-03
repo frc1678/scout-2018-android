@@ -37,9 +37,16 @@ public class DataManager {
     public static String subTitle = "";
     public static JSONObject collectedData = new JSONObject();
     public static JSONObject sideData = new JSONObject();
+    public static JSONArray climbDataArray = new JSONArray();
+    public static JSONArray autoAllianceSwitchDataArray = new JSONArray();
+    public static JSONArray teleAllianceSwitchDataArray = new JSONArray();
+    public static JSONArray teleOpponentSwitchDataArray = new JSONArray();
+    public static JSONArray autoScaleDataArray = new JSONArray();
+    public static JSONArray teleScaleDataArray = new JSONArray();
 
-    public static void addZeroTierJsonData(String key0, Object value0){     addToCollectedData(key0, null, value0); }
-
+    public static void addZeroTierJsonData(String key0, Object value0){
+        addToCollectedData(key0, null, value0);
+    }
 
     public static void addOneTierJsonData(boolean side, String key, List<String> keys1,List<Object> values1){
         JSONObject data1 = new JSONObject();
@@ -68,13 +75,15 @@ public class DataManager {
             }
         }else{
             try {
+                Log.e("collectedDataMAPLIST", data.toString());
                 collectedData.put(key, data);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
-    private static void addToSideData(String key,JSONObject jsonData,Object data){
+    public static void addToSideData(String key,JSONObject jsonData,Object data){
+        sideData = new JSONObject();
         if(data == null){
             try {
                 sideData.put(key,jsonData);

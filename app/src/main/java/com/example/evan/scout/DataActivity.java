@@ -39,6 +39,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
+import org.jcodec.movtool.Util;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,8 +101,8 @@ public abstract class DataActivity extends AppCompatActivity {
 
     public static boolean[] alliancePlatformTaken = new boolean[6];
     public static boolean[] opponentPlatformTaken = new boolean[6];
-    public List<Map<Integer, Boolean>> alliancePlatformValueMapList = new ArrayList<>();
-    public List<Map<Integer, Boolean>> opponentPlatformValueMapList = new ArrayList<>();
+    public JSONArray alliancePlatformValueMapList = Utils.returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false));
+    public JSONArray opponentPlatformValueMapList = Utils.returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false));
 
     private Intent intent;
     private UIComponentCreator toggleCreator;
@@ -251,15 +253,19 @@ public abstract class DataActivity extends AppCompatActivity {
                                                                 public void onClick(View v) {
                                                                     if(!alliancePlatformTaken[ii]){
                                                                         alliancePlatformTaken[ii]=true;
-                                                                        Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                        platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                        alliancePlatformValueMapList.add(platformMap);
+                                                                        try {
+                                                                            alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                        } catch (JSONException e) {
+                                                                            e.printStackTrace();
+                                                                        }
                                                                         platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                                     }else if(alliancePlatformTaken[ii]){
                                                                         alliancePlatformTaken[ii]=false;
-                                                                        Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                        platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                        alliancePlatformValueMapList.add(platformMap);
+                                                                        try {
+                                                                            alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                        } catch (JSONException e) {
+                                                                            e.printStackTrace();
+                                                                        }
                                                                         platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                     }
                                                                 }
@@ -275,15 +281,19 @@ public abstract class DataActivity extends AppCompatActivity {
                                                                 public void onClick(View v) {
                                                                     if(!alliancePlatformTaken[ii]){
                                                                         alliancePlatformTaken[ii]=true;
-                                                                        Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                        platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                        alliancePlatformValueMapList.add(platformMap);
+                                                                        try {
+                                                                            alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                        } catch (JSONException e) {
+                                                                            e.printStackTrace();
+                                                                        }
                                                                         platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                                     }else if(alliancePlatformTaken[ii]){
                                                                         alliancePlatformTaken[ii]=false;
-                                                                        Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                        platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                        alliancePlatformValueMapList.add(platformMap);
+                                                                        try {
+                                                                            alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                        } catch (JSONException e) {
+                                                                            e.printStackTrace();
+                                                                        }
                                                                         platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                     }
                                                                 }
@@ -317,29 +327,37 @@ public abstract class DataActivity extends AppCompatActivity {
                                                             if(MainActivity.allianceColor.equals("red")){
                                                                 if(!alliancePlatformTaken[ii]){
                                                                     alliancePlatformTaken[ii]=true;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                    try {
+                                                                        alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                                 }else if(alliancePlatformTaken[ii]){
                                                                     alliancePlatformTaken[ii]=false;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                    try {
+                                                                        alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                 }
                                                             }else if(MainActivity.allianceColor.equals("blue")){
-                                                                if(!alliancePlatformTaken[ii]){
-                                                                    alliancePlatformTaken[ii]=true;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                if(!opponentPlatformTaken[ii]){
+                                                                    opponentPlatformTaken[ii]=true;
+                                                                    try {
+                                                                        opponentPlatformValueMapList.put(ii, opponentPlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
-                                                                }else if(alliancePlatformTaken[ii]){
-                                                                    alliancePlatformTaken[ii]=false;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                }else if(opponentPlatformTaken[ii]){
+                                                                    opponentPlatformTaken[ii]=false;
+                                                                    try {
+                                                                        opponentPlatformValueMapList.put(ii, opponentPlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                 }
                                                             }
@@ -361,29 +379,37 @@ public abstract class DataActivity extends AppCompatActivity {
                                                             if(MainActivity.allianceColor.equals("blue")){
                                                                 if(!alliancePlatformTaken[ii]){
                                                                     alliancePlatformTaken[ii]=true;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                    try {
+                                                                        alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                                 }else if(alliancePlatformTaken[ii]){
                                                                     alliancePlatformTaken[ii]=false;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                    try {
+                                                                        alliancePlatformValueMapList.put(ii, alliancePlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                 }
                                                             }else if(MainActivity.allianceColor.equals("red")){
-                                                                if(!alliancePlatformTaken[ii]){
-                                                                    alliancePlatformTaken[ii]=true;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                if(!opponentPlatformTaken[ii]){
+                                                                    opponentPlatformTaken[ii]=true;
+                                                                    try {
+                                                                        opponentPlatformValueMapList.put(ii, opponentPlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
-                                                                }else if(alliancePlatformTaken[ii]){
-                                                                    alliancePlatformTaken[ii]=false;
-                                                                    Map<Integer, Boolean> platformMap = new HashMap<Integer, Boolean>();
-                                                                    platformMap.put(ii, alliancePlatformTaken[ii]);
-                                                                    alliancePlatformValueMapList.add(platformMap);
+                                                                }else if(opponentPlatformTaken[ii]){
+                                                                    opponentPlatformTaken[ii]=false;
+                                                                    try {
+                                                                        opponentPlatformValueMapList.put(ii, opponentPlatformTaken[ii]);
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                     platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                 }
                                                             }
@@ -433,16 +459,14 @@ public abstract class DataActivity extends AppCompatActivity {
                                             }else if(activityName().equals("tele")){
                                                 LinearLayout counterLayoutOne = (LinearLayout) findViewById(getCounterOneXML());
                                                 LinearLayout counterLayoutTwo = (LinearLayout) findViewById(getCounterTwoXML());
-                                                List<String> counterNamesOne = new ArrayList<>();
-                                                List<String> counterNamesTwo = new ArrayList<>();
-                                                counterCreator = new UIComponentCreator.UICounterCreator(this, counterNamesOne);
+                                                List<String> counterNames = new ArrayList<>();
+                                                counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
                                                 for (int i = 0; i < 3; i++) {
-                                                    counterNamesOne.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                    counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
                                                     counterLayoutOne.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                 }
-                                                counterCreator = new UIComponentCreator.UICounterCreator(this, counterNamesTwo);
                                                 for (int i = 3; i < getCounterData().size(); i++) {
-                                                    counterNamesTwo.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                    counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
                                                     counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                 }
                                             }
@@ -481,21 +505,21 @@ public abstract class DataActivity extends AppCompatActivity {
                     for (int i = 0; i < getSwitchData().size(); i++) {
                         if(activityName().equals("auto")){
                             switchCreator.resetSwitchComponent();
-                            Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor);
+                            Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor, DataManager.autoAllianceSwitchDataArray);
                             attemptLayoutOne.addView(a_switchButton);
                         }else if(activityName().equals("tele")){
                             Log.e("REEEEEEEt", activityName());
                             if(MainActivity.allianceColor.equals("red") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
-                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red");
-                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue");
+                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red", DataManager.teleAllianceSwitchDataArray);
+                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue", DataManager.teleOpponentSwitchDataArray);
                                 attemptLayoutOne.addView(a_switchButton,0);
                                 attemptLayoutOne.addView(getFillerSpace(5),1);
                                 attemptLayoutOne.addView(o_switchButton,2);
                             }else if(MainActivity.allianceColor.equals("blue") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
-                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue");
-                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red");
+                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue", DataManager.teleAllianceSwitchDataArray);
+                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red", DataManager.teleOpponentSwitchDataArray);
                                 attemptLayoutOne.addView(o_switchButton,0);
                                 attemptLayoutOne.addView(getFillerSpace(5),1);
                                 attemptLayoutOne.addView(a_switchButton,2);
@@ -504,11 +528,11 @@ public abstract class DataActivity extends AppCompatActivity {
                     }
                     if(activityName().equals("auto")){
                         scaleCreator.resetScaleComponenet();
-                        Button scaleButton = scaleCreator.addButton("scaleAttemptAuto");
+                        Button scaleButton = scaleCreator.addButton("scaleAttemptAuto", DataManager.autoScaleDataArray);
                         attemptLayoutOne.addView(scaleButton);
                     }else if(activityName().equals("tele")){
                         scaleCreator.resetScaleComponenet();
-                        Button scaleButton = scaleCreator.addButton("scaleAttemptTele");
+                        Button scaleButton = scaleCreator.addButton("scaleAttemptTele", DataManager.teleScaleDataArray);
                         attemptLayoutTwo.addView(scaleButton);
                     }
                     if(activityName().equals("auto")){
@@ -558,15 +582,24 @@ public abstract class DataActivity extends AppCompatActivity {
         List<View> currentTextViews = counterCreator.getComponentViews();
         for (int i = 0; i < currentTextViews.size(); i++) {
             if(currentTextViews.get(i) != null){
+                try {
+                    Log.e("TITT", currentTextViews.size()+"");
+                    Log.e("TITT", getCounterData().size()+"");
+                    Log.e(getCounterData().get(i)+"TITT" , ((TextView) currentTextViews.get(i)).getText().toString());
+                    DataManager.addZeroTierJsonData(getCounterData().get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
+                } catch (Exception e) {
+                    Log.e("Data Error", "Failed to add counter" + Integer.toString(i) + " num to Data");
+                    Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
-            try {
-                Log.e("keyCOUNTER", getCounterData().get(i));
-                DataManager.addZeroTierJsonData(getCounterData().get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
-            } catch (Exception e) {
-                Log.e("Data Error", "Failed to add counter" + Integer.toString(i) + " num to Data");
-                Toast.makeText(this, "Error in Counter number " + Integer.toString(i), Toast.LENGTH_LONG).show();
-                return;
-            }
+        }
+
+        if(activityName().equals("auto")){
+            DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", alliancePlatformValueMapList);
+        }else if(activityName().equals("tele")){
+            DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", alliancePlatformValueMapList);
+            DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", opponentPlatformValueMapList);
         }
     }
 
@@ -593,6 +626,7 @@ public abstract class DataActivity extends AppCompatActivity {
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(getActionBarMenu(), menu);
+    MainActivity.bgTimer.currentMenu = menu;
     final LayoutInflater.Factory existingFactory = getLayoutInflater().getFactory();
             try{
                 Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
@@ -632,7 +666,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 textView.setTitle(DataManager.collectedData.getInt("teamNumber")+"");
             }catch (JSONException je){}
 
-        if(MainActivity.bgTimer.timerReady && activityName().equals("auto")) {
+        if(!MainActivity.bgTimer.timerReady && activityName().equals("auto")) {
             menu.findItem(R.id.beginTimerButton).setEnabled(false);
         }
 

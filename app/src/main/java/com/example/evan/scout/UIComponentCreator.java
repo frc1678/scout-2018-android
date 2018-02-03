@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -170,6 +171,7 @@ public class UIComponentCreator {
         private float startTime;
         private float endTime;
         private String status;
+        int c = 0;
         private int layer;
         private String name;
         private Activity context;
@@ -186,7 +188,7 @@ public class UIComponentCreator {
         public void resetSwitchComponent(){     currentSwitchComponent = 0; }
         public int returnSwitchComponent(){     return currentSwitchComponent; }
 
-        public Button addButton(final String switchFBname, final String colorOfSwitch) {
+        public Button addButton(final String switchFBname, final String colorOfSwitch, final JSONArray jsonArray) {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
             final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -275,33 +277,33 @@ public class UIComponentCreator {
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (status != null && layer != 0) {
-                                        int i = 0;
-                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
-                                        List<Object> scaleValues = new ArrayList<>();
-                                        scaleValues.clear();
-                                        scaleValues.add(switchSuccess);
-                                        scaleValues.add(startTime);
-                                        scaleValues.add(endTime);
-                                        scaleValues.add(status);
-                                        scaleValues.add(layer);
+                                    if (layer != 0) {
+                                        endTime = backgroundTimer.getUpdatedTime();
+                                        switchSuccess = false;
 
-                                        if (DataManager.collectedData.has(switchFBname)) {
-                                            try {
-                                                DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                            DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
-                                        } else {
-                                            DataManager.sideData = new JSONObject();
-                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                            DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                                        List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
+                                        List<Object> switchValues = new ArrayList<>();
+                                        switchValues.clear();
+                                        switchValues.add(switchSuccess);
+                                        switchValues.add(startTime);
+                                        switchValues.add(endTime);
+                                        if(status == null){
+                                            switchValues.add(null);
+                                        }else{
+                                            switchValues.add(status);
                                         }
+                                        switchValues.add(layer);
+
+                                        JSONObject tempData = Utils.returnJSONObject(switchKeys, switchValues);
+                                        try {
+                                            jsonArray.put(c, tempData);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        DataManager.addZeroTierJsonData(switchFBname, jsonArray);
+                                        c++;
 
                                         successDialog.dismiss();
-
                                     } else {
                                         Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
                                     }
@@ -320,7 +322,6 @@ public class UIComponentCreator {
                             endTime = backgroundTimer.getUpdatedTime();
                             switchSuccess = false;
 
-                            int i = 0;
                             List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                             List<Object> switchValues = new ArrayList<>();
                             switchValues.clear();
@@ -330,19 +331,14 @@ public class UIComponentCreator {
                             switchValues.add(null);
                             switchValues.add(null);
 
-                            if (DataManager.collectedData.has(switchFBname)) {
-                                try {
-                                    DataManager.sideData = DataManager.collectedData.getJSONObject(switchFBname);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                DataManager.addOneTierJsonData(true, i + "", switchKeys, switchValues);
-                                DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
-                            } else {
-                                DataManager.sideData = new JSONObject();
-                                DataManager.addOneTierJsonData(true, i + "", switchKeys, switchValues);
-                                DataManager.addZeroTierJsonData(switchFBname, DataManager.sideData);
+                            JSONObject tempData = Utils.returnJSONObject(switchKeys, switchValues);
+                            try {
+                                jsonArray.put(c, tempData);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                            DataManager.addZeroTierJsonData(switchFBname, jsonArray);
+                            c++;
 
                             dialog.dismiss();
                         }
@@ -403,6 +399,7 @@ public class UIComponentCreator {
 
     public static class UIScaleCreator extends UIComponentCreator {
         private String status;
+        int c = 0;
         private int layer;
         private float startTime;
         private float endTime;
@@ -422,7 +419,7 @@ public class UIComponentCreator {
         public void resetScaleComponenet(){     currentScaleComponent = 0; }
         public int returnScaleComponenet(){     return currentScaleComponent; }
 
-        public Button addButton(final String scaleFBname) {
+        public Button addButton(final String scaleFBname, final JSONArray jsonArray) {
 
             final Button scaleButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             scaleButton.setText(name);
@@ -441,7 +438,7 @@ public class UIComponentCreator {
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            endTime = System.currentTimeMillis(); //TODO time stuff
+                            endTime = backgroundTimer.getUpdatedTime();
                             didSucceed = true;
 
                             dialog.dismiss();
@@ -504,30 +501,28 @@ public class UIComponentCreator {
                             done.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (status != null && layer != 0) {
-                                        int i = 0;
+                                    if (layer != 0) {
                                         List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
                                         List<Object> scaleValues = new ArrayList<>();
                                         scaleValues.clear();
                                         scaleValues.add(didSucceed);
                                         scaleValues.add(startTime);
                                         scaleValues.add(endTime);
-                                        scaleValues.add(status);
+                                        if(status == null){
+                                            scaleValues.add(null);
+                                        }else{
+                                            scaleValues.add(status);
+                                        }
                                         scaleValues.add(layer);
 
-                                        if (DataManager.collectedData.has(scaleFBname)) {
-                                            try {
-                                                DataManager.sideData = DataManager.collectedData.getJSONObject(scaleFBname);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                            DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
-                                        } else {
-                                            DataManager.sideData = new JSONObject();
-                                            DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                            DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                                        JSONObject tempData = Utils.returnJSONObject(scaleKeys, scaleValues);
+                                        try {
+                                            jsonArray.put(c, tempData);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
                                         }
+                                        DataManager.addZeroTierJsonData(scaleFBname, jsonArray);
+                                        c++;
 
                                         successDialog.dismiss();
 
@@ -548,7 +543,6 @@ public class UIComponentCreator {
                             endTime = backgroundTimer.getUpdatedTime();
                             didSucceed = false;
 
-                            int i = 0;
                             List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime");
                             List<Object> scaleValues = new ArrayList<>();
                             scaleValues.clear();
@@ -556,19 +550,15 @@ public class UIComponentCreator {
                             scaleValues.add(startTime);
                             scaleValues.add(endTime);
 
-                            if (DataManager.collectedData.has(scaleFBname)) {
-                                try {
-                                    DataManager.sideData = DataManager.collectedData.getJSONObject(scaleFBname);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
-                            } else {
-                                DataManager.sideData = new JSONObject();
-                                DataManager.addOneTierJsonData(true, i + "", scaleKeys, scaleValues);
-                                DataManager.addZeroTierJsonData(scaleFBname, DataManager.sideData);
+                            JSONObject tempData = Utils.returnJSONObject(scaleKeys, scaleValues);
+                            try {
+                                jsonArray.put(c, tempData);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                            DataManager.addZeroTierJsonData(scaleFBname, jsonArray);
+                            c++;
+
                             dialog.dismiss();
                         }
                     });
@@ -772,6 +762,8 @@ public class UIComponentCreator {
         public int numRobotsLifted;
         public float startTime;
         public float endTime;
+        private int c;
+
         private Activity context;
 
         public UIEndGameButtonCreator(Activity context, List<String> componentNames) {
@@ -789,6 +781,7 @@ public class UIComponentCreator {
                 endButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        numRobotsLifted = 0;
                         startTime = backgroundTimer.getUpdatedTime();
 
                         final List<String> endKeys = Arrays.asList("didSucceed", "startTime", "endTime");
@@ -808,7 +801,7 @@ public class UIComponentCreator {
                                 dialog.dismiss();
                                 //climb type dialog
                                 endTime = backgroundTimer.getUpdatedTime();
-                                didSucceed = false;
+                                didSucceed = true;
                                 endValues.add(0, didSucceed);
 
                                 final Dialog climbTypeDialog = new Dialog(context);
@@ -817,19 +810,19 @@ public class UIComponentCreator {
                                 final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
                                 title.setText("Climb Type");
 
-                                RadioButton passiveLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveLiftRadio);
-                                passiveLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                RadioButton passiveClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveClimbRadio);
+                                passiveClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        liftType = "passiveLift";
+                                        liftType = "passiveClimb";
                                     }
                                 });
 
-                                RadioButton assistedLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistLiftRadio);
-                                assistedLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                RadioButton assistedClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistedClimbRadio);
+                                assistedClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        liftType = "assistLift";
+                                        liftType = "assistedClimb";
                                     }
                                 });
 
@@ -845,7 +838,7 @@ public class UIComponentCreator {
                                 independentRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        liftType = "climb";
+                                        liftType = "soloClimb";
                                     }
                                 });
                                 Button doneButton = (Button) ctDialogLayout.findViewById(R.id.doneButton);
@@ -877,7 +870,7 @@ public class UIComponentCreator {
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "assistLift";
+                                                    partnerLiftType = "assisted";
                                                 }
                                             });
 
@@ -885,7 +878,7 @@ public class UIComponentCreator {
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "passiveLift";
+                                                    partnerLiftType = "passive";
                                                 }
                                             });
 
@@ -933,7 +926,14 @@ public class UIComponentCreator {
                                                     activeValues.add(6, numRobotsLifted);
 
                                                     DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
-                                                    DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                                    JSONObject tempData = DataManager.sideData;
+                                                    try {
+                                                        DataManager.climbDataArray.put(c, tempData);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+                                                    c++;
                                                     activeLiftDialog.dismiss();
                                                 }
                                             });
@@ -951,7 +951,14 @@ public class UIComponentCreator {
                                             endValues.add(5, numRobotsLifted);
 
                                             DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                            DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                            JSONObject tempData = DataManager.sideData;
+                                            try {
+                                                DataManager.climbDataArray.put(c, tempData);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+                                            c++;
                                             climbTypeDialog.dismiss();
                                         }
                                     }
@@ -971,7 +978,7 @@ public class UIComponentCreator {
                                 dialog.dismiss();
                                 //climb type dialog
                                 endTime = backgroundTimer.getUpdatedTime();
-                                didSucceed = true;
+                                didSucceed = false;
                                 endValues.add(0, didSucceed);
 
                                 final Dialog climbTypeDialog = new Dialog(context);
@@ -980,19 +987,19 @@ public class UIComponentCreator {
                                 final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
                                 title.setText("Climb Type");
 
-                                RadioButton passiveLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveLiftRadio);
-                                passiveLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                RadioButton passiveClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveClimbRadio);
+                                passiveClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        liftType = "passiveLift";
+                                        liftType = "passiveClimb";
                                     }
                                 });
 
-                                RadioButton assistedLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistLiftRadio);
-                                assistedLiftRadioButton.setOnClickListener(new View.OnClickListener() {
+                                RadioButton assistedClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistedClimbRadio);
+                                assistedClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        liftType = "assistLift";
+                                        liftType = "assistedClimb";
                                     }
                                 });
 
@@ -1008,7 +1015,7 @@ public class UIComponentCreator {
                                 independentRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        liftType = "climb";
+                                        liftType = "soloClimb";
                                     }
                                 });
                                 Button doneButton = (Button) ctDialogLayout.findViewById(R.id.doneButton);
@@ -1040,7 +1047,7 @@ public class UIComponentCreator {
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "assistLift";
+                                                    partnerLiftType = "assisted";
                                                 }
                                             });
 
@@ -1048,7 +1055,7 @@ public class UIComponentCreator {
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "passiveLift";
+                                                    partnerLiftType = "passive";
                                                 }
                                             });
 
@@ -1095,8 +1102,16 @@ public class UIComponentCreator {
                                                     activeValues.add(5, didFailToLift);
                                                     activeValues.add(6, numRobotsLifted);
 
+
                                                     DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
-                                                    DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                                    JSONObject tempData = DataManager.sideData;
+                                                    try {
+                                                        DataManager.climbDataArray.put(c, tempData);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+                                                    c++;
                                                     activeLiftDialog.dismiss();
                                                 }
                                             });
@@ -1112,7 +1127,14 @@ public class UIComponentCreator {
                                             endValues.add(5, numRobotsLifted);
 
                                             DataManager.addOneTierJsonData(true, liftType, endKeys, endValues);
-                                            DataManager.addZeroTierJsonData("climb", DataManager.sideData);
+                                            JSONObject tempData = DataManager.sideData;
+                                            try {
+                                                DataManager.climbDataArray.put(c, tempData);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+                                            c++;
                                             climbTypeDialog.dismiss();
                                         }
                                     }
