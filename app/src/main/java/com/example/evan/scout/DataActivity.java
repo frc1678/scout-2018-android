@@ -436,6 +436,9 @@ public abstract class DataActivity extends AppCompatActivity {
                                 final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                 final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                 final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
+                                rightStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startPosition", "right");}});
+                                leftStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startPosition", "left");}});
+                                centerStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startPosition", "center");}});
                                 radioLayout.addView(rightStartPosition);
                                 radioLayout.addView(centerStartPosition);
                                 radioLayout.addView(leftStartPosition);

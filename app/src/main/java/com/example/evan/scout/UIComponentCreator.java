@@ -197,6 +197,8 @@ public class UIComponentCreator {
             switchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    c = jsonArray.length();
+                    status = null;
                     switchSuccess = false;
                     startTime = backgroundTimer.getUpdatedTime();
 
@@ -279,7 +281,7 @@ public class UIComponentCreator {
                                 public void onClick(View v) {
                                     if (layer != 0) {
                                         endTime = backgroundTimer.getUpdatedTime();
-                                        switchSuccess = false;
+                                        switchSuccess = true;
 
                                         List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                         List<Object> switchValues = new ArrayList<>();
@@ -398,8 +400,8 @@ public class UIComponentCreator {
     }
 
     public static class UIScaleCreator extends UIComponentCreator {
-        private String status;
         int c = 0;
+        private String status;
         private int layer;
         private float startTime;
         private float endTime;
@@ -420,12 +422,12 @@ public class UIComponentCreator {
         public int returnScaleComponenet(){     return currentScaleComponent; }
 
         public Button addButton(final String scaleFBname, final JSONArray jsonArray) {
-
             final Button scaleButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             scaleButton.setText(name);
             scaleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    status = null;
                     startTime = backgroundTimer.getUpdatedTime();
 
                     final Dialog dialog = new Dialog(context);
@@ -772,6 +774,7 @@ public class UIComponentCreator {
         }
 
         public Button addButton(boolean climbAdded) {
+            c = 0;
             final Button endButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.8f);
             final ToggleButton parkButton = getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, 0, false);
 
