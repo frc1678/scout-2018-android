@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -198,6 +199,7 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     c = jsonArray.length();
+                    layer = 0;
                     status = null;
                     switchSuccess = false;
                     startTime = backgroundTimer.getUpdatedTime();
@@ -227,11 +229,18 @@ public class UIComponentCreator {
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
                             successTitleTV.setText(name);
 
+                            final RadioGroup switchOwnershipRG = (RadioGroup) successDialogLayout.findViewById(R.id.switchOwnershipRadioGroup);
+
                             RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchOwnedRadio);
                             ownedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "ownedBlue";
+                                    if(status != "opponentOwned"){
+                                        status = "opponentOwned";
+                                    }else{
+                                        switchOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
                                 }
                             });
 
@@ -239,7 +248,12 @@ public class UIComponentCreator {
                             balancedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "balanced";
+                                    if(status != "balanced"){
+                                        status = "balanced";
+                                    }else{
+                                        switchOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
                                 }
                             });
 
@@ -307,7 +321,7 @@ public class UIComponentCreator {
 
                                         successDialog.dismiss();
                                     } else {
-                                        Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Please put the layer!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -427,6 +441,8 @@ public class UIComponentCreator {
             scaleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    c = jsonArray.length();
+                    layer = 0;
                     status = null;
                     startTime = backgroundTimer.getUpdatedTime();
 
@@ -451,11 +467,18 @@ public class UIComponentCreator {
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.scaleSuccessDialogTitle);
                             successTitleTV.setText(name);
 
+                            final RadioGroup scaleOwnershipRG = (RadioGroup) successDialogLayout.findViewById(R.id.scaleOwnershipRadioGroup);
+
                             RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleOwnedRadio);
                             ownedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "owned";
+                                    if(status != "opponentOwned"){
+                                        status = "opponentOwned";
+                                    }else{
+                                        scaleOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
                                 }
                             });
 
@@ -463,7 +486,12 @@ public class UIComponentCreator {
                             balancedRadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    status = "balanced";
+                                    if(status != "balanced"){
+                                        status = "balanced";
+                                    }else{
+                                        scaleOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
                                 }
                             });
 
@@ -529,7 +557,7 @@ public class UIComponentCreator {
                                         successDialog.dismiss();
 
                                     } else {
-                                        Toast.makeText(context, "Please put ownership and/or layer", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Please put layer!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

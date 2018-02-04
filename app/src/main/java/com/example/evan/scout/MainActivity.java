@@ -278,12 +278,12 @@ public class MainActivity extends AppCompatActivity {
                 overridden = false;
                 findViewById(R.id.matchNumTextEdit).setEnabled(false);
                 findViewById(R.id.teamNumEdit).setEnabled(false);
-                overrideItem.setTitle("Override Schedule");
+                overrideItem.setTitle("Override");
             } else {
                 overridden=true;
                 findViewById(R.id.matchNumTextEdit).setEnabled(true);
                 findViewById(R.id.teamNumEdit).setEnabled(true);
-                overrideItem.setTitle("Automate Schedule");
+                overrideItem.setTitle("Automate");
             }
         }
         return true;

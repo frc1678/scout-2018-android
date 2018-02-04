@@ -8,24 +8,24 @@
     <item
         android:title="Start Timer"
         android:id="@+id/beginTimerButton"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:checkable="true"/>
     <item
         android:title="Alliance Color"
         android:id="@+id/allianceColorButton"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:checkable="true"/>
     <item
         android:id="@+id/currentScout"
-        android:title="Current Scout"
+        android:title="Scout Name"
         android:orderInCategory="101"
         app:showAsAction="always"/>
     <item
         android:id="@+id/mainOverride"
-        android:title="Override Schedule"
+        android:title="Override"
         app:showAsAction = "always"/>
     <item
         android:id="@+id/setScoutIDButton"
-        android:title="Set Scout ID"
-        app:showAsAction="ifRoom"/>
+        android:title="Scout ID"
+        app:showAsAction="always"/>
 </menu>
