@@ -789,6 +789,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                             rejected = true;
                             saveAutoData = true;
                             saveTeleData = false;
+                            DataManager.teleScaleDataList.clear();
                             Intent intent = prepareIntent(getPreviousActivityClass());
                             if (getPreviousActivityClass() == MainActivity.class) {
                                 intent.putExtra("previousData", (String) null);
