@@ -72,7 +72,6 @@ public class UIComponentCreator {
         }
         button.setTextSize(button.getTextSize() * textScale);
         button.setSingleLine(true);
-//        button.setGravity(Gravity.CENTER_HORIZONTAL);
         return button;
     }
 

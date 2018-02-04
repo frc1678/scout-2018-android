@@ -43,6 +43,8 @@ public class DataManager {
     public static JSONArray teleOpponentSwitchDataArray = new JSONArray();
     public static JSONArray autoScaleDataArray = new JSONArray();
     public static JSONArray teleScaleDataArray = new JSONArray();
+    public static boolean[] alliancePlatformTaken = new boolean[6];
+    public static boolean[] opponentPlatformTaken = new boolean[6];
 
     public static void addZeroTierJsonData(String key0, Object value0){
         addToCollectedData(key0, null, value0);
