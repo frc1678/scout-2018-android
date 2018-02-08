@@ -37,14 +37,17 @@ public class DataManager {
     public static String subTitle = "";
     public static JSONObject collectedData = new JSONObject();
     public static JSONObject sideData = new JSONObject();
+
     public static JSONArray climbDataArray = new JSONArray();
+
     public static JSONArray autoAllianceSwitchDataArray = new JSONArray();
     public static JSONArray teleAllianceSwitchDataArray = new JSONArray();
     public static JSONArray teleOpponentSwitchDataArray = new JSONArray();
     public static JSONArray autoScaleDataArray = new JSONArray();
     public static JSONArray teleScaleDataArray = new JSONArray();
-    public static boolean[] alliancePlatformTaken = new boolean[6];
-    public static boolean[] opponentPlatformTaken = new boolean[6];
+
+    public static JSONArray alliancePlatformTaken = new JSONArray();
+    public static JSONArray opponentPlatformTaken = new JSONArray();
 
     public static void addZeroTierJsonData(String key0, Object value0){
         addToCollectedData(key0, null, value0);
@@ -95,6 +98,24 @@ public class DataManager {
         }else{
             try {
                 sideData.put(key, data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void resetOpponentPlatformArrays(){
+        for(int i = 0; i <=5; i++){
+            try {
+                opponentPlatformTaken.put(i, false);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void resetAlliancePlatformArrays(){
+        for(int i = 0; i <=5; i++){
+            try {
+                alliancePlatformTaken.put(i, false);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

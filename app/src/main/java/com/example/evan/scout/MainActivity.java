@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //resets all firebase datanames
+        DataManager.resetAlliancePlatformArrays();
+        DataManager.resetOpponentPlatformArrays();
         Utils.resetAllDataNull();
 
         Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
