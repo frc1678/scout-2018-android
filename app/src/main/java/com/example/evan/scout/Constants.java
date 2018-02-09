@@ -58,6 +58,7 @@ public class Constants {
             put("didGetDisabled", "Disabled");
             put("didGetIncapacitated", "Incap");
             put("didMakeAutoRun", "Auto Run Made");
+            put("didCrossAutoZone", "Auto Zone Crossed");
             put("didPark", "Parked");
             put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");

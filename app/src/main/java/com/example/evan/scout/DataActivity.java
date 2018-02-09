@@ -184,13 +184,21 @@ public abstract class DataActivity extends AppCompatActivity {
                                     toggleDisplayTitles.add(Constants.KEYS_TO_TITLES.get(getToggleData().get(i)));
                                 }
                                 toggleCreator = new UIComponentCreator(this, toggleDisplayTitles);
-                                boolean autoBool = false;
-                                if(saveAutoData){try {autoBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
-                                final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoBool,0,true);
+                                boolean autoLineBool = false;
+                                boolean autoCrossBool = false;
+                                if(saveAutoData){try {autoLineBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
+                                if(saveAutoData){try {autoCrossBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
+                                final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoLineBool,0,true);
+                                final ToggleButton autoZoneCrossed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoCrossBool,0,true);
                                 if(autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#3affb3"));
                                 }else if(!autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                                }
+                                if(autoZoneCrossed.isChecked()){
+                                    autoZoneCrossed.setBackgroundColor(Color.parseColor("#3affb3"));
+                                }else if(!autoZoneCrossed.isChecked()){
+                                    autoZoneCrossed.setBackgroundColor(Color.parseColor("#aaaaaa"));
                                 }
                                 autoLinePassed.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -203,7 +211,19 @@ public abstract class DataActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+                                autoZoneCrossed.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        DataManager.addZeroTierJsonData("didCrossAutoZone", autoZoneCrossed.isChecked());
+                                        if(autoZoneCrossed.isChecked()){
+                                            autoZoneCrossed.setBackgroundColor(Color.parseColor("#3affb3"));
+                                        }else if(!autoZoneCrossed.isChecked()){
+                                            autoZoneCrossed.setBackgroundColor(Color.parseColor("#aaaaaa"));
+                                        }
+                                    }
+                                });
                                 toggleLayout.addView(autoLinePassed);
+                                toggleLayout.addView(autoZoneCrossed);
                             }
                         }else if (activityName().equals("tele")) {
                             if (getToggleData() != null) {
@@ -520,21 +540,21 @@ public abstract class DataActivity extends AppCompatActivity {
                     for (int i = 0; i < getSwitchData().size(); i++) {
                         if(activityName().equals("auto")){
                             switchCreator.resetSwitchComponent();
-                            Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor, DataManager.autoAllianceSwitchDataArray);
+                            Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor, DataManager.autoAllianceSwitchDataArray, "alliance");
                             attemptLayoutOne.addView(a_switchButton);
                         }else if(activityName().equals("tele")){
                             Log.e("REEEEEEEt", activityName());
                             if(MainActivity.allianceColor.equals("red") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
-                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red", DataManager.teleAllianceSwitchDataArray);
-                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue", DataManager.teleOpponentSwitchDataArray);
+                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red", DataManager.teleAllianceSwitchDataArray, "alliance");
+                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "blue", DataManager.teleOpponentSwitchDataArray, "opponent");
                                 attemptLayoutOne.addView(a_switchButton,0);
                                 attemptLayoutOne.addView(getFillerSpace(5),1);
                                 attemptLayoutOne.addView(o_switchButton,2);
                             }else if(MainActivity.allianceColor.equals("blue") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
-                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue", DataManager.teleAllianceSwitchDataArray);
-                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red", DataManager.teleOpponentSwitchDataArray);
+                                Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "blue", DataManager.teleAllianceSwitchDataArray, "alliance");
+                                Button o_switchButton = switchCreator.addButton("opponentSwitchAttemptTele", "red", DataManager.teleOpponentSwitchDataArray, "opponent");
                                 attemptLayoutOne.addView(o_switchButton,0);
                                 attemptLayoutOne.addView(getFillerSpace(5),1);
                                 attemptLayoutOne.addView(a_switchButton,2);
@@ -698,6 +718,15 @@ public boolean onCreateOptionsMenu(Menu menu) {
         if (item.getItemId() == R.id.buttonNext) {
             rejected = false;
 
+            try {
+                if(DataManager.collectedData.getString("startingPosition") == null){
+                    Utils.makeToast(context, "PLEASE ENTER STARTING POSITION!");
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             synchronized (readyForNextActivityLock) {
                 if (!readyForNextActivity) {
                     Log.i("Scout Error", "Tried to move on too quickly!");
@@ -717,7 +746,8 @@ public boolean onCreateOptionsMenu(Menu menu) {
                         saveAutoData = false;
                         saveTeleData = false;
 
-                       //had specific stuff about save or unsave
+                        Utils.resetAllDataNull();
+
 
                         Log.e("collectedData", DataManager.collectedData.toString());
                         Log.e("SUBTITLE", DataManager.subTitle);
@@ -802,6 +832,8 @@ public boolean onCreateOptionsMenu(Menu menu) {
                             rejected = true;
                             saveAutoData = true;
                             saveTeleData = false;
+                            DataManager.resetTeleScaleData();
+                            DataManager.resetTeleSwitchData();
                             Intent intent = prepareIntent(getPreviousActivityClass());
                             if (getPreviousActivityClass() == MainActivity.class) {
                                 intent.putExtra("previousData", (String) null);

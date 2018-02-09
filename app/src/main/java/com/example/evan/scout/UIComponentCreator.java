@@ -188,7 +188,7 @@ public class UIComponentCreator {
         public void resetSwitchComponent(){     currentSwitchComponent = 0; }
         public int returnSwitchComponent(){     return currentSwitchComponent; }
 
-        public Button addButton(final String switchFBname, final String colorOfSwitch, final JSONArray jsonArray) {
+        public Button addButton(final String switchFBname, final String colorOfSwitch, final JSONArray jsonArray, final String allianceOrOpponent) {
             name = UISwitchCreator.super.componentNames.get(currentSwitchComponent);
 
             final Button switchButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -197,6 +197,7 @@ public class UIComponentCreator {
             switchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
                     c = jsonArray.length();
                     layer = 0;
                     status = null;
@@ -318,6 +319,20 @@ public class UIComponentCreator {
                                         DataManager.addZeroTierJsonData(switchFBname, jsonArray);
                                         c++;
 
+                                        dataSpace.put(switchKeys.get(0), switchValues.get(0));
+                                        dataSpace.put(switchKeys.get(1), switchValues.get(1));
+                                        dataSpace.put(switchKeys.get(2), switchValues.get(2));
+                                        dataSpace.put(switchKeys.get(3), switchValues.get(3));
+                                        dataSpace.put(switchKeys.get(4), switchValues.get(4));
+
+                                        if(DataActivity.activityName.equals("auto")) { DataManager.autoAllianceSwitchDataList.add(dataSpace); }
+                                        else if(DataActivity.activityName.equals("tele")) {
+                                            if (allianceOrOpponent == "alliance") {
+                                                DataManager.teleAllianceSwitchDataList.add(dataSpace);
+                                            } else if (allianceOrOpponent == "opponent") {
+                                                DataManager.teleOpponentSwitchDataList.add(dataSpace);
+                                            }
+                                        }
                                         successDialog.dismiss();
                                     } else {
                                         Toast.makeText(context, "Please put the layer!", Toast.LENGTH_SHORT).show();
@@ -355,6 +370,20 @@ public class UIComponentCreator {
                             DataManager.addZeroTierJsonData(switchFBname, jsonArray);
                             c++;
 
+                            dataSpace.put(switchKeys.get(0), switchValues.get(0));
+                            dataSpace.put(switchKeys.get(1), switchValues.get(1));
+                            dataSpace.put(switchKeys.get(2), switchValues.get(2));
+                            dataSpace.put(switchKeys.get(3), switchValues.get(3));
+                            dataSpace.put(switchKeys.get(4), switchValues.get(4));
+
+                            if(DataActivity.activityName.equals("auto")) { DataManager.autoAllianceSwitchDataList.add(dataSpace); }
+                            else if(DataActivity.activityName.equals("tele")) {
+                                if (allianceOrOpponent == "alliance") {
+                                    DataManager.teleAllianceSwitchDataList.add(dataSpace);
+                                } else if (allianceOrOpponent == "opponent") {
+                                    DataManager.teleOpponentSwitchDataList.add(dataSpace);
+                                }
+                            }
                             dialog.dismiss();
                         }
                     });
@@ -370,42 +399,72 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-//            switchButton.setOnLongClickListener(new View.OnLongClickListener() {
-//
-//                public boolean onLongClick(View v){
-//                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
-//                        if(DataActivity.activityName.equals("auto")){
-//                            DataActivity.saveAutoData = false;
-//                        }else if(DataActivity.activityName.equals("tele")){
-//                            DataActivity.saveTeleData = false;
-//                        }
-//                    }
-//
-//                    int latest = 0;
-//
-//                    if(latest > 0){
-//                        View switchHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
-//                        ListView switchList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
-//
-//                        AlertDialog.Builder switchBuilder = new AlertDialog.Builder(context);
-//                        switchBuilder.setView(switchHistory);
-//                        switchBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                dialog.cancel();
-//                            }
-//                        });
-//                        switchBuilder.setTitle(name);
-//                        switchBuilder.setCancelable(false);
-//                        AlertDialog shotDialog = switchBuilder.create();
-//
-//                        shotDialog.show();
-//                    } else {
-//                        Toast.makeText(context, "No Entries for "+name, Toast.LENGTH_SHORT).show();
-//                    }
-//                    return true;
-//                }
-//            });
+            switchButton.setOnLongClickListener(new View.OnLongClickListener() {
+
+                public boolean onLongClick(View v) {
+
+                    int latest = 0;
+                    if (DataActivity.activityName.equals("auto")) {
+                        latest = DataManager.autoAllianceSwitchDataList.size();
+                        Log.e("autoallysizeLatest", latest + "");
+                    } else if (DataActivity.activityName.equals("tele")) {
+                        if (allianceOrOpponent == "alliance") {
+                            latest = DataManager.teleAllianceSwitchDataList.size();
+                            Log.e("teleallysizeLatest", latest + "");
+                        }else if (allianceOrOpponent == "opponent") {
+                            latest = DataManager.teleOpponentSwitchDataList.size();
+                            Log.e("teleoppsizeLatest", latest + "");
+                        }
+                    }
+                    Log.e("sizeLatest", latest + "");
+
+                    if (latest > 0) {
+                        View switchHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.switch_history_dialog, null);
+                        ListView switchList = (ListView) switchHistory.findViewById(R.id.switchListView);
+
+                        AlertDialog.Builder switchBuilder = new AlertDialog.Builder(context);
+                        switchBuilder.setView(switchHistory);
+                        switchBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        switchBuilder.setTitle(name);
+                        switchBuilder.setCancelable(false);
+                        AlertDialog switchDialog = switchBuilder.create();
+
+                        if (DataActivity.activityName.equals("auto")) {
+                            switchList.setAdapter(new SwitchListAdapter(context, DataManager.autoAllianceSwitchDataList, switchDialog, name, switchFBname, jsonArray, new SwitchListAdapter.ListModificationListener() {
+                                @Override
+                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                    DataManager.autoAllianceSwitchDataList = returnList;
+                                }
+                            }));
+                        } else if (DataActivity.activityName.equals("tele")) {
+                            if (allianceOrOpponent == "alliance") {
+                                switchList.setAdapter(new SwitchListAdapter(context, DataManager.teleAllianceSwitchDataList, switchDialog, name, switchFBname, jsonArray, new SwitchListAdapter.ListModificationListener() {
+                                    @Override
+                                    public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                        DataManager.teleAllianceSwitchDataList = returnList;
+                                    }
+                                }));
+                            } else if (allianceOrOpponent == "opponent") {
+                                switchList.setAdapter(new SwitchListAdapter(context, DataManager.teleOpponentSwitchDataList, switchDialog, name, switchFBname, jsonArray, new SwitchListAdapter.ListModificationListener() {
+                                    @Override
+                                    public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                        DataManager.teleOpponentSwitchDataList = returnList;
+                                    }
+                                }));
+                            }
+                            switchDialog.show();
+                        }
+                    } else {
+                        Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
             currentSwitchComponent++;
             super.componentViews.add(switchButton);
             return switchButton;
@@ -440,6 +499,7 @@ public class UIComponentCreator {
             scaleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
                     c = jsonArray.length();
                     layer = 0;
                     status = null;
@@ -531,7 +591,7 @@ public class UIComponentCreator {
                                 @Override
                                 public void onClick(View v) {
                                     if (layer != 0) {
-                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //TODO time stuff
+                                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                         List<Object> scaleValues = new ArrayList<>();
                                         scaleValues.clear();
                                         scaleValues.add(didSucceed);
@@ -553,6 +613,14 @@ public class UIComponentCreator {
                                         DataManager.addZeroTierJsonData(scaleFBname, jsonArray);
                                         c++;
 
+                                        dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
+                                        dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
+                                        dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
+                                        dataSpace.put(scaleKeys.get(3), scaleValues.get(3));
+                                        dataSpace.put(scaleKeys.get(4), scaleValues.get(4));
+
+                                        if(DataActivity.activityName.equals("auto")) { DataManager.autoScaleDataList.add(dataSpace); }
+                                        else if(DataActivity.activityName.equals("tele")) { DataManager.teleScaleDataList.add(dataSpace); } //END HERE (or one line above)
                                         successDialog.dismiss();
 
                                     } else {
@@ -588,6 +656,12 @@ public class UIComponentCreator {
                             DataManager.addZeroTierJsonData(scaleFBname, jsonArray);
                             c++;
 
+                            dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
+                            dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
+                            dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
+
+                            if(DataActivity.activityName.equals("auto")) { DataManager.autoScaleDataList.add(dataSpace); }
+                            else if(DataActivity.activityName.equals("tele")) { DataManager.teleScaleDataList.add(dataSpace); }
                             dialog.dismiss();
                         }
                     });
@@ -604,19 +678,13 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-
-            /*scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
+            scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View v) {
-                    if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
-                        if (DataActivity.activityName.equals("auto")) {
-                            DataActivity.saveAutoData = false;
-                        } else if (DataActivity.activityName.equals("tele")) {
-                            DataActivity.saveTeleData = false;
-                        }
-                    }
 
                     int latest = 0;
+                    if(DataActivity.activityName.equals("auto")){latest = DataManager.autoScaleDataList.size();Log.e("sizeLatest", latest+"");}
+                    else if(DataActivity.activityName.equals("tele")){latest = DataManager.teleScaleDataList.size();}
 
                     if (latest > 0) {
                         View scaleHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.scale_history_dialog, null);
@@ -634,13 +702,30 @@ public class UIComponentCreator {
                         scaleBuilder.setCancelable(false);
                         AlertDialog scaleDialog = scaleBuilder.create();
 
+                        if(DataActivity.activityName.equals("auto")){
+                            scaleList.setAdapter(new ScaleListAdapter(context, DataManager.autoScaleDataList, scaleDialog, name, scaleFBname, jsonArray, new ScaleListAdapter.ListModificationListener() {
+                                @Override
+                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                    DataManager.autoScaleDataList = returnList;
+                                }
+                            }));
+                        }
+                        else if(DataActivity.activityName.equals("tele")){
+                            scaleList.setAdapter(new ScaleListAdapter(context, DataManager.teleScaleDataList, scaleDialog, name, scaleFBname, jsonArray, new ScaleListAdapter.ListModificationListener() {
+                                @Override
+                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                    DataManager.teleScaleDataList = returnList;
+                                }
+                            }));
+                        }
+
                         scaleDialog.show();
                     } else {
                         Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
                     }
                     return true;
-                }
-            });*/
+                } //END HERE (end of onLongClick)
+            });
             currentScaleComponent++;
             super.componentViews.add(scaleButton);
             return scaleButton;

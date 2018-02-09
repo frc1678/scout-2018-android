@@ -150,8 +150,8 @@ public class Utils {
         DataManager.autoScaleDataArray = new JSONArray();
         DataManager.teleScaleDataArray = new JSONArray();
 
-        DataManager.addZeroTierJsonData("teamNumber", null);
-        DataManager.addZeroTierJsonData("matchNumber", null);
+        DataManager.addZeroTierJsonData("teamNumber", 0);
+        DataManager.addZeroTierJsonData("matchNumber", 0);
         DataManager.addZeroTierJsonData("scoutName", null);
         DataManager.addZeroTierJsonData("allianceSwitchAttemptAuto", null);
         DataManager.addZeroTierJsonData("allianceSwitchAttemptTele", null);
@@ -159,27 +159,27 @@ public class Utils {
         DataManager.addZeroTierJsonData("scaleAttemptAuto", null);
         DataManager.addZeroTierJsonData("scaleAttemptTele", null);
         DataManager.addZeroTierJsonData("climb", null);
-        DataManager.addZeroTierJsonData("didGetDisabled", null);
-        DataManager.addZeroTierJsonData("didGetIncapacitated", null);
-        DataManager.addZeroTierJsonData("didMakeAutoRun", null);
-        DataManager.addZeroTierJsonData("didPark", null);
-        DataManager.addZeroTierJsonData("didCrossAutoZone", null);
+        DataManager.addZeroTierJsonData("didGetDisabled", false);
+        DataManager.addZeroTierJsonData("didGetIncapacitated", false);
+        DataManager.addZeroTierJsonData("didMakeAutoRun", false);
+        DataManager.addZeroTierJsonData("didPark", false);
+        DataManager.addZeroTierJsonData("didCrossAutoZone", false);
         DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
         DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
         DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
-        DataManager.addZeroTierJsonData("numCubesFumbledAuto", null);
-        DataManager.addZeroTierJsonData("numCubesFumbledTele", null);
-        DataManager.addZeroTierJsonData("numExchangeInput", null);
-        DataManager.addZeroTierJsonData("numGroundIntakeTele", null);
-        DataManager.addZeroTierJsonData("numGroundPortalIntakeTele", null);
-        DataManager.addZeroTierJsonData("numHumanPortalIntakeTele", null);
-        DataManager.addZeroTierJsonData("numGroundPyramidIntakeAuto", null);
-        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", null);
-        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeAuto", null);
-        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeTele", null);
-        DataManager.addZeroTierJsonData("numReturnIntake", null);
-        DataManager.addZeroTierJsonData("numSpilledCubesAuto", null);
-        DataManager.addZeroTierJsonData("numSpilledCubesTele", null);
+        DataManager.addZeroTierJsonData("numCubesFumbledAuto", 0);
+        DataManager.addZeroTierJsonData("numCubesFumbledTele", 0);
+        DataManager.addZeroTierJsonData("numExchangeInput", 0);
+        DataManager.addZeroTierJsonData("numGroundIntakeTele", 0);
+        DataManager.addZeroTierJsonData("numGroundPortalIntakeTele", 0);
+        DataManager.addZeroTierJsonData("numHumanPortalIntakeTele", 0);
+        DataManager.addZeroTierJsonData("numGroundPyramidIntakeAuto", 0);
+        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", 0);
+        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeAuto", 0);
+        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeTele", 0);
+        DataManager.addZeroTierJsonData("numReturnIntake", 0);
+        DataManager.addZeroTierJsonData("numSpilledCubesAuto", 0);
+        DataManager.addZeroTierJsonData("numSpilledCubesTele", 0);
         DataManager.addZeroTierJsonData("startingPosition", null);
     }
 
@@ -206,4 +206,20 @@ public class Utils {
         }
         return  tempObject;
     }
+
+//    public static ArrayList convertJSONArrayToList(JSONArray jArray, List<String> listKeys){
+//        ArrayList<HashMap<String, Object>> listdata = new ArrayList<>();
+//        if (jArray != null) {
+//            for (int i=0;i<jArray.length();i++){
+//                try {
+//                    JSONObject jObject = jArray.getJSONObject(i);
+//                    for(int j = 0;j < listKeys.size();j++)
+//                    listdata.add(listKeys.get(j), jArray.get(listKeys.get(i)));
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return listdata;
+//    }
 }

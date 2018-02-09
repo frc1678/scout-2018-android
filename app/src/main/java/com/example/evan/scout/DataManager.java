@@ -43,11 +43,18 @@ public class DataManager {
     public static JSONArray autoAllianceSwitchDataArray = new JSONArray();
     public static JSONArray teleAllianceSwitchDataArray = new JSONArray();
     public static JSONArray teleOpponentSwitchDataArray = new JSONArray();
+
     public static JSONArray autoScaleDataArray = new JSONArray();
     public static JSONArray teleScaleDataArray = new JSONArray();
 
     public static JSONArray alliancePlatformTaken = new JSONArray();
     public static JSONArray opponentPlatformTaken = new JSONArray();
+
+    public static ArrayList<HashMap<String, Object>> autoScaleDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> teleScaleDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> autoAllianceSwitchDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> teleAllianceSwitchDataList = new ArrayList<HashMap<String, Object>>();
+    public static ArrayList<HashMap<String, Object>> teleOpponentSwitchDataList = new ArrayList<HashMap<String, Object>>();
 
     public static void addZeroTierJsonData(String key0, Object value0){
         addToCollectedData(key0, null, value0);
@@ -120,5 +127,23 @@ public class DataManager {
                 e.printStackTrace();
             }
         }
+    }
+    public static void resetAutoScaleData(){
+        autoScaleDataArray = new JSONArray();
+        autoScaleDataList = new ArrayList<>();
+    }
+    public static void resetTeleScaleData(){
+        teleScaleDataArray = new JSONArray();
+        teleScaleDataList = new ArrayList<>();
+    }
+    public static void resetAutoSwitchData(){
+        autoAllianceSwitchDataArray = new JSONArray();
+        autoAllianceSwitchDataList = new ArrayList<>();
+    }
+    public static void resetTeleSwitchData(){
+        teleAllianceSwitchDataArray = new JSONArray();
+        teleOpponentSwitchDataArray = new JSONArray();
+        teleAllianceSwitchDataList = new ArrayList<>();
+        teleOpponentSwitchDataList = new ArrayList<>();
     }
 }

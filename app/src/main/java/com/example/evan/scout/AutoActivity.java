@@ -7,7 +7,7 @@ import java.util.List;
 public class AutoActivity extends DataActivity {
     public String activityName(){   return "auto"; }
     public List<String> getToggleData() {
-        return formatList(Arrays.asList("didMakeAutoRun"));
+        return formatList(Arrays.asList("didMakeAutoRun", "didCrossAutoZone"));
     }
     public List<String> getCounterData() { return formatList(Arrays.asList("numSpilledCubesAuto", "numCubesFumbledAuto")); }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptAuto")); }
