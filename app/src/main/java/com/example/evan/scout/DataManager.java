@@ -52,9 +52,13 @@ public class DataManager {
 
     public static ArrayList<HashMap<String, Object>> autoScaleDataList = new ArrayList<HashMap<String, Object>>();
     public static ArrayList<HashMap<String, Object>> teleScaleDataList = new ArrayList<HashMap<String, Object>>();
+
     public static ArrayList<HashMap<String, Object>> autoAllianceSwitchDataList = new ArrayList<HashMap<String, Object>>();
     public static ArrayList<HashMap<String, Object>> teleAllianceSwitchDataList = new ArrayList<HashMap<String, Object>>();
     public static ArrayList<HashMap<String, Object>> teleOpponentSwitchDataList = new ArrayList<HashMap<String, Object>>();
+
+    public static JSONObject autoPyramidDataList = new JSONObject();
+    public static JSONObject telePyramidDataList = new JSONObject();
 
     public static void addZeroTierJsonData(String key0, Object value0){
         addToCollectedData(key0, null, value0);
@@ -145,5 +149,11 @@ public class DataManager {
         teleOpponentSwitchDataArray = new JSONArray();
         teleAllianceSwitchDataList = new ArrayList<>();
         teleOpponentSwitchDataList = new ArrayList<>();
+    }
+    public static void resetAutoPyramidData(){
+        autoPyramidDataList = new JSONObject();
+    }
+    public static void resetTelePyramidData(){
+        telePyramidDataList = new JSONObject();
     }
 }

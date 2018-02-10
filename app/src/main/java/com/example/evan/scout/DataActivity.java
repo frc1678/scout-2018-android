@@ -543,7 +543,6 @@ public abstract class DataActivity extends AppCompatActivity {
                             Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptAuto", MainActivity.allianceColor, DataManager.autoAllianceSwitchDataArray, "alliance");
                             attemptLayoutOne.addView(a_switchButton);
                         }else if(activityName().equals("tele")){
-                            Log.e("REEEEEEEt", activityName());
                             if(MainActivity.allianceColor.equals("red") && (attemptLayoutOne.getChildAt(0)==null && attemptLayoutOne.getChildAt(2)==null)){
                                 switchCreator.resetSwitchComponent();
                                 Button a_switchButton = switchCreator.addButton("allianceSwitchAttemptTele", "red", DataManager.teleAllianceSwitchDataArray, "alliance");
@@ -746,9 +745,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                         saveAutoData = false;
                         saveTeleData = false;
 
-                        Utils.resetAllDataNull();
-
-
                         Log.e("collectedData", DataManager.collectedData.toString());
                         Log.e("SUBTITLE", DataManager.subTitle);
 
@@ -796,6 +792,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
             if(!activityName.equals("tele")){
                 startActivity(intent);
             }else if(activityName.equals("tele") && numSendClicks >= 2){
+                Utils.resetAllDataNull();
                 startActivity(intent);
             }
         }
@@ -834,6 +831,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                             saveTeleData = false;
                             DataManager.resetTeleScaleData();
                             DataManager.resetTeleSwitchData();
+                            DataManager.resetTelePyramidData();
                             Intent intent = prepareIntent(getPreviousActivityClass());
                             if (getPreviousActivityClass() == MainActivity.class) {
                                 intent.putExtra("previousData", (String) null);

@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         }else if(sharedPreferences.contains("scoutNumber")){
             scoutNumber = sharedPreferences.getInt("scoutNumber", 0);
         }
+        overridden = sharedPreferences.getBoolean("overriden", false);
 
         bgLoopThread bgLT = new bgLoopThread(context , scoutNumber, databaseReference, main);
         bgLT.start();
@@ -184,26 +185,26 @@ public class MainActivity extends AppCompatActivity {
                 if(!overridden) {
                     matchNumber = MatchNumListener.currentMatchNumber;
                     Log.e("MEME", matchNumber+"");
+                }else if(overridden){
+                    teamNumber = sharedPreferences.getInt("teamNumber", -1);
+                    matchNumber = sharedPreferences.getInt("matchNumber", -1);
                 }
             }
         });
 
-        teamNumber = sharedPreferences.getInt("teamNumber", -1);
-        matchNumber = sharedPreferences.getInt("matchNumber", -1);
-
-        //get and set match number from firebase
-        setMatchNumber();
-
-        //get and set team number to scout from firebase
-        setTeamNumber();
 //--------------------------------------------------------------------------------------------------
                     EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
                     teamNumberEditText.setText(String.valueOf(teamNumber));
 
-                    //block the edittext from being edited until overridden
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
                     matchNumberEditText.setEnabled(false);
                     findViewById(R.id.teamNumEdit).setEnabled(false);
+
+                    //get and set match number from firebase
+                    setMatchNumber();
+
+                    //get and set team number to scout from firebase
+                    setTeamNumber();
 
         updateListView();
         listenForResendClick();
@@ -293,8 +294,6 @@ public class MainActivity extends AppCompatActivity {
 
     //this method will get the match number and set it from firebase
     public void setMatchNumber(){
-        EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
-        Log.e("MEME4444", matchNumber+"");
         matchNumberEditText.setText(String.valueOf(matchNumber));
         matchNumberEditText.setTextColor(Color.parseColor("black"));
     }
@@ -330,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
                 databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.e("DANKKKKKK", "DANKKKKKK");
                         if(dataSnapshot != null){
                             if(dataSnapshot.getValue() != null){
                                 if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
@@ -470,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
                                                 intent.putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
                                                 .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
                                                 intent.setAction("returningNoSavedData");
+                                                spfe.putBoolean("overridden", overridden);
                                                 spfe.putInt("teamNumber", teamNumber);
                                                 spfe.putInt("matchNumber", matchNumber);
                                                 spfe.commit();

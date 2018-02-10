@@ -44,6 +44,7 @@ import java.util.Map;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static java.lang.String.valueOf;
 
 //class that creates all the ui components I need like togglebuttons, etc.  Also stores all buttons in list to be accessed later
 public class UIComponentCreator {
@@ -421,6 +422,7 @@ public class UIComponentCreator {
                     if (latest > 0) {
                         View switchHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.switch_history_dialog, null);
                         ListView switchList = (ListView) switchHistory.findViewById(R.id.switchListView);
+                        switchList.setVisibility(View.VISIBLE);
 
                         AlertDialog.Builder switchBuilder = new AlertDialog.Builder(context);
                         switchBuilder.setView(switchHistory);
@@ -739,7 +741,8 @@ public class UIComponentCreator {
         private String name;
         private Activity context;
         private int currentPyramidComponent;
-
+        private int tempGroundPyramidIntake = numGroundPyramidIntake;
+        private int tempElevatedPyramidIntake = numElevatedPyramidIntake;
 
         public UIPyramidCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
@@ -754,8 +757,17 @@ public class UIComponentCreator {
         public int returnPyramidComponent(){     return currentPyramidComponent; }
 
         public Button addButton() {
-            numElevatedPyramidIntake = 0;
-            numGroundPyramidIntake = 0;
+            try{
+                if(DataActivity.activityName.equals("auto")){
+                    numGroundPyramidIntake = DataManager.autoPyramidDataList.getInt("numGroundPyramidIntakeAuto");
+                    numElevatedPyramidIntake = DataManager.autoPyramidDataList.getInt("numElevatedPyramidIntakeAuto");
+                }else if(DataActivity.activityName.equals("tele")) {
+                    numGroundPyramidIntake = DataManager.telePyramidDataList.getInt("numGroundPyramidIntakeTele");
+                    numElevatedPyramidIntake = DataManager.telePyramidDataList.getInt("numElevatedPyramidIntakeTele");
+                }
+            }catch (JSONException je){
+                je.printStackTrace();
+            }
 
             name = UIPyramidCreator.super.componentNames.get(currentPyramidComponent);
 
@@ -770,21 +782,24 @@ public class UIComponentCreator {
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
                     titleTV.setText(name);
 
-                    Button groundButton = (Button) dialogLayout.findViewById(R.id.elevatedButton);
+                    Button groundButton = (Button) dialogLayout.findViewById(R.id.groundButton);
                     groundButton.setText("Ground" + " ("+numGroundPyramidIntake+")");
                     groundButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             numGroundPyramidIntake += 1;
                             if (numGroundPyramidIntake != 0 || numElevatedPyramidIntake != 0) {
-                                List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake"+DataActivity.capActivityName, "numElevatedPyramidIntake"+DataActivity.capActivityName);
-                                List<Object> pyramidValues = new ArrayList<>();
-                                pyramidValues.clear();
-                                pyramidValues.add(numGroundPyramidIntake);
-                                pyramidValues.add(numElevatedPyramidIntake);
-
-                                for(int i = 0; i < 2; i++){     DataManager.addZeroTierJsonData(pyramidKeys.get(i), pyramidValues.get(i)); }
-
+                                try{
+                                    if(DataActivity.activityName.equals("auto")){
+                                        DataManager.autoPyramidDataList.put("numGroundPyramidIntakeAuto", numGroundPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numGroundPyramidIntakeAuto", numGroundPyramidIntake);
+                                    }else if(DataActivity.activityName.equals("tele")) {
+                                        DataManager.telePyramidDataList.put("numGroundPyramidIntakeTele", numGroundPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", numGroundPyramidIntake);
+                                    }
+                                }catch (JSONException je){
+                                    je.printStackTrace();
+                                }
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
@@ -792,21 +807,24 @@ public class UIComponentCreator {
                         }
                     });
 
-                    Button elevatedButton = (Button) dialogLayout.findViewById(R.id.groundButton);
+                    Button elevatedButton = (Button) dialogLayout.findViewById(R.id.elevatedButton);
                     elevatedButton.setText("Elevated" + " ("+numElevatedPyramidIntake+")");
                     elevatedButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             numElevatedPyramidIntake += 1;
                             if (numGroundPyramidIntake != 0 || numElevatedPyramidIntake != 0) {
-                                List<String> pyramidKeys = Arrays.asList("numGroundPyramidIntake"+DataActivity.capActivityName, "numElevatedPyramidIntake"+DataActivity.capActivityName);
-                                List<Object> pyramidValues = new ArrayList<>();
-                                pyramidValues.clear();
-                                pyramidValues.add(numGroundPyramidIntake);
-                                pyramidValues.add(numElevatedPyramidIntake);
-
-                                for(int i = 0; i < 2; i++){     DataManager.addZeroTierJsonData(pyramidKeys.get(i), pyramidValues.get(i)); }
-
+                                try{
+                                    if(DataActivity.activityName.equals("auto")){
+                                        DataManager.autoPyramidDataList.put("numElevatedPyramidIntakeAuto", numElevatedPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeAuto", numElevatedPyramidIntake);
+                                    }else if(DataActivity.activityName.equals("tele")) {
+                                        DataManager.telePyramidDataList.put("numElevatedPyramidIntakeTele", numElevatedPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeTele", numElevatedPyramidIntake);
+                                    }
+                                }catch (JSONException je){
+                                    je.printStackTrace();
+                                }
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(context, "Please put pyramid layer", Toast.LENGTH_SHORT).show();
@@ -824,34 +842,122 @@ public class UIComponentCreator {
                     dialog.show();
                 }
             });
-            /*shotButton.setOnLongClickListener(new View.OnLongClickListener() {
+            pyramidButton.setOnLongClickListener(new View.OnLongClickListener() {
 
                 public boolean onLongClick(View v){
-                    if((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))){
-                        if(DataActivity.activityName.equals("auto")){
-                            DataActivity.saveAutoData = false;
-                        }else if(DataActivity.activityName.equals("tele")){
-                            DataActivity.saveTeleData = false;
-                        }
-                    }
-
                     int latest = 0;
 
-                    if(latest > 0){
-                        //View shotsHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.shots_history_dialog, null);
-                        //ListView shotList = (ListView) shotsHistory.findViewById(R.id.shotsListView);
+                    if(DataActivity.activityName.equals("auto")){latest = DataManager.autoPyramidDataList.length();}
+                    else if(DataActivity.activityName.equals("tele")){latest = DataManager.telePyramidDataList.length();}
 
+                    if(latest > 0){
+                        View pyramidHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.pyramid_history_dialog, null);
                         AlertDialog.Builder pyramidBuilder = new AlertDialog.Builder(context);
-                        pyramidBuilder.setView(shotsHistory);
-                        pyramidBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
+                        pyramidBuilder.setView(pyramidHistory);
                         pyramidBuilder.setTitle(name);
                         pyramidBuilder.setCancelable(false);
-                        AlertDialog pyramidDialog = pyramidBuilder.create();
+                        final AlertDialog pyramidDialog = pyramidBuilder.create();
+
+                        final TextView groundNumberView = (TextView) pyramidHistory.findViewById(R.id.groundNumberView);
+                        final TextView elevatedNumberView = (TextView) pyramidHistory.findViewById(R.id.elevatedNumberView);
+
+                        if(DataActivity.activityName.equals("auto")) {
+                            try{
+                                tempGroundPyramidIntake = DataManager.autoPyramidDataList.getInt("numGroundPyramidIntakeAuto");
+                                tempElevatedPyramidIntake = DataManager.autoPyramidDataList.getInt("numElevatedPyramidIntakeAuto");
+                            }catch(JSONException je){
+                                je.printStackTrace();
+                            }
+                        }
+                        if(DataActivity.activityName.equals("tele")) {
+                            try{
+                                tempGroundPyramidIntake = DataManager.telePyramidDataList.getInt("numGroundPyramidIntakeTele");
+                                tempElevatedPyramidIntake = DataManager.telePyramidDataList.getInt("numElevatedPyramidIntakeTele");
+                            }catch(JSONException je){
+                                je.printStackTrace();
+                            }
+                        }
+                        groundNumberView.setText(tempGroundPyramidIntake+"");
+                        elevatedNumberView.setText(tempElevatedPyramidIntake+"");
+
+                        ((Button) pyramidHistory.findViewById(R.id.groundPlusButton)).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(tempGroundPyramidIntake >= 10){
+                                }else{
+                                    tempGroundPyramidIntake+= 1;
+                                }
+                                groundNumberView.setText(valueOf(tempGroundPyramidIntake));
+                                elevatedNumberView.setText(valueOf(tempElevatedPyramidIntake));
+                            }
+                        });
+                        ((Button) pyramidHistory.findViewById(R.id.groundMinusButton)).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(tempGroundPyramidIntake <= 0){
+                                }else{
+                                    tempGroundPyramidIntake-= 1;
+                                }
+                                groundNumberView.setText(valueOf(tempGroundPyramidIntake));
+                                elevatedNumberView.setText(valueOf(tempElevatedPyramidIntake));
+                            }
+                        });
+                        ((Button) pyramidHistory.findViewById(R.id.elevatedPlusButton)).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(tempElevatedPyramidIntake >= 10){
+                                }else{
+                                    tempElevatedPyramidIntake+= 1;
+                                }
+                                groundNumberView.setText(valueOf(tempGroundPyramidIntake));
+                                elevatedNumberView.setText(valueOf(tempElevatedPyramidIntake));
+                            }
+                        });
+                        ((Button) pyramidHistory.findViewById(R.id.ElevatedMinusButton)).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(tempElevatedPyramidIntake <= 0){
+                                }else{
+                                    tempElevatedPyramidIntake-= 1;
+                                }
+                                groundNumberView.setText(valueOf(tempGroundPyramidIntake));
+                                elevatedNumberView.setText(valueOf(tempElevatedPyramidIntake));
+                            }
+                        });
+                        ((Button) pyramidHistory.findViewById(R.id.cancelButton)).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                tempGroundPyramidIntake = 0;
+                                tempElevatedPyramidIntake = 0;
+                                pyramidDialog.dismiss();
+                            }
+                        });
+                        ((Button) pyramidHistory.findViewById(R.id.saveButton)).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                numGroundPyramidIntake = tempGroundPyramidIntake;
+                                numElevatedPyramidIntake = tempElevatedPyramidIntake;
+                                try{
+                                    if(DataActivity.activityName.equals("auto")){
+                                        DataManager.autoPyramidDataList.put("numGroundPyramidIntakeAuto", tempGroundPyramidIntake);
+                                        DataManager.autoPyramidDataList.put("numElevatedPyramidIntakeAuto", tempElevatedPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numGroundPyramidIntakeAuto", tempGroundPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeAuto", tempElevatedPyramidIntake);
+                                    }else if(DataActivity.activityName.equals("tele")){
+                                        DataManager.telePyramidDataList.put("numGroundPyramidIntakeTele", tempGroundPyramidIntake);
+                                        DataManager.telePyramidDataList.put("numElevatedPyramidIntakeTele", tempElevatedPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", tempGroundPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", tempElevatedPyramidIntake);
+                                    }
+                                }catch (JSONException je){
+                                    je.printStackTrace();
+                                }
+                                tempGroundPyramidIntake = 0;
+                                tempElevatedPyramidIntake = 0;
+
+                                pyramidDialog.dismiss();
+                            }
+                        });
 
                         pyramidDialog.show();
                     } else {
@@ -859,7 +965,7 @@ public class UIComponentCreator {
                     }
                     return true;
                 }
-            }*/
+            });
 
             currentPyramidComponent++;
             super.componentViews.add(pyramidButton);
