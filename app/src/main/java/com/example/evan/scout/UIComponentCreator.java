@@ -459,8 +459,8 @@ public class UIComponentCreator {
                                     }
                                 }));
                             }
-                            switchDialog.show();
                         }
+                        switchDialog.show();
                     } else {
                         Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
                     }
