@@ -864,17 +864,25 @@ public class UIComponentCreator {
                         if(DataActivity.activityName.equals("auto")) {
                             try{
                                 tempGroundPyramidIntake = DataManager.autoPyramidDataList.getInt("numGroundPyramidIntakeAuto");
-                                tempElevatedPyramidIntake = DataManager.autoPyramidDataList.getInt("numElevatedPyramidIntakeAuto");
                             }catch(JSONException je){
                                 je.printStackTrace();
+                            }
+                            try {
+                                tempElevatedPyramidIntake = DataManager.autoPyramidDataList.getInt("numElevatedPyramidIntakeAuto");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
                         if(DataActivity.activityName.equals("tele")) {
                             try{
                                 tempGroundPyramidIntake = DataManager.telePyramidDataList.getInt("numGroundPyramidIntakeTele");
-                                tempElevatedPyramidIntake = DataManager.telePyramidDataList.getInt("numElevatedPyramidIntakeTele");
                             }catch(JSONException je){
                                 je.printStackTrace();
+                            }
+                            try {
+                                tempElevatedPyramidIntake = DataManager.telePyramidDataList.getInt("numElevatedPyramidIntakeTele");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
                         groundNumberView.setText(tempGroundPyramidIntake+"");

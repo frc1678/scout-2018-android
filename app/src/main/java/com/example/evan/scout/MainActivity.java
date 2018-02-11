@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     //the current match number
     public static int matchNumber;
+    public int firebaseMatchNumber;
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -178,25 +179,41 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setBackgroundDrawable(returnDrawable());
         }
 
-        matchNumber = -1;
-        new MatchNumListener(new MatchNumListener.MatchFirebaseInterface() {
-            @Override
-            public void onMatchChanged() {
-                if(!overridden) {
-                    matchNumber = MatchNumListener.currentMatchNumber;
-                    Log.e("MEME", matchNumber+"");
-                }else if(overridden){
-                    teamNumber = sharedPreferences.getInt("teamNumber", -1);
-                    matchNumber = sharedPreferences.getInt("matchNumber", -1);
-                }
-            }
-        });
-
-//--------------------------------------------------------------------------------------------------
+                    matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
                     EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+
+                    ValueEventListener matchListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null) {
+                                if(context instanceof MainActivity){
+                                    firebaseMatchNumber = dataSnapshot.getValue(Integer.class);
+                                    if(!overridden){
+                                        matchNumber = firebaseMatchNumber;
+                                        matchNumberEditText.setText(matchNumber+"");
+                                    }
+                                }
+                            } else {
+                                firebaseMatchNumber = -1;
+                                matchNumber = -1;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    };
+
+
+                    FirebaseDatabase.getInstance().getReference().child("currentMatchNum").addValueEventListener(matchListener);
+                    if(overridden){
+                        teamNumber = sharedPreferences.getInt("teamNumber", -1);
+                        matchNumber = sharedPreferences.getInt("matchNumber", -1);
+                    }
+
                     teamNumberEditText.setText(String.valueOf(teamNumber));
 
-                    matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
                     matchNumberEditText.setEnabled(false);
                     findViewById(R.id.teamNumEdit).setEnabled(false);
 
@@ -276,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.mainOverride){
             if(overridden){
+                matchNumber = firebaseMatchNumber;
                 setTeamNumber();
                 setMatchNumber();
                 overridden = false;
@@ -424,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("HATRED", "ISOVERRIDEN");
             //if the schedule has been overridden we will use the values that the user has set
             EditText teamNumEditText = (EditText) findViewById(R.id.teamNumEdit);
-            if (teamNumEditText.getText().toString().equals("")) {
+            if (teamNumber == -1) {
                 Toast.makeText(getBaseContext(), "Please set your team number and try again",
                         Toast.LENGTH_LONG).show();
             } else {
