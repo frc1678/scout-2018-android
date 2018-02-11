@@ -207,6 +207,7 @@ public class UIComponentCreator {
 
                     //Create Dialog
                     final Dialog dialog = new Dialog(context);
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_dialog, null);
                     //Set Dialog Title
@@ -225,6 +226,7 @@ public class UIComponentCreator {
                             dialog.dismiss();
 
                             final Dialog successDialog = new Dialog(context);
+                            successDialog.setCanceledOnTouchOutside(false);
                             successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.switch_success_dialog, null);
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
@@ -459,8 +461,8 @@ public class UIComponentCreator {
                                     }
                                 }));
                             }
-                            switchDialog.show();
                         }
+                        switchDialog.show();
                     } else {
                         Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
                     }
@@ -508,6 +510,7 @@ public class UIComponentCreator {
                     startTime = backgroundTimer.getUpdatedTime();
 
                     final Dialog dialog = new Dialog(context);
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_dialog, null);
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.scaleDialogTitle);
@@ -523,6 +526,7 @@ public class UIComponentCreator {
                             dialog.dismiss();
 
                             final Dialog successDialog = new Dialog(context);
+                            successDialog.setCanceledOnTouchOutside(false);
                             successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             RelativeLayout successDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.scale_success_dialog, null);
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.scaleSuccessDialogTitle);
@@ -777,6 +781,7 @@ public class UIComponentCreator {
                 @Override
                 public void onClick(View v) {
                     final Dialog dialog = new Dialog(context);
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.pyramid_dialog, null);
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
@@ -1018,6 +1023,7 @@ public class UIComponentCreator {
 
                         //display custom dialog with big buttons
                         final Dialog dialog = new Dialog(context);
+                        dialog.setCanceledOnTouchOutside(false);
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         final LinearLayout dialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.climb_dialog, null);
                         final TextView title = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
@@ -1034,6 +1040,7 @@ public class UIComponentCreator {
                                 endValues.add(0, didSucceed);
 
                                 final Dialog climbTypeDialog = new Dialog(context);
+                                climbTypeDialog.setCanceledOnTouchOutside(false);
                                 climbTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 final RelativeLayout ctDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_type, null);
                                 final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
@@ -1082,6 +1089,7 @@ public class UIComponentCreator {
                                             final List<Object> activeValues = new ArrayList<>();
 
                                             final Dialog activeLiftDialog = new Dialog(context);
+                                            activeLiftDialog.setCanceledOnTouchOutside(false);
                                             activeLiftDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                             final RelativeLayout alDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.active_lift_dialog, null);
                                             final TextView title = (TextView) alDialogLayout.findViewById(R.id.dialogTitle);
@@ -1211,6 +1219,7 @@ public class UIComponentCreator {
                                 endValues.add(0, didSucceed);
 
                                 final Dialog climbTypeDialog = new Dialog(context);
+                                climbTypeDialog.setCanceledOnTouchOutside(false);
                                 climbTypeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 final RelativeLayout ctDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.climb_type, null);
                                 final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
@@ -1259,6 +1268,7 @@ public class UIComponentCreator {
                                             final List<Object> activeValues = new ArrayList<>();
 
                                             final Dialog activeLiftDialog = new Dialog(context);
+                                            activeLiftDialog.setCanceledOnTouchOutside(false);
                                             activeLiftDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                             final RelativeLayout alDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.active_lift_dialog, null);
                                             final TextView title = (TextView) alDialogLayout.findViewById(R.id.dialogTitle);

@@ -34,14 +34,14 @@ public class Constants {
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             //New constants
             //counters
-            put("numCubesFumbledAuto", "Cubes Fumbled Auto");
+            put("numCubesFumbledAuto", "Cubes Fumbled");
             put("numCubesFumbledTele", "Cubes Fumbled");
             put("numExchangeInput", "Exchange Input");
             put("numGroundIntakeTele", "Ground Intake");
             put("numGroundPortalIntakeTele", "Ground Portal Intake");
             put("numHumanPortalIntakeTele", "Human Portal Intake");
             put("numReturnIntake", "Return Intake");
-            put("numSpilledCubesAuto", "Cubes Spilled Auto");
+            put("numSpilledCubesAuto", "Cubes Spilled");
             put("numSpilledCubesTele", "Cubes Spilled");
             //start positions
             put("startingPositionLeft", "Left");
