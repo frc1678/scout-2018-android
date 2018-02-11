@@ -759,6 +759,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setAllianceColor(){
         final Dialog colorDialog = new Dialog(context);
+        colorDialog.setCanceledOnTouchOutside(false);
         colorDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         RelativeLayout colorDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.color_dialog, null);
         //Set Dialog Title
