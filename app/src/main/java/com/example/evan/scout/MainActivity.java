@@ -253,7 +253,8 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 editText.setText("");
             }
-            new AlertDialog.Builder(context)
+            AlertDialog scoutNameAlertDialog;
+            scoutNameAlertDialog = new AlertDialog.Builder(context)
                     .setView(dialogView)
                     .setTitle("")
                     .setMessage("Are you this person?")
@@ -272,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
+            scoutNameAlertDialog.setCanceledOnTouchOutside(false);
         }
 
         if (id == R.id.mainOverride){
@@ -382,7 +384,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             editText.setHint(Integer.toString(scoutNumber));
         }
-        new AlertDialog.Builder(this)
+        AlertDialog scoutIDAlertDialog;
+        scoutIDAlertDialog = new AlertDialog.Builder(this)
                 .setTitle("Set Scout ID")
                 .setView(editText)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
@@ -414,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+        scoutIDAlertDialog.setCanceledOnTouchOutside(false);
     }
 
 
@@ -547,7 +551,8 @@ public class MainActivity extends AppCompatActivity {
 
                 final String fileName = name;
                 final String[] nameOfResendMatch = name.split("Q");
-                new AlertDialog.Builder(context)
+                AlertDialog resendAlertDialog;
+                resendAlertDialog = new AlertDialog.Builder(context)
                         .setTitle("RESEND DATA?")
                         .setMessage("RESEND " + "Q" + nameOfResendMatch[1] + "?")
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -572,12 +577,14 @@ public class MainActivity extends AppCompatActivity {
                                 resendScoutData(dataPoints);
                             }
                         }).show();
+                resendAlertDialog.setCanceledOnTouchOutside(false);
             }
         });
     }
 
     public void resendAllClicked(View view) {
-        new AlertDialog.Builder(this)
+        AlertDialog resendAllAlertDialog;
+        resendAllAlertDialog = new AlertDialog.Builder(this)
                 .setTitle("RESEND ALL?")
                 .setMessage("RESEND ALL DATA?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -603,6 +610,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+        resendAllAlertDialog.setCanceledOnTouchOutside(false);
     }
 
     public void resendScoutData(final List<JSONObject> dataPoints) {
