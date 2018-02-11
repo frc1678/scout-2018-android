@@ -449,8 +449,8 @@ public abstract class DataActivity extends AppCompatActivity {
                                 radioLayout.addView(centerStartPosition);
                                 radioLayout.addView(leftStartPosition);
                                 rightStartPosition.setText("Right");
-                                centerStartPosition.setText("Center");
-                                leftStartPosition.setText("Left");
+                                centerStartPosition.setText("Left");
+                                leftStartPosition.setText("Center");
                             }
                         }
                     }
