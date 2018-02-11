@@ -84,12 +84,22 @@ public class SwitchListAdapter extends BaseAdapter {
         if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("true")) {
             ((TextView) convertView.findViewById(R.id.cvResult)).setText("Success");
             ((TextView) convertView.findViewById(R.id.cvLayer)).setText("Layer " + (String.valueOf(dataList.get(inversePosition).get("layer"))));
+            if(String.valueOf(dataList.get(inversePosition).get("status")) == "opponentOwned"){
+                ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Opponent Owned");
+            }
+            else if(String.valueOf(dataList.get(inversePosition).get("status")) == "balanced"){
+                ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Balanced");
+            }
+        }
+        else if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("false")) {
+            ((TextView) convertView.findViewById(R.id.cvResult)).setText("Fail");
+            ((TextView) convertView.findViewById(R.id.cvLayer)).setText(String.valueOf(dataList.get(inversePosition).get("layer")));
+            ((TextView) convertView.findViewById(R.id.cvStatus)).setText(String.valueOf(dataList.get(inversePosition).get("status")));
         }
         else if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("false")) {
             ((TextView) convertView.findViewById(R.id.cvResult)).setText("Fail");
             ((TextView) convertView.findViewById(R.id.cvLayer)).setText(String.valueOf(dataList.get(inversePosition).get("layer")));
         }
-        ((TextView) convertView.findViewById(R.id.cvStatus)).setText(String.valueOf(dataList.get(inversePosition).get("status")));
         ((TextView) convertView.findViewById(R.id.cvStartTime)).setText(String.valueOf(dataList.get(inversePosition).get("startTime")) + " sec");
         ((TextView) convertView.findViewById(R.id.cvEndTime)).setText(String.valueOf(dataList.get(inversePosition).get("endTime")) + " sec");
         ((ImageButton) convertView.findViewById(R.id.cvDelButton)).setOnClickListener(new View.OnClickListener() {
@@ -138,6 +148,7 @@ public class SwitchListAdapter extends BaseAdapter {
 
                                 String finalLayerString = switchLayerButton.getText().toString();
                                 Integer finalLayer = 0;
+                                String finalStatus = null;
 
                                 if(switchLayerButton != null && switchStatusButton != null) {
                                     if(finalLayerString.equals("Layer 1")) {
@@ -152,7 +163,13 @@ public class SwitchListAdapter extends BaseAdapter {
                                     dataList.get(inversePosition).put("layer", finalLayer);
                                     listInterface.onListChanged(dataList);
 
-                                    String finalStatus = switchStatusButton.getText().toString();
+                                    String finalStatusString = switchStatusButton.getText().toString();
+                                    if(finalStatusString.equals("Opponent Owned")) {
+                                        finalStatus = "opponentOwned";
+                                    }
+                                    else if(finalStatusString.equals("Balanced")) {
+                                        finalStatus = "balanced";
+                                    }
                                     dataList.get(inversePosition).put("status", finalStatus);
                                     listInterface.onListChanged(dataList);
 
