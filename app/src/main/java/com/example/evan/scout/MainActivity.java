@@ -78,7 +78,7 @@ import java.util.TimerTask;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
-//FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING;
+//FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING; scoutName popping up twice;
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
@@ -285,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
                             databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
                             databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                            Log.e("tempScoutName", scoutName);
                             scoutName = editText.getText().toString();
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
