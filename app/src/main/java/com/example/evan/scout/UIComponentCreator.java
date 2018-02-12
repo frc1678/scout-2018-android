@@ -307,7 +307,7 @@ public class UIComponentCreator {
                                         switchValues.add(startTime);
                                         switchValues.add(endTime);
                                         if(status == null){
-                                            switchValues.add(null);
+                                            switchValues.add("owned");
                                         }else{
                                             switchValues.add(status);
                                         }

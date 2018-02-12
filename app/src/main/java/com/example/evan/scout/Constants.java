@@ -28,6 +28,7 @@ public class Constants {
     public static final String COLOR_BLUE = "#53A4F7";
     public static final String COLOR_LIGHTBLUE = "#A1CCF8";
     public static final String COLOR_LIGHTRED = "#FA9B86";
+    public static final String COLOR_GREY = "#b3b3b3";
 
     static {
         //replace with new datapoints

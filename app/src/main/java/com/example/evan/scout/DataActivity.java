@@ -335,7 +335,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         final int ii = i;
                                                         final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED), true);
                                                         if(MainActivity.allianceColor.equals("red") && DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
-                                                            DataManager.alliancePlatformTakenTele.put(ii, true);
+                                                            DataManager.alliancePlatformTakenTele.put(ii, false);
                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                             platformButtonRed.setEnabled(false);
                                                         }else if(MainActivity.allianceColor.equals("red") && DataManager.alliancePlatformTakenTele.getBoolean(ii)){
@@ -347,10 +347,10 @@ public abstract class DataActivity extends AppCompatActivity {
                                                             public void onClick(View v) {
                                                                 if(MainActivity.allianceColor.equals("red")){
                                                                     try {
-                                                                        if(!DataManager.alliancePlatformTakenAuto.getBoolean(ii) || !DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                        if(!DataManager.alliancePlatformTakenTele.getBoolean(ii)){
                                                                             DataManager.alliancePlatformTakenTele.put(ii, true);
                                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
-                                                                        }else if(DataManager.alliancePlatformTakenAuto.getBoolean(ii) || DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                        }else if(DataManager.alliancePlatformTakenTele.getBoolean(ii)){
                                                                             DataManager.alliancePlatformTakenTele.put(ii, false);
                                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                         }
@@ -380,6 +380,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         final int ii = i;
                                                         final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE), true);
                                                         if(MainActivity.allianceColor.equals("blue") && DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
+                                                            DataManager.alliancePlatformTakenTele.put(ii, false);
                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                             platformButtonBlue.setEnabled(false);
                                                         }else if(MainActivity.allianceColor.equals("blue") && DataManager.alliancePlatformTakenTele.getBoolean(ii)){
@@ -391,10 +392,10 @@ public abstract class DataActivity extends AppCompatActivity {
                                                             public void onClick(View v) {
                                                                 if(MainActivity.allianceColor.equals("blue")){
                                                                     try {
-                                                                        if(!DataManager.alliancePlatformTakenAuto.getBoolean(ii) || !DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                        if(!DataManager.alliancePlatformTakenTele.getBoolean(ii)){
                                                                             DataManager.alliancePlatformTakenTele.put(ii, true);
                                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
-                                                                        }else if(DataManager.alliancePlatformTakenAuto.getBoolean(ii) || DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                        }else if(DataManager.alliancePlatformTakenTele.getBoolean(ii)){
                                                                             DataManager.alliancePlatformTakenTele.put(ii, false);
                                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                         }

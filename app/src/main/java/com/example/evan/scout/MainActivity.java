@@ -78,10 +78,7 @@ import java.util.TimerTask;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
-/**
- * Created by Calvin on 7/26/17.
- */
-//THIS IS THE MASTER BRANCH - Ni Hao Ding Dong I hav Long Schlong(I updated the general layouts)
+//FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING;
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
@@ -132,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //resets all firebase datanames
+        DataManager.collectedData = new JSONObject();
         DataManager.resetAutoAlliancePlatformArrays();
         DataManager.resetTeleAlliancePlatformArrays();
         DataManager.resetTeleOpponentPlatformArrays();

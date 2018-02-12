@@ -105,6 +105,11 @@ public class SwitchListAdapter extends BaseAdapter {
         ((ImageButton) convertView.findViewById(R.id.cvDelButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    jsonArray.put(inversePosition, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 dataList.remove(inversePosition);
                 listInterface.onListChanged(dataList);
                 notifyDataSetChanged();
@@ -170,14 +175,20 @@ public class SwitchListAdapter extends BaseAdapter {
                                     else if(finalStatusString.equals("Balanced")) {
                                         finalStatus = "balanced";
                                     }
+                                    if(finalStatus == null){
+                                        finalStatus = "owned";
+                                    }
                                     dataList.get(inversePosition).put("status", finalStatus);
                                     listInterface.onListChanged(dataList);
 
                                     dataList.get(inversePosition).put("didSucceed", true);
 
-                                    dialog2.dismiss();
-                                    listDialog.cancel();
-
+                                    if(finalLayer != 0){
+                                        dialog2.dismiss();
+                                        listDialog.cancel();
+                                    }else{
+                                        Utils.makeToast(activityContext, "Please Input Layer!");
+                                    }
                                 } else {
                                     Toast.makeText(activityContext, "No Radio Button was checked.",
                                             Toast.LENGTH_SHORT).show();
