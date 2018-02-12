@@ -60,8 +60,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -129,8 +132,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //resets all firebase datanames
-        DataManager.resetAlliancePlatformArrays();
-        DataManager.resetOpponentPlatformArrays();
+        DataManager.resetAutoAlliancePlatformArrays();
+        DataManager.resetTeleAlliancePlatformArrays();
+        DataManager.resetTeleOpponentPlatformArrays();
         Utils.resetAllDataNull();
 
         Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
@@ -169,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Last Scout name used", scoutName);
         }
 
+//        downloadMatch();
         findColor();
         if(allianceColor == null){
             setAllianceColor();
@@ -344,16 +349,32 @@ public class MainActivity extends AppCompatActivity {
         try{
             for(int i = 0; i < 3; i++){
                 final int num = i;
-                databaseReference.child("Matches").child(matchNumber+"").child("blueAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                databaseReference.child("Matches").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot != null){
                             if(dataSnapshot.getValue() != null){
-                                if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                                    setActionBarColor(Constants.COLOR_BLUE);
-                                    allianceColor = "blue";
-                                    capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-                                    Log.e("CALLED!!!", allianceColor);
+                                for (DataSnapshot match : dataSnapshot.getChildren()){
+                                    if (Integer.parseInt(match.getKey()) == matchNumber){
+                                        DataSnapshot blueTeamNumbers = match.child("blueAllianceTeamNumbers");
+                                        for (DataSnapshot teamNumberR : blueTeamNumbers.getChildren()){
+                                            if(Integer.parseInt(teamNumberR.getValue().toString()) == teamNumber){
+                                                setActionBarColor(Constants.COLOR_BLUE);
+                                                allianceColor = "blue";
+                                                capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+                                                Log.e("CALLED!!!", allianceColor);
+                                            }
+                                        }
+                                        DataSnapshot redTeamNumbers = match.child("redAllianceTeamNumbers");
+                                        for (DataSnapshot teamNumberB : redTeamNumbers.getChildren()){
+                                            if(Integer.parseInt(teamNumberB.getValue().toString()) == teamNumber){
+                                                setActionBarColor(Constants.COLOR_RED);
+                                                allianceColor = "red";
+                                                capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+                                                Log.e("CALLED!!!", allianceColor);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -364,28 +385,28 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
-                databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot != null){
-                            if(dataSnapshot.getValue() != null){
-                                if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-                                    setActionBarColor(Constants.COLOR_RED);
-                                    allianceColor = "red";
-                                    capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-                                    Log.e("CALLED!!!", allianceColor);
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-
-                    }
-                });
-
+//
+//                databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        if(dataSnapshot != null){
+//                            if(dataSnapshot.getValue() != null){
+//                                if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
+//                                    setActionBarColor(Constants.COLOR_RED);
+//                                    allianceColor = "red";
+//                                    capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+//                                    Log.e("CALLED!!!", allianceColor);
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError firebaseError) {
+//
+//                    }
+//                });
+//
 
             }
         }catch(DatabaseException de){
@@ -830,4 +851,21 @@ public class MainActivity extends AppCompatActivity {
         return actionBarBackgroundColor;
     }
 
+//    public void downloadMatch(){
+//        databaseReference.child("Matches").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(dataSnapshot != null){
+//                    for (DataSnapshot match : dataSnapshot.getChildren()){
+//                        JSONObject matchJSON = new Gson().fromJson(match.getValue().toString(), new TypeToken<JSONObject>() {}.getType());
+//                        spfe.putString(matchJSON.toString(), "");
+//                        Log.e("MATCHJSON", matchJSON.toString());
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError firebaseError) {
+//            }
+//        });
+//    }
 }

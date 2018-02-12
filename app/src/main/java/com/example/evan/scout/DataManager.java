@@ -47,8 +47,9 @@ public class DataManager {
     public static JSONArray autoScaleDataArray = new JSONArray();
     public static JSONArray teleScaleDataArray = new JSONArray();
 
-    public static JSONArray alliancePlatformTaken = new JSONArray();
-    public static JSONArray opponentPlatformTaken = new JSONArray();
+    public static JSONArray alliancePlatformTakenAuto = new JSONArray();
+    public static JSONArray alliancePlatformTakenTele = new JSONArray();
+    public static JSONArray opponentPlatformTakenTele = new JSONArray();
 
     public static ArrayList<HashMap<String, Object>> autoScaleDataList = new ArrayList<HashMap<String, Object>>();
     public static ArrayList<HashMap<String, Object>> teleScaleDataList = new ArrayList<HashMap<String, Object>>();
@@ -114,19 +115,28 @@ public class DataManager {
             }
         }
     }
-    public static void resetOpponentPlatformArrays(){
+    public static void resetTeleOpponentPlatformArrays(){
         for(int i = 0; i <=5; i++){
             try {
-                opponentPlatformTaken.put(i, false);
+                opponentPlatformTakenTele.put(i, false);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
-    public static void resetAlliancePlatformArrays(){
+    public static void resetTeleAlliancePlatformArrays(){
         for(int i = 0; i <=5; i++){
             try {
-                alliancePlatformTaken.put(i, false);
+                alliancePlatformTakenTele.put(i, false);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void resetAutoAlliancePlatformArrays(){
+        for(int i = 0; i <=5; i++){
+            try {
+                alliancePlatformTakenAuto.put(i, false);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
