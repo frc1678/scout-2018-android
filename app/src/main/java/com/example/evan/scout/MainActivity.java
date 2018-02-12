@@ -79,7 +79,7 @@ import java.util.TimerTask;
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
 //FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING; scoutName popping up twice; SAVING DATA FROM PREVIOS MATCHES FIXED;
-//
+//Pyramid tel elevated now saves correctl in long click
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 

@@ -960,7 +960,7 @@ public class UIComponentCreator {
                                         DataManager.telePyramidDataList.put("numGroundPyramidIntakeTele", tempGroundPyramidIntake);
                                         DataManager.telePyramidDataList.put("numElevatedPyramidIntakeTele", tempElevatedPyramidIntake);
                                         DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", tempGroundPyramidIntake);
-                                        DataManager.addZeroTierJsonData("numGroundPyramidIntakeTele", tempElevatedPyramidIntake);
+                                        DataManager.addZeroTierJsonData("numElevatedPyramidIntakeTele", tempElevatedPyramidIntake);
                                     }
                                 }catch (JSONException je){
                                     je.printStackTrace();
