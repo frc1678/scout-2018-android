@@ -78,7 +78,8 @@ import java.util.TimerTask;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
-//FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING; scoutName popping up twice;
+//FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING; scoutName popping up twice; SAVING DATA FROM PREVIOS MATCHES FIXED;
+//
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
@@ -129,11 +130,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //resets all firebase datanames
-        DataManager.collectedData = new JSONObject();
-        DataManager.resetAutoAlliancePlatformArrays();
-        DataManager.resetTeleAlliancePlatformArrays();
-        DataManager.resetTeleOpponentPlatformArrays();
-        Utils.resetAllDataNull();
+
+        if(!DataActivity.saveAutoData){
+            DataManager.collectedData = new JSONObject();
+            DataManager.resetAutoSwitchData();
+            DataManager.resetTeleSwitchData();
+            DataManager.resetAutoPyramidData();
+            DataManager.resetTelePyramidData();
+            DataManager.resetAutoScaleData();
+            DataManager.resetTeleScaleData();
+            DataManager.resetAutoAlliancePlatformArrays();
+            DataManager.resetTeleAlliancePlatformArrays();
+            DataManager.resetTeleOpponentPlatformArrays();
+            Utils.resetAllDataNull();
+        }
 
         Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
 
