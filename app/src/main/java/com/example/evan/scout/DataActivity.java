@@ -271,17 +271,17 @@ public abstract class DataActivity extends AppCompatActivity {
                                                             for (int i = 0; i <= 5; i++) {
                                                                 final int ii = i;
                                                                 final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED), true);
-                                                                if(DataManager.alliancePlatformTaken.getBoolean(ii)){
+                                                                if(DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
                                                                     platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                                 }
                                                                 platformButtonRed.setOnClickListener(new View.OnClickListener() {
                                                                     public void onClick(View v) {
                                                                         try {
-                                                                            if(!DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                                DataManager.alliancePlatformTaken.put(ii, true);
+                                                                            if(!DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
+                                                                                DataManager.alliancePlatformTakenAuto.put(ii, true);
                                                                                 platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
-                                                                            }else if(DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                                DataManager.alliancePlatformTaken.put(ii, false);
+                                                                            }else if(DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
+                                                                                DataManager.alliancePlatformTakenAuto.put(ii, false);
                                                                                 platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                             }
                                                                         } catch (JSONException e) {
@@ -296,17 +296,17 @@ public abstract class DataActivity extends AppCompatActivity {
                                                             for (int i = 0; i <= 5; i++) {
                                                                 final int ii = i;
                                                                 final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE), true);
-                                                                if(DataManager.alliancePlatformTaken.getBoolean(ii)){
+                                                                if(DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
                                                                     platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                                 }
                                                                 platformButtonBlue.setOnClickListener(new View.OnClickListener() {
                                                                     public void onClick(View v) {
                                                                         try {
-                                                                            if(!DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                                DataManager.alliancePlatformTaken.put(ii, true);
+                                                                            if(!DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
+                                                                                DataManager.alliancePlatformTakenAuto.put(ii, true);
                                                                                 platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
-                                                                            }else if(DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                                DataManager.alliancePlatformTaken.put(ii, false);
+                                                                            }else if(DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
+                                                                                DataManager.alliancePlatformTakenAuto.put(ii, false);
                                                                                 platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                             }
                                                                         } catch (JSONException e) {
@@ -334,21 +334,24 @@ public abstract class DataActivity extends AppCompatActivity {
                                                     for (int i = 0; i <= 5; i++) {
                                                         final int ii = i;
                                                         final ToggleButton platformButtonRed = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTRED), true);
-                                                        if(MainActivity.allianceColor.equals("red") && DataManager.alliancePlatformTaken.getBoolean(ii)){
+                                                        if(MainActivity.allianceColor.equals("red") && DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
+                                                            DataManager.alliancePlatformTakenTele.put(ii, true);
                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                             platformButtonRed.setEnabled(false);
-                                                        }else if(MainActivity.allianceColor.equals("blue") && DataManager.opponentPlatformTaken.getBoolean(ii)){
+                                                        }else if(MainActivity.allianceColor.equals("red") && DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                            platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                                                        }else if(MainActivity.allianceColor.equals("blue") && DataManager.opponentPlatformTakenTele.getBoolean(ii)){
                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
                                                         }
                                                         platformButtonRed.setOnClickListener(new View.OnClickListener() {
                                                             public void onClick(View v) {
                                                                 if(MainActivity.allianceColor.equals("red")){
                                                                     try {
-                                                                        if(!DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                            DataManager.alliancePlatformTaken.put(ii, true);
+                                                                        if(!DataManager.alliancePlatformTakenAuto.getBoolean(ii) || !DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.alliancePlatformTakenTele.put(ii, true);
                                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
-                                                                        }else if(DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                            DataManager.alliancePlatformTaken.put(ii, false);
+                                                                        }else if(DataManager.alliancePlatformTakenAuto.getBoolean(ii) || DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.alliancePlatformTakenTele.put(ii, false);
                                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                         }
                                                                     } catch (JSONException e) {
@@ -356,11 +359,11 @@ public abstract class DataActivity extends AppCompatActivity {
                                                                     }
                                                                 }else if(MainActivity.allianceColor.equals("blue")){
                                                                     try {
-                                                                        if(!DataManager.opponentPlatformTaken.getBoolean(ii)){
-                                                                            DataManager.opponentPlatformTaken.put(ii, true);
+                                                                        if(!DataManager.opponentPlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.opponentPlatformTakenTele.put(ii, true);
                                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
-                                                                        }else if(DataManager.opponentPlatformTaken.getBoolean(ii)){
-                                                                            DataManager.opponentPlatformTaken.put(ii, false);
+                                                                        }else if(DataManager.opponentPlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.opponentPlatformTakenTele.put(ii, false);
                                                                             platformButtonRed.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTRED));
                                                                         }
                                                                     } catch (JSONException e) {
@@ -376,21 +379,23 @@ public abstract class DataActivity extends AppCompatActivity {
                                                     for (int i = 0; i <= 5; i++) {
                                                         final int ii = i;
                                                         final ToggleButton platformButtonBlue = platformCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, Color.parseColor(Constants.COLOR_LIGHTBLUE), true);
-                                                        if(MainActivity.allianceColor.equals("blue") && DataManager.alliancePlatformTaken.getBoolean(ii)){
+                                                        if(MainActivity.allianceColor.equals("blue") && DataManager.alliancePlatformTakenAuto.getBoolean(ii)){
                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                             platformButtonBlue.setEnabled(false);
-                                                        }else if(MainActivity.allianceColor.equals("red") && DataManager.opponentPlatformTaken.getBoolean(ii)){
+                                                        }else if(MainActivity.allianceColor.equals("blue") && DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                            platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                                                        }else if(MainActivity.allianceColor.equals("red") && DataManager.opponentPlatformTakenTele.getBoolean(ii)){
                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
                                                         }
                                                         platformButtonBlue.setOnClickListener(new View.OnClickListener() {
                                                             public void onClick(View v) {
                                                                 if(MainActivity.allianceColor.equals("blue")){
                                                                     try {
-                                                                        if(!DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                            DataManager.alliancePlatformTaken.put(ii, true);
+                                                                        if(!DataManager.alliancePlatformTakenAuto.getBoolean(ii) || !DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.alliancePlatformTakenTele.put(ii, true);
                                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
-                                                                        }else if(DataManager.alliancePlatformTaken.getBoolean(ii)){
-                                                                            DataManager.alliancePlatformTaken.put(ii, false);
+                                                                        }else if(DataManager.alliancePlatformTakenAuto.getBoolean(ii) || DataManager.alliancePlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.alliancePlatformTakenTele.put(ii, false);
                                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                         }
                                                                     } catch (JSONException e) {
@@ -398,11 +403,11 @@ public abstract class DataActivity extends AppCompatActivity {
                                                                     }
                                                                 }else if(MainActivity.allianceColor.equals("red")){
                                                                     try {
-                                                                        if(!DataManager.opponentPlatformTaken.getBoolean(ii)){
-                                                                            DataManager.opponentPlatformTaken.put(ii, true);
+                                                                        if(!DataManager.opponentPlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.opponentPlatformTakenTele.put(ii, true);
                                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
-                                                                        }else if(DataManager.opponentPlatformTaken.getBoolean(ii)){
-                                                                            DataManager.opponentPlatformTaken.put(ii, false);
+                                                                        }else if(DataManager.opponentPlatformTakenTele.getBoolean(ii)){
+                                                                            DataManager.opponentPlatformTakenTele.put(ii, false);
                                                                             platformButtonBlue.setBackgroundColor(Color.parseColor(Constants.COLOR_LIGHTBLUE));
                                                                         }
                                                                     } catch (JSONException e) {
@@ -630,10 +635,10 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         if(activityName().equals("auto")){
-            DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", DataManager.alliancePlatformTaken);
+            DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", DataManager.alliancePlatformTakenAuto);
         }else if(activityName().equals("tele")){
-            DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", DataManager.alliancePlatformTaken);
-            DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", DataManager.opponentPlatformTaken);
+            DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", DataManager.alliancePlatformTakenTele);
+            DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", DataManager.opponentPlatformTakenTele);
         }
     }
 
@@ -792,7 +797,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
             if(!activityName.equals("tele")){
                 startActivity(intent);
             }else if(activityName.equals("tele") && numSendClicks >= 2){
-                Utils.resetAllDataNull();
                 startActivity(intent);
             }
         }
@@ -825,7 +829,8 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            DataManager.resetOpponentPlatformArrays();
+                            DataManager.resetTeleOpponentPlatformArrays();
+                            DataManager.resetTeleAlliancePlatformArrays();
                             rejected = true;
                             saveAutoData = true;
                             saveTeleData = false;
