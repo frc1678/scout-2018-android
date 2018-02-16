@@ -361,7 +361,9 @@ public class UIComponentCreator {
                             switchValues.add(switchSuccess);
                             switchValues.add(startTime);
                             switchValues.add(endTime);
-                            switchValues.add(null);
+                            if(status == null){
+                                status = "owned";
+                            }
                             switchValues.add(null);
 
                             JSONObject tempData = Utils.returnJSONObject(switchKeys, switchValues);
@@ -604,7 +606,7 @@ public class UIComponentCreator {
                                         scaleValues.add(startTime);
                                         scaleValues.add(endTime);
                                         if(status == null){
-                                            scaleValues.add(null);
+                                            scaleValues.add("owned");
                                         }else{
                                             scaleValues.add(status);
                                         }

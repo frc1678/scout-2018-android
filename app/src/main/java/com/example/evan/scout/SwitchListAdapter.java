@@ -105,14 +105,10 @@ public class SwitchListAdapter extends BaseAdapter {
         ((ImageButton) convertView.findViewById(R.id.cvDelButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    jsonArray.put(inversePosition, null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                dataList.remove(inversePosition);
-                listInterface.onListChanged(dataList);
-                notifyDataSetChanged();
+            jsonArray.remove(inversePosition);
+            dataList.remove(inversePosition);
+            listInterface.onListChanged(dataList);
+            notifyDataSetChanged();
             }
         });
         convertView.setOnClickListener(new View.OnClickListener() {

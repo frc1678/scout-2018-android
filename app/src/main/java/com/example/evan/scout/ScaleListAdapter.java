@@ -102,14 +102,10 @@ public class ScaleListAdapter extends BaseAdapter {
         ((ImageButton) convertView.findViewById(R.id.cvDelButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    jsonArray.put(inversePosition, null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                dataList.remove(inversePosition);
-                listInterface.onListChanged(dataList);
-                notifyDataSetChanged();
+            jsonArray.remove(inversePosition);
+            dataList.remove(inversePosition);
+            listInterface.onListChanged(dataList);
+            notifyDataSetChanged();
             }
         });
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -172,6 +168,9 @@ public class ScaleListAdapter extends BaseAdapter {
                                     else if(finalStatusString.equals("Balanced")) {
                                         finalStatus = "balanced";
                                     }
+                                    if(finalStatus == null){
+                                        finalStatus = "owned";
+                                    }
                                     dataList.get(inversePosition).put("status", finalStatus);
                                     listInterface.onListChanged(dataList);
 
@@ -229,7 +228,7 @@ public class ScaleListAdapter extends BaseAdapter {
                         dataList.get(inversePosition).put("layer", null);
                         dataList.get(inversePosition).put("status", null);
 
-                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                        List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                         List<Object> scaleValues = new ArrayList<>();
                         scaleValues.clear();
 

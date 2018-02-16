@@ -78,8 +78,6 @@ import java.util.TimerTask;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
 
-//FIXED PLATFORM SENDING AND TOOGLING; DELEED LONG CLICK THING; scoutName popping up twice; SAVING DATA FROM PREVIOS MATCHES FIXED;
-//Pyramid tel elevated now saves correctl in long click
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
@@ -181,12 +179,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Last Scout name used", scoutName);
         }
 
-//        downloadMatch();
-        findColor();
-        if(allianceColor == null){
-            setAllianceColor();
-        }
-
         actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(returnDrawable());
@@ -239,6 +231,11 @@ public class MainActivity extends AppCompatActivity {
         updateListView();
         listenForResendClick();
         setTitle("Scout");
+
+        findColor();
+        if(allianceColor == null){
+            setAllianceColor();
+        }
     }
 
     @Override

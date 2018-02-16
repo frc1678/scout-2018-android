@@ -723,27 +723,12 @@ public boolean onCreateOptionsMenu(Menu menu) {
         if (item.getItemId() == R.id.buttonNext) {
             rejected = false;
 
-            try {
-                if(DataManager.collectedData.getString("startingPosition") == null){
-                    Utils.makeToast(context, "PLEASE ENTER STARTING POSITION!");
-                    return true;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
             synchronized (readyForNextActivityLock) {
                 if (!readyForNextActivity) {
                     Log.i("Scout Error", "Tried to move on too quickly!");
                     return true;
                 }
             }
-            Long startTime = Calendar.getInstance().getTimeInMillis();
-            Intent intent = prepareIntent(getNextActivityClass());
-            Long stopTime = Calendar.getInstance().getTimeInMillis();
-            Log.i("Starting next Activity!", "Time to update and serialize data: " + Long.toString(stopTime - startTime) + "ms");
-
-            Log.e("MEMES", Boolean.toString(sent));
 
             if((activityName() == "tele")){
                 numSendClicks++;
@@ -795,10 +780,21 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 }
             }.start();
 
-            if(!activityName.equals("tele")){
-                startActivity(intent);
+            if(activityName.equals("auto")){
+                try {
+                    if(DataManager.collectedData.getString("startingPosition") != null){
+                        startActivity(prepareIntent(getNextActivityClass()));
+                    }else{
+                        Utils.makeToast(context, "PLEASE INPUT STARTING POSITION!");
+                        return true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else if(!activityName.equals("tele")){
+                startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
-                startActivity(intent);
+                startActivity(prepareIntent(getNextActivityClass()));
             }
         }
         return true;

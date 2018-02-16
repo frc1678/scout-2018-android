@@ -67,9 +67,7 @@ public class bgLoopThread extends Thread {
                 public void onDataChange(final DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
-                        if(scoutName.equals(tempScoutName)){
-
-                        }else{
+                        if(scoutName == null){
                             handler = new Handler(Looper.getMainLooper());
                             Runnable runnable = new Runnable() {
                                 @Override
@@ -97,6 +95,8 @@ public class bgLoopThread extends Thread {
                                 } // This is your code
                             };
                             handler.post(runnable);
+                        }else if(scoutName.equals(tempScoutName)){
+                            //Do Nothing
                         }
                     }
                 }
