@@ -77,7 +77,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
-
+//
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
