@@ -87,9 +87,10 @@ public class ScaleListAdapter extends BaseAdapter {
             ((TextView) convertView.findViewById(R.id.cvLayer)).setText("Layer " + (String.valueOf(dataList.get(inversePosition).get("layer"))));
             if(String.valueOf(dataList.get(inversePosition).get("status")) == "opponentOwned"){
                 ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Opponent Owned");
-            }
-            else if(String.valueOf(dataList.get(inversePosition).get("status")) == "balanced"){
+            }else if(String.valueOf(dataList.get(inversePosition).get("status")) == "balanced"){
                 ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Balanced");
+            }else if(String.valueOf(dataList.get(inversePosition).get("status")) == "owned"){
+                ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Owned");
             }
         }
         else if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("false")) {
