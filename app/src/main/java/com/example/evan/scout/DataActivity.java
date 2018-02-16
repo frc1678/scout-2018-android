@@ -784,12 +784,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 try {
                     if(DataManager.collectedData.getString("startingPosition") != null){
                         startActivity(prepareIntent(getNextActivityClass()));
-                    }else{
-                        Utils.makeToast(context, "PLEASE INPUT STARTING POSITION!");
-                        return true;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Utils.makeToast(context, "PLEASE INPUT STARTING POSITION!");
                 }
             }else if(!activityName.equals("tele")){
                 startActivity(prepareIntent(getNextActivityClass()));
