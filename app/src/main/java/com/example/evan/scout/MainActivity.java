@@ -340,6 +340,8 @@ public class MainActivity extends AppCompatActivity {
 
                     EditText teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
                     teamNumberEditText.setText(String.valueOf(teamNumber));
+
+                    findColor();
                 }
             }
 
@@ -368,7 +370,6 @@ public class MainActivity extends AppCompatActivity {
                                                 setActionBarColor(Constants.COLOR_BLUE);
                                                 allianceColor = "blue";
                                                 capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-                                                Log.e("CALLED!!!", allianceColor);
                                             }
                                         }
                                         DataSnapshot redTeamNumbers = match.child("redAllianceTeamNumbers");
@@ -377,45 +378,30 @@ public class MainActivity extends AppCompatActivity {
                                                 setActionBarColor(Constants.COLOR_RED);
                                                 allianceColor = "red";
                                                 capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-                                                Log.e("CALLED!!!", allianceColor);
                                             }
                                         }
+                                    }else{
+                                        setActionBarColor(Constants.COLOR_GREY);
+                                        allianceColor = "notfound";
                                     }
                                 }
+                            }else{
+                                setActionBarColor(Constants.COLOR_GREY);
+                                allianceColor = "notfound";
                             }
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError firebaseError) {
-
+                        setActionBarColor(Constants.COLOR_GREY);
+                        allianceColor = "notfound";
                     }
                 });
-//
-//                databaseReference.child("Matches").child(matchNumber+"").child("redAllianceTeamNumbers").child(i+"").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        if(dataSnapshot != null){
-//                            if(dataSnapshot.getValue() != null){
-//                                if(Integer.parseInt(dataSnapshot.getValue().toString()) == teamNumber){
-//                                    setActionBarColor(Constants.COLOR_RED);
-//                                    allianceColor = "red";
-//                                    capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-//                                    Log.e("CALLED!!!", allianceColor);
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError firebaseError) {
-//
-//                    }
-//                });
-//
-
             }
         }catch(DatabaseException de){
+            setActionBarColor(Constants.COLOR_GREY);
+            allianceColor = "notfound";
         }
     }
     //display dialog to set scout number
