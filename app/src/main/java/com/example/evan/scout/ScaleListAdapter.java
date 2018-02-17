@@ -91,7 +91,9 @@ public class ScaleListAdapter extends BaseAdapter {
                 ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Balanced");
             }else if(String.valueOf(dataList.get(inversePosition).get("status")) == "owned"){
                 ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Owned");
-            }
+            }else if(String.valueOf(dataList.get(inversePosition).get("status")) == "owned") { //START
+                ((TextView) convertView.findViewById(R.id.cvStatus)).setText("Owned");
+            } //END
         }
         else if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("false")) {
             ((TextView) convertView.findViewById(R.id.cvResult)).setText("Fail");
@@ -145,11 +147,12 @@ public class ScaleListAdapter extends BaseAdapter {
                                 RadioButton scaleLayerButton = (RadioButton) subSuccessDialogView.findViewById(scaleLayerGroup.getCheckedRadioButtonId());
                                 RadioButton scaleStatusButton = (RadioButton) subSuccessDialogView.findViewById(scaleStatusGroup.getCheckedRadioButtonId());
 
-                                String finalLayerString = scaleLayerButton.getText().toString();
+                                //String finalLayerString = scaleLayerButton.getText().toString();
                                 Integer finalLayer = 0;
                                 String finalStatus = null;
 
-                                if(scaleLayerButton != null && scaleStatusButton != null) {
+                                if(scaleLayerButton != null) { //Changed
+                                    String finalLayerString = scaleLayerButton.getText().toString(); //Moved to here
                                     if(finalLayerString.equals("Layer 1")) {
                                         finalLayer = 1;
                                     }
@@ -162,14 +165,16 @@ public class ScaleListAdapter extends BaseAdapter {
                                     dataList.get(inversePosition).put("layer", finalLayer);
                                     listInterface.onListChanged(dataList);
 
-                                    String finalStatusString = scaleStatusButton.getText().toString();
-                                    if(finalStatusString.equals("Opponent Owned")) {
-                                        finalStatus = "opponentOwned";
+                                    //String finalStatusString = scaleStatusButton.getText().toString();
+                                    if(scaleStatusButton != null) { //START
+                                        if(scaleStatusButton.getText().toString().equals("Opponent Owned")) {
+                                            finalStatus = "opponentOwned";
+                                        }
+                                        else if(scaleStatusButton.getText().toString().equals("Balanced")) {
+                                            finalStatus = "balanced";
+                                        }
                                     }
-                                    else if(finalStatusString.equals("Balanced")) {
-                                        finalStatus = "balanced";
-                                    }
-                                    if(finalStatus == null){
+                                    if(finalStatus == null){ //END
                                         finalStatus = "owned";
                                     }
                                     dataList.get(inversePosition).put("status", finalStatus);
@@ -188,6 +193,7 @@ public class ScaleListAdapter extends BaseAdapter {
                                 List<Object> scaleValues = new ArrayList<>();
                                 scaleValues.clear();
 
+                                scaleValues.add(true); //Added
                                 try {
                                     scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
                                     scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
@@ -195,11 +201,12 @@ public class ScaleListAdapter extends BaseAdapter {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                if(scaleStatusButton.getText().toString() == null){
+                                /*if(scaleStatusButton.getText().toString() == null){
                                     scaleValues.add(null);
                                 }else{
                                     scaleValues.add(scaleStatusButton.getText().toString());
-                                }
+                                }*/
+                                scaleValues.add(finalStatus); //Added
                                 scaleValues.add(finalLayer);
 
                                 JSONObject tempData = Utils.returnJSONObject(scaleKeys, scaleValues);
@@ -233,8 +240,9 @@ public class ScaleListAdapter extends BaseAdapter {
                         List<Object> scaleValues = new ArrayList<>();
                         scaleValues.clear();
 
+                        scaleValues.add(false); //Added
                         try {
-                            scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
+                            //scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
                             scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                             scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));
                         } catch (JSONException e) {
