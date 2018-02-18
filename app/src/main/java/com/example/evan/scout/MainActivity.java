@@ -381,12 +381,12 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         }
                                     }else{
-                                        setActionBarColor(Constants.COLOR_GREY);
+                                        setActionBarColor(Constants.COLOR_GREEN);
                                         allianceColor = "notfound";
                                     }
                                 }
                             }else{
-                                setActionBarColor(Constants.COLOR_GREY);
+                                setActionBarColor(Constants.COLOR_GREEN);
                                 allianceColor = "notfound";
                             }
                         }
@@ -394,13 +394,13 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError firebaseError) {
-                        setActionBarColor(Constants.COLOR_GREY);
+                        setActionBarColor(Constants.COLOR_GREEN);
                         allianceColor = "notfound";
                     }
                 });
             }
         }catch(DatabaseException de){
-            setActionBarColor(Constants.COLOR_GREY);
+            setActionBarColor(Constants.COLOR_GREEN);
             allianceColor = "notfound";
         }
     }
