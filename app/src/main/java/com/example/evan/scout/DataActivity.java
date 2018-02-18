@@ -241,12 +241,14 @@ public abstract class DataActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         disabled.setChecked(false);
                                         DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
+                                        DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
                                     }
                                 });
                                 disabled.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         incap.setChecked(false);
+                                        DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
                                         DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
                                     }
                                 });
@@ -441,6 +443,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                 final RadioButton rightStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                 final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                 final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
+
                                 try {
                                     rightStartPosition.setChecked(DataManager.collectedData.get("startingPosition").equals("right"));
                                     leftStartPosition.setChecked(DataManager.collectedData.get("startingPosition").equals("left"));
@@ -451,12 +454,60 @@ public abstract class DataActivity extends AppCompatActivity {
                                 rightStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startingPosition", "right");}});
                                 leftStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startingPosition", "left");}});
                                 centerStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startingPosition", "center");}});
+
+                                rightStartPosition.setOnClickListener(new View.OnClickListener()
+                                    {@Override public void onClick(View v) {
+                                        if (rightStartPosition.isChecked()){
+                                            leftStartPosition.setChecked(false);
+                                            centerStartPosition.setChecked(false);
+                                        }
+                                        if (centerStartPosition.isChecked()){
+                                            leftStartPosition.setChecked(false);
+                                            rightStartPosition.setChecked(false);
+                                        }
+                                        if (leftStartPosition.isChecked()){
+                                            centerStartPosition.setChecked(false);
+                                            rightStartPosition.setChecked(false);
+                                        }
+                                }});
+                                leftStartPosition.setOnClickListener(new View.OnClickListener()
+                                {@Override public void onClick(View v) {
+                                    if (rightStartPosition.isChecked()){
+                                        leftStartPosition.setChecked(false);
+                                        centerStartPosition.setChecked(false);
+                                    }
+                                    if (centerStartPosition.isChecked()){
+                                        leftStartPosition.setChecked(false);
+                                        rightStartPosition.setChecked(false);
+                                    }
+                                    if (leftStartPosition.isChecked()){
+                                        centerStartPosition.setChecked(false);
+                                        rightStartPosition.setChecked(false);
+                                    }
+                                }});
+                                rightStartPosition.setOnClickListener(new View.OnClickListener()
+                                {@Override public void onClick(View v) {
+                                    if (rightStartPosition.isChecked()){
+                                        leftStartPosition.setChecked(false);
+                                        centerStartPosition.setChecked(false);
+                                    }
+                                    if (centerStartPosition.isChecked()){
+                                        leftStartPosition.setChecked(false);
+                                        rightStartPosition.setChecked(false);
+                                    }
+                                    if (leftStartPosition.isChecked()){
+                                        centerStartPosition.setChecked(false);
+                                        rightStartPosition.setChecked(false);
+                                    }
+                                }});
                                 radioLayout.addView(rightStartPosition);
                                 radioLayout.addView(centerStartPosition);
                                 radioLayout.addView(leftStartPosition);
                                 rightStartPosition.setText("Right");
                                 centerStartPosition.setText("Center");
                                 leftStartPosition.setText("Left");
+
+
                             }
                         }
                     }
