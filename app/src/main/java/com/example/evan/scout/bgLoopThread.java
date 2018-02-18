@@ -114,7 +114,7 @@ public class bgLoopThread extends Thread {
         }
     }
 
-    public void setInternetListener() {
+    public void setInternetListener(){
         //FIXEDDDDDDD
         handler = new Handler(Looper.getMainLooper());
 
@@ -124,7 +124,7 @@ public class bgLoopThread extends Thread {
             @Override
             public void run() {
                 Log.e("connection", Boolean.toString(main.internetCheck()));
-                if (!main.internetCheck()) {
+                if (!main.internetCheck()){
                     View dialogView = LayoutInflater.from(context).inflate(R.layout.internetdialog, null);
                     final TextView content = (TextView) dialogView.findViewById(R.id.messageTextViewInternet);
                     final AnimationDrawable drawable = new AnimationDrawable();
@@ -141,17 +141,17 @@ public class bgLoopThread extends Thread {
                     }, 100);
 //                     title.setTextColor(Color.parseColor(Constants.COLOR_RED));
 //                   // new AlertDialog.Builder(context)
-                    final Dialog daedalusDialog = new Dialog(context);
+                    final Dialog daedalusDialog= new Dialog(context);
                     daedalusDialog.setContentView(dialogView);
                     //setView(dialogView)
-//                            sexyDialog.setTitle(“WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!“);
+//                            sexyDialog.setTitle("WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!");
                     content.setText("YOU ARE NOT CONNECTED TO INTERNET");
                     daedalusDialog.setCancelable(false);
 
                     daedalusDialog.setTitle("WARNING!!!");
 
-                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
-//                             ok.setBackgroundColor(Color.parseColor(“BBEDC5”));
+                    Button ok= (Button) dialogView.findViewById(R.id.okButton);
+//                             ok.setBackgroundColor(Color.parseColor("BBEDC5"));
                     ok.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             daedalusDialog.dismiss();
@@ -161,16 +161,17 @@ public class bgLoopThread extends Thread {
                     //sexyDialog.setIcon(android.R.drawable.ic_dialog_alert);
                     daedalusDialog.show();
                 }
-            }
-
-            public void toasts(final String message) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+            } // This is your code
         };
+        handler.postDelayed(runnable, delay);
+    }
+
+    public void toasts(final String message) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
