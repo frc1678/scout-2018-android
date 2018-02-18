@@ -2,11 +2,14 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,12 +52,13 @@ public class bgLoopThread extends Thread {
     Activity context;
     Handler handler;
 
-    public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity){
+    public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity) {
         this.context = context;
         this.scoutNumber = scoutNumber;
         this.databaseReference = databaseReference;
         main = mainActivity;
     }
+
     public void run() {
         setScoutNameListener(scoutNumber, databaseReference);
         setInternetListener();
@@ -61,13 +66,13 @@ public class bgLoopThread extends Thread {
 
     public void setScoutNameListener(final int scoutNumber, final DatabaseReference databaseReference) {
         Log.e("scoutNumber", String.valueOf(scoutNumber));
-        if (scoutNumber > 0){
+        if (scoutNumber > 0) {
             databaseReference.child("scouts").child(String.valueOf("scout" + scoutNumber)).child("currentUser").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(final DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
-                        if(scoutName == null){
+                        if (scoutName == null) {
                             handler = new Handler(Looper.getMainLooper());
                             Runnable runnable = new Runnable() {
                                 @Override
@@ -95,7 +100,7 @@ public class bgLoopThread extends Thread {
                                 } // This is your code
                             };
                             handler.post(runnable);
-                        }else if(scoutName.equals(tempScoutName)){
+                        } else if (scoutName.equals(tempScoutName)) {
                             //Do Nothing
                         }
                     }
@@ -109,7 +114,8 @@ public class bgLoopThread extends Thread {
         }
     }
 
-    public void setInternetListener(){
+    public void setInternetListener() {
+        //FIXEDDDDDDD
         handler = new Handler(Looper.getMainLooper());
 
         int delay = 5000;
@@ -118,34 +124,53 @@ public class bgLoopThread extends Thread {
             @Override
             public void run() {
                 Log.e("connection", Boolean.toString(main.internetCheck()));
-                if (!main.internetCheck()){
+                if (!main.internetCheck()) {
                     View dialogView = LayoutInflater.from(context).inflate(R.layout.internetdialog, null);
-                    final TextView textView = (TextView) dialogView.findViewById(R.id.messageTextView);
-                    textView.setText("WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!");
-                    textView.setTextColor(Color.parseColor(Constants.COLOR_RED));
-                    new AlertDialog.Builder(context)
-                            .setView(dialogView)
-                            .setTitle("WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!")
-                            .setMessage("YOU ARE NOT CONNECTED TO INTERNET")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                }
-            } // This is your code
-        };
-            handler.postDelayed(runnable, delay);
-    }
+                    final TextView content = (TextView) dialogView.findViewById(R.id.messageTextViewInternet);
+                    final AnimationDrawable drawable = new AnimationDrawable();
+                    final Handler handler = new Handler();
+                    drawable.addFrame(new ColorDrawable(Color.RED), 100);
+                    drawable.addFrame(new ColorDrawable(Color.parseColor("#FA9B86")), 100);
+                    drawable.setOneShot(false);
+                    dialogView.setBackgroundDrawable(drawable);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            drawable.start();
+                        }
+                    }, 100);
+//                     title.setTextColor(Color.parseColor(Constants.COLOR_RED));
+//                   // new AlertDialog.Builder(context)
+                    final Dialog daedalusDialog = new Dialog(context);
+                    daedalusDialog.setContentView(dialogView);
+                    //setView(dialogView)
+//                            sexyDialog.setTitle(“WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!“);
+                    content.setText("YOU ARE NOT CONNECTED TO INTERNET");
+                    daedalusDialog.setCancelable(false);
 
-    public void toasts(final String message) {
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    daedalusDialog.setTitle("WARNING!!!");
+
+                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
+//                             ok.setBackgroundColor(Color.parseColor(“BBEDC5”));
+                    ok.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            daedalusDialog.dismiss();
+                        }
+                    });
+
+                    //sexyDialog.setIcon(android.R.drawable.ic_dialog_alert);
+                    daedalusDialog.show();
+                }
             }
-        });
+
+            public void toasts(final String message) {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        };
     }
 }
