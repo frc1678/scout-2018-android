@@ -241,12 +241,14 @@ public abstract class DataActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         disabled.setChecked(false);
                                         DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
+                                        DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
                                     }
                                 });
                                 disabled.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         incap.setChecked(false);
+                                        DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
                                         DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
                                     }
                                 });
