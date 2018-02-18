@@ -187,7 +187,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                 boolean autoLineBool = false;
                                 boolean autoCrossBool = false;
                                 if(saveAutoData){try {autoLineBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
-                                if(saveAutoData){try {autoCrossBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
+                                if(saveAutoData){try {autoCrossBool = DataManager.collectedData.getBoolean("didCrossAutoZone");} catch (JSONException e) {e.printStackTrace();}} //Changed
                                 final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoLineBool,0,true);
                                 final ToggleButton autoZoneCrossed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoCrossBool,0,true);
                                 if(autoLinePassed.isChecked()){
