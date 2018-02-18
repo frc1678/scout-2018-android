@@ -365,6 +365,7 @@ public class UIComponentCreator {
                                 status = "owned";
                             }
                             switchValues.add(null);
+                            switchValues.add(null); //Added
 
                             JSONObject tempData = Utils.returnJSONObject(switchKeys, switchValues);
                             try {
@@ -648,12 +649,14 @@ public class UIComponentCreator {
                             endTime = backgroundTimer.getUpdatedTime();
                             didSucceed = false;
 
-                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime");
+                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //Changed
                             List<Object> scaleValues = new ArrayList<>();
                             scaleValues.clear();
                             scaleValues.add(didSucceed);
                             scaleValues.add(startTime);
                             scaleValues.add(endTime);
+                            scaleValues.add(null); //START
+                            scaleValues.add(null); //END
 
                             JSONObject tempData = Utils.returnJSONObject(scaleKeys, scaleValues);
                             try {
@@ -667,6 +670,8 @@ public class UIComponentCreator {
                             dataSpace.put(scaleKeys.get(0), scaleValues.get(0));
                             dataSpace.put(scaleKeys.get(1), scaleValues.get(1));
                             dataSpace.put(scaleKeys.get(2), scaleValues.get(2));
+                            dataSpace.put(scaleKeys.get(3), scaleValues.get(3)); //START
+                            dataSpace.put(scaleKeys.get(4), scaleValues.get(4)); //END
 
                             if(DataActivity.activityName.equals("auto")) { DataManager.autoScaleDataList.add(dataSpace); }
                             else if(DataActivity.activityName.equals("tele")) { DataManager.teleScaleDataList.add(dataSpace); }
