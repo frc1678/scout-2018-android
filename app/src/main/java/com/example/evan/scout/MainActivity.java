@@ -449,7 +449,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Please set your team number and try again",
                         Toast.LENGTH_LONG).show();
             } else {
-                teamNumber = Integer.parseInt(teamNumEditText.getText().toString());
+                if (teamNumEditText.getText().toString().equals("")) { //START
+                    Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    teamNumber = Integer.parseInt(teamNumEditText.getText().toString());
+                } //END
                 EditText matchNumEditText = (EditText) findViewById(R.id.matchNumTextEdit);
                 if (matchNumEditText.getText().toString().equals("")) {
                     Toast.makeText(getBaseContext(), "Make sure your match is set and try again",

@@ -67,6 +67,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/doneLine"
         android:layout_below="@+id/radioGroup">
+
+        <Button
+            android:layout_weight="1"
+           android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FAA2A8"
+             android:text="Cancel"
+            android:id="@+id/cancelButton"/>
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -74,7 +82,6 @@
             android:layout_height="wrap_content"
             android:text="Done"
             android:id="@+id/doneButton"/>
-
-
+<!--cancel button added-->
     </LinearLayout>
 </RelativeLayout>
