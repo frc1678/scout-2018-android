@@ -1311,7 +1311,7 @@ public class UIComponentCreator {
                                             activeLiftDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                             final RelativeLayout alDialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.active_lift_dialog, null);
                                             final TextView title = (TextView) alDialogLayout.findViewById(R.id.dialogTitle);
-                                            title.setText("Partner Lifts");
+                                            title.setText("Type of Lifter");
 
                                             RadioButton partnerDidClimbRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.pdidClimbRadio);
                                             partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {

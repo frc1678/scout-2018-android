@@ -19,7 +19,7 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:text="Partner Did Climb"
+            android:text="Scouted Robot Did Climb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/pdidClimbRadio"
