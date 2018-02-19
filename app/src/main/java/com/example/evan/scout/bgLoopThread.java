@@ -46,7 +46,8 @@ public class bgLoopThread extends Thread {
     public static String scoutName;
     MainActivity main;
     Activity context;
-    Handler handler;
+    Handler snHandler;
+    Handler icHandler;
 
     public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity){
         this.context = context;
@@ -68,7 +69,7 @@ public class bgLoopThread extends Thread {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().toString().equals("")) {
                         final String tempScoutName = dataSnapshot.getValue().toString();
                         if(scoutName == null){
-                            handler = new Handler(Looper.getMainLooper());
+                            snHandler = new Handler(Looper.getMainLooper());
                             Runnable runnable = new Runnable() {
                                 @Override
                                 public void run() {
@@ -94,7 +95,7 @@ public class bgLoopThread extends Thread {
                                             .show();
                                 } // This is your code
                             };
-                            handler.post(runnable);
+                            snHandler.post(runnable);
                         }else if(scoutName.equals(tempScoutName)){
                             //Do Nothing
                         }
@@ -110,7 +111,7 @@ public class bgLoopThread extends Thread {
     }
 
     public void setInternetListener(){
-        handler = new Handler(Looper.getMainLooper());
+        icHandler = new Handler(Looper.getMainLooper());
 
         int delay = 5000;
 
@@ -137,7 +138,7 @@ public class bgLoopThread extends Thread {
                 }
             } // This is your code
         };
-            handler.postDelayed(runnable, delay);
+        icHandler.postDelayed(runnable, delay);
     }
 
     public void toasts(final String message) {
