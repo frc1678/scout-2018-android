@@ -50,8 +50,7 @@ public class bgLoopThread extends Thread {
     public static String scoutName;
     MainActivity main;
     Activity context;
-    Handler snHandler;
-    Handler icHandler;
+    Handler handler;
 
     public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity) {
         this.context = context;
