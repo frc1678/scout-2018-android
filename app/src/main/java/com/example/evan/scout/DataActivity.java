@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -100,6 +101,9 @@ public abstract class DataActivity extends AppCompatActivity {
     File dir;
     PrintWriter file;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor spfe;
+
     private Intent intent;
     private UIComponentCreator toggleCreator;
     private UIComponentCreator platformCreator;
@@ -123,6 +127,9 @@ public abstract class DataActivity extends AppCompatActivity {
         if(!saveTeleData){
 
         }
+
+        sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        spfe = sharedPreferences.edit();
 
         if(activityName() == "auto"){
             setContentView(R.layout.activity_auto);
