@@ -50,7 +50,8 @@ public class bgLoopThread extends Thread {
     public static String scoutName;
     MainActivity main;
     Activity context;
-    Handler handler;
+    Handler snHandler;
+    Handler icHandler;
 
     public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity) {
         this.context = context;
@@ -115,9 +116,8 @@ public class bgLoopThread extends Thread {
     }
 
     public void setInternetListener(){
-        //FIXEDDDDDDD
         handler = new Handler(Looper.getMainLooper());
-
+      
         int delay = 5000;
 
         Runnable runnable = new Runnable() {
