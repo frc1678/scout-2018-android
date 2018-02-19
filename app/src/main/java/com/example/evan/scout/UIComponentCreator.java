@@ -1053,7 +1053,7 @@ public class UIComponentCreator {
                                 final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
                                 title.setText("Climb Type");
 
-                                RadioButton passiveClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveClimbRadio);
+                                final RadioButton passiveClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveClimbRadio);
                                 passiveClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1061,7 +1061,7 @@ public class UIComponentCreator {
                                     }
                                 });
 
-                                RadioButton assistedClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistedClimbRadio);
+                                final RadioButton assistedClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistedClimbRadio);
                                 assistedClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1069,7 +1069,7 @@ public class UIComponentCreator {
                                     }
                                 });
 
-                                RadioButton activeLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.activeLiftRadio);
+                                final RadioButton activeLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.activeLiftRadio);
                                 activeLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1077,7 +1077,7 @@ public class UIComponentCreator {
                                     }
                                 });
 
-                                RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
+                                final RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
                                 independentRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1089,7 +1089,10 @@ public class UIComponentCreator {
                                     @Override
                                     public void onClick(View v) {
                                         DataManager.sideData = new JSONObject();
-                                        if (liftType.equals("activeLift")) {
+                                        //added if
+                                        if(!passiveClimbRadioButton.isChecked() && !assistedClimbRadioButton.isChecked() && !activeLiftRadioButton.isChecked() && !independentRadioButton.isChecked()){
+                                            Utils.makeToast(context, "Please Input a Climb Type");
+                                        }else if (liftType.equals("activeLift")) {
                                             climbTypeDialog.dismiss();
 
                                             final List<String> activeKeys = Arrays.asList("didSucceed", "didClimb", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
@@ -1102,7 +1105,7 @@ public class UIComponentCreator {
                                             final TextView title = (TextView) alDialogLayout.findViewById(R.id.dialogTitle);
                                             title.setText("Partner Lifts");
 
-                                            RadioButton partnerDidClimbRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.pdidClimbRadio);
+                                          final  RadioButton partnerDidClimbRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.pdidClimbRadio);
                                             partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1110,7 +1113,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.passistLifts);
+                                           final RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.passistLifts);
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1118,7 +1121,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.ppassiveLifts);
+                                          final  RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1126,7 +1129,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            RadioButton failedToLiftRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.failedToLift);
+                                            final RadioButton failedToLiftRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.failedToLift);
                                             failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1156,28 +1159,43 @@ public class UIComponentCreator {
                                                 }
                                             });
 
+
                                             Button doneButton = (Button) alDialogLayout.findViewById(R.id.doneButton);
                                             doneButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    DataManager.sideData = new JSONObject();
-                                                    activeValues.add(0, didSucceed);
-                                                    activeValues.add(1, didClimb);
-                                                    activeValues.add(2, startTime);
-                                                    activeValues.add(3, endTime);
-                                                    activeValues.add(4, partnerLiftType);
-                                                    activeValues.add(5, didFailToLift);
-                                                    activeValues.add(6, numRobotsLifted);
+                                                    //added if
 
-                                                    DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
-                                                    JSONObject tempData = DataManager.sideData;
-                                                    try {
-                                                        DataManager.climbDataArray.put(c, tempData);
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
-                                                    c++;
+                                                    if(partnerDidClimbRadioButton.isChecked() || partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked() || failedToLiftRadioButton.isChecked()) {
+                                                        DataManager.sideData = new JSONObject();
+                                                        activeValues.add(0, didSucceed);
+                                                        activeValues.add(1, didClimb);
+                                                        activeValues.add(2, startTime);
+                                                        activeValues.add(3, endTime);
+                                                        activeValues.add(4, partnerLiftType);
+                                                        activeValues.add(5, didFailToLift);
+                                                        activeValues.add(6, numRobotsLifted);
+
+                                                        DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
+                                                        JSONObject tempData = DataManager.sideData;
+                                                        try {
+                                                            DataManager.climbDataArray.put(c, tempData);
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+                                                        c++;
+                                                        activeLiftDialog.dismiss();
+                                                    }else
+                                                        Utils.makeToast(context, "Please Input a Climb Type");
+
+                                                }
+                                            });
+                                            //added cancel
+                                            Button cancel = (Button) alDialogLayout.findViewById(R.id.cancelButton);
+                                            cancel.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
                                                     activeLiftDialog.dismiss();
                                                 }
                                             });
@@ -1209,6 +1227,14 @@ public class UIComponentCreator {
 
 
                                 });
+                                //added cancel
+                                Button cancel = (Button) ctDialogLayout.findViewById(R.id.cancelButton);
+                                cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        climbTypeDialog.dismiss();
+                                    }
+                                });
 
                                 climbTypeDialog.setContentView(ctDialogLayout);
                                 climbTypeDialog.show();
@@ -1232,7 +1258,7 @@ public class UIComponentCreator {
                                 final TextView title = (TextView) ctDialogLayout.findViewById(R.id.dialogTitle);
                                 title.setText("Climb Type");
 
-                                RadioButton passiveClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveClimbRadio);
+                                final RadioButton passiveClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.passiveClimbRadio);
                                 passiveClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1240,7 +1266,7 @@ public class UIComponentCreator {
                                     }
                                 });
 
-                                RadioButton assistedClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistedClimbRadio);
+                               final RadioButton assistedClimbRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.assistedClimbRadio);
                                 assistedClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1248,7 +1274,7 @@ public class UIComponentCreator {
                                     }
                                 });
 
-                                RadioButton activeLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.activeLiftRadio);
+                                final RadioButton activeLiftRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.activeLiftRadio);
                                 activeLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -1256,19 +1282,25 @@ public class UIComponentCreator {
                                     }
                                 });
 
-                                RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
+                               final RadioButton independentRadioButton = (RadioButton) ctDialogLayout.findViewById(R.id.soloClimbRadio);
                                 independentRadioButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         liftType = "soloClimb";
                                     }
                                 });
+
                                 Button doneButton = (Button) ctDialogLayout.findViewById(R.id.doneButton);
                                 doneButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        DataManager.sideData = new JSONObject();
-                                        if (liftType.equals("activeLift")) {
+                                        //added if statement
+
+                                        if(!passiveClimbRadioButton.isChecked() && !assistedClimbRadioButton.isChecked() && !activeLiftRadioButton.isChecked() && !independentRadioButton.isChecked()) {
+                                            Utils.makeToast(context, "Please Input a Climb Type");
+                                        }
+                                        else if (liftType.equals("activeLift")) {
+                                            DataManager.sideData = new JSONObject();
                                             climbTypeDialog.dismiss();
 
                                             final List<String> activeKeys = Arrays.asList("didSucceed", "didClimb", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
@@ -1289,7 +1321,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.passistLifts);
+                                            final RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.passistLifts);
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1297,7 +1329,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.ppassiveLifts);
+                                            final RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1305,7 +1337,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            RadioButton failedToLiftRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.failedToLift);
+                                           final RadioButton failedToLiftRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.failedToLift);
                                             failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1339,25 +1371,38 @@ public class UIComponentCreator {
                                             doneButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    DataManager.sideData = new JSONObject();
-                                                    activeValues.add(0, didSucceed);
-                                                    activeValues.add(1, didClimb);
-                                                    activeValues.add(2, startTime);
-                                                    activeValues.add(3, endTime);
-                                                    activeValues.add(4, partnerLiftType);
-                                                    activeValues.add(5, didFailToLift);
-                                                    activeValues.add(6, numRobotsLifted);
+                                                    //added if statement and then toast
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked() || failedToLiftRadioButton.isChecked()){
+                                                        DataManager.sideData = new JSONObject();
+                                                        activeValues.add(0, didSucceed);
+                                                        activeValues.add(1, didClimb);
+                                                        activeValues.add(2, startTime);
+                                                        activeValues.add(3, endTime);
+                                                        activeValues.add(4, partnerLiftType);
+                                                        activeValues.add(5, didFailToLift);
+                                                        activeValues.add(6, numRobotsLifted);
 
 
-                                                    DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
-                                                    JSONObject tempData = DataManager.sideData;
-                                                    try {
-                                                        DataManager.climbDataArray.put(c, tempData);
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
+                                                        DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
+                                                        JSONObject tempData = DataManager.sideData;
+                                                        try {
+                                                            DataManager.climbDataArray.put(c, tempData);
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+                                                        c++;
+                                                        activeLiftDialog.dismiss();
+                                                    }else  Utils.makeToast(context, "Please Input a Climb Type");
+
                                                     }
-                                                    DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
-                                                    c++;
+
+                                            });
+                                            //added cancel
+                                            Button cancel= (Button) alDialogLayout.findViewById(R.id.cancelButton);
+                                            cancel.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
                                                     activeLiftDialog.dismiss();
                                                 }
                                             });
@@ -1386,6 +1431,14 @@ public class UIComponentCreator {
                                     }
 
 
+                                });
+                                //added cancel
+                                Button cancel = (Button) ctDialogLayout.findViewById(R.id.cancelButton);
+                                cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        climbTypeDialog.dismiss();
+                                    }
                                 });
 
                                 climbTypeDialog.setContentView(ctDialogLayout);

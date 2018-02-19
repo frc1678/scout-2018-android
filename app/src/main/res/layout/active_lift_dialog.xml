@@ -108,10 +108,18 @@
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FAA2A8"
+            android:text="Cancel"
+            android:id="@+id/cancelButton"/>
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:backgroundTint="#BBEDC5"
             android:layout_height="wrap_content"
             android:text="Done"
             android:id="@+id/doneButton"/>
+<!--canel button added-->
 
 
     </LinearLayout>
