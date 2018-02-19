@@ -428,7 +428,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                             }
 
                     if (getRadioXML() != null) {
-                        RadioGroup radioLayout = (RadioGroup) findViewById(getRadioXML());
+                        final RadioGroup radioLayout = (RadioGroup) findViewById(getRadioXML());
                         List<String> radioDisplayTitles = new ArrayList<>();
                         if (getRadioData() != null) {
                             if (activityName().equals("auto")) {
@@ -444,6 +444,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                 final RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                 final RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "right", ViewGroup.LayoutParams.MATCH_PARENT, 60);
 
+
                                 try {
                                     rightStartPosition.setChecked(DataManager.collectedData.get("startingPosition").equals("right"));
                                     leftStartPosition.setChecked(DataManager.collectedData.get("startingPosition").equals("left"));
@@ -451,55 +452,39 @@ public abstract class DataActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+
+
+
                                 rightStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startingPosition", "right");}});
                                 leftStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startingPosition", "left");}});
                                 centerStartPosition.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {DataManager.addZeroTierJsonData("startingPosition", "center");}});
 
-                                rightStartPosition.setOnClickListener(new View.OnClickListener()
-                                    {@Override public void onClick(View v) {
-                                        if (rightStartPosition.isChecked()){
+
+                                radioLayout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+                                    @Override
+                                    public void onCheckedChanged (RadioGroup group,int checkedId){
+
+                                        Log.d("chk", "id" + checkedId);
+
+                                        if (rightStartPosition.isPressed()) {
                                             leftStartPosition.setChecked(false);
                                             centerStartPosition.setChecked(false);
-                                        }
-                                        if (centerStartPosition.isChecked()){
-                                            leftStartPosition.setChecked(false);
+                                            rightStartPosition.setChecked(true);
+
+
+                                        } else if (leftStartPosition.isPressed()) {
                                             rightStartPosition.setChecked(false);
-                                        }
-                                        if (leftStartPosition.isChecked()){
                                             centerStartPosition.setChecked(false);
+                                            leftStartPosition.setChecked(true);
+                                        }else if(centerStartPosition.isPressed()){
                                             rightStartPosition.setChecked(false);
+                                            leftStartPosition.setChecked(false);
+                                            centerStartPosition.setChecked(true);
                                         }
-                                }});
-                                leftStartPosition.setOnClickListener(new View.OnClickListener()
-                                {@Override public void onClick(View v) {
-                                    if (rightStartPosition.isChecked()){
-                                        leftStartPosition.setChecked(false);
-                                        centerStartPosition.setChecked(false);
                                     }
-                                    if (centerStartPosition.isChecked()){
-                                        leftStartPosition.setChecked(false);
-                                        rightStartPosition.setChecked(false);
-                                    }
-                                    if (leftStartPosition.isChecked()){
-                                        centerStartPosition.setChecked(false);
-                                        rightStartPosition.setChecked(false);
-                                    }
-                                }});
-                                rightStartPosition.setOnClickListener(new View.OnClickListener()
-                                {@Override public void onClick(View v) {
-                                    if (rightStartPosition.isChecked()){
-                                        leftStartPosition.setChecked(false);
-                                        centerStartPosition.setChecked(false);
-                                    }
-                                    if (centerStartPosition.isChecked()){
-                                        leftStartPosition.setChecked(false);
-                                        rightStartPosition.setChecked(false);
-                                    }
-                                    if (leftStartPosition.isChecked()){
-                                        centerStartPosition.setChecked(false);
-                                        rightStartPosition.setChecked(false);
-                                    }
-                                }});
+                                });
+
                                 radioLayout.addView(rightStartPosition);
                                 radioLayout.addView(centerStartPosition);
                                 radioLayout.addView(leftStartPosition);
