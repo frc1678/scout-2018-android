@@ -202,10 +202,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
                     databaseReference.child("currentMatchNum").addValueEventListener(matchListener);
+
+                    if(!internetCheck()){
+                        setActionBarColor("green");
+                        allianceColor = "notfound";
+                    }
+
                     if(overridden){
                         teamNumber = sharedPreferences.getInt("teamNumber", -1);
                         matchNumber = sharedPreferences.getInt("matchNumber", -1);
                     }
+
                     teamNumberEditText.setText(String.valueOf(teamNumber));
                     matchNumberEditText.setEnabled(false);
                     findViewById(R.id.teamNumEdit).setEnabled(false);

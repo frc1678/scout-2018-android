@@ -23,7 +23,7 @@ public class Constants {
     public static int numElevatedPyramidIntakeAuto= 0;
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
-    public static final String COLOR_GREEN = "#27f73c";
+    public static final String COLOR_GREEN = "#00c610";
     public static final String COLOR_RED = "#F9613F";
     public static final String COLOR_BLUE = "#53A4F7";
     public static final String COLOR_LIGHTBLUE = "#A1CCF8";
