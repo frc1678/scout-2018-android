@@ -141,6 +141,16 @@
             android:text="Resend All"
             android:textSize="10sp" />
 
+        <Button
+            android:id="@+id/passwordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:onClick="checkPass"
+            android:text="Clear"
+            android:textSize="10sp" />
+
         <EditText
             android:id="@+id/searchEditText"
             android:layout_width="match_parent"
