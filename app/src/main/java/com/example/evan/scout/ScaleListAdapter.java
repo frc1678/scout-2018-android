@@ -165,7 +165,6 @@ public class ScaleListAdapter extends BaseAdapter {
                                     dataList.get(inversePosition).put("layer", finalLayer);
                                     listInterface.onListChanged(dataList);
 
-                                    //String finalStatusString = scaleStatusButton.getText().toString();
                                     if(scaleStatusButton != null) { //START
                                         if(scaleStatusButton.getText().toString().equals("Opponent Owned")) {
                                             finalStatus = "opponentOwned";
@@ -191,21 +190,14 @@ public class ScaleListAdapter extends BaseAdapter {
 
                                 List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                 List<Object> scaleValues = new ArrayList<>();
-                                scaleValues.clear();
 
                                 scaleValues.add(true); //Added
                                 try {
-                                    scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
                                     scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                                     scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                /*if(scaleStatusButton.getText().toString() == null){
-                                    scaleValues.add(null);
-                                }else{
-                                    scaleValues.add(scaleStatusButton.getText().toString());
-                                }*/
                                 scaleValues.add(finalStatus); //Added
                                 scaleValues.add(finalLayer);
 
@@ -242,7 +234,6 @@ public class ScaleListAdapter extends BaseAdapter {
 
                         scaleValues.add(false); //Added
                         try {
-                            //scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
                             scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                             scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));
                         } catch (JSONException e) {
