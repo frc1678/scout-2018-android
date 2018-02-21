@@ -93,12 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean foundIt;
 
+    private HighSecurityPassword hsp;
+
     //all of the menuItems
     MenuItem overrideItem;
 
     EditText matchNumberEditText;
     EditText teamNumberEditText;
-    EditText searchBar;
+    public EditText searchBar;
 
     ListView listView;
     ArrayAdapter<String> adapter;
@@ -115,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //resets all firebase datanames
+
+        hsp = new HighSecurityPassword(context, context);
 
         if(!DataActivity.saveAutoData){
             DataManager.collectedData = new JSONObject();
@@ -667,6 +671,10 @@ public class MainActivity extends AppCompatActivity {
         //listenForFileListClick();
         updateListView();
         searchBar.setFocusableInTouchMode(true);
+    }
+
+    public void checkPass(View view) {
+        hsp.initiatePasswordChain();
     }
 
     public void updateListView() {
