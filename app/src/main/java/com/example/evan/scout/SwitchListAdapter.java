@@ -198,21 +198,13 @@ public class SwitchListAdapter extends BaseAdapter {
 
                                 List<String> switchKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                 List<Object> switchValues = new ArrayList<>();
-                                switchValues.clear();
-
                                 switchValues.add(true);
                                 try {
-                                    //switchValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
                                     switchValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                                     switchValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                /*if(switchStatusButton.getText().toString() == null){
-                                    switchValues.add(null);
-                                }else{
-                                    switchValues.add(switchStatusButton.getText().toString());
-                                }*/
                                 switchValues.add(finalStatus);
                                 switchValues.add(finalLayer);
 
@@ -249,7 +241,6 @@ public class SwitchListAdapter extends BaseAdapter {
 
                         switchValues.add(false); //Added
                         try {
-                            //switchValues.add(((JSONObject) jsonArray.get(inversePosition)).getBoolean("didSucceed"));
                             switchValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                             switchValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));
                         } catch (JSONException e) {
