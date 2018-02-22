@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -1105,7 +1106,7 @@ public class UIComponentCreator {
                                             final TextView title = (TextView) alDialogLayout.findViewById(R.id.dialogTitle);
                                             title.setText("Partner Lifts");
 
-                                          final  RadioButton partnerDidClimbRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.pdidClimbRadio);
+                                            final CheckBox partnerDidClimbRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.pdidClimbRadio);
                                             partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1113,7 +1114,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                           final RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.passistLifts);
+                                            final CheckBox partnerAssistedlyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.passistLifts);
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1121,7 +1122,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                          final  RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.ppassiveLifts);
+                                            final CheckBox partnerPassivelyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1129,7 +1130,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            final RadioButton failedToLiftRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.failedToLift);
+                                            final CheckBox failedToLiftRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.failedToLift);
                                             failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1313,7 +1314,7 @@ public class UIComponentCreator {
                                             final TextView title = (TextView) alDialogLayout.findViewById(R.id.dialogTitle);
                                             title.setText("Type of Lifter");
 
-                                            RadioButton partnerDidClimbRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.pdidClimbRadio);
+                                            final CheckBox partnerDidClimbRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.pdidClimbRadio);
                                             partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1321,7 +1322,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            final RadioButton partnerAssistedlyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.passistLifts);
+                                            final CheckBox partnerAssistedlyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.passistLifts);
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1329,7 +1330,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                            final RadioButton partnerPassivelyLiftsRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.ppassiveLifts);
+                                            final CheckBox partnerPassivelyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -1337,7 +1338,7 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-                                           final RadioButton failedToLiftRadioButton = (RadioButton) alDialogLayout.findViewById(R.id.failedToLift);
+                                            final CheckBox failedToLiftRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.failedToLift);
                                             failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {

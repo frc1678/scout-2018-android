@@ -10,15 +10,15 @@
         android:gravity="center"
         android:id="@+id/dialogTitle"/>
 
-    <RadioGroup
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonLayout"
-        android:layout_marginTop="10dp"
-        android:id="@+id/radioGroup"
-        android:orientation="vertical">
+        android:id="@+id/checkLayout"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/dialogTitle">
 
-        <RadioButton
+        <CheckBox
             android:text="Scouted Robot Did Climb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -28,44 +28,47 @@
             android:paddingRight="5dp"
             android:layout_weight="1" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/passistLifts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
             android:paddingRight="5dp"
+            android:layout_below="@+id/pdidClimbRadio"
             android:text="Assist Lift"
             android:textSize="23dp" />
 
-        <RadioButton
+        <CheckBox
             android:text="Passive Lift"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/ppassiveLifts"
             android:padding="5dp"
             android:paddingRight="5dp"
+            android:layout_below="@+id/passistLisfts"
             android:textSize="23dp"
             android:layout_weight="1" />
-    </RadioGroup>
 
-    <RadioButton
-        android:text="Failed To Lift"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/failedToLift"
-        android:layout_below="@id/radioGroup"
-        android:padding="5dp"
-        android:paddingRight="5dp"
-        android:textSize="23dp"
-        android:layout_weight="1" />
+        <CheckBox
+            android:text="Failed To Lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/failedToLift"
+            android:layout_below="@id/ppassiveLifts"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:textSize="23dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Robots Lifted"
         android:id="@+id/robotsLiftedTextView"
-        android:layout_below="@+id/failedToLift"
+        android:layout_below="@+id/checkLayout"
         android:textSize="20dp"/>
     <LinearLayout
         android:layout_width="match_parent"
