@@ -814,6 +814,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
             }else if(!activityName.equals("tele")){
                 startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
+                backgroundTimer.stopTimer();
                 startActivity(prepareIntent(getNextActivityClass()));
             }
         }
