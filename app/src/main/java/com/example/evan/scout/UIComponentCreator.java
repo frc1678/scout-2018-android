@@ -1110,23 +1110,29 @@ public class UIComponentCreator {
                                             partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    didClimb = true;
+                                                    didClimb = partnerDidClimbRadioButton.isChecked();
                                                 }
                                             });
 
                                             final CheckBox partnerAssistedlyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.passistLifts);
+                                            final CheckBox partnerPassivelyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "assisted";
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked()) {
+                                                        partnerLiftType = "assisted";
+                                                        partnerPassivelyLiftsRadioButton.setChecked(false);
+                                                    }
                                                 }
                                             });
 
-                                            final CheckBox partnerPassivelyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "passive";
+                                                    if(partnerPassivelyLiftsRadioButton.isChecked()){
+                                                        partnerLiftType = "passive";
+                                                        partnerAssistedlyLiftsRadioButton.setChecked(false);
+                                                    }
                                                 }
                                             });
 
@@ -1134,7 +1140,7 @@ public class UIComponentCreator {
                                             failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    didFailToLift = true;
+                                                    didFailToLift = failedToLiftRadioButton.isChecked();
                                                 }
                                             });
 
@@ -1318,23 +1324,29 @@ public class UIComponentCreator {
                                             partnerDidClimbRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    didClimb = true;
+                                                    didClimb = partnerDidClimbRadioButton.isChecked();
                                                 }
                                             });
 
                                             final CheckBox partnerAssistedlyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.passistLifts);
+                                            final CheckBox partnerPassivelyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "assisted";
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked()) {
+                                                        partnerLiftType = "assisted";
+                                                        partnerPassivelyLiftsRadioButton.setChecked(false);
+                                                    }
                                                 }
                                             });
 
-                                            final CheckBox partnerPassivelyLiftsRadioButton = (CheckBox) alDialogLayout.findViewById(R.id.ppassiveLifts);
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    partnerLiftType = "passive";
+                                                    if(partnerPassivelyLiftsRadioButton.isChecked()) {
+                                                        partnerLiftType = "passive";
+                                                        partnerAssistedlyLiftsRadioButton.setChecked(false);
+                                                    }
                                                 }
                                             });
 
@@ -1342,7 +1354,7 @@ public class UIComponentCreator {
                                             failedToLiftRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    didFailToLift = true;
+                                                    didFailToLift = failedToLiftRadioButton.isChecked();
                                                 }
                                             });
 
@@ -1373,7 +1385,7 @@ public class UIComponentCreator {
                                                 @Override
                                                 public void onClick(View v) {
                                                     //added if statement and then toast
-                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked() || failedToLiftRadioButton.isChecked()){
+                                                    if(partnerDidClimbRadioButton.isChecked() || partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked() || failedToLiftRadioButton.isChecked()) {
                                                         DataManager.sideData = new JSONObject();
                                                         activeValues.add(0, didSucceed);
                                                         activeValues.add(1, didClimb);
@@ -1382,7 +1394,6 @@ public class UIComponentCreator {
                                                         activeValues.add(4, partnerLiftType);
                                                         activeValues.add(5, didFailToLift);
                                                         activeValues.add(6, numRobotsLifted);
-
 
                                                         DataManager.addOneTierJsonData(true, liftType, activeKeys, activeValues);
                                                         JSONObject tempData = DataManager.sideData;
