@@ -1041,7 +1041,7 @@ public class UIComponentCreator {
                         success.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                //dialog.dismiss();
                                 //climb type dialog
                                 endTime = backgroundTimer.getUpdatedTime();
                                 didSucceed = true;
@@ -1094,7 +1094,7 @@ public class UIComponentCreator {
                                         if(!passiveClimbRadioButton.isChecked() && !assistedClimbRadioButton.isChecked() && !activeLiftRadioButton.isChecked() && !independentRadioButton.isChecked()){
                                             Utils.makeToast(context, "Please Input a Climb Type");
                                         }else if (liftType.equals("activeLift")) {
-                                            climbTypeDialog.dismiss();
+                                            //climbTypeDialog.dismiss();
 
                                             final List<String> activeKeys = Arrays.asList("didSucceed", "didClimb", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
                                             final List<Object> activeValues = new ArrayList<>();
@@ -1166,7 +1166,6 @@ public class UIComponentCreator {
                                                 }
                                             });
 
-
                                             Button doneButton = (Button) alDialogLayout.findViewById(R.id.doneButton);
                                             doneButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
@@ -1193,6 +1192,8 @@ public class UIComponentCreator {
                                                         DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
                                                         c++;
                                                         activeLiftDialog.dismiss();
+                                                        climbTypeDialog.dismiss(); //added
+                                                        dialog.dismiss(); //added
                                                     }else
                                                         Utils.makeToast(context, "Please Input a Climb Type");
 
@@ -1228,7 +1229,8 @@ public class UIComponentCreator {
                                             }
                                             DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
                                             c++;
-                                            climbTypeDialog.dismiss();
+                                            dialog.dismiss(); //added
+                                            climbTypeDialog.dismiss(); //added
                                         }
                                     }
 
@@ -1252,7 +1254,7 @@ public class UIComponentCreator {
                         failure.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                //dialog.dismiss();
                                 //climb type dialog
                                 endTime = backgroundTimer.getUpdatedTime();
                                 didSucceed = false;
@@ -1308,7 +1310,7 @@ public class UIComponentCreator {
                                         }
                                         else if (liftType.equals("activeLift")) {
                                             DataManager.sideData = new JSONObject();
-                                            climbTypeDialog.dismiss();
+                                            //climbTypeDialog.dismiss();
 
                                             final List<String> activeKeys = Arrays.asList("didSucceed", "didClimb", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
                                             final List<Object> activeValues = new ArrayList<>();
@@ -1405,6 +1407,8 @@ public class UIComponentCreator {
                                                         DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
                                                         c++;
                                                         activeLiftDialog.dismiss();
+                                                        climbTypeDialog.dismiss(); //added
+                                                        dialog.dismiss(); //added
                                                     }else  Utils.makeToast(context, "Please Input a Climb Type");
 
                                                     }
@@ -1439,6 +1443,7 @@ public class UIComponentCreator {
                                             DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
                                             c++;
                                             climbTypeDialog.dismiss();
+                                            dialog.dismiss();
                                         }
                                     }
 
