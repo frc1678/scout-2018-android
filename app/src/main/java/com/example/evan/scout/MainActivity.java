@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
