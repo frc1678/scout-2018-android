@@ -756,6 +756,7 @@ public class UIComponentCreator {
         private int tempGroundPyramidIntake = numGroundPyramidIntake;
         private int tempElevatedPyramidIntake = numElevatedPyramidIntake;
 
+
         public UIPyramidCreator(Activity context, List<String> componentNames) {
             super(context, componentNames);
             currentPyramidComponent = 0;
@@ -863,7 +864,7 @@ public class UIComponentCreator {
                     if(DataActivity.activityName.equals("auto")){latest = DataManager.autoPyramidDataList.length();}
                     else if(DataActivity.activityName.equals("tele")){latest = DataManager.telePyramidDataList.length();}
 
-                    if(latest > 0){
+                    if(numElevatedPyramidIntake !=0 || numGroundPyramidIntake != 0){
                         View pyramidHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.pyramid_history_dialog, null);
                         AlertDialog.Builder pyramidBuilder = new AlertDialog.Builder(context);
                         pyramidBuilder.setView(pyramidHistory);
@@ -940,6 +941,7 @@ public class UIComponentCreator {
                                 if(tempElevatedPyramidIntake <= 0){
                                 }else{
                                     tempElevatedPyramidIntake-= 1;
+
                                 }
                                 groundNumberView.setText(valueOf(tempGroundPyramidIntake));
                                 elevatedNumberView.setText(valueOf(tempElevatedPyramidIntake));
@@ -981,7 +983,8 @@ public class UIComponentCreator {
                         });
 
                         pyramidDialog.show();
-                    } else {
+                    }
+                    else {
                         Toast.makeText(context, "No Entries for "+name, Toast.LENGTH_SHORT).show();
                     }
                     return true;
