@@ -1119,9 +1119,11 @@ public class UIComponentCreator {
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() &&  partnerPassivelyLiftsRadioButton.isChecked()) { //START
+                                                        partnerLiftType = "both";
+                                                    }
                                                     if(partnerAssistedlyLiftsRadioButton.isChecked()) {
                                                         partnerLiftType = "assisted";
-                                                        partnerPassivelyLiftsRadioButton.setChecked(false);
                                                     }
                                                 }
                                             });
@@ -1129,9 +1131,11 @@ public class UIComponentCreator {
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    if(partnerPassivelyLiftsRadioButton.isChecked()){
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() &&  partnerPassivelyLiftsRadioButton.isChecked()){ //START
+                                                        partnerLiftType = "both";
+                                                    }
+                                                    else if(partnerPassivelyLiftsRadioButton.isChecked()){
                                                         partnerLiftType = "passive";
-                                                        partnerAssistedlyLiftsRadioButton.setChecked(false);
                                                     }
                                                 }
                                             });
@@ -1335,9 +1339,11 @@ public class UIComponentCreator {
                                             partnerAssistedlyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    if(partnerAssistedlyLiftsRadioButton.isChecked()) {
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() &&  partnerPassivelyLiftsRadioButton.isChecked()) { //START
+                                                        partnerLiftType = "both";
+                                                    }
+                                                    else if(partnerAssistedlyLiftsRadioButton.isChecked()) {
                                                         partnerLiftType = "assisted";
-                                                        partnerPassivelyLiftsRadioButton.setChecked(false);
                                                     }
                                                 }
                                             });
@@ -1345,9 +1351,11 @@ public class UIComponentCreator {
                                             partnerPassivelyLiftsRadioButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    if(partnerPassivelyLiftsRadioButton.isChecked()) {
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() &&  partnerPassivelyLiftsRadioButton.isChecked()) { //START
+                                                        partnerLiftType = "both";
+                                                    }
+                                                    else if(partnerPassivelyLiftsRadioButton.isChecked()){
                                                         partnerLiftType = "passive";
-                                                        partnerAssistedlyLiftsRadioButton.setChecked(false);
                                                     }
                                                 }
                                             });
