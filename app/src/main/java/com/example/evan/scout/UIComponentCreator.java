@@ -1395,7 +1395,7 @@ public class UIComponentCreator {
                                                 @Override
                                                 public void onClick(View v) {
                                                     //added if statement and then toast
-                                                    if(partnerDidClimbRadioButton.isChecked() || partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked() || failedToLiftRadioButton.isChecked()) {
+                                                    if(partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked()) {
                                                         DataManager.sideData = new JSONObject();
                                                         activeValues.add(0, didSucceed);
                                                         activeValues.add(1, didClimb);
