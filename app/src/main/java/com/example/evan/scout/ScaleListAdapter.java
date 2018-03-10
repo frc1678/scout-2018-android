@@ -40,6 +40,7 @@ public class ScaleListAdapter extends BaseAdapter {
     JSONArray jsonArray;
     ListModificationListener listInterface;
     ArrayList<HashMap<String, Object>> dataList;
+    String finalStatus;
 
     public ScaleListAdapter(Activity currentActivity, ArrayList<HashMap<String, Object>> dataList, Dialog listDialog, String title, String scaleFBname, JSONArray jsonArray, ListModificationListener lml){
         activityContext = currentActivity;
@@ -131,6 +132,8 @@ public class ScaleListAdapter extends BaseAdapter {
                         final RadioGroup scaleLayerGroup = (RadioGroup) subSuccessDialogView.findViewById(R.id.scaleLayerRadioGroup);
                         final RadioGroup scaleStatusGroup = (RadioGroup) subSuccessDialogView.findViewById(R.id.scaleOwnershipRadioGroup);
                         ((TextView) subSuccessDialogView.findViewById(R.id.scaleSuccessDialogTitle)).setText(title);
+                        RadioButton scaleOwnedButton = (RadioButton) subSuccessDialogView.findViewById(R.id.scaleOwnedRadio);
+                        RadioButton scaleBalancedButton = (RadioButton) subSuccessDialogView.findViewById(R.id.scaleBalancedRadio);
 
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activityContext);
                         dialogBuilder.setView(subSuccessDialogView);
@@ -139,6 +142,28 @@ public class ScaleListAdapter extends BaseAdapter {
                         dialog2.setCanceledOnTouchOutside(false);
 
                         dialog2.show();
+                        scaleOwnedButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(finalStatus != "opponentOwned"){
+                                    finalStatus = "opponentOwned";
+                                }else{
+                                    scaleStatusGroup.clearCheck();
+                                    finalStatus = null;
+                                }
+                            }
+                        });
+                        scaleBalancedButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(finalStatus != "balanced"){
+                                    finalStatus = "balanced";
+                                }else{
+                                    scaleStatusGroup.clearCheck();
+                                    finalStatus = null;
+                                }
+                            }
+                        });
 
                         ((Button) subSuccessDialogView.findViewById(R.id.scaleDoneButton)).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -146,6 +171,7 @@ public class ScaleListAdapter extends BaseAdapter {
 
                                 RadioButton scaleLayerButton = (RadioButton) subSuccessDialogView.findViewById(scaleLayerGroup.getCheckedRadioButtonId());
                                 RadioButton scaleStatusButton = (RadioButton) subSuccessDialogView.findViewById(scaleStatusGroup.getCheckedRadioButtonId());
+
 
                                 //String finalLayerString = scaleLayerButton.getText().toString();
                                 Integer finalLayer = 0;

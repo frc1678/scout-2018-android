@@ -36,6 +36,7 @@ public class SwitchListAdapter extends BaseAdapter {
     String title;
     String switchFBname;
     JSONArray jsonArray;
+    String finalStatus;
     SwitchListAdapter.ListModificationListener listInterface;
     ArrayList<HashMap<String, Object>> dataList;
 
@@ -126,6 +127,8 @@ public class SwitchListAdapter extends BaseAdapter {
                 final AlertDialog dialog = dialogBuilder.create();
                 dialog.setCanceledOnTouchOutside(false);
 
+
+
                 ((Button) subDialogView.findViewById(R.id.successButton)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -134,6 +137,11 @@ public class SwitchListAdapter extends BaseAdapter {
                         final RadioGroup switchLayerGroup = (RadioGroup) subSuccessDialogView.findViewById(R.id.switchLayerRadioGroup);
                         final RadioGroup switchStatusGroup = (RadioGroup) subSuccessDialogView.findViewById(R.id.switchOwnershipRadioGroup);
                         ((TextView) subSuccessDialogView.findViewById(R.id.dialogTitle)).setText(title);
+                        RadioButton switchLayerButton = (RadioButton) subSuccessDialogView.findViewById(switchLayerGroup.getCheckedRadioButtonId());
+                        RadioButton switchOwnedButton = (RadioButton) subSuccessDialogView.findViewById(R.id.switchOwnedRadio);
+                        RadioButton switchBalancedButton = (RadioButton) subSuccessDialogView.findViewById(R.id.switchBalancedRadio);
+
+
 
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activityContext);
                         dialogBuilder.setView(subSuccessDialogView);
@@ -142,7 +150,28 @@ public class SwitchListAdapter extends BaseAdapter {
                         dialog2.setCanceledOnTouchOutside(false);
 
                         dialog2.show();
-
+                        switchOwnedButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(finalStatus != "opponentOwned"){
+                                    finalStatus = "opponentOwned";
+                                }else{
+                                    switchStatusGroup.clearCheck();
+                                    finalStatus = null;
+                                }
+                            }
+                        });
+                        switchBalancedButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(finalStatus != "balanced"){
+                                    finalStatus = "balanced";
+                                }else{
+                                    switchStatusGroup.clearCheck();
+                                    finalStatus = null;
+                                }
+                            }
+                        });
                         ((Button) subSuccessDialogView.findViewById(R.id.doneButton)).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
