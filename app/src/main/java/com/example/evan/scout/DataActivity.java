@@ -63,6 +63,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.evan.scout.MainActivity.bgTimer;
+
 public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
     public abstract List<String> getToggleData();
@@ -687,7 +689,7 @@ public abstract class DataActivity extends AppCompatActivity {
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(getActionBarMenu(), menu);
-    MainActivity.bgTimer.currentMenu = menu;
+    bgTimer.currentMenu = menu;
     final LayoutInflater.Factory existingFactory = getLayoutInflater().getFactory();
             try{
                 Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
@@ -727,7 +729,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 textView.setTitle(DataManager.collectedData.getInt("teamNumber")+"");
             }catch (JSONException je){}
 
-        if(!MainActivity.bgTimer.timerReady && activityName().equals("auto")) {
+        if(!bgTimer.timerReady && activityName().equals("auto")) {
             menu.findItem(R.id.beginTimerButton).setEnabled(false);
         }
 
@@ -736,8 +738,8 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.beginTimerButton && MainActivity.bgTimer.timerReady) {
-            MainActivity.bgTimer.setMatchTimer();
+        if(item.getItemId() == R.id.beginTimerButton && bgTimer.timerReady) {
+            bgTimer.setMatchTimer();
             item.setEnabled(false);
         }
 
@@ -803,15 +805,23 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
             if(activityName.equals("auto")){
                 try {
-                    if(DataManager.collectedData.getString("startingPosition") != null){
-                        Log.e("Starting Position?", DataManager.collectedData.getString("startingPosition"));
-                        startActivity(prepareIntent(getNextActivityClass()));
+                    if(DataManager.collectedData.getString("startingPosition") != null) {
+                        if (bgTimer.timerReady == false) {
+                            Log.e("Starting Position?", DataManager.collectedData.getString("startingPosition"));
+                            startActivity(prepareIntent(getNextActivityClass()));
+                        }else{
+                            Utils.makeToast(context, "PLEASE START THE TIMER!");
+
+                        }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Utils.makeToast(context, "PLEASE INPUT STARTING POSITION!");
                 }
-            }else if(!activityName.equals("tele")){
+            }
+
+            else if(!activityName.equals("tele")){
                 startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
                 backgroundTimer.stopTimer();
