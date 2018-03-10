@@ -411,6 +411,10 @@ public class UIComponentCreator {
                             Utils.makeToast(context, "PLEASE START THE TIMER!");
                         }
                     }
+                    if(DataActivity.activityName.equals("tele")){
+                        dialog.setContentView(dialogLayout);
+                        dialog.show();
+                    }
                 }
             });
             switchButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -703,6 +707,10 @@ public class UIComponentCreator {
                             Utils.makeToast(context, "PLEASE START THE TIMER!");
                         }
                     }
+                    if(DataActivity.activityName.equals("tele")){
+                        dialog.setContentView(dialogLayout);
+                        dialog.show();
+                    }
                 }
             });
             scaleButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -873,6 +881,10 @@ public class UIComponentCreator {
                         }else{
                             Utils.makeToast(context, "PLEASE START THE TIMER!");
                         }
+                    }
+                    if(DataActivity.activityName.equals("tele")){
+                        dialog.setContentView(dialogLayout);
+                        dialog.show();
                     }
 
 
