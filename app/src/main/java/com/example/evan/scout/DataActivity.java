@@ -198,17 +198,12 @@ public abstract class DataActivity extends AppCompatActivity {
                                 if(saveAutoData){try {autoLineBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
                                 if(saveAutoData){try {autoCrossBool = DataManager.collectedData.getBoolean("didCrossAutoZone");} catch (JSONException e) {e.printStackTrace();}} //Changed
                                 final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoLineBool,0,true);
-                                final ToggleButton autoZoneCrossed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoCrossBool,0,true);
                                 if(autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#3affb3"));
                                 }else if(!autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#aaaaaa"));
                                 }
-                                if(autoZoneCrossed.isChecked()){
-                                    autoZoneCrossed.setBackgroundColor(Color.parseColor("#3affb3"));
-                                }else if(!autoZoneCrossed.isChecked()){
-                                    autoZoneCrossed.setBackgroundColor(Color.parseColor("#aaaaaa"));
-                                }
+
                                 autoLinePassed.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -220,19 +215,8 @@ public abstract class DataActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                autoZoneCrossed.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        DataManager.addZeroTierJsonData("didCrossAutoZone", autoZoneCrossed.isChecked());
-                                        if(autoZoneCrossed.isChecked()){
-                                            autoZoneCrossed.setBackgroundColor(Color.parseColor("#3affb3"));
-                                        }else if(!autoZoneCrossed.isChecked()){
-                                            autoZoneCrossed.setBackgroundColor(Color.parseColor("#aaaaaa"));
-                                        }
-                                    }
-                                });
+
                                 toggleLayout.addView(autoLinePassed);
-                                toggleLayout.addView(autoZoneCrossed);
                             }
                         }else if (activityName().equals("tele")) {
                             if (getToggleData() != null) {
