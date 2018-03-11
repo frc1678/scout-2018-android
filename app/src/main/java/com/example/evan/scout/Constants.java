@@ -37,6 +37,7 @@ public class Constants {
             //counters
             put("numCubesFumbledAuto", "Cubes Fumbled");
             put("numCubesFumbledTele", "Cubes Fumbled");
+            put("totalNumScaleFoul","Scale Fouls");
             put("numExchangeInput", "Exchange Input");
             put("numGroundIntakeTele", "Ground Intake");
             put("numGroundPortalIntakeTele", "Ground Portal Intake");
