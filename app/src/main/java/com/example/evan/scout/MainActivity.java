@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Shared Preference for scoutNumber
     SharedPreferences sharedPreferences;
-    SharedPreferences.Editor spfe;
+    static SharedPreferences.Editor spfe;
 
     //set the context
     private final MainActivity context = this;
@@ -223,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     if(overridden){
                         teamNumber = sharedPreferences.getInt("teamNumber", -1);
                         matchNumber = sharedPreferences.getInt("matchNumber", -1);
+                        Log.e("NIGERODSMINNY", sharedPreferences.getInt("matchNumber", matchNumber)+"");
                     }
 
                     teamNumberEditText.setText(String.valueOf(teamNumber));
@@ -465,6 +466,7 @@ public class MainActivity extends AppCompatActivity {
                                                 Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
                                                 if(ovrrdTeamNum > 0) {
                                                     matchNumber = Integer.parseInt(matchNumberEditText.getText().toString());
+                                                    Log.e("matchnumber", String.valueOf(matchNumber));
                                                     DataManager.subTitle = ovrrdTeamNum + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                                                     DataManager.addZeroTierJsonData("scoutName", scoutName);
                                                     intent.putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
@@ -511,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
-                        matchNumber = Integer.parseInt(matchNumberEditText.getText().toString());
+
                         Intent intent = new Intent(this, AutoActivity.class);
                         EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
                         Log.e("MATCHNUMBER5", matchNumber+"");
