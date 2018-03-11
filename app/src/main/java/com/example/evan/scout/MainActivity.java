@@ -223,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
                     if(overridden){
                         teamNumber = sharedPreferences.getInt("teamNumber", -1);
                         matchNumber = sharedPreferences.getInt("matchNumber", -1);
-                        Log.e("NIGERODSMINNY", sharedPreferences.getInt("matchNumber", matchNumber)+"");
                     }
 
                     teamNumberEditText.setText(String.valueOf(teamNumber));

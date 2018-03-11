@@ -94,7 +94,6 @@ public abstract class DataActivity extends AppCompatActivity {
     public static String activityName;
     public static String capActivityName;
     public static boolean rejected = false;
-    public static boolean fromTele=false;
 
     private boolean sent;
     private boolean instantiatedPlatformBools = false;
@@ -808,13 +807,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
                 backgroundTimer.stopTimer();
-                Log.e("NIGEROD", sharedPreferences.getInt("matchNumber", matchNumber)+"");
-
                 //added
                 int tempMatchNum = sharedPreferences.getInt("matchNumber", matchNumber) + 1;
                 MainActivity.spfe.putInt("matchNumber", (tempMatchNum));
                 MainActivity.spfe.commit();
-                Log.e("NIGEROD", sharedPreferences.getInt("matchNumber", matchNumber)+"");
                 startActivity(prepareIntent(getNextActivityClass()));
 
             }
