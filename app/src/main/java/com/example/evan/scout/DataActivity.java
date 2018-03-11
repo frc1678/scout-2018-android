@@ -489,7 +489,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                 LinearLayout counterLayoutTwo = (LinearLayout) findViewById(getCounterTwoXML());
                                                 List<String> counterNames = new ArrayList<>();
                                                 counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-                                                for (int i = 0; i < 3; i++) {
+                                                for (int i = 0; i < 4; i++) {
                                                     counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
                                                     counterLayoutOne.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                     TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
@@ -503,7 +503,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         e.printStackTrace();
                                                     }
                                                 }
-                                                for (int i = 3; i < getCounterData().size(); i++) {
+                                                for (int i = 4; i < getCounterData().size(); i++) {
                                                     counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
                                                     counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                     TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
