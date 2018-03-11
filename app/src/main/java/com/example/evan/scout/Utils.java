@@ -180,6 +180,7 @@ public class Utils {
         DataManager.addZeroTierJsonData("numReturnIntake", 0);
         DataManager.addZeroTierJsonData("numSpilledCubesAuto", 0);
         DataManager.addZeroTierJsonData("numSpilledCubesTele", 0);
+       // DataManager.addZeroTierJsonData("totalNumScaleFoul",0);
         DataManager.addZeroTierJsonData("startingPosition", null);
     }
 

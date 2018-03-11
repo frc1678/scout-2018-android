@@ -23,6 +23,7 @@ public class Constants {
     public static int numElevatedPyramidIntakeAuto= 0;
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
+    public static int totalNumScaleFoul = 0;
     public static final String COLOR_GREEN = "#00c610";
     public static final String COLOR_RED = "#F9613F";
     public static final String COLOR_BLUE = "#53A4F7";
@@ -37,7 +38,6 @@ public class Constants {
             //counters
             put("numCubesFumbledAuto", "Cubes Fumbled");
             put("numCubesFumbledTele", "Cubes Fumbled");
-            put("totalNumScaleFoul","Scale Fouls");
             put("numExchangeInput", "Exchange Input");
             put("numGroundIntakeTele", "Ground Intake");
             put("numGroundPortalIntakeTele", "Ground Portal Intake");
@@ -45,6 +45,7 @@ public class Constants {
             put("numReturnIntake", "Return Intake");
             put("numSpilledCubesAuto", "Cubes Spilled");
             put("numSpilledCubesTele", "Cubes Spilled");
+            put("totalNumScaleFoul","Scale Fouls");
             //start positions
             put("startingPositionLeft", "Left");
             put("startingPositionCenter", "Center");
