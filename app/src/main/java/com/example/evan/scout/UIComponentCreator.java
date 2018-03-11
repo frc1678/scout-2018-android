@@ -759,7 +759,7 @@ public class UIComponentCreator {
                         Toast.makeText(context, "No Entries for " + name, Toast.LENGTH_SHORT).show();
                     }
                     return true;
-                } //END HERE (end of onLongClick)
+                }
             });
             currentScaleComponent++;
             super.componentViews.add(scaleButton);
@@ -1042,6 +1042,7 @@ public class UIComponentCreator {
         public float startTime;
         public float endTime;
         private int c;
+        private boolean value;
 
         private Activity context;
 
@@ -1051,12 +1052,12 @@ public class UIComponentCreator {
         }
 
         public Button addButton(boolean climbAdded) {
+            final HashMap<String,Object> dataSpace = new HashMap<String, Object>();
             c = 0;
             final Button endButton = getBasicButton(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.8f);
             final ToggleButton parkButton = getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, false, 0, false);
 
             if(!climbAdded){
-                //add button to row
                 endButton.setText("FTB");
                 endButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1067,7 +1068,6 @@ public class UIComponentCreator {
                         final List<String> endKeys = Arrays.asList("didSucceed", "startTime", "endTime");
                         final List<Object> endValues = new ArrayList<>();
 
-                        //display custom dialog with big buttons
                         final Dialog dialog = new Dialog(context);
                         dialog.setCanceledOnTouchOutside(false);
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1079,8 +1079,6 @@ public class UIComponentCreator {
                         success.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //dialog.dismiss();
-                                //climb type dialog
                                 endTime = backgroundTimer.getUpdatedTime();
                                 didSucceed = true;
                                 endValues.add(0, didSucceed);
@@ -1128,11 +1126,10 @@ public class UIComponentCreator {
                                     @Override
                                     public void onClick(View v) {
                                         DataManager.sideData = new JSONObject();
-                                        //added if
+
                                         if(!passiveClimbRadioButton.isChecked() && !assistedClimbRadioButton.isChecked() && !activeLiftRadioButton.isChecked() && !independentRadioButton.isChecked()){
                                             Utils.makeToast(context, "Please Input a Climb Type");
                                         }else if (liftType.equals("activeLift")) {
-                                            //climbTypeDialog.dismiss();
 
                                             final List<String> activeKeys = Arrays.asList("didSucceed", "didClimb", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
                                             final List<Object> activeValues = new ArrayList<>();
@@ -1212,8 +1209,7 @@ public class UIComponentCreator {
                                             doneButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    //added if
-
+                                                    value = true;
                                                     if(partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked()) {
                                                         DataManager.sideData = new JSONObject();
                                                         activeValues.add(0, didSucceed);
@@ -1232,10 +1228,34 @@ public class UIComponentCreator {
                                                             e.printStackTrace();
                                                         }
                                                         DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+
+                                                        List<String> climbKeys = Arrays.asList("liftType", "didSucceed", "startTime", "endTime", "didClimb", "partnerLiftType", "didFailToLift", "numRobotsLifted"); //TODO Sketch
+                                                        List<Object> climbValues = new ArrayList<>();
+                                                        climbValues.clear();
+                                                        climbValues.add(liftType);
+                                                        climbValues.add(didSucceed);
+                                                        climbValues.add(startTime);
+                                                        climbValues.add(endTime);
+                                                        climbValues.add(didClimb);
+                                                        climbValues.add(partnerLiftType);
+                                                        climbValues.add(didFailToLift);
+                                                        climbValues.add(numRobotsLifted);
+
+                                                        dataSpace.put(climbKeys.get(0), climbValues.get(0));
+                                                        dataSpace.put(climbKeys.get(1), climbValues.get(1));
+                                                        dataSpace.put(climbKeys.get(2), climbValues.get(2));
+                                                        dataSpace.put(climbKeys.get(3), climbValues.get(3));
+                                                        dataSpace.put(climbKeys.get(4), climbValues.get(4));
+                                                        dataSpace.put(climbKeys.get(5), climbValues.get(5));
+                                                        dataSpace.put(climbKeys.get(6), climbValues.get(6));
+                                                        dataSpace.put(climbKeys.get(7), climbValues.get(7));
+
+                                                        DataManager.climbDataList.add(dataSpace); //TODO Sketch
+
                                                         c++;
                                                         activeLiftDialog.dismiss();
-                                                        climbTypeDialog.dismiss(); //added
-                                                        dialog.dismiss(); //added
+                                                        climbTypeDialog.dismiss();
+                                                        dialog.dismiss();
                                                     }else
                                                         Utils.makeToast(context, "Please Input a Climb Type");
 
@@ -1253,6 +1273,7 @@ public class UIComponentCreator {
                                             activeLiftDialog.setContentView(alDialogLayout);
                                             activeLiftDialog.show();
                                         } else {
+                                            value = true;
                                             Log.e("TIMEITMETIEMTEITEMI", startTime+"");
                                             Log.e("TIMEITMETIEMTEITEMI", endTime+"");
                                             endValues.add(0, didSucceed);
@@ -1270,15 +1291,40 @@ public class UIComponentCreator {
                                                 e.printStackTrace();
                                             }
                                             DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+
+                                            List<String> climbKeys = Arrays.asList("liftType", "didSucceed", "startTime", "endTime", "didClimb", "partnerLiftType", "didFailToLift", "numRobotsLifted"); //TODO Sketch
+                                            List<Object> climbValues = new ArrayList<>();
+                                            climbValues.clear();
+                                            climbValues.add(liftType);
+                                            climbValues.add(didSucceed);
+                                            climbValues.add(startTime);
+                                            climbValues.add(endTime);
+                                            climbValues.add(didClimb);
+                                            climbValues.add(partnerLiftType);
+                                            climbValues.add(didFailToLift);
+                                            climbValues.add(numRobotsLifted);
+
+                                            dataSpace.put(climbKeys.get(0), climbValues.get(0));
+                                            dataSpace.put(climbKeys.get(1), climbValues.get(1));
+                                            dataSpace.put(climbKeys.get(2), climbValues.get(2));
+                                            dataSpace.put(climbKeys.get(3), climbValues.get(3));
+                                            dataSpace.put(climbKeys.get(4), climbValues.get(4));
+                                            dataSpace.put(climbKeys.get(5), climbValues.get(5));
+                                            dataSpace.put(climbKeys.get(6), climbValues.get(6));
+                                            dataSpace.put(climbKeys.get(7), climbValues.get(7));
+
+                                            DataManager.climbDataList.add(dataSpace); //TODO Sketch
+
                                             c++;
-                                            dialog.dismiss(); //added
-                                            climbTypeDialog.dismiss(); //added
+
+                                            dialog.dismiss();
+                                            climbTypeDialog.dismiss();
                                         }
                                     }
 
 
                                 });
-                                //added cancel
+
                                 Button cancel = (Button) ctDialogLayout.findViewById(R.id.cancelButton);
                                 cancel.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -1296,8 +1342,6 @@ public class UIComponentCreator {
                         failure.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //dialog.dismiss();
-                                //climb type dialog
                                 endTime = backgroundTimer.getUpdatedTime();
                                 didSucceed = false;
                                 endValues.add(0, didSucceed);
@@ -1345,14 +1389,12 @@ public class UIComponentCreator {
                                 doneButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        //added if statement
 
                                         if(!passiveClimbRadioButton.isChecked() && !assistedClimbRadioButton.isChecked() && !activeLiftRadioButton.isChecked() && !independentRadioButton.isChecked()) {
                                             Utils.makeToast(context, "Please Input a Climb Type");
                                         }
                                         else if (liftType.equals("activeLift")) {
                                             DataManager.sideData = new JSONObject();
-                                            //climbTypeDialog.dismiss();
 
                                             final List<String> activeKeys = Arrays.asList("didSucceed", "didClimb", "startTime", "endTime", "partnerLiftType", "didFailToLift", "numRobotsLifted");
                                             final List<Object> activeValues = new ArrayList<>();
@@ -1432,7 +1474,7 @@ public class UIComponentCreator {
                                             doneButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    //added if statement and then toast
+                                                    value = true;
                                                     if(partnerAssistedlyLiftsRadioButton.isChecked() || partnerPassivelyLiftsRadioButton.isChecked()) {
                                                         DataManager.sideData = new JSONObject();
                                                         activeValues.add(0, didSucceed);
@@ -1451,6 +1493,30 @@ public class UIComponentCreator {
                                                             e.printStackTrace();
                                                         }
                                                         DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+
+                                                        List<String> climbKeys = Arrays.asList("liftType", "didSucceed", "startTime", "endTime", "didClimb", "partnerLiftType", "didFailToLift", "numRobotsLifted"); //TODO Sketch
+                                                        List<Object> climbValues = new ArrayList<>();
+                                                        climbValues.clear();
+                                                        climbValues.add(liftType);
+                                                        climbValues.add(didSucceed);
+                                                        climbValues.add(startTime);
+                                                        climbValues.add(endTime);
+                                                        climbValues.add(didClimb);
+                                                        climbValues.add(partnerLiftType);
+                                                        climbValues.add(didFailToLift);
+                                                        climbValues.add(numRobotsLifted);
+
+                                                        dataSpace.put(climbKeys.get(0), climbValues.get(0));
+                                                        dataSpace.put(climbKeys.get(1), climbValues.get(1));
+                                                        dataSpace.put(climbKeys.get(2), climbValues.get(2));
+                                                        dataSpace.put(climbKeys.get(3), climbValues.get(3));
+                                                        dataSpace.put(climbKeys.get(4), climbValues.get(4));
+                                                        dataSpace.put(climbKeys.get(5), climbValues.get(5));
+                                                        dataSpace.put(climbKeys.get(6), climbValues.get(6));
+                                                        dataSpace.put(climbKeys.get(7), climbValues.get(7));
+
+                                                        DataManager.climbDataList.add(dataSpace); //TODO Sketch
+
                                                         c++;
                                                         activeLiftDialog.dismiss();
                                                         climbTypeDialog.dismiss(); //added
@@ -1472,6 +1538,8 @@ public class UIComponentCreator {
                                             activeLiftDialog.setContentView(alDialogLayout);
                                             activeLiftDialog.show();
                                         } else {
+                                            value = true;
+
                                             endValues.add(0, didSucceed);
                                             endValues.add(1, startTime);
                                             endValues.add(2, endTime);
@@ -1487,6 +1555,30 @@ public class UIComponentCreator {
                                                 e.printStackTrace();
                                             }
                                             DataManager.addZeroTierJsonData("climb", DataManager.climbDataArray);
+
+                                            List<String> climbKeys = Arrays.asList("liftType", "didSucceed", "startTime", "endTime", "didClimb", "partnerLiftType", "didFailToLift", "numRobotsLifted"); //TODO Sketch
+                                            List<Object> climbValues = new ArrayList<>();
+                                            climbValues.clear();
+                                            climbValues.add(liftType);
+                                            climbValues.add(didSucceed);
+                                            climbValues.add(startTime);
+                                            climbValues.add(endTime);
+                                            climbValues.add(didClimb);
+                                            climbValues.add(partnerLiftType);
+                                            climbValues.add(didFailToLift);
+                                            climbValues.add(numRobotsLifted);
+
+                                            dataSpace.put(climbKeys.get(0), climbValues.get(0));
+                                            dataSpace.put(climbKeys.get(1), climbValues.get(1));
+                                            dataSpace.put(climbKeys.get(2), climbValues.get(2));
+                                            dataSpace.put(climbKeys.get(3), climbValues.get(3));
+                                            dataSpace.put(climbKeys.get(4), climbValues.get(4));
+                                            dataSpace.put(climbKeys.get(5), climbValues.get(5));
+                                            dataSpace.put(climbKeys.get(6), climbValues.get(6));
+                                            dataSpace.put(climbKeys.get(7), climbValues.get(7));
+
+                                            DataManager.climbDataList.add(dataSpace); //TODO Sketch
+
                                             c++;
                                             climbTypeDialog.dismiss();
                                             dialog.dismiss();
@@ -1495,7 +1587,6 @@ public class UIComponentCreator {
 
 
                                 });
-                                //added cancel
                                 Button cancel = (Button) ctDialogLayout.findViewById(R.id.cancelButton);
                                 cancel.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -1522,7 +1613,41 @@ public class UIComponentCreator {
                     }
                 });
 
+                endButton.setOnLongClickListener(new View.OnLongClickListener() {
+                    public boolean onLongClick(View v) {
+                        if (value) {
+                            View climbHistory = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.climb_history_dialog, null);
+                            ListView climbList = (ListView) climbHistory.findViewById(R.id.climbListView);
+
+                            AlertDialog.Builder climbBuilder = new AlertDialog.Builder(context);
+                            climbBuilder.setView(climbHistory);
+                            climbBuilder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            climbBuilder.setTitle("Face the Boss!");
+                            climbBuilder.setCancelable(false);
+                            AlertDialog climbDialog = climbBuilder.create();
+
+                            climbList.setAdapter(new ClimbListAdapter(context, DataManager.climbDataList, climbDialog, "Face the Boss", DataManager.climbDataArray, new ClimbListAdapter.ListModificationListener() {
+                                @Override
+                                public void onListChanged(ArrayList<HashMap<String, Object>> returnList) {
+                                    DataManager.climbDataList = returnList;
+                                }
+                            }));
+                            climbDialog.show();
+                        } else {
+                            Toast.makeText(context, "No Entries for Face the Boss!", Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
+                    }
+                });
+
                 return endButton;
+
             }else if(climbAdded){
                 parkButton.setText("Park");
                 parkButton.setOnClickListener(new View.OnClickListener() {
@@ -1535,7 +1660,6 @@ public class UIComponentCreator {
                 });
                 return parkButton;
             }
-
             return null;
         }
     }
