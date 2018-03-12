@@ -64,7 +64,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.evan.scout.MainActivity.bgTimer;
-
+import static com.example.evan.scout.MainActivity.matchNumber;
 public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
     public abstract List<String> getToggleData();
@@ -131,7 +131,6 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        spfe = sharedPreferences.edit();
 
         if(activityName() == "auto"){
             setContentView(R.layout.activity_auto);
@@ -742,7 +741,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     if(numSendClicks >= 2){
                         saveAutoData = false;
                         saveTeleData = false;
-
                         Log.e("collectedData", DataManager.collectedData.toString());
                         Log.e("SUBTITLE", DataManager.subTitle);
 
@@ -809,7 +807,12 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
                 backgroundTimer.stopTimer();
+                //added
+                int tempMatchNum = sharedPreferences.getInt("matchNumber", matchNumber) + 1;
+                MainActivity.spfe.putInt("matchNumber", (tempMatchNum));
+                MainActivity.spfe.commit();
                 startActivity(prepareIntent(getNextActivityClass()));
+
             }
         }
         return true;
