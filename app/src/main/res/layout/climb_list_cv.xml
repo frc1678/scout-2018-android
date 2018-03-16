@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/topLayer">
+        <TextView
+            android:layout_width="650dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvClimbType"
+            android:text="Climb Type"
+            android:textSize="15sp"
+            android:padding="15dp"/>
+
+        <TextView
+            android:layout_width="600dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvResult"
+            android:text="Result"
+            android:textSize="15sp"
+            android:padding="10dp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvStartTime"
+            android:text="startTime"
+            android:textSize="15sp"
+            android:padding="10dp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvEndTime"
+            android:text="endTime"
+            android:textSize="15sp"
+            android:padding="10dp"/>
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_delete"
+            android:id="@+id/cvDelButton" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topLayer">
+        <TextView
+            android:layout_width="115dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:id="@+id/SRDCText" />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvSRDC" />
+        <TextView
+            android:layout_width="65dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/PLTText" />
+        <TextView
+            android:layout_width="90dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvPLT" />
+        <TextView
+            android:layout_width="90dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/FTLText" />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvFTL" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/NRLText" />
+        <TextView
+            android:layout_width="20dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/cvNRL" />
+    </LinearLayout>
+</RelativeLayout>

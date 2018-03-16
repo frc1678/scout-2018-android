@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             DataManager.resetAutoAlliancePlatformArrays();
             DataManager.resetTeleAlliancePlatformArrays();
             DataManager.resetTeleOpponentPlatformArrays();
+            DataManager.resetClimbData();
             Utils.resetAllDataNull();
         }
 

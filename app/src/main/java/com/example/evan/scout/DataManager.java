@@ -39,6 +39,7 @@ public class DataManager {
     public static JSONObject sideData = new JSONObject();
 
     public static JSONArray climbDataArray = new JSONArray();
+    public static ArrayList<HashMap<String, Object>> climbDataList = new ArrayList<HashMap<String, Object>>();
 
     public static JSONArray autoAllianceSwitchDataArray = new JSONArray();
     public static JSONArray teleAllianceSwitchDataArray = new JSONArray();
@@ -153,6 +154,10 @@ public class DataManager {
     public static void resetAutoSwitchData(){
         autoAllianceSwitchDataArray = new JSONArray();
         autoAllianceSwitchDataList = new ArrayList<>();
+    }
+    public static void resetClimbData(){
+        climbDataArray = new JSONArray();
+        climbDataList = new ArrayList<>();
     }
     public static void resetTeleSwitchData(){
         teleAllianceSwitchDataArray = new JSONArray();
