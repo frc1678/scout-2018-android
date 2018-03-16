@@ -15,6 +15,7 @@ public class Constants {
     public static int numOpponentPlatformIntakeTele = 0;
     public static int numSpilledCubesAuto = 0;
     public static int numSpilledCubesTele = 0;
+    public static int totalNumScaleFoul = 0;
     public static int numExchageInput = 0;
     public static int numGroundPortalIntakeTele=0;
     public static int numHumanPortalIntakeTele= 0;
@@ -23,7 +24,6 @@ public class Constants {
     public static int numElevatedPyramidIntakeAuto= 0;
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
-    public static int totalNumScaleFoul = 0;
     public static final String COLOR_GREEN = "#00c610";
     public static final String COLOR_RED = "#F9613F";
     public static final String COLOR_BLUE = "#53A4F7";

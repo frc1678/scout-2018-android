@@ -494,7 +494,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                     counterLayoutOne.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                     TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
                                                     try {
-                                                        if(saveTeleData){
+                                                        if(saveTeleData = false){
                                                             numTextView.setText(DataManager.collectedData.get(getCounterData().get(i))+"");
                                                         }else {
                                                             numTextView.setText(0+"");
@@ -508,7 +508,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                     counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                     TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
                                                     try {
-                                                        if(saveTeleData){
+                                                        if(saveTeleData = false){
                                                             numTextView.setText(DataManager.collectedData.get(getCounterData().get(i))+"");
                                                         }else {
                                                             numTextView.setText(0+"");
