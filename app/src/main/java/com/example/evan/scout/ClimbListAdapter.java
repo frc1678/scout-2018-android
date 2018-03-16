@@ -239,10 +239,10 @@ public class ClimbListAdapter extends BaseAdapter {
                                                     dataList.get(inversePosition).put("didClimb", didClimb);
                                                     didFailToLift = FTLCheckBox.isChecked();
                                                     dataList.get(inversePosition).put("didFailToLift", didFailToLift);
-                                                    if (passiveCheckBox.isChecked()) {
+                                                    if (passiveCheckBox.isChecked() && !assistedCheckBox.isChecked()) {
                                                         dataList.get(inversePosition).put("partnerLiftType", "passive");
                                                         partnerLiftType = "passive";
-                                                    } else if (assistedCheckBox.isChecked()) {
+                                                    } else if (assistedCheckBox.isChecked() && !passiveCheckBox.isChecked()) {
                                                         dataList.get(inversePosition).put("partnerLiftType", "assisted");
                                                         partnerLiftType = "assisted";
                                                     } else if (passiveCheckBox.isChecked() && assistedCheckBox.isChecked()) {
@@ -411,10 +411,10 @@ public class ClimbListAdapter extends BaseAdapter {
                                                     dataList.get(inversePosition).put("didClimb", didClimb);
                                                     didFailToLift = FTLCheckBox.isChecked();
                                                     dataList.get(inversePosition).put("didFailToLift", didFailToLift);
-                                                    if (passiveCheckBox.isChecked()) {
+                                                    if (passiveCheckBox.isChecked() && !assistedCheckBox.isChecked()) {
                                                         dataList.get(inversePosition).put("partnerLiftType", "passive");
                                                         partnerLiftType = "passive";
-                                                    } else if (assistedCheckBox.isChecked()) {
+                                                    } else if (assistedCheckBox.isChecked() && !passiveCheckBox.isChecked()) {
                                                         dataList.get(inversePosition).put("partnerLiftType", "assisted");
                                                         partnerLiftType = "assisted";
                                                     } else if (passiveCheckBox.isChecked() && assistedCheckBox.isChecked()) {

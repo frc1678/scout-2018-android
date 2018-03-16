@@ -1668,7 +1668,7 @@ public class UIComponentCreator {
                     @Override
                     public void onClick(View v) {
                         parkButton.setText("Park");
-                        if (!entry) {
+                        if (DataManager.climbDataArray.length() != 0) {
                             Utils.makeToast(context, "YOU HAVE A CLIMB ENTRY ALREADY!!!");
                         }
                         DataManager.addZeroTierJsonData("didPark", parkButton.isChecked());
