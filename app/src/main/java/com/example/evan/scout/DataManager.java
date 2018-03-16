@@ -155,6 +155,10 @@ public class DataManager {
         autoAllianceSwitchDataArray = new JSONArray();
         autoAllianceSwitchDataList = new ArrayList<>();
     }
+    public static void resetClimbData(){
+        climbDataArray = new JSONArray();
+        climbDataList = new ArrayList<>();
+    }
     public static void resetTeleSwitchData(){
         teleAllianceSwitchDataArray = new JSONArray();
         teleOpponentSwitchDataArray = new JSONArray();
