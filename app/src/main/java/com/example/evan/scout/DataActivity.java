@@ -741,14 +741,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     if(numSendClicks >= 2){
                         saveAutoData = false;
                         saveTeleData = false;
-                        Log.e("collectedData", DataManager.collectedData.toString());
-                        Log.e("SUBTITLE", DataManager.subTitle);
-
-                        String jsonString = DataManager.collectedData.toString();
-                        Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
-                        Log.e("SUBTITLE", DataManager.subTitle);
-                        Log.e("JSONMAP", jsonString);
-                        databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
+                        //TODO save to new file
                     }
             }
 

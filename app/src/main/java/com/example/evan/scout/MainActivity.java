@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     public File matchDir;
 
-    private boolean foundIt;
+    bgLoopThread bgLT;
 
     private HighSecurityPassword hsp;
 
@@ -161,9 +161,6 @@ public class MainActivity extends AppCompatActivity {
         }
         overridden = sharedPreferences.getBoolean("overridden", false);
 
-        bgLoopThread bgLT = new bgLoopThread(context , scoutNumber, databaseReference, main);
-        bgLT.start();
-
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         listView = (ListView) findViewById(R.id.view_files_received);
         listView.setAdapter(adapter);
@@ -181,46 +178,9 @@ public class MainActivity extends AppCompatActivity {
 
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
                     teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-                    ValueEventListener matchListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null) {
-                                if(context instanceof MainActivity){
-                                    firebaseMatchNumber = dataSnapshot.getValue(Integer.class);
-                                    setTeamNumber();
-                                    updateAllianceColor(firebaseMatchNumber);
-                                    Log.e("IMPORTANTLOG-MATCHNUM", firebaseMatchNumber+"");
-                                    if(!overridden){
-                                        matchNumber = firebaseMatchNumber;
-                                        matchNumberEditText.setText(matchNumber+"");
-                                    }
-                                }
-                            } else {
-                                Log.e("SHIT!!!", "SHIT!!!");
-                                firebaseMatchNumber = -1;
-                                matchNumber = -1;
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    };
-                    databaseReference.child("currentMatchNum").addValueEventListener(matchListener);
-
-                    if(!internetCheck()){
-                        if(sharedPreferences.getString("allianceColor", "notfound").equals("blue")){
-                            setActionBarColor("blue");
-                            allianceColor = "blue";
-                        }else if(sharedPreferences.getString("allianceColor", "notfound").equals("red")){
-                            setActionBarColor("red");
-                            allianceColor = "red";
-                        }else{
-                            setActionBarColor("green");
-                            allianceColor = "notfound";
-                        }
-                    }
+        bgLT = new bgLoopThread(context, this);
+        bgLT.start();
 
                     if(overridden){
                         teamNumber = sharedPreferences.getInt("teamNumber", -1);
@@ -235,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
         updateListView();
         listenForResendClick();
         setTitle("Scout");
+
+
     }
 
     @Override
@@ -253,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.matchNumTextEdit).setEnabled(false);
             findViewById(R.id.teamNumEdit).setEnabled(false);
             overrideItem.setTitle("Override");
-            updateAllianceColor(firebaseMatchNumber);
+//            updateAllianceColor(firebaseMatchNumber);
         }
         return true;
     }
@@ -306,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                             scoutName = editText.getText().toString();
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
+                            bgLT.check();
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -316,14 +279,15 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.mainOverride){
             if(overridden){
                 matchNumber = firebaseMatchNumber;
-                setTeamNumber();
+//                setTeamNumber();
                 setMatchNumber();
                 overridden = false;
                 spfe.putBoolean("overridden", false);
                 findViewById(R.id.matchNumTextEdit).setEnabled(false);
                 findViewById(R.id.teamNumEdit).setEnabled(false);
                 overrideItem.setTitle("Override");
-                updateAllianceColor(firebaseMatchNumber);
+                bgLT.check();
+//                updateAllianceColor(firebaseMatchNumber);
             } else {
                 overridden=true;
                 spfe.putBoolean("overridden", true);
@@ -341,33 +305,33 @@ public class MainActivity extends AppCompatActivity {
         matchNumberEditText.setTextColor(Color.parseColor("black"));
     }
 
-    public void setTeamNumber(){
-
-        ValueEventListener teamNumListener = new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //will set the match number and will update it as long as it exists, if not, a value of -1 will be assigned
-                if(dataSnapshot.getValue() != null && !overridden){
-                    teamNumber = Integer.parseInt(dataSnapshot.getValue().toString());
-                    DataManager.addZeroTierJsonData("teamNumber", teamNumber);
-
-                    teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-                    teamNumberEditText.setText(String.valueOf(teamNumber));
-
-                    if(firebaseMatchNumber != 0){
-                        updateAllianceColor(firebaseMatchNumber);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.i("firebase", "database Error");
-            }
-        };
-        databaseReference.child("scouts").child("scout" + scoutNumber).child("team").addValueEventListener(teamNumListener);
-    }
+//    public void setTeamNumber(){
+//
+//        ValueEventListener teamNumListener = new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                //will set the match number and will update it as long as it exists, if not, a value of -1 will be assigned
+//                if(dataSnapshot.getValue() != null && !overridden){
+//                    teamNumber = Integer.parseInt(dataSnapshot.getValue().toString());
+//                    DataManager.addZeroTierJsonData("teamNumber", teamNumber);
+//
+//                    teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+//                    teamNumberEditText.setText(String.valueOf(teamNumber));
+//
+//                    if(firebaseMatchNumber != 0){
+//                        updateAllianceColor(firebaseMatchNumber);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.i("firebase", "database Error");
+//            }
+//        };
+//        databaseReference.child("scouts").child("scout" + scoutNumber).child("team").addValueEventListener(teamNumListener);
+//    }
 
     //display dialog to set scout number
     private void setScoutNumber() {
@@ -404,8 +368,8 @@ public class MainActivity extends AppCompatActivity {
                         } catch (NumberFormatException nfe) {
                             // Do Nothing
                         }
-                        setMatchNumber();
-                        setTeamNumber();
+//                        setMatchNumber();
+//                        setTeamNumber();
                         teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
                         teamNumberEditText.setText(String.valueOf(teamNumber));
                     }
@@ -454,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.e("MATCHNUMBER2", matchNumber+"");
                                 DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                                 if (teamNumber <= 0) {
-                                    setTeamNumber();
+//                                    setTeamNumber();
                                     Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                             Toast.LENGTH_LONG).show();
                                 } else {
@@ -480,6 +444,7 @@ public class MainActivity extends AppCompatActivity {
                                                     spfe.commit();
                                                     DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                                                     DataManager.addZeroTierJsonData("matchNumber", matchNumber);
+                                                    bgLT.stopTimer();
                                                     if(bgTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
                                                     startActivity(intent);
                                                 } else {
@@ -510,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("MATCHNUMBER4", matchNumber+"");
                     DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                     if (teamNumber <= 0) {
-                        setTeamNumber();
+//                        setTeamNumber();
                         Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -528,6 +493,7 @@ public class MainActivity extends AppCompatActivity {
                         spfe.commit();
                         DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                         DataManager.addZeroTierJsonData("matchNumber", matchNumber);
+                        bgLT.stopTimer();
                         if(bgTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
                         startActivity(intent);
                     }
@@ -765,15 +731,6 @@ public class MainActivity extends AppCompatActivity {
         //Do Nothing
         Toast.makeText(getBaseContext(), "Cannot Complete Operation", Toast.LENGTH_SHORT).show();
     }
-    public boolean internetCheck(){
-        boolean connected;
-        boolean isBluetooth = false;
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        connected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
-        return connected;
-    }
 
     public void setAllianceColor(){
         final Dialog colorDialog = new Dialog(context);
@@ -818,123 +775,143 @@ public class MainActivity extends AppCompatActivity {
                 actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_RED));
             }else if(allianceColor.equals("blue")){
                 actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_BLUE));
+            }else {
+                actionBarBackgroundColor = new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN));
             }
         }
         return actionBarBackgroundColor;
     }
 
-    public void updateAllianceColor(int mNum){
-        foundIt = false;
-        final String s_matchNumber = String.valueOf(mNum);
-        Log.e("PLEZZZZZ", s_matchNumber);
-        Log.e("PLEZZZZZ", mNum+"");
-        if(!overridden){
-            try{
-                for(int i = 0; i < 3; i++){
-                    final String num = String.valueOf(i);
-                    databaseReference.child("Matches").child(s_matchNumber).child("blueAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot != null){
-                                if(dataSnapshot.getValue() != null){
-                                    if(teamNumber != 0 || teamNumber != -1){
-                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString()) && !foundIt){
-                                            Log.e("PLEZZZZZ", s_matchNumber);
-                                            Log.e("PLEZZZZZ", "blueAllianceTeamNumbers");
-                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
-                                            allianceColor = "blue";
-                                            spfe.putString("allianceColor", allianceColor);
-                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-                                            setActionBarColor("blue");
-                                            foundIt = true;
-                                        }else if(foundIt){
-                                        }else{
-                                            allianceColor = "notfound";
-                                            spfe.putString("allianceColor", allianceColor);
-                                        }
-                                    }else{
-                                        Log.e("SHIT1", "SHIT1");
-                                        allianceColor = "notfound";
-                                        spfe.putString("allianceColor", allianceColor);
-                                    }
-                                }else{
-                                    Log.e("SHIT2", "SHIT2");
-                                }
-                            }else{
-                                Log.e("SHIT3", "SHIT3");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError firebaseError) {
-                            if(!foundIt){
-                                Log.e("SHIT4", "SHIT4");
-                                setActionBarColor("green");
-                                allianceColor = "notfound";
-                                spfe.putString("allianceColor", allianceColor);
-                            }
-                        }
-                    });
-                    databaseReference.child("Matches").child(s_matchNumber).child("redAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot != null){
-                                if(dataSnapshot.getValue() != null){
-                                    if(teamNumber != 0 || teamNumber != -1 && !foundIt) {
-                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString())){
-                                            Log.e("PLEZZZZZ", s_matchNumber);
-                                            Log.e("PLEZZZZZ", "redAllianceTeamNumbers");
-                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
-                                            allianceColor = "red";
-                                            spfe.putString("allianceColor", allianceColor);
-                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-                                            setActionBarColor("red");
-                                            foundIt = true;
-                                        }else if(foundIt){
-                                        }else{
-                                            allianceColor = "notfound";
-                                            spfe.putString("allianceColor", allianceColor);
-                                        }
-                                    }else{
-                                        Log.e("SHIT5", "SHIT5");
-                                        allianceColor = "notfound";
-                                        spfe.putString("allianceColor", allianceColor);
-                                    }
-                                }else{
-                                    Log.e("SHIT6", "SHIT6");
-                                }
-                            }else{
-                                Log.e("SHIT7", "SHIT7");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError firebaseError) {
-                            if(!foundIt){
-                                Log.e("SHIT8", "SHIT8");
-                                setActionBarColor("green");
-                                allianceColor = "notfound";
-                                spfe.putString("allianceColor", allianceColor);
-                            }
-                        }
-                    });
-                }
-                if((allianceColor == null || allianceColor == "notfound") && !foundIt){
-                    setActionBarColor("green");
-                    allianceColor = "notfound";
-                    spfe.putString("allianceColor", allianceColor);
-                }
-            }catch(DatabaseException de){
-                Log.e("SHIT9", "SHIT9");
-                if(!foundIt){
-                    setActionBarColor("green");
-                    allianceColor = "notfound";
-                    spfe.putString("allianceColor", allianceColor);
-                }
-            }
-        }else if(overridden && (allianceColor != "blue" && allianceColor != "red")){
-            setActionBarColor("green");
-            allianceColor = "notfound";
-        }
+    public void updateAllianceColor(){
+        actionBar.setBackgroundDrawable(returnDrawable());
     }
+
+    public void updateMatchEditText(Integer matchNum){
+        if(matchNumberEditText == null){
+            matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
+        }
+        matchNumberEditText.setText(String.valueOf(matchNum));
+    }
+
+    public void updateTeamEditText(Integer teamNum){
+        if(teamNumberEditText == null){
+            teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+        }
+        teamNumberEditText.setText(String.valueOf(teamNum));
+    }
+
+//    public void updateAllianceColor(int mNum){
+//        foundIt = false;
+//        final String s_matchNumber = String.valueOf(mNum);
+//        Log.e("PLEZZZZZ", s_matchNumber);
+//        Log.e("PLEZZZZZ", mNum+"");
+//        if(!overridden){
+//            try{
+//                for(int i = 0; i < 3; i++){
+//                    final String num = String.valueOf(i);
+//                    databaseReference.child("Matches").child(s_matchNumber).child("blueAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            if(dataSnapshot != null){
+//                                if(dataSnapshot.getValue() != null){
+//                                    if(teamNumber != 0 || teamNumber != -1){
+//                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString()) && !foundIt){
+//                                            Log.e("PLEZZZZZ", s_matchNumber);
+//                                            Log.e("PLEZZZZZ", "blueAllianceTeamNumbers");
+//                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
+//                                            allianceColor = "blue";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+//                                            setActionBarColor("blue");
+//                                            foundIt = true;
+//                                        }else if(foundIt){
+//                                        }else{
+//                                            allianceColor = "notfound";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                        }
+//                                    }else{
+//                                        Log.e("SHIT1", "SHIT1");
+//                                        allianceColor = "notfound";
+//                                        spfe.putString("allianceColor", allianceColor);
+//                                    }
+//                                }else{
+//                                    Log.e("SHIT2", "SHIT2");
+//                                }
+//                            }else{
+//                                Log.e("SHIT3", "SHIT3");
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError firebaseError) {
+//                            if(!foundIt){
+//                                Log.e("SHIT4", "SHIT4");
+//                                setActionBarColor("green");
+//                                allianceColor = "notfound";
+//                                spfe.putString("allianceColor", allianceColor);
+//                            }
+//                        }
+//                    });
+//                    databaseReference.child("Matches").child(s_matchNumber).child("redAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            if(dataSnapshot != null){
+//                                if(dataSnapshot.getValue() != null){
+//                                    if(teamNumber != 0 || teamNumber != -1 && !foundIt) {
+//                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString())){
+//                                            Log.e("PLEZZZZZ", s_matchNumber);
+//                                            Log.e("PLEZZZZZ", "redAllianceTeamNumbers");
+//                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
+//                                            allianceColor = "red";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+//                                            setActionBarColor("red");
+//                                            foundIt = true;
+//                                        }else if(foundIt){
+//                                        }else{
+//                                            allianceColor = "notfound";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                        }
+//                                    }else{
+//                                        Log.e("SHIT5", "SHIT5");
+//                                        allianceColor = "notfound";
+//                                        spfe.putString("allianceColor", allianceColor);
+//                                    }
+//                                }else{
+//                                    Log.e("SHIT6", "SHIT6");
+//                                }
+//                            }else{
+//                                Log.e("SHIT7", "SHIT7");
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError firebaseError) {
+//                            if(!foundIt){
+//                                Log.e("SHIT8", "SHIT8");
+//                                setActionBarColor("green");
+//                                allianceColor = "notfound";
+//                                spfe.putString("allianceColor", allianceColor);
+//                            }
+//                        }
+//                    });
+//                }
+//                if((allianceColor == null || allianceColor == "notfound") && !foundIt){
+//                    setActionBarColor("green");
+//                    allianceColor = "notfound";
+//                    spfe.putString("allianceColor", allianceColor);
+//                }
+//            }catch(DatabaseException de){
+//                Log.e("SHIT9", "SHIT9");
+//                if(!foundIt){
+//                    setActionBarColor("green");
+//                    allianceColor = "notfound";
+//                    spfe.putString("allianceColor", allianceColor);
+//                }
+//            }
+//        }else if(overridden && (allianceColor != "blue" && allianceColor != "red")){
+//            setActionBarColor("green");
+//            allianceColor = "notfound";
+//        }
+//    }
 }
