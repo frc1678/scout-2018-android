@@ -117,9 +117,9 @@
             android:id="@+id/view_files_received"
             android:layout_width="fill_parent"
             android:layout_height="330dp"
-            android:layout_above="@+id/resendAll"
+            android:isScrollContainer="false"
             android:layout_below="@+id/searchEditText"
-            android:isScrollContainer="false" />
+            android:layout_alignParentStart="true" />
 
         <Button
             android:id="@+id/button"

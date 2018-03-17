@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -16,10 +17,13 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +55,9 @@ public class bgLoopThread extends Thread {
     MainActivity main;
     Activity context;
     Handler handler;
+    Spinner spinner;
+    ArrayAdapter<CharSequence> spinnerAdapter;
+    ArrayAdapter<String> adapter;
 
     public bgLoopThread(Activity context, int scoutNumber, DatabaseReference databaseReference, MainActivity mainActivity) {
         this.context = context;
@@ -78,8 +85,26 @@ public class bgLoopThread extends Thread {
                                 @Override
                                 public void run() {
                                     View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
-                                    final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
-                                    editText.setText(tempScoutName);
+                                    TextView nameView= (TextView) dialogView.findViewById(R.id.nameView);
+
+                                    spinner = (Spinner) dialogView.findViewById(R.id.nameList);
+                                    spinnerAdapter= ArrayAdapter.createFromResource(context, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
+                                    ArrayAdapter.createFromResource(context, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
+                                    spinner.setAdapter(spinnerAdapter);
+                                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
+//                                            String sOptions= parent.getItemAtPosition(position).toString();
+//                                            Toast.makeText(context, sOptions, Toast.LENGTH_LONG).show();
+                                        }
+                                        public void onNothingSelected(AdapterView<?> parent){
+
+                                        }
+                                    });
+
+
+
+                                    final String nameValue = spinner.getSelectedItem().toString();
+                                    nameView.setText(tempScoutName);
                                     new AlertDialog.Builder(context)
                                             .setView(dialogView)
                                             .setTitle("")
@@ -87,12 +112,12 @@ public class bgLoopThread extends Thread {
                                             .setCancelable(false)
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    scoutName = editText.getText().toString();
+                                                    scoutName = nameValue;
                                                     DataManager.addZeroTierJsonData("scoutName", scoutName);
                                                     databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
                                                     databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
                                                     Log.e("tempScoutName", tempScoutName);
-                                                    scoutName = editText.getText().toString();
+                                                    scoutName = nameValue;
                                                 }
                                             })
                                             .setIcon(android.R.drawable.ic_dialog_alert)

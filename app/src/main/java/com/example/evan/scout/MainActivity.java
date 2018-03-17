@@ -27,12 +27,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,6 +48,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -103,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
     public EditText searchBar;
 
     ListView listView;
+    Spinner spinner;
     ArrayAdapter<String> adapter;
+    ArrayAdapter<CharSequence> spinnerAdapter;
 
     //Shared Preference for scoutNumber
     SharedPreferences sharedPreferences;
@@ -115,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //resets all firebase datanames
 
@@ -282,12 +289,25 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == R.id.currentScout){
             View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
-            final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
+            TextView nameView= (TextView) dialogView.findViewById(R.id.nameView);
+            spinner = (Spinner) dialogView.findViewById(R.id.nameList);
+            spinnerAdapter= ArrayAdapter.createFromResource(this, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter.createFromResource(this, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(spinnerAdapter);
+            spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
+//                    String sOptions= parent.getItemAtPosition(position).toString();
+//                    Toast.makeText(MainActivity.this, sOptions, Toast.LENGTH_LONG).show();
+                }
+                public void onNothingSelected(AdapterView<?> parent){
+
+                }
+            });
 
             if(scoutName != null){
-                editText.setText(scoutName);
+                nameView.setText(scoutName);
             }else{
-                editText.setText("");
+                nameView.setText("");
             }
             AlertDialog scoutNameAlertDialog;
             scoutNameAlertDialog = new AlertDialog.Builder(context)
@@ -297,13 +317,30 @@ public class MainActivity extends AppCompatActivity {
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            scoutName = editText.getText().toString();
-                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                            scoutName = editText.getText().toString();
-                            spfe.putString("scoutName", scoutName);
-                            spfe.commit();
+                            final String spinString=spinner.getSelectedItem().toString();
+                            if(spinString.equals("(No Name Selected)")){
+                                scoutName=spinString;
+                                DataManager.addZeroTierJsonData("scoutName", scoutName);
+                                databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                                databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                            scoutName = nameValue.getText().toString();
+                                scoutName = spinString;
+                                spfe.putString("scoutName", scoutName);
+                                spfe.commit();
+                                Utils.makeToast(context, "Please Input a Valid Scout Name");
+                            } else{
+                                scoutName=spinString;
+                                DataManager.addZeroTierJsonData("scoutName", scoutName);
+                                databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                                databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                            scoutName = nameValue.getText().toString();
+                                scoutName = spinString;
+                                spfe.putString("scoutName", scoutName);
+                                spfe.commit();
+                                if(scoutName!=spinString){
+                                    Utils.makeToast(context, "Please Input a Valid Scout Name");
+                                }
+                            }
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -457,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.LENGTH_LONG).show();
                                 } else {
                                     try {
-                                        if (!scoutName.equals("")) {
+                                        if (!scoutName.equals("(No Name Selected)")) {
                                             EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
                                             String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumEdit)).getText().toString();
                                             Intent intent = new Intent(this, AutoActivity.class);
