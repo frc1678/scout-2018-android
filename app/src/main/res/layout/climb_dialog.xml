@@ -19,13 +19,13 @@
         android:gravity="center">
     </LinearLayout>
     <LinearLayout
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_below="@+id/climbTimeLayout"
         android:id="@+id/buttonLayout">
         <Button
             android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:backgroundTint="#FAA2A8"
             android:text="Failure"
@@ -33,7 +33,7 @@
             android:id="@+id/failButton"/>
         <Button
             android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:backgroundTint="#BBEDC5"
             android:text="Success"

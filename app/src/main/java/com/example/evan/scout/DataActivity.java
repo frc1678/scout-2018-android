@@ -63,6 +63,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.evan.scout.MainActivity.bgTimer;
+import static com.example.evan.scout.MainActivity.matchNumber;
 public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
     public abstract List<String> getToggleData();
@@ -129,7 +131,6 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        spfe = sharedPreferences.edit();
 
         if(activityName() == "auto"){
             setContentView(R.layout.activity_auto);
@@ -196,17 +197,12 @@ public abstract class DataActivity extends AppCompatActivity {
                                 if(saveAutoData){try {autoLineBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
                                 if(saveAutoData){try {autoCrossBool = DataManager.collectedData.getBoolean("didCrossAutoZone");} catch (JSONException e) {e.printStackTrace();}} //Changed
                                 final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoLineBool,0,true);
-                                final ToggleButton autoZoneCrossed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoCrossBool,0,true);
                                 if(autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#3affb3"));
                                 }else if(!autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#aaaaaa"));
                                 }
-                                if(autoZoneCrossed.isChecked()){
-                                    autoZoneCrossed.setBackgroundColor(Color.parseColor("#3affb3"));
-                                }else if(!autoZoneCrossed.isChecked()){
-                                    autoZoneCrossed.setBackgroundColor(Color.parseColor("#aaaaaa"));
-                                }
+
                                 autoLinePassed.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -218,19 +214,8 @@ public abstract class DataActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                autoZoneCrossed.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        DataManager.addZeroTierJsonData("didCrossAutoZone", autoZoneCrossed.isChecked());
-                                        if(autoZoneCrossed.isChecked()){
-                                            autoZoneCrossed.setBackgroundColor(Color.parseColor("#3affb3"));
-                                        }else if(!autoZoneCrossed.isChecked()){
-                                            autoZoneCrossed.setBackgroundColor(Color.parseColor("#aaaaaa"));
-                                        }
-                                    }
-                                });
+
                                 toggleLayout.addView(autoLinePassed);
-                                toggleLayout.addView(autoZoneCrossed);
                             }
                         }else if (activityName().equals("tele")) {
                             if (getToggleData() != null) {
@@ -687,7 +672,7 @@ public abstract class DataActivity extends AppCompatActivity {
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(getActionBarMenu(), menu);
-    MainActivity.bgTimer.currentMenu = menu;
+    bgTimer.currentMenu = menu;
     final LayoutInflater.Factory existingFactory = getLayoutInflater().getFactory();
             try{
                 Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
@@ -727,7 +712,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 textView.setTitle(DataManager.collectedData.getInt("teamNumber")+"");
             }catch (JSONException je){}
 
-        if(!MainActivity.bgTimer.timerReady && activityName().equals("auto")) {
+        if(!bgTimer.timerReady && activityName().equals("auto")) {
             menu.findItem(R.id.beginTimerButton).setEnabled(false);
         }
 
@@ -736,8 +721,8 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.beginTimerButton && MainActivity.bgTimer.timerReady) {
-            MainActivity.bgTimer.setMatchTimer();
+        if(item.getItemId() == R.id.beginTimerButton && bgTimer.timerReady) {
+            bgTimer.setMatchTimer();
             item.setEnabled(false);
         }
 
@@ -756,7 +741,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     if(numSendClicks >= 2){
                         saveAutoData = false;
                         saveTeleData = false;
-
                         Log.e("collectedData", DataManager.collectedData.toString());
                         Log.e("SUBTITLE", DataManager.subTitle);
 
@@ -803,19 +787,32 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
             if(activityName.equals("auto")){
                 try {
-                    if(DataManager.collectedData.getString("startingPosition") != null){
-                        Log.e("Starting Position?", DataManager.collectedData.getString("startingPosition"));
-                        startActivity(prepareIntent(getNextActivityClass()));
+                    if(DataManager.collectedData.getString("startingPosition") != null) {
+                        if (bgTimer.timerReady == false) {
+                            Log.e("Starting Position?", DataManager.collectedData.getString("startingPosition"));
+                            startActivity(prepareIntent(getNextActivityClass()));
+                        }else{
+                            Utils.makeToast(context, "PLEASE START THE TIMER!");
+
+                        }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Utils.makeToast(context, "PLEASE INPUT STARTING POSITION!");
                 }
-            }else if(!activityName.equals("tele")){
+            }
+
+            else if(!activityName.equals("tele")){
                 startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
                 backgroundTimer.stopTimer();
+                //added
+                int tempMatchNum = sharedPreferences.getInt("matchNumber", matchNumber) + 1;
+                MainActivity.spfe.putInt("matchNumber", (tempMatchNum));
+                MainActivity.spfe.commit();
                 startActivity(prepareIntent(getNextActivityClass()));
+
             }
         }
         return true;
