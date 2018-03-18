@@ -7,15 +7,23 @@
         <item>Aidan</item>
         <item>Anoushka</item>
         <item>Asha</item>
+        <item>Calvin</item>
+        <item>Carl</item>
         <item>Carter</item>
+        <item>David</item>
         <item>Eli</item>
         <item>Emily</item>
+        <item>Erik</item>
+        <item>Ethan</item>
         <item>Freddy</item>
         <item>Hanson</item>
         <item>Jack</item>
         <item>James</item>
+        <item>Janet</item>
         <item>Joey</item>
+        <item>Justin</item>
         <item>Kenny</item>
+        <item>Lasthenia</item>
         <item>Lyra</item>
         <item>Rolland</item>
         <item>Stephen</item>
@@ -24,6 +32,5 @@
         <item>Zachary</item>
         <item>Zatara</item>
         <item>Zoe</item>
-
     </string-array>
 </resources>
