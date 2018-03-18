@@ -323,7 +323,6 @@ public class MainActivity extends AppCompatActivity {
                                 DataManager.addZeroTierJsonData("scoutName", scoutName);
                                 databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
                                 databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-//                            scoutName = nameValue.getText().toString();
                                 scoutName = spinString;
                                 spfe.putString("scoutName", scoutName);
                                 spfe.commit();
@@ -333,7 +332,6 @@ public class MainActivity extends AppCompatActivity {
                                 DataManager.addZeroTierJsonData("scoutName", scoutName);
                                 databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
                                 databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-//                            scoutName = nameValue.getText().toString();
                                 scoutName = spinString;
                                 spfe.putString("scoutName", scoutName);
                                 spfe.commit();
