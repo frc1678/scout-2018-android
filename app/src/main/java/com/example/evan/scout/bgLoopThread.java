@@ -144,6 +144,7 @@ public class bgLoopThread extends Thread {
                 tmp_scoutName = DataManager.collectedData.getString("scoutName");
                 Log.e("SCOUTNAME!!!", tmp_scoutName);
             } catch (JSONException e) {
+                tmp_scoutName = "(No Name Selected)";
                 e.printStackTrace();
             }
             if (!tmp_scoutName.equals("(No Name Selected)")) {
