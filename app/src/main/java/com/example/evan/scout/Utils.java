@@ -181,6 +181,9 @@ public class Utils {
         DataManager.addZeroTierJsonData("numSpilledCubesAuto", 0);
         DataManager.addZeroTierJsonData("numSpilledCubesTele", 0);
         DataManager.addZeroTierJsonData("startingPosition", null);
+        DataManager.addZeroTierJsonData("totalNumScaleFoul", 0);
+
+
     }
 
     public static JSONArray returnJSONArray(List<Integer> intList, List<Boolean> boolList){
