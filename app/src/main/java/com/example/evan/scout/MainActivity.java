@@ -902,6 +902,7 @@ public class MainActivity extends AppCompatActivity {
         spinnerAdapter= ArrayAdapter.createFromResource(this, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
         ArrayAdapter.createFromResource(this, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
+        spinner.setSelection(((ArrayAdapter<String>)spinner.getAdapter()).getPosition(scoutName));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
 //                    String sOptions= parent.getItemAtPosition(position).toString();
@@ -927,6 +928,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         final String spinString=spinner.getSelectedItem().toString();
                         if(spinString.equals("(No Name Selected)")){
+                            allianceColor = "not found";
+                            updateAllianceColor();
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
                             databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);

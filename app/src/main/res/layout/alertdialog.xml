@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:textColor="#000000"
+        android:textColor="#622EEC"
         android:id="@+id/nameView"
         android:text="Name"
         android:layout_alignParentTop="true"
@@ -20,6 +20,9 @@
         android:entries="@array/name_arrays"
         android:prompt="@string/name_prompt"
         android:layout_alignParentEnd="true"
+        android:gravity="center_horizontal"
+        android:textColor="#190F35"
+
         android:layout_below="@+id/nameView">
     </Spinner>
 </RelativeLayout>

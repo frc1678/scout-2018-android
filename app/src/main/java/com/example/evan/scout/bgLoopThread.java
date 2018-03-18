@@ -49,6 +49,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import static com.example.evan.scout.MainActivity.allianceColor;
 import static com.example.evan.scout.MainActivity.spfe;
 
 /**
@@ -153,6 +154,15 @@ public class bgLoopThread extends Thread {
                 dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth");
                 if (!dir.mkdir()) {
                     Log.i("File Info", "Failed to make Directory. Unimportant");
+                    Log.e("No Files", "No Files from Bluetooth");
+                    main.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.allianceColor = "not found";
+                            main.updateAllianceColor();
+                        }
+                    });
+                    return;
                 }
                 final File[] files = dir.listFiles();
 
@@ -167,6 +177,16 @@ public class bgLoopThread extends Thread {
                         Log.e("FILENAMENUM!!!", tmp_matchnumstring);
                         Integer tmp_matchnum = Integer.parseInt(tmp_matchnumstring);
                         btMatchNums.add(tmp_matchnum);
+                    }else{
+                        Log.e("No Files", "No Files from Bluetooth");
+                        main.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.allianceColor = "not found";
+                                main.updateAllianceColor();
+                            }
+                        });
+                        return;
                     }
                 }
                 for(int i = 0; i < btMatchNums.size(); i++){
@@ -207,7 +227,7 @@ public class bgLoopThread extends Thread {
                                         main.teamNumber = scoutJson.getInt("team");
                                         main.updateTeamEditText(scoutJson.getInt("team"));
                                     } catch (JSONException e) {
-                                        Utils.makeToast(context, "Current ScoutName is not Valid!!!");
+                                        toasts("Current ScoutName is not Valid!!!");
                                         e.printStackTrace();
                                     }
                                 }
@@ -215,6 +235,15 @@ public class bgLoopThread extends Thread {
                         }
                     }
                 }
+            }else {
+                toasts("Please Input Valid Scout Name!");
+                main.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.allianceColor = "not found";
+                        main.updateAllianceColor();
+                    }
+                });
             }
         }
     }
