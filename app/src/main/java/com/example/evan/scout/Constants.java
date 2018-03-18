@@ -23,6 +23,7 @@ public class Constants {
     public static int numElevatedPyramidIntakeAuto= 0;
     public static int numElevatedPyramidIntakeTele= 0;
     public static int numReturnIntake= 0;
+    public static int totalNumScaleFoul = 0;
     public static final String COLOR_GREEN = "#00c610";
     public static final String COLOR_RED = "#F9613F";
     public static final String COLOR_BLUE = "#53A4F7";
@@ -55,11 +56,10 @@ public class Constants {
             put("4", "4");
             put("5", "5");
             put("6", "6");
-
+            put("totalNumScaleFoul","Scale Fouls");
             put("didGetDisabled", "Disabled");
             put("didGetIncapacitated", "Incap");
             put("didMakeAutoRun", "Auto Run Made");
-            put("didCrossAutoZone", "Auto Zone Crossed");
             put("didPark", "Parked");
             put("numOpponentPlatformIntakeAuto", "Opponent Platform Intake Auto");
             put("numOpponentPlatformIntakeTele", "Opponent Platform Intake Tele");

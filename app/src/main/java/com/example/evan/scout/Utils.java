@@ -163,7 +163,6 @@ public class Utils {
         DataManager.addZeroTierJsonData("didGetIncapacitated", false);
         DataManager.addZeroTierJsonData("didMakeAutoRun", false);
         DataManager.addZeroTierJsonData("didPark", false);
-        DataManager.addZeroTierJsonData("didCrossAutoZone", false);
         DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
         DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
         DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", returnJSONArray(Arrays.asList(0,1,2,3,4,5), Arrays.asList(false, false, false, false, false, false)));
@@ -171,6 +170,7 @@ public class Utils {
         DataManager.addZeroTierJsonData("numCubesFumbledTele", 0);
         DataManager.addZeroTierJsonData("numExchangeInput", 0);
         DataManager.addZeroTierJsonData("numGroundIntakeTele", 0);
+        DataManager.addZeroTierJsonData("totalNumScaleFoul", 0);
         DataManager.addZeroTierJsonData("numGroundPortalIntakeTele", 0);
         DataManager.addZeroTierJsonData("numHumanPortalIntakeTele", 0);
         DataManager.addZeroTierJsonData("numGroundPyramidIntakeAuto", 0);

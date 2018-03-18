@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -31,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     //the id of the scout.  1-3 is red, 4+ is blue
-    public int scoutNumber;
+    public static int scoutNumber;
 
     //the team that the scout will be scouting
-    public int teamNumber;
+    public static int teamNumber;
 
     //the current match number
     public static int matchNumber;
@@ -90,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
     public static backgroundTimer bgTimer;
 
     public File matchDir;
+
+    Spinner spinner;
+    ArrayAdapter<CharSequence> spinnerAdapter;
 
     bgLoopThread bgLT;
 
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             DataManager.addZeroTierJsonData("scoutName", scoutName);
             Log.e("Last Scout name used", scoutName);
         }
+        alertScout();
 
         actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -245,35 +251,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.currentScout){
-            View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
-            final EditText editText = (EditText) dialogView.findViewById(R.id.scoutNameEditText);
-
-            if(scoutName != null){
-                editText.setText(scoutName);
-            }else{
-                editText.setText("");
+            if(id == R.id.currentScout){
+                alertScout();
             }
-            AlertDialog scoutNameAlertDialog;
-            scoutNameAlertDialog = new AlertDialog.Builder(context)
-                    .setView(dialogView)
-                    .setTitle("")
-                    .setMessage("Are you this person?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            scoutName = editText.getText().toString();
-                            DataManager.addZeroTierJsonData("scoutName", scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-                            scoutName = editText.getText().toString();
-                            spfe.putString("scoutName", scoutName);
-                            spfe.commit();
-                            bgLT.check();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-            scoutNameAlertDialog.setCanceledOnTouchOutside(false);
         }
 
         if (id == R.id.mainOverride){
@@ -382,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
     //starts next activity and adds all the name and match and such
     public void startScout(View view) {
         if(allianceColor != "blue" && allianceColor != "red"){
-            Utils.makeToast(context, "Please Input Alliance Color, Current Color is: "+allianceColor);
+            Utils.makeToast(context, "Please Input Alliance Color, Current Color is: " + allianceColor);
         }else if(allianceColor == "blue" || allianceColor == "red"){
             if (overridden) {
                 //if the schedule has been overridden we will use the values that the user has set
@@ -423,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
                                             Toast.LENGTH_LONG).show();
                                 } else {
                                     try {
-                                        if (!scoutName.equals("")) {
+                                        if (!scoutName.equals("(No Name Selected)")) {
                                             EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
                                             String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumEdit)).getText().toString();
                                             Intent intent = new Intent(this, AutoActivity.class);
@@ -914,4 +894,65 @@ public class MainActivity extends AppCompatActivity {
 //            allianceColor = "notfound";
 //        }
 //    }
+
+    public void alertScout(){
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
+        TextView nameView= (TextView) dialogView.findViewById(R.id.nameView);
+        spinner = (Spinner) dialogView.findViewById(R.id.nameList);
+        spinnerAdapter= ArrayAdapter.createFromResource(this, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter.createFromResource(this, R.array.name_arrays, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
+//                    String sOptions= parent.getItemAtPosition(position).toString();
+//                    Toast.makeText(MainActivity.this, sOptions, Toast.LENGTH_LONG).show();
+            }
+            public void onNothingSelected(AdapterView<?> parent){
+
+            }
+        });
+
+        if(scoutName != null){
+            nameView.setText(scoutName);
+        }else{
+            nameView.setText("");
+        }
+        AlertDialog scoutNameAlertDialog;
+        scoutNameAlertDialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setTitle("")
+                .setMessage("Are you this person?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String spinString=spinner.getSelectedItem().toString();
+                        if(spinString.equals("(No Name Selected)")){
+                            scoutName=spinString;
+                            DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                            scoutName = nameValue.getText().toString();
+                            scoutName = spinString;
+                            spfe.putString("scoutName", scoutName);
+                            spfe.commit();
+                            Utils.makeToast(context, "Please Input a Valid Scout Name");
+                        } else{
+                            scoutName=spinString;
+                            DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                            scoutName = nameValue.getText().toString();
+                            scoutName = spinString;
+                            spfe.putString("scoutName", scoutName);
+                            spfe.commit();
+                            if(scoutName!=spinString){
+                                Utils.makeToast(context, "Please Input a Valid Scout Name");
+                            }
+                        }
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+        scoutNameAlertDialog.setCanceledOnTouchOutside(false);
+    }
 }

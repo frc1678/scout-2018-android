@@ -65,6 +65,7 @@ public class bgLoopThread extends Thread {
     ActionBar actionBar;
     EditText matchNumEditText;
     EditText teamNumEditText;
+    String tmp_scoutName;
     private Timer timer;
     private TimerTask timerTask;
 
@@ -138,60 +139,80 @@ public class bgLoopThread extends Thread {
     }
 
     public void check(){
-        final File dir;
-        dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth");
-        if (!dir.mkdir()) {
-            Log.i("File Info", "Failed to make Directory. Unimportant");
-        }
-        final File[] files = dir.listFiles();
+        if(!main.overridden) {
+            try {
+                tmp_scoutName = DataManager.collectedData.getString("scoutName");
+                Log.e("SCOUTNAME!!!", tmp_scoutName);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (!tmp_scoutName.equals("(No Name Selected)")) {
+                Log.e("SCOUTNAME!!!22", tmp_scoutName);
+                final File dir;
+                dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/bluetooth");
+                if (!dir.mkdir()) {
+                    Log.i("File Info", "Failed to make Directory. Unimportant");
+                }
+                final File[] files = dir.listFiles();
 
-        Integer biggestMatchNum = 0;
-        btMatchNums.clear();
-        Log.e("BTMATCHNUMS", btMatchNums.size()+"");
-        for(File tmpFile : files){
-            if(tmpFile != null){
-                Log.e("FILENAME!!!", tmpFile.getName());
-                String fileName = tmpFile.getName();
-                String tmp_matchnumstring = fileName.substring(fileName.indexOf("Q")+1, fileName.indexOf("."));
-                Log.e("FILENAMENUM!!!", tmp_matchnumstring);
-                Integer tmp_matchnum = Integer.parseInt(tmp_matchnumstring);
-                btMatchNums.add(tmp_matchnum);
-            }
-        }
-        for(int i = 0; i < btMatchNums.size(); i++){
-            Log.e("FILENUMBERS!!!", btMatchNums.toString());
-            if(btMatchNums.get(i) > biggestMatchNum){
-                Log.e("FILENUMBERS!!!", biggestMatchNum+"");
-                biggestMatchNum = btMatchNums.get(i);
-                Log.e("FILENUMBERS!!!", biggestMatchNum+"");
-            }
-        }
-        for(File tmpFile : files){
-            Log.e("BTBTBTBTBTBT","BTBTBTBTBT");
-            if(tmpFile != null){
-                if(tmpFile.getName().equals("Q"+biggestMatchNum+".txt")){
-                    Log.e("FILENAMEBIGGEST!", tmpFile.getName());
-                    final String content = readFile(tmpFile.getPath());
-                    main.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                JSONObject tmpJson = new JSONObject(content);
-                                Log.e("JSON1", tmpJson.toString());
-                                final JSONObject scoutJson = tmpJson.getJSONObject(main.sharedPreferences.getString("scoutName", "NONE"));
-                                Log.e("JSON2", scoutJson.toString());
-                                MainActivity.allianceColor = scoutJson.getString("alliance");
-                                main.updateAllianceColor();
-                                main.firebaseMatchNumber = scoutJson.getInt("match");
-                                MainActivity.matchNumber = scoutJson.getInt("match");
-                                main.updateMatchEditText(scoutJson.getInt("match"));
-                                main.teamNumber = scoutJson.getInt("team");
-                                main.updateTeamEditText(scoutJson.getInt("team"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                Integer biggestMatchNum = 0;
+                btMatchNums.clear();
+                Log.e("BTMATCHNUMS", btMatchNums.size()+"");
+                for(File tmpFile : files){
+                    if(tmpFile != null){
+                        Log.e("FILENAME!!!", tmpFile.getName());
+                        String fileName = tmpFile.getName();
+                        String tmp_matchnumstring = fileName.substring(fileName.indexOf("Q")+1, fileName.indexOf("."));
+                        Log.e("FILENAMENUM!!!", tmp_matchnumstring);
+                        Integer tmp_matchnum = Integer.parseInt(tmp_matchnumstring);
+                        btMatchNums.add(tmp_matchnum);
+                    }
+                }
+                for(int i = 0; i < btMatchNums.size(); i++){
+                    Log.e("FILENUMBERS!!!", btMatchNums.toString());
+                    if(btMatchNums.get(i) > biggestMatchNum){
+                        Log.e("FILENUMBERS!!!", biggestMatchNum+"");
+                        biggestMatchNum = btMatchNums.get(i);
+                        Log.e("FILENUMBERS!!!", biggestMatchNum+"");
+                    }
+                }
+                for(File tmpFile : files){
+                    Log.e("BTBTBTBTBTBT","BTBTBTBTBT");
+                    if(tmpFile != null){
+                        if(tmpFile.getName().equals("Q"+biggestMatchNum+".txt")){
+                            Log.e("FILENAMEBIGGEST!", tmpFile.getName());
+                            final String content = readFile(tmpFile.getPath());
+                            main.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject totalJson = new JSONObject(content);
+                                        JSONObject tmpJson = totalJson.getJSONObject("assignments");
+                                        main.firebaseMatchNumber = totalJson.getInt("match");
+                                        MainActivity.matchNumber = totalJson.getInt("match");
+                                        main.updateMatchEditText(totalJson.getInt("match"));
+                                        Log.e("JSON1", tmpJson.toString());
+                                        JSONObject scoutJson;
+                                        try{
+                                            scoutJson = tmpJson.getJSONObject(tmp_scoutName);
+                                        }catch(NullPointerException ne){
+                                            scoutJson = new JSONObject();
+                                            ne.printStackTrace();
+                                        }
+                                        Log.e("JSON2", scoutJson.toString());
+                                        String tmpAc = scoutJson.getString("alliance").toLowerCase();
+                                        if(tmpAc.equals("blue")){   MainActivity.allianceColor = "blue";}else if(tmpAc.equals("red")){  MainActivity.allianceColor = "red";}
+                                        main.updateAllianceColor();
+                                        main.teamNumber = scoutJson.getInt("team");
+                                        main.updateTeamEditText(scoutJson.getInt("team"));
+                                    } catch (JSONException e) {
+                                        Utils.makeToast(context, "Current ScoutName is not Valid!!!");
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
                         }
-                    });
+                    }
                 }
             }
         }

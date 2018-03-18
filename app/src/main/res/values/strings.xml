@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Scout</string>
+    <string name="name_prompt">Choose a Name</string>
+    <string-array name="name_arrays">
+        <item>(No Name Selected)</item>
+        <item>Aakash</item>
+        <item>Aidan</item>
+        <item>Anoushka</item>
+        <item>Asha</item>
+        <item>Carter</item>
+        <item>Eli</item>
+        <item>Emily</item>
+        <item>Freddy</item>
+        <item>Hanson</item>
+        <item>Jack</item>
+        <item>James</item>
+        <item>Joey</item>
+        <item>Kenny</item>
+        <item>Lyra</item>
+        <item>Rolland</item>
+        <item>Stephen</item>
+        <item>Teo</item>
+        <item>Tim</item>
+        <item>Zachary</item>
+        <item>Zatara</item>
+        <item>Zoe</item>
+
+    </string-array>
 </resources>

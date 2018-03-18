@@ -195,7 +195,6 @@ public abstract class DataActivity extends AppCompatActivity {
                                 boolean autoLineBool = false;
                                 boolean autoCrossBool = false;
                                 if(saveAutoData){try {autoLineBool = DataManager.collectedData.getBoolean("didMakeAutoRun");} catch (JSONException e) {e.printStackTrace();}}
-                                if(saveAutoData){try {autoCrossBool = DataManager.collectedData.getBoolean("didCrossAutoZone");} catch (JSONException e) {e.printStackTrace();}} //Changed
                                 final ToggleButton autoLinePassed = toggleCreator.getToggleButton(LinearLayout.LayoutParams.MATCH_PARENT, autoLineBool,0,true);
                                 if(autoLinePassed.isChecked()){
                                     autoLinePassed.setBackgroundColor(Color.parseColor("#3affb3"));
@@ -488,7 +487,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                 LinearLayout counterLayoutTwo = (LinearLayout) findViewById(getCounterTwoXML());
                                                 List<String> counterNames = new ArrayList<>();
                                                 counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
-                                                for (int i = 0; i < 3; i++) {
+                                                for (int i = 0; i < 4; i++) {
                                                     counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
                                                     counterLayoutOne.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                     TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
@@ -502,7 +501,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         e.printStackTrace();
                                                     }
                                                 }
-                                                for (int i = 3; i < getCounterData().size(); i++) {
+                                                for (int i = 4; i < getCounterData().size(); i++) {
                                                     counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
                                                     counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
                                                     TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
@@ -642,10 +641,83 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         if(activityName().equals("auto")){
+            Log.e("COLLECTEDDATA!!!", DataManager.alliancePlatformTakenAuto.toString());
             DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", DataManager.alliancePlatformTakenAuto);
+            Log.e("COLLECTEDDATA!!!", DataManager.collectedData.toString());
         }else if(activityName().equals("tele")){
+            Log.e("COLLECTEDDATA!!!TT", DataManager.alliancePlatformTakenTele.toString());
+            Log.e("COLLECTEDDATA!!!TT", DataManager.opponentPlatformTakenTele.toString());
             DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", DataManager.alliancePlatformTakenTele);
             DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", DataManager.opponentPlatformTakenTele);
+        }
+
+        if(numSendClicks >= 2){
+            String jsonString = DataManager.collectedData.toString();
+            Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
+            Log.e("SUBTITLE", DataManager.subTitle);
+            Log.e("JSONMAP", jsonString);
+            databaseReference.child("TempTeamInMatchDatas").child(DataManager.subTitle).setValue(jsonMap);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    if((activityName() == "tele")) {
+                        try {
+                            file = null;
+                            //make the directory of the file
+                            dir.mkdir();
+                            //can delete when doing the actual thing
+                            file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
+                        } catch (IOException IOE) {
+                            Log.e("File error", "Failed to open File");
+                            return;
+                        }
+
+                        file.println(DataManager.collectedData.toString());
+                        file.close();
+                        context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e("sentBOOL", Boolean.toString(sent));
+                                Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                        PrintWriter newFile;
+                        try {
+                            File newDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/SCOUTS");
+                            //make the directory of the file
+                            newDir.mkdir();
+                            //can delete when doing the actual thing
+                            newFile = new PrintWriter(new FileOutputStream(new File(newDir, (MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber + ".jsontxt"))));
+                        } catch (IOException IOE) {
+                            Log.e("File error", "Failed to open File");
+                            return;
+                        }
+
+                        JSONObject sendJson = new JSONObject();
+                        try {
+                            sendJson.put(MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber, DataManager.collectedData);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        newFile.println(sendJson.toString());
+                        newFile.close();
+                        context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e("sentBOOL", Boolean.toString(sent));
+                                Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        numSendClicks = 0;
+                    }
+                }
+            }.start();
         }
     }
 
@@ -727,6 +799,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
         }
 
         if (item.getItemId() == R.id.buttonNext) {
+            Log.e("COLLECTEDDATA!!!", DataManager.collectedData.toString());
             rejected = false;
 
             synchronized (readyForNextActivityLock) {
@@ -738,45 +811,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
             if((activityName() == "tele")){
                 numSendClicks++;
-                    if(numSendClicks >= 2){
-                        saveAutoData = false;
-                        saveTeleData = false;
-                        //TODO save to new file
-                    }
             }
-
-            new Thread() {
-                @Override
-                public void run() {
-                    if((activityName() == "tele")) {
-                        if(numSendClicks >= 2) {
-                            try {
-                                file = null;
-                                //make the directory of the file
-                                dir.mkdir();
-                                //can delete when doing the actual thing
-                                file = new PrintWriter(new FileOutputStream(new File(dir, ("Q" + MainActivity.matchNumber + "_" + new SimpleDateFormat("MM-dd-yyyy-H:mm:ss").format(new Date())))));
-                            } catch (IOException IOE) {
-                                Log.e("File error", "Failed to open File");
-                                return;
-                            }
-
-
-                            file.println(DataManager.collectedData.toString());
-                            file.close();
-                            context.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.e("sentBOOL", Boolean.toString(sent));
-                                    Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                            numSendClicks = 0;
-                        }
-                    }
-                }
-            }.start();
 
             if(activityName.equals("auto")){
                 try {
@@ -804,8 +839,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 int tempMatchNum = sharedPreferences.getInt("matchNumber", matchNumber) + 1;
                 MainActivity.spfe.putInt("matchNumber", (tempMatchNum));
                 MainActivity.spfe.commit();
-                startActivity(prepareIntent(getNextActivityClass()));
+                saveAutoData = false;
+                saveTeleData = false;
 
+                startActivity(prepareIntent(getNextActivityClass()));
             }
         }
         return true;
