@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
     //the current match number
     public static int matchNumber;
-    public int firebaseMatchNumber;
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem overrideItem;
 
     EditText matchNumberEditText;
-    EditText teamNumberEditText;
+    TextView teamNumberTextView;
     public EditText searchBar;
 
     ListView listView;
@@ -182,27 +181,23 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setBackgroundDrawable(returnDrawable());
         }
 
-                    matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
-                    teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-
-        bgLT = new bgLoopThread(context, this);
-        bgLT.start();
+                    matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
+                    teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
 
                     if(overridden){
                         teamNumber = sharedPreferences.getInt("teamNumber", -1);
                         matchNumber = sharedPreferences.getInt("matchNumber", -1);
                     }
 
-                    teamNumberEditText.setText(String.valueOf(teamNumber));
-                    matchNumberEditText.setEnabled(false);
-                    findViewById(R.id.teamNumEdit).setEnabled(false);
+                    teamNumberTextView.setText(String.valueOf(teamNumber));
                     setMatchNumber();
 
         updateListView();
         listenForResendClick();
         setTitle("Scout");
 
-
+        bgLT = new bgLoopThread(context, this);
+        bgLT.start();
     }
 
     @Override
@@ -210,18 +205,11 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         bgTimer.currentMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        overrideItem = menu.findItem(R.id.mainOverride);
+
         if(overridden) {
             spfe.putBoolean("overridden", true);
-            findViewById(R.id.matchNumTextEdit).setEnabled(true);
-            findViewById(R.id.teamNumEdit).setEnabled(true);
-            overrideItem.setTitle("Automate");
         }else {
             spfe.putBoolean("overridden", false);
-            findViewById(R.id.matchNumTextEdit).setEnabled(false);
-            findViewById(R.id.teamNumEdit).setEnabled(false);
-            overrideItem.setTitle("Override");
-//            updateAllianceColor(firebaseMatchNumber);
         }
         return true;
     }
@@ -232,12 +220,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id == R.id.allianceColorButton) {
-            setAllianceColor();
-
-            return true;
-        }
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
@@ -256,62 +238,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (id == R.id.mainOverride){
-            if(overridden){
-                matchNumber = firebaseMatchNumber;
-//                setTeamNumber();
-                setMatchNumber();
-                overridden = false;
-                spfe.putBoolean("overridden", false);
-                findViewById(R.id.matchNumTextEdit).setEnabled(false);
-                findViewById(R.id.teamNumEdit).setEnabled(false);
-                overrideItem.setTitle("Override");
-                bgLT.check();
-//                updateAllianceColor(firebaseMatchNumber);
-            } else {
-                overridden=true;
-                spfe.putBoolean("overridden", true);
-                findViewById(R.id.matchNumTextEdit).setEnabled(true);
-                findViewById(R.id.teamNumEdit).setEnabled(true);
-                overrideItem.setTitle("Automate");
-            }
+        if (id == R.id.mainBackup){
+            bgLT.backup();
+            overridden = false;
+            spfe.putBoolean("overridden", false);
         }
+
+        if(id == R.id.mainAutomate){
+            bgLT.automate();
+            overridden=true;
+            spfe.putBoolean("overridden", true);
+        }
+
         return true;
     }
 
     //this method will get the match number and set it from firebase
     public void setMatchNumber(){
         matchNumberEditText.setText(String.valueOf(matchNumber));
-        matchNumberEditText.setTextColor(Color.parseColor("black"));
     }
-
-//    public void setTeamNumber(){
-//
-//        ValueEventListener teamNumListener = new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                //will set the match number and will update it as long as it exists, if not, a value of -1 will be assigned
-//                if(dataSnapshot.getValue() != null && !overridden){
-//                    teamNumber = Integer.parseInt(dataSnapshot.getValue().toString());
-//                    DataManager.addZeroTierJsonData("teamNumber", teamNumber);
-//
-//                    teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-//                    teamNumberEditText.setText(String.valueOf(teamNumber));
-//
-//                    if(firebaseMatchNumber != 0){
-//                        updateAllianceColor(firebaseMatchNumber);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.i("firebase", "database Error");
-//            }
-//        };
-//        databaseReference.child("scouts").child("scout" + scoutNumber).child("team").addValueEventListener(teamNumListener);
-//    }
 
     //display dialog to set scout number
     private void setScoutNumber() {
@@ -348,10 +293,8 @@ public class MainActivity extends AppCompatActivity {
                         } catch (NumberFormatException nfe) {
                             // Do Nothing
                         }
-//                        setMatchNumber();
-//                        setTeamNumber();
-                        teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
-                        teamNumberEditText.setText(String.valueOf(teamNumber));
+                        teamNumberTextView = (EditText) findViewById(R.id.teamNumTextView);
+                        teamNumberTextView.setText(String.valueOf(teamNumber));
                     }
                 })
                 .show();
@@ -366,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
         }else if(allianceColor == "blue" || allianceColor == "red"){
             if (overridden) {
                 //if the schedule has been overridden we will use the values that the user has set
-                EditText teamNumEditText = (EditText) findViewById(R.id.teamNumEdit);
+                EditText teamNumEditText = (EditText) findViewById(R.id.teamNumTextView);
                 if (teamNumber == -1) {
                     Toast.makeText(getBaseContext(), "Please set your team number and try again",
                             Toast.LENGTH_LONG).show();
@@ -377,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         teamNumber = Integer.parseInt(teamNumEditText.getText().toString());
                     } //END
-                    EditText matchNumEditText = (EditText) findViewById(R.id.matchNumTextEdit);
+                    EditText matchNumEditText = (EditText) findViewById(R.id.matchNumEditText);
                     if (matchNumEditText.getText().toString().equals("")) {
                         Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                 Toast.LENGTH_LONG).show();
@@ -398,14 +341,13 @@ public class MainActivity extends AppCompatActivity {
                                 Log.e("MATCHNUMBER2", matchNumber+"");
                                 DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                                 if (teamNumber <= 0) {
-//                                    setTeamNumber();
                                     Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                             Toast.LENGTH_LONG).show();
                                 } else {
                                     try {
                                         if (!scoutName.equals("(No Name Selected)")) {
-                                            EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
-                                            String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumEdit)).getText().toString();
+                                            EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
+                                            String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumTextView)).getText().toString();
                                             Intent intent = new Intent(this, AutoActivity.class);
                                             if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
                                                 Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
@@ -424,7 +366,6 @@ public class MainActivity extends AppCompatActivity {
                                                     spfe.commit();
                                                     DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                                                     DataManager.addZeroTierJsonData("matchNumber", matchNumber);
-                                                    bgLT.stopTimer();
                                                     if(bgTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
                                                     startActivity(intent);
                                                 } else {
@@ -461,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
 
                         Intent intent = new Intent(this, AutoActivity.class);
-                        EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumTextEdit);
+                        EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
                         Log.e("MATCHNUMBER5", matchNumber+"");
                         DataManager.subTitle = teamNumber + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                         DataManager.addZeroTierJsonData("scoutName", scoutName);
@@ -768,16 +709,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateMatchEditText(Integer matchNum){
         if(matchNumberEditText == null){
-            matchNumberEditText = (EditText)findViewById(R.id.matchNumTextEdit);
+            matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
         }
         matchNumberEditText.setText(String.valueOf(matchNum));
     }
 
     public void updateTeamEditText(Integer teamNum){
-        if(teamNumberEditText == null){
-            teamNumberEditText = (EditText) findViewById(R.id.teamNumEdit);
+        if(teamNumberTextView == null){
+            teamNumberTextView = (EditText) findViewById(R.id.teamNumTextView);
         }
-        teamNumberEditText.setText(String.valueOf(teamNum));
+        teamNumberTextView.setText(String.valueOf(teamNum));
     }
 
 //    public void updateAllianceColor(int mNum){

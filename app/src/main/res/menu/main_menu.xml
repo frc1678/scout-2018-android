@@ -2,6 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/mainAutomate"
+        android:title="Automate"
+        app:showAsAction = "always"/>
+    <item
+        android:id="@+id/mainBackup"
+        android:title="Backup"
+        app:showAsAction = "always"/>
+    <item
+        android:title="          "/>
+    <item
+        android:title="          "/>
+    <item
         android:title=""
         android:id="@+id/timerView"
         app:showAsAction="always"/>
@@ -11,19 +23,9 @@
         app:showAsAction="always"
         android:checkable="true"/>
     <item
-        android:title="Alliance Color"
-        android:id="@+id/allianceColorButton"
-        app:showAsAction="always"
-        android:checkable="true"/>
-    <item
         android:id="@+id/currentScout"
         android:title="Scout Name"
-        android:orderInCategory="101"
         app:showAsAction="always"/>
-    <item
-        android:id="@+id/mainOverride"
-        android:title="Override"
-        app:showAsAction = "always"/>
     <item
         android:id="@+id/setScoutIDButton"
         android:title="Scout ID"
