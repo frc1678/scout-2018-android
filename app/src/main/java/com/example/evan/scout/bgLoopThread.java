@@ -86,6 +86,8 @@ public class bgLoopThread extends Thread {
     }
 
     public void automate(){
+        destroyDuplicates();
+
         if(!main.overridden) {
             try {
                 tmp_scoutName = DataManager.collectedData.getString("scoutName");
@@ -106,7 +108,6 @@ public class bgLoopThread extends Thread {
                             main.updateAllianceColor();
                         }
                     });
-                    return;
                 }
                 final File[] files = bluetoothDir.listFiles();
 
@@ -114,6 +115,9 @@ public class bgLoopThread extends Thread {
                 btMatchNums.clear();
                 Log.e("BTMATCHNUMS", btMatchNums.size()+"");
                 for(File tmpFile : files){
+                    if(tmpFile.getName().equals("backupAssignments.txt")){
+                        return;
+                    }
                     if(tmpFile != null){
                         Log.e("FILENAME!!!", tmpFile.getName());
                         String fileName = tmpFile.getName();
@@ -193,6 +197,8 @@ public class bgLoopThread extends Thread {
     }
 
     public void backup(){
+        destroyDuplicates();
+
         if(!main.overridden) {
             try {
                 tmp_scoutName = DataManager.collectedData.getString("scoutName");
@@ -215,7 +221,6 @@ public class bgLoopThread extends Thread {
                                 main.updateAllianceColor();
                             }
                         });
-                        return;
                     }
                     final File[] files = bluetoothDir.listFiles();
 
@@ -324,8 +329,21 @@ public class bgLoopThread extends Thread {
         });
     }
 
-    public void stopTimer() {
-        timer.cancel();
-        timer = null;
+    public void destroyDuplicates() {
+        if (!bluetoothDir.mkdir()) {
+            Log.i("File Info", "Failed to make Directory. Unimportant");
+            Log.e("No Files", "No Files from Bluetooth");
+        }
+        final File[] files = bluetoothDir.listFiles();
+
+        for(File tmpFile : files){
+            Integer duplicateMark = tmpFile.getName().toString().indexOf("-");
+            Log.e("DUPLICATEMARK!", duplicateMark+"");
+            if(duplicateMark != -1 && (duplicateMark == 2 || duplicateMark == 3)){
+                HighSecurityPassword.DeleteRecursive(tmpFile);
+            }else{
+                Log.e("No Duplicates", "No Duplicate Files");
+            }
+        }
     }
 }

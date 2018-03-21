@@ -102,7 +102,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="60dp"/>
+            android:layout_marginBottom="100dp"/>
     </RelativeLayout>
 
     <!--<RelativeLayout-->

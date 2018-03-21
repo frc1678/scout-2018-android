@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (NumberFormatException nfe) {
                             // Do Nothing
                         }
-                        teamNumberTextView = (EditText) findViewById(R.id.teamNumTextView);
+                        teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
                         teamNumberTextView.setText(String.valueOf(teamNumber));
                     }
                 })
@@ -414,7 +414,6 @@ public class MainActivity extends AppCompatActivity {
                         spfe.commit();
                         DataManager.addZeroTierJsonData("teamNumber", teamNumber);
                         DataManager.addZeroTierJsonData("matchNumber", matchNumber);
-                        bgLT.stopTimer();
                         if(bgTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
                         startActivity(intent);
                     }
@@ -716,7 +715,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateTeamEditText(Integer teamNum){
         if(teamNumberTextView == null){
-            teamNumberTextView = (EditText) findViewById(R.id.teamNumTextView);
+            teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
         }
         teamNumberTextView.setText(String.valueOf(teamNum));
     }
