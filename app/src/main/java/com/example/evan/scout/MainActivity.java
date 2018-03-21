@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem overrideItem;
 
     EditText matchNumberEditText;
+    TextView previousMatchNumberTextView;
     TextView teamNumberTextView;
     public EditText searchBar;
 
@@ -182,7 +183,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
+                    previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
                     teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
+
+                    updatePreviousMatchTextView((sharedPreferences.getInt("matchNumber", 1) - 1));
 
                     if(overridden){
                         teamNumber = sharedPreferences.getInt("teamNumber", -1);
@@ -241,13 +245,13 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.mainBackup){
             bgLT.backup();
             overridden = false;
-            spfe.putBoolean("overridden", false);
+            spfe.putBoolean("overridden", true);
         }
 
         if(id == R.id.mainAutomate){
             bgLT.automate();
             overridden=true;
-            spfe.putBoolean("overridden", true);
+            spfe.putBoolean("overridden", false);
         }
 
         return true;
@@ -346,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     try {
                                         if (!scoutName.equals("(No Name Selected)")) {
-                                            EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
+                                            matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
                                             String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumTextView)).getText().toString();
                                             Intent intent = new Intent(this, AutoActivity.class);
                                             if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
@@ -402,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
 
                         Intent intent = new Intent(this, AutoActivity.class);
-                        EditText matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
+                        matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
                         Log.e("MATCHNUMBER5", matchNumber+"");
                         DataManager.subTitle = teamNumber + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
                         DataManager.addZeroTierJsonData("scoutName", scoutName);
@@ -711,6 +715,13 @@ public class MainActivity extends AppCompatActivity {
             matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
         }
         matchNumberEditText.setText(String.valueOf(matchNum));
+    }
+
+    public void updatePreviousMatchTextView(Integer previousMatchNum){
+        if(previousMatchNumberTextView == null){
+            previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
+        }
+        matchNumberEditText.setText(String.valueOf(previousMatchNum));
     }
 
     public void updateTeamEditText(Integer teamNum){

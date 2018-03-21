@@ -88,36 +88,36 @@ public class bgLoopThread extends Thread {
     public void automate(){
         destroyDuplicates();
 
-        if(!main.overridden) {
-            try {
-                tmp_scoutName = DataManager.collectedData.getString("scoutName");
-                Log.e("SCOUTNAME!!!", tmp_scoutName);
-            } catch (JSONException e) {
-                tmp_scoutName = "(No Name Selected)";
-                e.printStackTrace();
-            }
-            if (!tmp_scoutName.equals("(No Name Selected)")) {
-                Log.e("SCOUTNAME!!!22", tmp_scoutName);
-                if (!bluetoothDir.mkdir()) {
-                    Log.i("File Info", "Failed to make Directory. Unimportant");
-                    Log.e("No Files", "No Files from Bluetooth");
-                    main.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            MainActivity.allianceColor = "not found";
-                            main.updateAllianceColor();
-                        }
-                    });
-                }
-                final File[] files = bluetoothDir.listFiles();
+        Log.e("FRFRFRFR", "FRFRFRFR");
 
-                Integer biggestMatchNum = 0;
-                btMatchNums.clear();
-                Log.e("BTMATCHNUMS", btMatchNums.size()+"");
-                for(File tmpFile : files){
-                    if(tmpFile.getName().equals("backupAssignments.txt")){
-                        return;
+        try {
+            tmp_scoutName = DataManager.collectedData.getString("scoutName");
+            Log.e("SCOUTNAME!!!", tmp_scoutName);
+        } catch (JSONException e) {
+            tmp_scoutName = "(No Name Selected)";
+            e.printStackTrace();
+        }
+        if (!tmp_scoutName.equals("(No Name Selected)")) {
+            Log.e("SCOUTNAME!!!22", tmp_scoutName);
+            if (!bluetoothDir.mkdir()) {
+                Log.i("File Info", "Failed to make Directory. Unimportant");
+                Log.e("No Files", "No Files from Bluetooth");
+                main.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.allianceColor = "not found";
+                        main.updateAllianceColor();
                     }
+                });
+            }
+            final File[] files = bluetoothDir.listFiles();
+
+            Integer biggestMatchNum = 0;
+            btMatchNums.clear();
+            Log.e("BTMATCHNUMS", btMatchNums.size()+"");
+            for(File tmpFile : files){
+                if(tmpFile.getName().equals("backupAssignments.txt")){
+                }else{
                     if(tmpFile != null){
                         Log.e("FILENAME!!!", tmpFile.getName());
                         String fileName = tmpFile.getName();
@@ -137,29 +137,104 @@ public class bgLoopThread extends Thread {
                         return;
                     }
                 }
-                for(int i = 0; i < btMatchNums.size(); i++){
-                    Log.e("FILENUMBERS!!!", btMatchNums.toString());
-                    if(btMatchNums.get(i) > biggestMatchNum){
-                        Log.e("FILENUMBERS!!!", biggestMatchNum+"");
-                        biggestMatchNum = btMatchNums.get(i);
-                        Log.e("FILENUMBERS!!!", biggestMatchNum+"");
+            }
+            for(int i = 0; i < btMatchNums.size(); i++){
+                Log.e("FILENUMBERS!!!", btMatchNums.toString());
+                if(btMatchNums.get(i) > biggestMatchNum){
+                    Log.e("FILENUMBERS!!!", biggestMatchNum+"");
+                    biggestMatchNum = btMatchNums.get(i);
+                    Log.e("FILENUMBERS!!!", biggestMatchNum+"");
+                }
+            }
+            for(File tmpFile : files){
+                Log.e("BTBTBTBTBTBT","BTBTBTBTBT");
+                if(tmpFile != null){
+                    if(tmpFile.getName().equals("Q"+biggestMatchNum+".txt")){
+                        Log.e("FILENAMEBIGGEST!", tmpFile.getName());
+                        final String content = readFile(tmpFile.getPath());
+                        main.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONObject totalJson = new JSONObject(content);
+                                    JSONObject tmpJson = totalJson.getJSONObject("assignments");
+                                    MainActivity.matchNumber = totalJson.getInt("match");
+                                    main.updateMatchEditText(totalJson.getInt("match"));
+                                    Log.e("JSON1", tmpJson.toString());
+                                    JSONObject scoutJson;
+                                    try{
+                                        scoutJson = tmpJson.getJSONObject(tmp_scoutName);
+                                    }catch(NullPointerException ne){
+                                        scoutJson = new JSONObject();
+                                        ne.printStackTrace();
+                                    }
+                                    Log.e("JSON2", scoutJson.toString());
+                                    String tmpAc = scoutJson.getString("alliance").toLowerCase();
+                                    if(tmpAc.equals("blue")){   MainActivity.allianceColor = "blue";}else if(tmpAc.equals("red")){  MainActivity.allianceColor = "red";}
+                                    main.updateAllianceColor();
+                                    main.teamNumber = scoutJson.getInt("team");
+                                    main.updateTeamEditText(scoutJson.getInt("team"));
+                                    toasts("Successfull Auto Update.");
+                                } catch (JSONException e) {
+                                    toasts("Failed to Update!");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     }
                 }
+            }
+        }else {
+            toasts("Please Input Valid Scout Name!");
+            main.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.allianceColor = "not found";
+                    main.updateAllianceColor();
+                }
+            });
+        }
+    }
+
+    public void backup(){
+        destroyDuplicates();
+
+        try {
+            tmp_scoutName = DataManager.collectedData.getString("scoutName");
+            Log.e("SCOUTNAME!!!", tmp_scoutName);
+        } catch (JSONException e) {
+            tmp_scoutName = "(No Name Selected)";
+            e.printStackTrace();
+        }
+        if (!tmp_scoutName.equals("(No Name Selected)")) {
+            updateMatchNumber();
+            if(MainActivity.matchNumber >= 1){
+                Log.e("SCOUTNAME!!!22", tmp_scoutName);
+                if (!bluetoothDir.mkdir()) {
+                    Log.i("File Info", "Failed to make Directory. Unimportant");
+                    Log.e("No Files", "No Files from Bluetooth");
+                    main.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.allianceColor = "not found";
+                            main.updateAllianceColor();
+                        }
+                    });
+                }
+                final File[] files = bluetoothDir.listFiles();
+
                 for(File tmpFile : files){
-                    Log.e("BTBTBTBTBTBT","BTBTBTBTBT");
                     if(tmpFile != null){
-                        if(tmpFile.getName().equals("Q"+biggestMatchNum+".txt")){
-                            Log.e("FILENAMEBIGGEST!", tmpFile.getName());
+                        if(tmpFile.getName().equals("backupAssignments.txt")){
+                            Log.e("BACKUPFILENAME!!!", tmpFile.getName());
                             final String content = readFile(tmpFile.getPath());
+
                             main.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     try {
                                         JSONObject totalJson = new JSONObject(content);
-                                        JSONObject tmpJson = totalJson.getJSONObject("assignments");
-                                        MainActivity.matchNumber = totalJson.getInt("match");
-                                        main.updateMatchEditText(totalJson.getInt("match"));
-                                        Log.e("JSON1", tmpJson.toString());
+                                        JSONObject tmpJson = totalJson.getJSONObject("match" + MainActivity.matchNumber);
                                         JSONObject scoutJson;
                                         try{
                                             scoutJson = tmpJson.getJSONObject(tmp_scoutName);
@@ -173,47 +248,17 @@ public class bgLoopThread extends Thread {
                                         main.updateAllianceColor();
                                         main.teamNumber = scoutJson.getInt("team");
                                         main.updateTeamEditText(scoutJson.getInt("team"));
-                                        toasts("Successfull Auto Update.");
+                                        toasts("Successfull Backup.");
                                     } catch (JSONException e) {
-                                        toasts("Failed to Update!");
+                                        toasts("Failed to Backup!");
                                         e.printStackTrace();
                                     }
                                 }
                             });
                         }
-                    }
-                }
-            }else {
-                toasts("Please Input Valid Scout Name!");
-                main.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.allianceColor = "not found";
-                        main.updateAllianceColor();
-                    }
-                });
-            }
-        }
-    }
-
-    public void backup(){
-        destroyDuplicates();
-
-        if(!main.overridden) {
-            try {
-                tmp_scoutName = DataManager.collectedData.getString("scoutName");
-                Log.e("SCOUTNAME!!!", tmp_scoutName);
-            } catch (JSONException e) {
-                tmp_scoutName = "(No Name Selected)";
-                e.printStackTrace();
-            }
-            if (!tmp_scoutName.equals("(No Name Selected)")) {
-                updateMatchNumber();
-                if(MainActivity.matchNumber >= 1){
-                    Log.e("SCOUTNAME!!!22", tmp_scoutName);
-                    if (!bluetoothDir.mkdir()) {
-                        Log.i("File Info", "Failed to make Directory. Unimportant");
+                    }else{
                         Log.e("No Files", "No Files from Bluetooth");
+                        toasts("No Backup File! Scream at Server People!");
                         main.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -221,68 +266,21 @@ public class bgLoopThread extends Thread {
                                 main.updateAllianceColor();
                             }
                         });
+                        return;
                     }
-                    final File[] files = bluetoothDir.listFiles();
-
-                    for(File tmpFile : files){
-                        if(tmpFile != null){
-                            if(tmpFile.getName().equals("backupAssignments.txt")){
-                                Log.e("BACKUPFILENAME!!!", tmpFile.getName());
-                                final String content = readFile(tmpFile.getPath());
-
-                                main.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            JSONObject totalJson = new JSONObject(content);
-                                            JSONObject tmpJson = totalJson.getJSONObject("match" + MainActivity.matchNumber);
-                                            JSONObject scoutJson;
-                                            try{
-                                                scoutJson = tmpJson.getJSONObject(tmp_scoutName);
-                                            }catch(NullPointerException ne){
-                                                scoutJson = new JSONObject();
-                                                ne.printStackTrace();
-                                            }
-                                            Log.e("JSON2", scoutJson.toString());
-                                            String tmpAc = scoutJson.getString("alliance").toLowerCase();
-                                            if(tmpAc.equals("blue")){   MainActivity.allianceColor = "blue";}else if(tmpAc.equals("red")){  MainActivity.allianceColor = "red";}
-                                            main.updateAllianceColor();
-                                            main.teamNumber = scoutJson.getInt("team");
-                                            main.updateTeamEditText(scoutJson.getInt("team"));
-                                            toasts("Successfull Backup.");
-                                        } catch (JSONException e) {
-                                            toasts("Failed to Backup!");
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                            }
-                        }else{
-                            Log.e("No Files", "No Files from Bluetooth");
-                            toasts("No Backup File! Scream at Server People!");
-                            main.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MainActivity.allianceColor = "not found";
-                                    main.updateAllianceColor();
-                                }
-                            });
-                            return;
-                        }
-                    }
-                }else{
-                    toasts("Input Valid Match Number!");
                 }
-            }else {
-                toasts("Input Valid Scout Name!");
-                main.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.allianceColor = "not found";
-                        main.updateAllianceColor();
-                    }
-                });
+            }else{
+                toasts("Input Valid Match Number!");
             }
+        }else {
+            toasts("Input Valid Scout Name!");
+            main.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.allianceColor = "not found";
+                    main.updateAllianceColor();
+                }
+            });
         }
     }
 
@@ -332,7 +330,6 @@ public class bgLoopThread extends Thread {
     public void destroyDuplicates() {
         if (!bluetoothDir.mkdir()) {
             Log.i("File Info", "Failed to make Directory. Unimportant");
-            Log.e("No Files", "No Files from Bluetooth");
         }
         final File[] files = bluetoothDir.listFiles();
 
@@ -340,10 +337,17 @@ public class bgLoopThread extends Thread {
             Integer duplicateMark = tmpFile.getName().toString().indexOf("-");
             Log.e("DUPLICATEMARK!", duplicateMark+"");
             if(duplicateMark != -1 && (duplicateMark == 2 || duplicateMark == 3)){
-                HighSecurityPassword.DeleteRecursive(tmpFile);
+                DeleteRecursive(tmpFile);
+                Log.e("YES", "YES");
             }else{
                 Log.e("No Duplicates", "No Duplicate Files");
             }
         }
+        Log.e("exit", "exit");
+    }
+
+    private void DeleteRecursive(File fileOrDirectory)
+    {
+        fileOrDirectory.delete();
     }
 }
