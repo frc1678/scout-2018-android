@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                     previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
                     teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
 
+                    Log.e("PREVIOUSMATCHNUM", sharedPreferences.getInt("matchNumber", 1)+"");
                     updatePreviousMatchTextView((sharedPreferences.getInt("matchNumber", 1) - 1));
 
                     if(overridden){
@@ -313,16 +314,16 @@ public class MainActivity extends AppCompatActivity {
         }else if(allianceColor == "blue" || allianceColor == "red"){
             if (overridden) {
                 //if the schedule has been overridden we will use the values that the user has set
-                EditText teamNumEditText = (EditText) findViewById(R.id.teamNumTextView);
+                teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
                 if (teamNumber == -1) {
                     Toast.makeText(getBaseContext(), "Please set your team number and try again",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    if (teamNumEditText.getText().toString().equals("")) { //START
+                    if (teamNumberTextView.getText().toString().equals("")) { //START
                         Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
-                                Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG).show();
                     } else {
-                        teamNumber = Integer.parseInt(teamNumEditText.getText().toString());
+                        teamNumber = Integer.parseInt(teamNumberTextView.getText().toString());
                     } //END
                     EditText matchNumEditText = (EditText) findViewById(R.id.matchNumEditText);
                     if (matchNumEditText.getText().toString().equals("")) {
@@ -351,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                                     try {
                                         if (!scoutName.equals("(No Name Selected)")) {
                                             matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
-                                            String ovrrdTeamStr = ((EditText) findViewById(R.id.teamNumTextView)).getText().toString();
+                                            String ovrrdTeamStr = ((TextView) findViewById(R.id.teamNumTextView)).getText().toString();
                                             Intent intent = new Intent(this, AutoActivity.class);
                                             if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
                                                 Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
@@ -721,7 +722,7 @@ public class MainActivity extends AppCompatActivity {
         if(previousMatchNumberTextView == null){
             previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
         }
-        matchNumberEditText.setText(String.valueOf(previousMatchNum));
+        previousMatchNumberTextView.setText(String.valueOf(previousMatchNum));
     }
 
     public void updateTeamEditText(Integer teamNum){

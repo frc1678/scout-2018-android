@@ -159,6 +159,8 @@ public class bgLoopThread extends Thread {
                                     JSONObject totalJson = new JSONObject(content);
                                     JSONObject tmpJson = totalJson.getJSONObject("assignments");
                                     MainActivity.matchNumber = totalJson.getInt("match");
+                                    main.spfe.putInt("matchNumber", totalJson.getInt("match"));
+                                    main.spfe.commit();
                                     main.updateMatchEditText(totalJson.getInt("match"));
                                     Log.e("JSON1", tmpJson.toString());
                                     JSONObject scoutJson;
@@ -174,7 +176,7 @@ public class bgLoopThread extends Thread {
                                     main.updateAllianceColor();
                                     main.teamNumber = scoutJson.getInt("team");
                                     main.updateTeamEditText(scoutJson.getInt("team"));
-                                    toasts("Successfull Auto Update.");
+                                    toasts("Successful Auto Update.");
                                 } catch (JSONException e) {
                                     toasts("Failed to Update!");
                                     e.printStackTrace();
@@ -209,6 +211,8 @@ public class bgLoopThread extends Thread {
         if (!tmp_scoutName.equals("(No Name Selected)")) {
             updateMatchNumber();
             if(MainActivity.matchNumber >= 1){
+                main.spfe.putInt("matchNumber", MainActivity.matchNumber);
+                main.spfe.commit();
                 Log.e("SCOUTNAME!!!22", tmp_scoutName);
                 if (!bluetoothDir.mkdir()) {
                     Log.i("File Info", "Failed to make Directory. Unimportant");

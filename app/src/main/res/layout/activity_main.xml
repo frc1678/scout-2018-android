@@ -54,7 +54,7 @@
             android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="7"
+            android:ems="4"
             android:maxLength="3"
             android:inputType="number"
             android:id="@+id/matchNumEditText"
