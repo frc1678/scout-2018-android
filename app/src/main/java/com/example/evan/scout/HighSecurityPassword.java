@@ -84,8 +84,7 @@ public class HighSecurityPassword {
         passwordDialog.show();
     }
 
-
-    public static void DeleteRecursive(File fileOrDirectory)
+    private void DeleteRecursive(File fileOrDirectory)
     {
         if (fileOrDirectory.isDirectory())
         {

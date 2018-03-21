@@ -691,7 +691,7 @@ public abstract class DataActivity extends AppCompatActivity {
                             //make the directory of the file
                             newDir.mkdir();
                             //can delete when doing the actual thing
-                            newFile = new PrintWriter(new FileOutputStream(new File(newDir, (MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber + ".jsontxt"))));
+                            newFile = new PrintWriter(new FileOutputStream(new File(newDir, ("Q" + MainActivity.matchNumber + "_" + MainActivity.scoutNumber + "-" + MainActivity.teamNumber + ".jsontxt"))));
                         } catch (IOException IOE) {
                             Log.e("File error", "Failed to open File");
                             return;
