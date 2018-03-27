@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/QR"
+        android:title="QR"
+        app:showAsAction = "always"/>
+    <item
         android:id="@+id/mainAutomate"
         android:title="Automate"
         app:showAsAction = "always"/>
@@ -10,9 +14,9 @@
         android:title="Backup"
         app:showAsAction = "always"/>
     <item
-        android:title="          "/>
+        android:title="            "/>
     <item
-        android:title="          "/>
+        android:title="            "/>
     <item
         android:title=""
         android:id="@+id/timerView"
