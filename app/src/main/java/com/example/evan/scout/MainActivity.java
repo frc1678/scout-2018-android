@@ -127,38 +127,8 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN)));
         }
-
-//        //resets all firebase datanames
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.READ_CONTACTS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            // Permission is not granted
-//            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.READ_CONTACTS)) {
-//
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//            } else {
-//
-//                // No explanation needed; request the permission
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.READ_CONTACTS},
-//                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-//
-//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//                // app-defined int constant. The callback method gets the
-//                // result of the request.
-//            }
-//        } else {
-//            // Permission has already been granted
-//        }
-
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         hsp = new HighSecurityPassword(context, context);
-
         if(!DataActivity.saveAutoData){
             DataManager.collectedData = new JSONObject();
             DataManager.resetAutoSwitchData();
@@ -173,25 +143,17 @@ public class MainActivity extends AppCompatActivity {
             DataManager.resetClimbData();
             Utils.resetAllDataNull();
         }
-
-        Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-        MainActivity main = this;
-
-        matchDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/d_match");
-
-        bgTimer = new backgroundTimer(context);
-
-        if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
-
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        bgTimer = new backgroundTimer(context);
+        if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         spfe = sharedPreferences.edit();
+        if(QRScan.qrString.equals("NULL")){
+            spfe.putString("qrString", "NULL");
+            spfe.commit();
+        }
         if(!sharedPreferences.contains("scoutNumber")) {
             Log.e("no previous", "scout number");
             setScoutNumber();
@@ -211,10 +173,6 @@ public class MainActivity extends AppCompatActivity {
         }
         alertScout();
 
-        if (actionBar != null) {
-            actionBar.setBackgroundDrawable(returnDrawable());
-        }
-
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
                     previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
                     teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
@@ -228,14 +186,16 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     teamNumberTextView.setText(String.valueOf(teamNumber));
-                    setMatchNumber();
+                    matchNumberEditText.setText(String.valueOf(matchNumber));
+
+        bgLT = new bgLoopThread(context, this);
+        if(getIntent().getBooleanExtra("qrObtained", false)){
+            bgLT.backup();
+        }
 
         updateListView();
         listenForResendClick();
         setTitle("Scout");
-
-        bgLT = new bgLoopThread(context, this);
-        bgLT.start();
     }
 
     @Override
@@ -276,14 +236,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (id == R.id.mainBackup){
-            bgLT.backup();
-            overridden = false;
-            spfe.putBoolean("overridden", true);
-        }
-
         if(id == R.id.mainAutomate){
-            bgLT.automate();
+//            bgLT.automate();
             overridden=true;
             spfe.putBoolean("overridden", false);
         }
@@ -294,11 +248,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
-    }
-
-    //this method will get the match number and set it from firebase
-    public void setMatchNumber(){
-        matchNumberEditText.setText(String.valueOf(matchNumber));
     }
 
     //display dialog to set scout number
@@ -377,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("MATCHNUMBER1", matchNumber+"");
                             DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                             if (matchNumber <= 0) {
-                                setMatchNumber();
+                                matchNumberEditText.setText(String.valueOf(matchNumber));
                                 Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                         Toast.LENGTH_LONG).show();
                             } else {
@@ -439,7 +388,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("MATCHNUMBER4", matchNumber+"");
                     DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                     if (teamNumber <= 0) {
-//                        setTeamNumber();
                         Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -773,121 +721,6 @@ public class MainActivity extends AppCompatActivity {
         teamNumberTextView.setText(String.valueOf(teamNum));
     }
 
-//    public void updateAllianceColor(int mNum){
-//        foundIt = false;
-//        final String s_matchNumber = String.valueOf(mNum);
-//        Log.e("PLEZZZZZ", s_matchNumber);
-//        Log.e("PLEZZZZZ", mNum+"");
-//        if(!overridden){
-//            try{
-//                for(int i = 0; i < 3; i++){
-//                    final String num = String.valueOf(i);
-//                    databaseReference.child("Matches").child(s_matchNumber).child("blueAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            if(dataSnapshot != null){
-//                                if(dataSnapshot.getValue() != null){
-//                                    if(teamNumber != 0 || teamNumber != -1){
-//                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString()) && !foundIt){
-//                                            Log.e("PLEZZZZZ", s_matchNumber);
-//                                            Log.e("PLEZZZZZ", "blueAllianceTeamNumbers");
-//                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
-//                                            allianceColor = "blue";
-//                                            spfe.putString("allianceColor", allianceColor);
-//                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-//                                            setActionBarColor("blue");
-//                                            foundIt = true;
-//                                        }else if(foundIt){
-//                                        }else{
-//                                            allianceColor = "notfound";
-//                                            spfe.putString("allianceColor", allianceColor);
-//                                        }
-//                                    }else{
-//                                        Log.e("SHIT1", "SHIT1");
-//                                        allianceColor = "notfound";
-//                                        spfe.putString("allianceColor", allianceColor);
-//                                    }
-//                                }else{
-//                                    Log.e("SHIT2", "SHIT2");
-//                                }
-//                            }else{
-//                                Log.e("SHIT3", "SHIT3");
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(DatabaseError firebaseError) {
-//                            if(!foundIt){
-//                                Log.e("SHIT4", "SHIT4");
-//                                setActionBarColor("green");
-//                                allianceColor = "notfound";
-//                                spfe.putString("allianceColor", allianceColor);
-//                            }
-//                        }
-//                    });
-//                    databaseReference.child("Matches").child(s_matchNumber).child("redAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            if(dataSnapshot != null){
-//                                if(dataSnapshot.getValue() != null){
-//                                    if(teamNumber != 0 || teamNumber != -1 && !foundIt) {
-//                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString())){
-//                                            Log.e("PLEZZZZZ", s_matchNumber);
-//                                            Log.e("PLEZZZZZ", "redAllianceTeamNumbers");
-//                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
-//                                            allianceColor = "red";
-//                                            spfe.putString("allianceColor", allianceColor);
-//                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
-//                                            setActionBarColor("red");
-//                                            foundIt = true;
-//                                        }else if(foundIt){
-//                                        }else{
-//                                            allianceColor = "notfound";
-//                                            spfe.putString("allianceColor", allianceColor);
-//                                        }
-//                                    }else{
-//                                        Log.e("SHIT5", "SHIT5");
-//                                        allianceColor = "notfound";
-//                                        spfe.putString("allianceColor", allianceColor);
-//                                    }
-//                                }else{
-//                                    Log.e("SHIT6", "SHIT6");
-//                                }
-//                            }else{
-//                                Log.e("SHIT7", "SHIT7");
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(DatabaseError firebaseError) {
-//                            if(!foundIt){
-//                                Log.e("SHIT8", "SHIT8");
-//                                setActionBarColor("green");
-//                                allianceColor = "notfound";
-//                                spfe.putString("allianceColor", allianceColor);
-//                            }
-//                        }
-//                    });
-//                }
-//                if((allianceColor == null || allianceColor == "notfound") && !foundIt){
-//                    setActionBarColor("green");
-//                    allianceColor = "notfound";
-//                    spfe.putString("allianceColor", allianceColor);
-//                }
-//            }catch(DatabaseException de){
-//                Log.e("SHIT9", "SHIT9");
-//                if(!foundIt){
-//                    setActionBarColor("green");
-//                    allianceColor = "notfound";
-//                    spfe.putString("allianceColor", allianceColor);
-//                }
-//            }
-//        }else if(overridden && (allianceColor != "blue" && allianceColor != "red")){
-//            setActionBarColor("green");
-//            allianceColor = "notfound";
-//        }
-//    }
-
     public void alertScout(){
         View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
         TextView nameView= (TextView) dialogView.findViewById(R.id.nameView);
@@ -925,9 +758,6 @@ public class MainActivity extends AppCompatActivity {
                             updateAllianceColor();
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-//                            scoutName = nameValue.getText().toString();
                             scoutName = spinString;
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
@@ -935,14 +765,14 @@ public class MainActivity extends AppCompatActivity {
                         } else{
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
-                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
-//                            scoutName = nameValue.getText().toString();
                             scoutName = spinString;
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
                             if(scoutName!=spinString){
                                 Utils.makeToast(context, "Please Input a Valid Scout Name");
+                            }
+                            if(!sharedPreferences.getString("qrString", "NULL").equals("NULL")){
+                                bgLT.backupData();
                             }
                         }
                     }

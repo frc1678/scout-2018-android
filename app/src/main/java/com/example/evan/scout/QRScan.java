@@ -16,6 +16,7 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     QRCodeReaderView qrCodeReader;
+    public static String qrString = "NULL";
     Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +38,17 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         qrCodeReader.setFrontCamera();
 
         // Use this function to set back camera preview
-        //qrCodeReader.setBackCamera();
+        qrCodeReader.setBackCamera();
     }
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        Log.e("TRIED TO", "READ!");
+        qrString = text;
+        Log.e("QRSTRING", qrString+"");
+        MainActivity.spfe.putString("qrString", qrString);
+        MainActivity.spfe.commit();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("qrObtained", true);
+        startActivity(intent);
     }
 
     @Override

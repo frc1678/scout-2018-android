@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Scout</string>
+    <string name="space">                             </string>
     <string name="name_prompt">Choose a Name</string>
     <string-array name="name_arrays">
         <item>(No Name Selected)</item>
