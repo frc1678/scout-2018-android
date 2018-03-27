@@ -288,6 +288,11 @@ public class MainActivity extends AppCompatActivity {
             spfe.putBoolean("overridden", false);
         }
 
+        if(id == R.id.QR){
+            Intent intent = new Intent(this, QRScan.class);
+            startActivity(intent);
+        }
+
         return true;
     }
 
