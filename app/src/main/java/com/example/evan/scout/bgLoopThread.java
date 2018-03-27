@@ -99,7 +99,9 @@ public class bgLoopThread extends Thread {
         }
         if (!tmp_scoutName.equals("(No Name Selected)")) {
             Log.e("SCOUTNAME!!!22", tmp_scoutName);
-            if (!bluetoothDir.mkdir()) {
+            Log.e("DIRRRRRRRRRR", bluetoothDir.exists()+"");
+            if (!bluetoothDir.exists()) {
+                bluetoothDir.mkdir();
                 Log.i("File Info", "Failed to make Directory. Unimportant");
                 Log.e("No Files", "No Files from Bluetooth");
                 main.runOnUiThread(new Runnable() {
@@ -111,6 +113,11 @@ public class bgLoopThread extends Thread {
                 });
             }
             final File[] files = bluetoothDir.listFiles();
+
+            if(files == null){
+                Log.e("NULLLLLLLLLLL", "NULLLLLLLL::::");
+                return;
+            }
 
             Integer biggestMatchNum = 0;
             btMatchNums.clear();
@@ -214,7 +221,8 @@ public class bgLoopThread extends Thread {
                 main.spfe.putInt("matchNumber", MainActivity.matchNumber);
                 main.spfe.commit();
                 Log.e("SCOUTNAME!!!22", tmp_scoutName);
-                if (!bluetoothDir.mkdir()) {
+                if (!bluetoothDir.exists()) {
+                    bluetoothDir.mkdir();
                     Log.i("File Info", "Failed to make Directory. Unimportant");
                     Log.e("No Files", "No Files from Bluetooth");
                     main.runOnUiThread(new Runnable() {
@@ -226,6 +234,11 @@ public class bgLoopThread extends Thread {
                     });
                 }
                 final File[] files = bluetoothDir.listFiles();
+
+                if(files == null){
+                    Log.e("NULLLLLLLL", "NULLLLLLLL:::");
+                    return;
+                }
 
                 for(File tmpFile : files){
                     if(tmpFile != null){
@@ -336,6 +349,11 @@ public class bgLoopThread extends Thread {
             Log.i("File Info", "Failed to make Directory. Unimportant");
         }
         final File[] files = bluetoothDir.listFiles();
+
+        if(files == null){
+            Log.e("NULLLLLLLLLL", "NULLLLLLLLLL");
+            return;
+        }
 
         for(File tmpFile : files){
             Integer duplicateMark = tmpFile.getName().toString().indexOf("-");
