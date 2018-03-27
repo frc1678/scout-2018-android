@@ -123,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN)));
+        }
 
 //        //resets all firebase datanames
 //        if (ContextCompat.checkSelfPermission(this,
@@ -207,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
         }
         alertScout();
 
-        actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(returnDrawable());
         }
