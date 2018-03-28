@@ -1,7 +1,13 @@
 package com.example.evan.scout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,7 +22,7 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     QRCodeReaderView qrCodeReader;
-    public static String qrString = "NULL";
+    public static String qrString = "";
     Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +40,30 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         // Use this function to enable/disable Torch
         qrCodeReader.setTorchEnabled(true);
 
-        // Use this function to set front camera preview
-        qrCodeReader.setFrontCamera();
+//        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+//        try {
+//            for(String cameraId:manager.getCameraIdList()){
+//                CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
+//                Integer facing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
+//                if(facing== CameraMetadata.LENS_FACING_BACK) {
+//                    // Use this function to set back camera preview
+//                    qrCodeReader.setBackCamera();
+//                }
+//                if(facing== CameraMetadata.LENS_FACING_FRONT) {
+//                    // Use this function to set back camera preview
+//                    qrCodeReader.setFrontCamera();
+//                }
+//            }
+//        } catch (CameraAccessException e) {
+//            e.printStackTrace();
+//        }
 
-        // Use this function to set back camera preview
+//        if(Camera.getNumberOfCameras() >= 2){
+        qrCodeReader.setFrontCamera();
         qrCodeReader.setBackCamera();
+//        }else if(Camera.getNumberOfCameras() <= 1){
+//            qrCodeReader.setFrontCamera();
+//        }
     }
     @Override
     public void onQRCodeRead(String text, PointF[] points) {

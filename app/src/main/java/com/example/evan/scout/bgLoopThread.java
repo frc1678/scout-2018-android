@@ -6,7 +6,9 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +18,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,16 +66,15 @@ public class bgLoopThread extends Thread {
     MainActivity main;
     Activity context;
     Handler handler;
-    List<Integer> btMatchNums = new ArrayList<>();
+    List<Integer> btCycleNums = new ArrayList<>();
     ActionBar actionBar;
     EditText matchNumEditText;
     EditText teamNumEditText;
     String tmp_scoutName;
     private Timer timer;
     private TimerTask timerTask;
-    public static String scoutLetter;
-    public String previousLetter;
-    Integer qrMatch;
+    public static String scoutLetter = "";
+    public String previousLetter = "";
     Integer sprRanking;
 
     public bgLoopThread(Activity context, MainActivity main) {
@@ -118,19 +120,19 @@ public class bgLoopThread extends Thread {
                 return;
             }
 
-            Integer biggestMatchNum = 0;
-            btMatchNums.clear();
-            Log.e("BTMATCHNUMS", btMatchNums.size()+"");
+            Integer biggestCycleNum = 0;
+            btCycleNums.clear();
+            Log.e("btCycleNums", btCycleNums.size()+"");
             for(File tmpFile : files){
                 if(tmpFile.getName().equals("backupAssignments.txt")){
                 }else{
                     if(tmpFile != null){
                         Log.e("FILENAME!!!", tmpFile.getName());
                         String fileName = tmpFile.getName();
-                        String tmp_matchnumstring = fileName.substring(fileName.indexOf("Q")+1, fileName.indexOf("."));
+                        String tmp_matchnumstring = fileName.substring(fileName.indexOf("C")+1, fileName.indexOf("."));
                         Log.e("FILENAMENUM!!!", tmp_matchnumstring);
                         Integer tmp_matchnum = Integer.parseInt(tmp_matchnumstring);
-                        btMatchNums.add(tmp_matchnum);
+                        btCycleNums.add(tmp_matchnum);
                     }else{
                         Log.e("No Files", "No Files from Bluetooth");
                         main.runOnUiThread(new Runnable() {
@@ -144,18 +146,18 @@ public class bgLoopThread extends Thread {
                     }
                 }
             }
-            for(int i = 0; i < btMatchNums.size(); i++){
-                Log.e("FILENUMBERS!!!", btMatchNums.toString());
-                if(btMatchNums.get(i) > biggestMatchNum){
-                    Log.e("FILENUMBERS!!!", biggestMatchNum+"");
-                    biggestMatchNum = btMatchNums.get(i);
-                    Log.e("FILENUMBERS!!!", biggestMatchNum+"");
+            for(int i = 0; i < btCycleNums.size(); i++){
+                Log.e("FILENUMBERS!!!", btCycleNums.toString());
+                if(btCycleNums.get(i) > biggestCycleNum){
+                    Log.e("FILENUMBERS!!!", biggestCycleNum+"");
+                    biggestCycleNum = btCycleNums.get(i);
+                    Log.e("FILENUMBERS!!!", biggestCycleNum+"");
                 }
             }
             for(File tmpFile : files){
                 Log.e("BTBTBTBTBTBT","BTBTBTBTBT");
                 if(tmpFile != null){
-                    if(tmpFile.getName().equals("Q"+biggestMatchNum+".txt")){
+                    if(tmpFile.getName().equals("C"+biggestCycleNum+".txt")){
                         Log.e("FILENAMEBIGGEST!", tmpFile.getName());
                         final String content = readFile(tmpFile.getPath());
                         main.runOnUiThread(new Runnable() {
@@ -163,11 +165,7 @@ public class bgLoopThread extends Thread {
                             public void run() {
                                 try {
                                     JSONObject totalJson = new JSONObject(content);
-                                    JSONObject tmpJson = totalJson.getJSONObject("assignments");
-                                    MainActivity.matchNumber = totalJson.getInt("match");
-                                    main.spfe.putInt("matchNumber", totalJson.getInt("match"));
-                                    main.spfe.commit();
-                                    main.updateMatchEditText(totalJson.getInt("match"));
+                                    JSONObject tmpJson = totalJson.getJSONObject("match" + MainActivity.matchNumber);
                                     Log.e("JSON1", tmpJson.toString());
                                     JSONObject scoutJson;
                                     try{
@@ -175,6 +173,7 @@ public class bgLoopThread extends Thread {
                                     }catch(NullPointerException ne){
                                         scoutJson = new JSONObject();
                                         ne.printStackTrace();
+                                        return;
                                     }
                                     Log.e("JSON2", scoutJson.toString());
                                     String tmpAc = scoutJson.getString("alliance").toLowerCase();
@@ -183,6 +182,9 @@ public class bgLoopThread extends Thread {
                                     main.teamNumber = scoutJson.getInt("team");
                                     main.updateTeamEditText(scoutJson.getInt("team"));
                                     toasts("Successful Auto Update.");
+                                    MainActivity.mode = "Auto";
+                                    MainActivity.spfe.putString("mode", "Auto");
+                                    MainActivity.spfe.commit();
                                 } catch (JSONException e) {
                                     toasts("Failed to Update!");
                                     e.printStackTrace();
@@ -214,16 +216,16 @@ public class bgLoopThread extends Thread {
     }
 
     public void useQR(){
-        if(QRScan.qrString != ""){
+        String qrString = MainActivity.sharedPreferences.getString("qrString", "");
+        Log.e("QRSTRING", qrString);
+        if(!qrString.equals("")){
             try{
-                qrMatch = Integer.parseInt(QRScan.qrString.substring(0,QRScan.qrString.indexOf("|")));
-                Log.e("QRMATCH", qrMatch+"");
-                MainActivity.matchNumber = qrMatch;
-                if(QRScan.qrString.indexOf(scoutLetter) != -1){
-                    sprRanking = QRScan.qrString.indexOf(scoutLetter) + 1 - 3;
+                if(qrString.indexOf(scoutLetter) != -1){
+                    sprRanking = qrString.indexOf(scoutLetter) + 1 - 3;
                     previousLetter = scoutLetter;
-                }else if(previousLetter != ""){
+                }else if(!previousLetter.equals("")){
                     scoutLetter = previousLetter;
+                    sprRanking = qrString.indexOf(scoutLetter) + 1 - 3;
                 }else{
                     toasts("Current scout name Isn't in this match, Sorry.");
                 }
@@ -304,7 +306,7 @@ public class bgLoopThread extends Thread {
         }
         if (!tmp_scoutName.equals("(No Name Selected)")) {
             updateMatchNumber();
-            if(qrMatch >= 1){
+            if(MainActivity.matchNumber >= 1){
                 main.spfe.putInt("matchNumber", MainActivity.matchNumber);
                 main.spfe.commit();
                 Log.e("SCOUTNAME!!!22", tmp_scoutName);
@@ -336,12 +338,12 @@ public class bgLoopThread extends Thread {
                             main.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    main.updateMatchEditText(qrMatch);
+                                    main.updateMatchEditText(MainActivity.matchNumber);
 
                                     try {
                                         JSONObject totalJson = new JSONObject(content);
                                         JSONObject matchJson = totalJson.getJSONObject("matches");
-                                        JSONObject tmpJson = matchJson.getJSONObject("match" + qrMatch);
+                                        JSONObject tmpJson = matchJson.getJSONObject("match" + MainActivity.matchNumber);
                                         JSONObject sprJson = tmpJson.getJSONObject(sprRanking+"");
                                         Log.e("QRTEST", tmpJson.toString());
 
@@ -352,6 +354,9 @@ public class bgLoopThread extends Thread {
                                         main.teamNumber = sprJson.getInt("team");
                                         main.updateTeamEditText(sprJson.getInt("team"));
                                         toasts("Successfull Backup.");
+                                        MainActivity.mode = "QR";
+                                        MainActivity.spfe.putString("mode", "QR");
+                                        MainActivity.spfe.commit();
                                     } catch (JSONException e) {
                                         toasts("Failed to Backup!");
                                         e.printStackTrace();
@@ -425,7 +430,9 @@ public class bgLoopThread extends Thread {
         main.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                MainActivity.matchNumber = Integer.parseInt(main.matchNumberEditText.getText().toString());
+                if(Integer.parseInt(main.matchNumberEditText.getText().toString()) >= 1){
+                    MainActivity.matchNumber = Integer.parseInt(main.matchNumberEditText.getText().toString());
+                }
             }
         });
     }

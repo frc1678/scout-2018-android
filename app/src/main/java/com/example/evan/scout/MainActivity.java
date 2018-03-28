@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActionBar actionBar;
 
+    public Menu mainMenu;
+
     //the id of the scout.  1-3 is red, 4+ is blue
     public static int scoutNumber;
 
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
     //the current match number
     public static int matchNumber;
+
+    public static String mode = "automate";
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -114,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
 
     //Shared Preference for scoutNumber
-    SharedPreferences sharedPreferences;
-    static SharedPreferences.Editor spfe;
+    public static SharedPreferences sharedPreferences;
+    public static SharedPreferences.Editor spfe;
 
     //set the context
     private final MainActivity context = this;
@@ -150,10 +154,10 @@ public class MainActivity extends AppCompatActivity {
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         spfe = sharedPreferences.edit();
-        if(QRScan.qrString.equals("NULL")){
-            spfe.putString("qrString", "NULL");
-            spfe.commit();
+        if(QRScan.qrString.equals("")){
+            QRScan.qrString = sharedPreferences.getString("qrString", "");
         }
+        mode = sharedPreferences.getString("mode", "Auto");
         if(!sharedPreferences.contains("scoutNumber")) {
             Log.e("no previous", "scout number");
             setScoutNumber();
@@ -180,17 +184,19 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("PREVIOUSMATCHNUM", sharedPreferences.getInt("matchNumber", 1)+"");
                     updatePreviousMatchTextView((sharedPreferences.getInt("matchNumber", 1) - 1));
 
-                    if(overridden){
-                        teamNumber = sharedPreferences.getInt("teamNumber", -1);
+                    if(sharedPreferences.getInt("matchNumber", -1) != -1){
                         matchNumber = sharedPreferences.getInt("matchNumber", -1);
+                        matchNumberEditText.setText(String.valueOf(matchNumber));
                     }
 
-                    teamNumberTextView.setText(String.valueOf(teamNumber));
-                    matchNumberEditText.setText(String.valueOf(matchNumber));
-
         bgLT = new bgLoopThread(context, this);
-        if(getIntent().getBooleanExtra("qrObtained", false)){
+        if(mode.equals("QR") || getIntent().getBooleanExtra("qrObtained", false)){
+            Log.e("BACKUPED!!!!", mode);
             bgLT.backup();
+            updateMode(mode, mainMenu);
+        }else{
+            bgLT.automate();
+            updateMode(mode, mainMenu);
         }
 
         updateListView();
@@ -202,13 +208,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         bgTimer.currentMenu = menu;
+        mainMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        if(overridden) {
-            spfe.putBoolean("overridden", true);
-        }else {
-            spfe.putBoolean("overridden", false);
-        }
         return true;
     }
 
@@ -237,17 +239,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.mainAutomate){
-//            bgLT.automate();
-            overridden=true;
-            spfe.putBoolean("overridden", false);
+            bgLT.automate();
+            updateMode(mode, mainMenu);
         }
 
         if(id == R.id.QR){
+            mode = "QR";
+            spfe.putString("mode", "QR");
+            spfe.commit();
             Intent intent = new Intent(this, QRScan.class);
             startActivity(intent);
         }
 
         return true;
+    }
+
+    public static void updateMode(String m_mode, Menu currentMenu){
+        if(currentMenu != null){
+            Log.e("IDDDDDDD", R.id.mode+"");
+            MenuItem modeView = currentMenu.findItem(R.id.mode);
+            modeView.setTitle("《"+m_mode + "_Mode》");
+        }
     }
 
     //display dialog to set scout number
@@ -771,8 +783,12 @@ public class MainActivity extends AppCompatActivity {
                             if(scoutName!=spinString){
                                 Utils.makeToast(context, "Please Input a Valid Scout Name");
                             }
-                            if(!sharedPreferences.getString("qrString", "NULL").equals("NULL")){
-                                bgLT.backupData();
+                            if(mode.equals("QR")){
+                                bgLT.backup();
+                                updateMode(mode, mainMenu);
+                            }else if(mode.equals("Auto")){
+                                bgLT.automate();
+                                updateMode(mode, mainMenu);
                             }
                         }
                     }

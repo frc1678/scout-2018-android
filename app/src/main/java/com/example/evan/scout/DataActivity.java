@@ -788,6 +788,8 @@ public boolean onCreateOptionsMenu(Menu menu) {
             menu.findItem(R.id.beginTimerButton).setEnabled(false);
         }
 
+        MainActivity.updateMode(MainActivity.mode, menu);
+
         return true;
     }
 
