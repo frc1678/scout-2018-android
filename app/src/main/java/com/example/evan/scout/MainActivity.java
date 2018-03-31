@@ -80,7 +80,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.evan.scout.bgLoopThread.scoutName;
-//
+
 public class MainActivity extends AppCompatActivity {
     protected ScoutApplication app;
 
@@ -288,12 +288,11 @@ public class MainActivity extends AppCompatActivity {
                     if (bgTimer.timerActivity.equals("tele")){
                         timerActivityView.setText("Tele");
                     }
-                    // float updatedTime = backgroundTimer.getUpdatedTime();
-                    //bgTimer.currentOffset = offset;
+
                     timeView.setText(String.valueOf(bgTimer.updatedTime));
                     handler.postDelayed(this, 10);
 
-                } // This is your code
+                }
             };
             handler.post(runnable);
             cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -324,7 +323,6 @@ public class MainActivity extends AppCompatActivity {
             item.setEnabled(false);
         }
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.setScoutIDButton) {
             setScoutNumber();
             return true;
@@ -594,15 +592,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("Test 2", "assign file data to Json");
                     JSONObject scoutData = dataPoints.get(j);
                     try {
-                        //TODO im assuming here that scoutnum doesnt change
                         keyName = scoutData.getString("teamNumber")+"Q"+scoutData.getString("matchNumber")+"-"+scoutNumber;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     String jsonString = scoutData.toString();
                     Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
                     databaseReference.child("TempTeamInMatchDatas").child(keyName).setValue(jsonMap);
                 }
+
                 toasts("Resent Scout data!", false);
             }
         }.start();
@@ -636,7 +635,6 @@ public class MainActivity extends AppCompatActivity {
     public void getScoutData(View view) {
         searchBar = (EditText) findViewById(R.id.searchEditText);
         searchBar.setFocusable(false);
-        //listenForFileListClick();
         updateListView();
         searchBar.setFocusableInTouchMode(true);
     }
@@ -819,8 +817,6 @@ public class MainActivity extends AppCompatActivity {
         spinner.setSelection(((ArrayAdapter<String>)spinner.getAdapter()).getPosition(scoutName));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
-//                    String sOptions= parent.getItemAtPosition(position).toString();
-//                    Toast.makeText(MainActivity.this, sOptions, Toast.LENGTH_LONG).show();
             }
             public void onNothingSelected(AdapterView<?> parent){
 
@@ -907,7 +903,7 @@ public class MainActivity extends AppCompatActivity {
             int height = point.y;
             int smallestDimension = width < height ? width : height;
             //setting parameters for qr code
-            String charset = "UTF-8"; // or "ISO-8859-1"
+            String charset = "UTF-8";
             Map<EncodeHintType, ErrorCorrectionLevel> hintMap =new HashMap<EncodeHintType, ErrorCorrectionLevel>();
             hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
             createQRCode(qrCode, charset, hintMap, smallestDimension, smallestDimension);

@@ -82,6 +82,5 @@
             android:layout_height="wrap_content"
             android:text="Done"
             android:id="@+id/doneButton"/>
-<!--cancel button added-->
     </LinearLayout>
 </RelativeLayout>

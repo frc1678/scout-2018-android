@@ -206,20 +206,4 @@ public class Utils {
         }
         return  tempObject;
     }
-
-//    public static ArrayList convertJSONArrayToList(JSONArray jArray, List<String> listKeys){
-//        ArrayList<HashMap<String, Object>> listdata = new ArrayList<>();
-//        if (jArray != null) {
-//            for (int i=0;i<jArray.length();i++){
-//                try {
-//                    JSONObject jObject = jArray.getJSONObject(i);
-//                    for(int j = 0;j < listKeys.size();j++)
-//                    listdata.add(listKeys.get(j), jArray.get(listKeys.get(i)));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return listdata;
-//    }
 }

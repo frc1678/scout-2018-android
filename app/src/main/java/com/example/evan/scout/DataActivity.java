@@ -552,7 +552,6 @@ public abstract class DataActivity extends AppCompatActivity {
                     switchCreator = new UIComponentCreator.UISwitchCreator(this, switchDisplayTitles);
                     scaleCreator = new UIComponentCreator.UIScaleCreator(this, scaleDisplayTitles);
                     pyramidCreator = new UIComponentCreator.UIPyramidCreator(this, pyramidDisplayTitles);
-                    //add reset
                     Log.e("AttemptSIZE-Sw", switchDisplayTitles.size() + "");
                     Log.e("AttemptSIZE-Sc", scaleDisplayTitles.size() + "");
                     Log.e("AttemptSIZE-P", pyramidDisplayTitles.size() + "");
@@ -695,8 +694,6 @@ public abstract class DataActivity extends AppCompatActivity {
                                 Toast.makeText(context, "Sent Match Data", Toast.LENGTH_SHORT).show();
                             }
                         });
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                         PrintWriter newFile;
                         try {
@@ -854,12 +851,11 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     if (bgTimer.timerActivity.equals("tele")) {
                         timerActivityView.setText("Tele");
                     }
-                    // float updatedTime = backgroundTimer.getUpdatedTime();
+
                     timeView.setText(String.valueOf(bgTimer.updatedTime));
-                    // bgTimer.currentOffset = offset;
                     handler.postDelayed(this, 10);
 
-                } // This is your code
+                }
             };
             handler.post(runnable);
             cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -929,7 +925,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 startActivity(prepareIntent(getNextActivityClass()));
             }else if(activityName.equals("tele") && numSendClicks >= 2){
                 backgroundTimer.stopTimer();
-                //added
                 int tempMatchNum = sharedPreferences.getInt("matchNumber", matchNumber) + 1;
                 MainActivity.spfe.putInt("matchNumber", (tempMatchNum));
                 MainActivity.spfe.commit();
