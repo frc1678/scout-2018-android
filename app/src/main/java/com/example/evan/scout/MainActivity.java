@@ -8,13 +8,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -23,6 +26,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +37,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -47,6 +53,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor spfe;
 
+    ImageView QRImage;
+
     //set the context
     private final MainActivity context = this;
     @Override
@@ -154,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         spfe = sharedPreferences.edit();
+        if(!sharedPreferences.getString("qrScoutData", "").equals("")){
+            openQRDialog(sharedPreferences.getString("qrScoutData", ""));
+        }
         if(QRScan.qrString.equals("")){
             QRScan.qrString = sharedPreferences.getString("qrString", "");
         }
@@ -193,10 +209,8 @@ public class MainActivity extends AppCompatActivity {
         if(mode.equals("QR") || getIntent().getBooleanExtra("qrObtained", false)){
             Log.e("BACKUPED!!!!", mode);
             bgLT.backup();
-            updateMode(mode, mainMenu);
         }else{
             bgLT.automate();
-            updateMode(mode, mainMenu);
         }
 
         updateListView();
@@ -240,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == R.id.mainAutomate){
             bgLT.automate();
-            updateMode(mode, mainMenu);
         }
 
         if(id == R.id.QR){
@@ -252,14 +265,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
-    }
-
-    public static void updateMode(String m_mode, Menu currentMenu){
-        if(currentMenu != null){
-            Log.e("IDDDDDDD", R.id.mode+"");
-            MenuItem modeView = currentMenu.findItem(R.id.mode);
-            modeView.setTitle("《"+m_mode + "_Mode》");
-        }
     }
 
     //display dialog to set scout number
@@ -446,33 +451,20 @@ public class MainActivity extends AppCompatActivity {
 
                 final String fileName = name;
                 final String[] nameOfResendMatch = name.split("Q");
-                AlertDialog resendAlertDialog;
-                resendAlertDialog = new AlertDialog.Builder(context)
-                        .setTitle("RESEND DATA?")
-                        .setMessage("RESEND " + "Q" + nameOfResendMatch[1] + "?")
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String content = readFile(fileName);
-                                Log.e("XXXX","XXXX");
-                                JSONObject scoutData;
-                                try {
-                                    scoutData = new JSONObject(content);
-                                } catch (JSONException jsone) {
-                                    Log.e("File Error", "no valid JSON in the file");
-                                    Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
-                                List<JSONObject> dataPoints = new ArrayList<>();
-                                dataPoints.add(scoutData);
-                                resendScoutData(dataPoints);
-                            }
-                        }).show();
-                resendAlertDialog.setCanceledOnTouchOutside(false);
+
+                String content = readFile(fileName);
+                Log.e("XXXX","XXXX");
+                JSONObject scoutData;
+                String qrScoutData = "";
+                try {
+                    scoutData = new JSONObject(content);
+                    qrScoutData = scoutData.getString("qrScoutData");
+                } catch (JSONException jsone) {
+                    Log.e("File Error", "no valid JSON in the file");
+                    Toast.makeText(context, "Not a valid JSON", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                openQRDialog(qrScoutData);
             }
         });
     }
@@ -785,10 +777,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if(mode.equals("QR")){
                                 bgLT.backup();
-                                updateMode(mode, mainMenu);
                             }else if(mode.equals("Auto")){
                                 bgLT.automate();
-                                updateMode(mode, mainMenu);
                             }
                         }
                     }
@@ -796,5 +786,73 @@ public class MainActivity extends AppCompatActivity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
         scoutNameAlertDialog.setCanceledOnTouchOutside(false);
+    }
+
+    public void openQRDialog(String qrString){
+        final Dialog qrDialog = new Dialog(context,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        qrDialog.setCanceledOnTouchOutside(false);
+        qrDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        final LinearLayout qrDialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.qr_display_dialog, null);
+        QRImage = (ImageView) qrDialogLayout.findViewById(R.id.QRCode_Display);
+        displayQR(qrString);
+
+        Button ok = (Button) qrDialogLayout.findViewById(R.id.okButton);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qrDialog.dismiss();
+            }
+        });
+
+        qrDialog.setCanceledOnTouchOutside(false);
+        qrDialog.setContentView(qrDialogLayout);
+        qrDialog.show();
+    }
+
+    public void displayQR(String qrCode){
+        try {
+            //setting size of qr code
+            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            Display display = manager.getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            int width = point.x;
+            int height = point.y;
+            int smallestDimension = width < height ? width : height;
+            //setting parameters for qr code
+            String charset = "UTF-8"; // or "ISO-8859-1"
+            Map<EncodeHintType, ErrorCorrectionLevel> hintMap =new HashMap<EncodeHintType, ErrorCorrectionLevel>();
+            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            createQRCode(qrCode, charset, hintMap, smallestDimension, smallestDimension);
+        } catch (Exception ex) {
+            Log.e("QrGenerate",ex.getMessage());
+        }
+    }
+
+    public  void createQRCode(String qrCodeData,String charset, Map hintMap, int qrCodeheight, int qrCodewidth){
+
+        try {
+            //generating qr code in bitmatrix type
+            BitMatrix matrix = new MultiFormatWriter().encode(new String(qrCodeData.getBytes(charset), charset), BarcodeFormat.QR_CODE, qrCodewidth, qrCodeheight, hintMap);
+            //converting bitmatrix to bitmap
+            int width = matrix.getWidth();
+            int height = matrix.getHeight();
+            int[] pixels = new int[width * height];
+            // All are 0, or black, by default
+            for (int y = 0; y < height; y++) {
+                int offset = y * width;
+                for (int x = 0; x < width; x++) {
+                    pixels[offset + x] = matrix.get(x, y) ? Color.BLACK : Color.WHITE;
+                }
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            //setting bitmap to image view
+            QRImage.setImageBitmap(null);
+            QRImage.setImageBitmap(bitmap);
+        }catch (Exception er){
+            Log.e("QrGenerate",er.getMessage());
+        }
     }
 }

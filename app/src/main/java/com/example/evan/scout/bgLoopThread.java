@@ -75,6 +75,7 @@ public class bgLoopThread extends Thread {
     private TimerTask timerTask;
     public static String scoutLetter = "";
     public String previousLetter = "";
+    private boolean substitute = false;
     Integer sprRanking;
 
     public bgLoopThread(Activity context, MainActivity main) {
@@ -186,12 +187,16 @@ public class bgLoopThread extends Thread {
                                     MainActivity.spfe.putString("mode", "Auto");
                                     MainActivity.spfe.commit();
                                 } catch (JSONException e) {
-                                    toasts("Failed to Update!");
+                                    toasts("Failed to Auto Update!");
                                     e.printStackTrace();
                                 }
                             }
                         });
+                    }else{
+                        toasts("Failed to Auto Update!");
                     }
+                }else{
+                    toasts("Failed to Auto Update!");
                 }
             }
         }else {
@@ -220,12 +225,22 @@ public class bgLoopThread extends Thread {
         Log.e("QRSTRING", qrString);
         if(!qrString.equals("")){
             try{
-                if(qrString.indexOf(scoutLetter) != -1){
-                    sprRanking = qrString.indexOf(scoutLetter) + 1 - 3;
+                if(qrString.contains(scoutLetter)){
+                    sprRanking = qrString.indexOf(scoutLetter) - qrString.indexOf("|");
                     previousLetter = scoutLetter;
-                }else if(!previousLetter.equals("")){
-                    scoutLetter = previousLetter;
-                    sprRanking = qrString.indexOf(scoutLetter) + 1 - 3;
+                    MainActivity.spfe.putString("previousLetter", previousLetter);
+                    MainActivity.spfe.commit();
+                    substitute = false;
+                }else if(!qrString.contains(scoutLetter)){
+                    Log.e("MEMEMEME", "FRACKFRACK");
+                    previousLetter = MainActivity.sharedPreferences.getString("previousLetter", "");
+                    if(!previousLetter.equals("")){
+                        scoutLetter = previousLetter;
+                    }else{
+                        toasts("Substitute Failed!");
+                    }
+                    sprRanking = qrString.indexOf(scoutLetter) - qrString.indexOf("|");
+                    substitute = true;
                 }else{
                     toasts("Current scout name Isn't in this match, Sorry.");
                 }
@@ -353,7 +368,11 @@ public class bgLoopThread extends Thread {
                                         main.updateAllianceColor();
                                         main.teamNumber = sprJson.getInt("team");
                                         main.updateTeamEditText(sprJson.getInt("team"));
-                                        toasts("Successfull Backup.");
+                                        if(substitute){
+                                            toasts("Successful Substitute.");
+                                        }else{
+                                            toasts("Successful Backup.");
+                                        }
                                         MainActivity.mode = "QR";
                                         MainActivity.spfe.putString("mode", "QR");
                                         MainActivity.spfe.commit();

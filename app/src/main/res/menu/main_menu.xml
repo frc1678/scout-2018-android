@@ -2,16 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/mode"
-        android:title="Mode"
-        app:showAsAction = "always"/>
-    <item
         android:id="@+id/mainAutomate"
         android:title="Automate"
         app:showAsAction = "always"/>
     <item
         android:id="@+id/QR"
-        android:title="QR"
+        android:title="QR Scan"
         app:showAsAction = "always"/>
     <item
         android:title="@string/space"/>

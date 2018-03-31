@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
@@ -59,19 +60,41 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
 //        }
 
 //        if(Camera.getNumberOfCameras() >= 2){
-        qrCodeReader.setFrontCamera();
-        qrCodeReader.setBackCamera();
+        if(MainActivity.scoutNumber <= 6){
+            qrCodeReader.setFrontCamera();
+        }else if(MainActivity.scoutNumber >= 7){
+            qrCodeReader.setFrontCamera();
+            qrCodeReader.setBackCamera();
+        }
 //        }else if(Camera.getNumberOfCameras() <= 1){
 //            qrCodeReader.setFrontCamera();
 //        }
     }
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
+        Intent intent = new Intent(this, MainActivity.class);
         qrString = text;
+        String prevQrString = MainActivity.sharedPreferences.getString("qrString", "");
+        try{
+            if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) >= Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
+                qrString = prevQrString;
+            }else if(qrString.indexOf("|") == -1){
+                Utils.makeToast(this, "Wrong QR Code!");
+                intent.putExtra("qrObtained", false);
+                startActivity(intent);
+            }else if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) <= 0){
+                Utils.makeToast(this, "Wrong QR Code!");
+                intent.putExtra("qrObtained", false);
+                startActivity(intent);
+            }
+        }catch(Exception e){
+            Utils.makeToast(this, "Wrong QR Code!");
+            intent.putExtra("qrObtained", false);
+            startActivity(intent);
+        }
         Log.e("QRSTRING", qrString+"");
         MainActivity.spfe.putString("qrString", qrString);
         MainActivity.spfe.commit();
-        Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("qrObtained", true);
         startActivity(intent);
     }
@@ -87,5 +110,4 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         super.onPause();
         qrCodeReader.stopCamera();
     }
-
 }
