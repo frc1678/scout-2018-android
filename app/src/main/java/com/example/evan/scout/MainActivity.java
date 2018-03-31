@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -96,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<CharSequence> spinnerAdapter;
 
     bgLoopThread bgLT;
+
+    Handler handler;
+
+    public static int offset;
 
     private HighSecurityPassword hsp;
 
@@ -220,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -230,6 +237,88 @@ public class MainActivity extends AppCompatActivity {
             bgTimer.setMatchTimer();
             item.setEnabled(false);
         }
+
+
+        if(id == R.id.timerView){
+            final Dialog dialog = new Dialog(context);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            final LinearLayout dialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+            final TextView timeView = (TextView) dialogLayout.findViewById(R.id.TimerEditView);
+            final TextView timerActivityView = (TextView) dialogLayout.findViewById(R.id.TimerActivityView);
+            final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
+            final Button minusButton = (Button) dialogLayout.findViewById(R.id.TimerMinusButton);
+            final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
+            final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
+            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+            offset = 0;
+            plusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = offset + 1;
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+
+                    Log.e("test",""+offset);
+                }
+            });
+
+            minusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = offset - 1;
+
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+
+                    Log.e("test",""+offset);
+                }
+            });
+
+
+
+            handler = new Handler(Looper.getMainLooper());
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+
+
+                    if (bgTimer.timerActivity.equals("auto")){
+                        timerActivityView.setText("Auto");
+                    }
+                    if (bgTimer.timerActivity.equals("tele")){
+                        timerActivityView.setText("Tele");
+                    }
+                    // float updatedTime = backgroundTimer.getUpdatedTime();
+                    //bgTimer.currentOffset = offset;
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+                    handler.postDelayed(this, 10);
+
+                } // This is your code
+            };
+            handler.post(runnable);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+            resetButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bgTimer.stopTimer();
+                    offset = 0;
+                    bgTimer.timerReady = true;
+                    item.setTitle("");
+                    startTimer.setEnabled(true);
+                    dialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+            dialog.setContentView(dialogLayout);
+            dialog.show();
+        }
+
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.setScoutIDButton) {
