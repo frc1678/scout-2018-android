@@ -801,6 +801,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 qrDialog.dismiss();
+                spfe.putString("qrScoutData", "");
+                spfe.commit();
             }
         });
 
