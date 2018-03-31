@@ -7,16 +7,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -33,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -100,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
 
     bgLoopThread bgLT;
 
+    Handler handler;
+
+    public static int offset;
+
     private HighSecurityPassword hsp;
 
     //all of the menuItems
@@ -123,12 +127,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN)));
-        }
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        //resets all firebase datanames
+
         hsp = new HighSecurityPassword(context, context);
+
         if(!DataActivity.saveAutoData){
             DataManager.collectedData = new JSONObject();
             DataManager.resetAutoSwitchData();
@@ -143,17 +146,25 @@ public class MainActivity extends AppCompatActivity {
             DataManager.resetClimbData();
             Utils.resetAllDataNull();
         }
+
+        Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        MainActivity main = this;
+
+        matchDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/d_match");
+
         bgTimer = new backgroundTimer(context);
+
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         spfe = sharedPreferences.edit();
-        if(QRScan.qrString.equals("NULL")){
-            spfe.putString("qrString", "NULL");
-            spfe.commit();
-        }
         if(!sharedPreferences.contains("scoutNumber")) {
             Log.e("no previous", "scout number");
             setScoutNumber();
@@ -173,6 +184,11 @@ public class MainActivity extends AppCompatActivity {
         }
         alertScout();
 
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(returnDrawable());
+        }
+
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
                     previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
                     teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
@@ -186,16 +202,14 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     teamNumberTextView.setText(String.valueOf(teamNumber));
-                    matchNumberEditText.setText(String.valueOf(matchNumber));
-
-        bgLT = new bgLoopThread(context, this);
-        if(getIntent().getBooleanExtra("qrObtained", false)){
-            bgLT.backup();
-        }
+                    setMatchNumber();
 
         updateListView();
         listenForResendClick();
         setTitle("Scout");
+
+        bgLT = new bgLoopThread(context, this);
+        bgLT.start();
     }
 
     @Override
@@ -213,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -223,6 +237,88 @@ public class MainActivity extends AppCompatActivity {
             bgTimer.setMatchTimer();
             item.setEnabled(false);
         }
+
+
+        if(id == R.id.timerView){
+            final Dialog dialog = new Dialog(context);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            final LinearLayout dialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+            final TextView timeView = (TextView) dialogLayout.findViewById(R.id.TimerEditView);
+            final TextView timerActivityView = (TextView) dialogLayout.findViewById(R.id.TimerActivityView);
+            final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
+            final Button minusButton = (Button) dialogLayout.findViewById(R.id.TimerMinusButton);
+            final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
+            final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
+            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+            offset = 0;
+            plusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = offset + 1;
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+
+                    Log.e("test",""+offset);
+                }
+            });
+
+            minusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = offset - 1;
+
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+
+                    Log.e("test",""+offset);
+                }
+            });
+
+
+
+            handler = new Handler(Looper.getMainLooper());
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+
+
+                    if (bgTimer.timerActivity.equals("auto")){
+                        timerActivityView.setText("Auto");
+                    }
+                    if (bgTimer.timerActivity.equals("tele")){
+                        timerActivityView.setText("Tele");
+                    }
+                    // float updatedTime = backgroundTimer.getUpdatedTime();
+                    //bgTimer.currentOffset = offset;
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+                    handler.postDelayed(this, 10);
+
+                } // This is your code
+            };
+            handler.post(runnable);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+            resetButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bgTimer.stopTimer();
+                    offset = 0;
+                    bgTimer.timerReady = true;
+                    item.setTitle("");
+                    startTimer.setEnabled(true);
+                    dialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+            dialog.setContentView(dialogLayout);
+            dialog.show();
+        }
+
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.setScoutIDButton) {
@@ -236,18 +332,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        if (id == R.id.mainBackup){
+            bgLT.backup();
+            overridden = false;
+            spfe.putBoolean("overridden", true);
+        }
+
         if(id == R.id.mainAutomate){
-//            bgLT.automate();
+            bgLT.automate();
             overridden=true;
             spfe.putBoolean("overridden", false);
         }
 
-        if(id == R.id.QR){
-            Intent intent = new Intent(this, QRScan.class);
-            startActivity(intent);
-        }
-
         return true;
+    }
+
+    //this method will get the match number and set it from firebase
+    public void setMatchNumber(){
+        matchNumberEditText.setText(String.valueOf(matchNumber));
     }
 
     //display dialog to set scout number
@@ -326,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("MATCHNUMBER1", matchNumber+"");
                             DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                             if (matchNumber <= 0) {
-                                matchNumberEditText.setText(String.valueOf(matchNumber));
+                                setMatchNumber();
                                 Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                         Toast.LENGTH_LONG).show();
                             } else {
@@ -388,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("MATCHNUMBER4", matchNumber+"");
                     DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                     if (teamNumber <= 0) {
+//                        setTeamNumber();
                         Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -566,9 +669,6 @@ public class MainActivity extends AppCompatActivity {
             Log.i("File Info", "Failed to make Directory. Unimportant");
         }
         final File[] files = dir.listFiles();
-        if(files == null){
-            return;
-        }
         adapter.clear();
         Log.e("DEBUGGING", files.toString());
         for (File tmpFile : files) {
@@ -721,6 +821,121 @@ public class MainActivity extends AppCompatActivity {
         teamNumberTextView.setText(String.valueOf(teamNum));
     }
 
+//    public void updateAllianceColor(int mNum){
+//        foundIt = false;
+//        final String s_matchNumber = String.valueOf(mNum);
+//        Log.e("PLEZZZZZ", s_matchNumber);
+//        Log.e("PLEZZZZZ", mNum+"");
+//        if(!overridden){
+//            try{
+//                for(int i = 0; i < 3; i++){
+//                    final String num = String.valueOf(i);
+//                    databaseReference.child("Matches").child(s_matchNumber).child("blueAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            if(dataSnapshot != null){
+//                                if(dataSnapshot.getValue() != null){
+//                                    if(teamNumber != 0 || teamNumber != -1){
+//                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString()) && !foundIt){
+//                                            Log.e("PLEZZZZZ", s_matchNumber);
+//                                            Log.e("PLEZZZZZ", "blueAllianceTeamNumbers");
+//                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
+//                                            allianceColor = "blue";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+//                                            setActionBarColor("blue");
+//                                            foundIt = true;
+//                                        }else if(foundIt){
+//                                        }else{
+//                                            allianceColor = "notfound";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                        }
+//                                    }else{
+//                                        Log.e("SHIT1", "SHIT1");
+//                                        allianceColor = "notfound";
+//                                        spfe.putString("allianceColor", allianceColor);
+//                                    }
+//                                }else{
+//                                    Log.e("SHIT2", "SHIT2");
+//                                }
+//                            }else{
+//                                Log.e("SHIT3", "SHIT3");
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError firebaseError) {
+//                            if(!foundIt){
+//                                Log.e("SHIT4", "SHIT4");
+//                                setActionBarColor("green");
+//                                allianceColor = "notfound";
+//                                spfe.putString("allianceColor", allianceColor);
+//                            }
+//                        }
+//                    });
+//                    databaseReference.child("Matches").child(s_matchNumber).child("redAllianceTeamNumbers").child(num).addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            if(dataSnapshot != null){
+//                                if(dataSnapshot.getValue() != null){
+//                                    if(teamNumber != 0 || teamNumber != -1 && !foundIt) {
+//                                        if(teamNumber == Integer.parseInt(dataSnapshot.getValue().toString())){
+//                                            Log.e("PLEZZZZZ", s_matchNumber);
+//                                            Log.e("PLEZZZZZ", "redAllianceTeamNumbers");
+//                                            Log.e("PLEZZZZZ", dataSnapshot.getValue().toString());
+//                                            allianceColor = "red";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                            capAllianceColor = allianceColor.substring(0,1).toUpperCase() + allianceColor.substring(1);
+//                                            setActionBarColor("red");
+//                                            foundIt = true;
+//                                        }else if(foundIt){
+//                                        }else{
+//                                            allianceColor = "notfound";
+//                                            spfe.putString("allianceColor", allianceColor);
+//                                        }
+//                                    }else{
+//                                        Log.e("SHIT5", "SHIT5");
+//                                        allianceColor = "notfound";
+//                                        spfe.putString("allianceColor", allianceColor);
+//                                    }
+//                                }else{
+//                                    Log.e("SHIT6", "SHIT6");
+//                                }
+//                            }else{
+//                                Log.e("SHIT7", "SHIT7");
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError firebaseError) {
+//                            if(!foundIt){
+//                                Log.e("SHIT8", "SHIT8");
+//                                setActionBarColor("green");
+//                                allianceColor = "notfound";
+//                                spfe.putString("allianceColor", allianceColor);
+//                            }
+//                        }
+//                    });
+//                }
+//                if((allianceColor == null || allianceColor == "notfound") && !foundIt){
+//                    setActionBarColor("green");
+//                    allianceColor = "notfound";
+//                    spfe.putString("allianceColor", allianceColor);
+//                }
+//            }catch(DatabaseException de){
+//                Log.e("SHIT9", "SHIT9");
+//                if(!foundIt){
+//                    setActionBarColor("green");
+//                    allianceColor = "notfound";
+//                    spfe.putString("allianceColor", allianceColor);
+//                }
+//            }
+//        }else if(overridden && (allianceColor != "blue" && allianceColor != "red")){
+//            setActionBarColor("green");
+//            allianceColor = "notfound";
+//        }
+//    }
+
     public void alertScout(){
         View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
         TextView nameView= (TextView) dialogView.findViewById(R.id.nameView);
@@ -758,6 +973,9 @@ public class MainActivity extends AppCompatActivity {
                             updateAllianceColor();
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                            scoutName = nameValue.getText().toString();
                             scoutName = spinString;
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
@@ -765,14 +983,14 @@ public class MainActivity extends AppCompatActivity {
                         } else{
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
+//                            scoutName = nameValue.getText().toString();
                             scoutName = spinString;
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
                             if(scoutName!=spinString){
                                 Utils.makeToast(context, "Please Input a Valid Scout Name");
-                            }
-                            if(!sharedPreferences.getString("qrString", "NULL").equals("NULL")){
-                                bgLT.backupData();
                             }
                         }
                     }

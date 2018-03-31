@@ -6,11 +6,13 @@
         android:title="Automate"
         app:showAsAction = "always"/>
     <item
-        android:id="@+id/QR"
-        android:title="QR"
+        android:id="@+id/mainBackup"
+        android:title="Backup"
         app:showAsAction = "always"/>
     <item
-        android:title="@string/space"/>
+        android:title="          "/>
+    <item
+        android:title="          "/>
     <item
         android:title=""
         android:id="@+id/timerView"
