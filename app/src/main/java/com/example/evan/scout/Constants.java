@@ -74,7 +74,6 @@ public class Constants {
             put("scaleAttemptTele", "Scale");
             put("startingPosition", "Starting Position");
             put("climb", "Climbs");
-            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
 
         //convert constant syntax

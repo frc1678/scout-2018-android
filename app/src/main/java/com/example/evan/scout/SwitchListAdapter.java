@@ -99,10 +99,7 @@ public class SwitchListAdapter extends BaseAdapter {
             ((TextView) convertView.findViewById(R.id.cvLayer)).setText(String.valueOf(dataList.get(inversePosition).get("layer")));
             ((TextView) convertView.findViewById(R.id.cvStatus)).setText(String.valueOf(dataList.get(inversePosition).get("status")));
         }
-        /*else if(String.valueOf(dataList.get(inversePosition).get("didSucceed")).equals("false")) {
-            ((TextView) convertView.findViewById(R.id.cvResult)).setText("Fail");
-            ((TextView) convertView.findViewById(R.id.cvLayer)).setText(String.valueOf(dataList.get(inversePosition).get("layer")));
-        }*/
+
         ((TextView) convertView.findViewById(R.id.cvStartTime)).setText(String.valueOf(dataList.get(inversePosition).get("startTime")) + " sec");
         ((TextView) convertView.findViewById(R.id.cvEndTime)).setText(String.valueOf(dataList.get(inversePosition).get("endTime")) + " sec");
         ((ImageButton) convertView.findViewById(R.id.cvDelButton)).setOnClickListener(new View.OnClickListener() {
@@ -150,7 +147,6 @@ public class SwitchListAdapter extends BaseAdapter {
                                 RadioButton switchLayerButton = (RadioButton) subSuccessDialogView.findViewById(switchLayerGroup.getCheckedRadioButtonId());
                                 RadioButton switchStatusButton = (RadioButton) subSuccessDialogView.findViewById(switchStatusGroup.getCheckedRadioButtonId());
 
-                                //String finalLayerString = switchLayerButton.getText().toString();
                                 Integer finalLayer = 0;
                                 String finalStatus = null;
 
@@ -168,7 +164,6 @@ public class SwitchListAdapter extends BaseAdapter {
                                     dataList.get(inversePosition).put("layer", finalLayer);
                                     listInterface.onListChanged(dataList);
 
-                                    //String finalStatusString = switchStatusButton.getText().toString();
                                     if(switchStatusButton != null) { //START
                                         if(switchStatusButton.getText().toString().equals("Opponent Owned")) {
                                             finalStatus = "opponentOwned";
