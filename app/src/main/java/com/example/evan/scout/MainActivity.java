@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,8 +14,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -123,12 +120,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_GREEN)));
-        }
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        //resets all firebase datanames
+
         hsp = new HighSecurityPassword(context, context);
+
         if(!DataActivity.saveAutoData){
             DataManager.collectedData = new JSONObject();
             DataManager.resetAutoSwitchData();
@@ -143,17 +139,25 @@ public class MainActivity extends AppCompatActivity {
             DataManager.resetClimbData();
             Utils.resetAllDataNull();
         }
+
+        Log.e("INTEGERBOOLEANMAPLISt", DataManager.collectedData.toString());
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        MainActivity main = this;
+
+        matchDir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/d_match");
+
         bgTimer = new backgroundTimer(context);
+
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         spfe = sharedPreferences.edit();
-        if(QRScan.qrString.equals("NULL")){
-            spfe.putString("qrString", "NULL");
-            spfe.commit();
-        }
         if(!sharedPreferences.contains("scoutNumber")) {
             Log.e("no previous", "scout number");
             setScoutNumber();
@@ -173,6 +177,11 @@ public class MainActivity extends AppCompatActivity {
         }
         alertScout();
 
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(returnDrawable());
+        }
+
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
                     previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
                     teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
@@ -186,16 +195,14 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     teamNumberTextView.setText(String.valueOf(teamNumber));
-                    matchNumberEditText.setText(String.valueOf(matchNumber));
-
-        bgLT = new bgLoopThread(context, this);
-        if(getIntent().getBooleanExtra("qrObtained", false)){
-            bgLT.backup();
-        }
+                    setMatchNumber();
 
         updateListView();
         listenForResendClick();
         setTitle("Scout");
+
+        bgLT = new bgLoopThread(context, this);
+        bgLT.start();
     }
 
     @Override
@@ -236,18 +243,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        if (id == R.id.mainBackup){
+            bgLT.backup();
+            overridden = false;
+            spfe.putBoolean("overridden", true);
+        }
+
         if(id == R.id.mainAutomate){
-//            bgLT.automate();
+            bgLT.automate();
             overridden=true;
             spfe.putBoolean("overridden", false);
         }
 
-        if(id == R.id.QR){
-            Intent intent = new Intent(this, QRScan.class);
-            startActivity(intent);
-        }
-
         return true;
+    }
+
+    //this method will get the match number and set it from firebase
+    public void setMatchNumber(){
+        matchNumberEditText.setText(String.valueOf(matchNumber));
     }
 
     //display dialog to set scout number
@@ -326,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("MATCHNUMBER1", matchNumber+"");
                             DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                             if (matchNumber <= 0) {
-                                matchNumberEditText.setText(String.valueOf(matchNumber));
+                                setMatchNumber();
                                 Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                         Toast.LENGTH_LONG).show();
                             } else {
@@ -388,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("MATCHNUMBER4", matchNumber+"");
                     DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
                     if (teamNumber <= 0) {
+//                        setTeamNumber();
                         Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -548,7 +562,6 @@ public class MainActivity extends AppCompatActivity {
     public void getScoutData(View view) {
         searchBar = (EditText) findViewById(R.id.searchEditText);
         searchBar.setFocusable(false);
-        //listenForFileListClick();
         updateListView();
         searchBar.setFocusableInTouchMode(true);
     }
@@ -566,9 +579,6 @@ public class MainActivity extends AppCompatActivity {
             Log.i("File Info", "Failed to make Directory. Unimportant");
         }
         final File[] files = dir.listFiles();
-        if(files == null){
-            return;
-        }
         adapter.clear();
         Log.e("DEBUGGING", files.toString());
         for (File tmpFile : files) {
@@ -721,6 +731,8 @@ public class MainActivity extends AppCompatActivity {
         teamNumberTextView.setText(String.valueOf(teamNum));
     }
 
+
+
     public void alertScout(){
         View dialogView = LayoutInflater.from(context).inflate(R.layout.alertdialog, null);
         TextView nameView= (TextView) dialogView.findViewById(R.id.nameView);
@@ -731,8 +743,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setSelection(((ArrayAdapter<String>)spinner.getAdapter()).getPosition(scoutName));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
-//                    String sOptions= parent.getItemAtPosition(position).toString();
-//                    Toast.makeText(MainActivity.this, sOptions, Toast.LENGTH_LONG).show();
+
             }
             public void onNothingSelected(AdapterView<?> parent){
 
@@ -758,6 +769,8 @@ public class MainActivity extends AppCompatActivity {
                             updateAllianceColor();
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
                             scoutName = spinString;
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
@@ -765,14 +778,13 @@ public class MainActivity extends AppCompatActivity {
                         } else{
                             scoutName=spinString;
                             DataManager.addZeroTierJsonData("scoutName", scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("currentUser").setValue(scoutName);
+                            databaseReference.child("scouts").child("scout" + scoutNumber).child("scoutStatus").setValue("confirmed");
                             scoutName = spinString;
                             spfe.putString("scoutName", scoutName);
                             spfe.commit();
                             if(scoutName!=spinString){
                                 Utils.makeToast(context, "Please Input a Valid Scout Name");
-                            }
-                            if(!sharedPreferences.getString("qrString", "NULL").equals("NULL")){
-                                bgLT.backupData();
                             }
                         }
                     }
