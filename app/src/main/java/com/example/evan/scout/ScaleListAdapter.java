@@ -146,13 +146,11 @@ public class ScaleListAdapter extends BaseAdapter {
 
                                 RadioButton scaleLayerButton = (RadioButton) subSuccessDialogView.findViewById(scaleLayerGroup.getCheckedRadioButtonId());
                                 RadioButton scaleStatusButton = (RadioButton) subSuccessDialogView.findViewById(scaleStatusGroup.getCheckedRadioButtonId());
-
-                                //String finalLayerString = scaleLayerButton.getText().toString();
                                 Integer finalLayer = 0;
                                 String finalStatus = null;
 
-                                if(scaleLayerButton != null) { //Changed
-                                    String finalLayerString = scaleLayerButton.getText().toString(); //Moved to here
+                                if(scaleLayerButton != null) {
+                                    String finalLayerString = scaleLayerButton.getText().toString();
                                     if(finalLayerString.equals("Layer 1")) {
                                         finalLayer = 1;
                                     }
@@ -191,14 +189,14 @@ public class ScaleListAdapter extends BaseAdapter {
                                 List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                                 List<Object> scaleValues = new ArrayList<>();
 
-                                scaleValues.add(true); //Added
+                                scaleValues.add(true);
                                 try {
                                     scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                                     scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                scaleValues.add(finalStatus); //Added
+                                scaleValues.add(finalStatus);
                                 scaleValues.add(finalLayer);
 
                                 JSONObject tempData = Utils.returnJSONObject(scaleKeys, scaleValues);
@@ -232,7 +230,7 @@ public class ScaleListAdapter extends BaseAdapter {
                         List<Object> scaleValues = new ArrayList<>();
                         scaleValues.clear();
 
-                        scaleValues.add(false); //Added
+                        scaleValues.add(false);
                         try {
                             scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("startTime"));
                             scaleValues.add(((JSONObject) jsonArray.get(inversePosition)).get("endTime"));

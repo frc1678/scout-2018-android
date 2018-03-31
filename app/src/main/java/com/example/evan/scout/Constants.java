@@ -34,7 +34,6 @@ public class Constants {
     public static final String COLOR_GREY = "#b3b3b3";
 
     static {
-        //replace with new datapoints
         Map<String, String> initialKeysToTitles = new HashMap<String, String>() {{
             //New constants
             //counters
@@ -76,7 +75,6 @@ public class Constants {
             put("scaleAttemptTele", "Scale");
             put("startingPosition", "Starting Position");
             put("climb", "Climbs");
-            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
 
         //convert constant syntax
@@ -110,7 +108,7 @@ public class Constants {
             "opponentPlatformIntakeTele"
 
     ));
-//
+
     public static final String scoutdata = "{\n" +
             "\t\"1678Q15-12\": {\n" +
             "\t\t\"numCubesFumbledAuto\": 0,\n" +
