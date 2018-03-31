@@ -78,11 +78,11 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         try{
             if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) >= Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
                 qrString = prevQrString;
-            }else if(qrString.indexOf("|") == -1){
+            }else if(!qrString.contains("\\|")){
                 Utils.makeToast(this, "Wrong QR Code!");
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);
-            }else if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) <= 0){
+            }else if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("\\|"))) <= 0){
                 Utils.makeToast(this, "Wrong QR Code!");
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);

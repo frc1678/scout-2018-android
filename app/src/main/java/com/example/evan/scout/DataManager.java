@@ -35,6 +35,7 @@ import java.util.Map;
 
 public class DataManager {
     public static String subTitle = "";
+    public static JSONObject qrData = new JSONObject();
     public static JSONObject collectedData = new JSONObject();
     public static JSONObject sideData = new JSONObject();
 

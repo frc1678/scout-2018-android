@@ -2,6 +2,7 @@ package com.example.evan.scout;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -119,6 +123,9 @@ public abstract class DataActivity extends AppCompatActivity {
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
     DatabaseReference databaseReference;
+
+    Handler handler;
+    public static int offset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -653,11 +660,13 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         if(numSendClicks >= 2){
-            String jsonString = DataManager.collectedData.toString();
+            DataManager.qrData = new JSONObject();
+            DataManager.qrData.put(MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber, DataManager.collectedData);
+            String jsonString = DataManager.qrData.toString();
             Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
             Log.e("SUBTITLE", DataManager.subTitle);
             Log.e("JSONMAP", jsonString);
-            String qrScoutData = finalCompressedScoutData(jsonString);
+            String qrScoutData = finalCompressedScoutData(DataManager.qrData);
             DataManager.addZeroTierJsonData("qrScoutData", qrScoutData);
             MainActivity.spfe.putString("qrScoutData", qrScoutData);
             MainActivity.spfe.commit();
@@ -796,7 +805,88 @@ public boolean onCreateOptionsMenu(Menu menu) {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == R.id.timerView) {
+            final Dialog dialog = new Dialog(context);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            final LinearLayout dialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+            final TextView timeView = (TextView) dialogLayout.findViewById(R.id.TimerEditView);
+            final TextView timerActivityView = (TextView) dialogLayout.findViewById(R.id.TimerActivityView);
+            final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
+            final Button minusButton = (Button) dialogLayout.findViewById(R.id.TimerMinusButton);
+            final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
+            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+            final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
+
+
+            plusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = offset + 1;
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+
+                    Log.e("test", "" + offset);
+                }
+            });
+
+            minusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = offset - 1;
+
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+
+                    Log.e("test", "" + offset);
+                }
+            });
+
+
+            handler = new Handler(Looper.getMainLooper());
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+
+
+                    if (bgTimer.timerActivity.equals("auto")) {
+                        timerActivityView.setText("Auto");
+                    }
+                    if (bgTimer.timerActivity.equals("tele")) {
+                        timerActivityView.setText("Tele");
+                    }
+                    // float updatedTime = backgroundTimer.getUpdatedTime();
+                    timeView.setText(String.valueOf(bgTimer.updatedTime));
+                    // bgTimer.currentOffset = offset;
+                    handler.postDelayed(this, 10);
+
+                } // This is your code
+            };
+            handler.post(runnable);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+            resetButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bgTimer.stopTimer();
+                    offset = 0;
+                    bgTimer.timerReady = true;
+                    item.setTitle("");
+                    if(activityName != "tele") {
+                        startTimer.setEnabled(true);
+                    }
+                    dialog.dismiss();
+                }
+            });
+            dialog.setContentView(dialogLayout);
+            dialog.show();
+
+        }
+
         if(item.getItemId() == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
             item.setEnabled(false);
@@ -910,21 +1000,26 @@ public boolean onCreateOptionsMenu(Menu menu) {
         }
     }
 
-    public String finalCompressedScoutData(String scoutJSON) {
+    public String finalCompressedScoutData(JSONObject scoutJSON) {
         String compressedData = "";
         try {
             //FIRST, COMPRESS THE DATAPOINTS THAT HAVE NO NESTED KEYS
-            JSONObject uncompressed = new JSONObject(Constants.scoutdata); // <--- TODO replace 'Constant.scoutdata' with scoutJSON. The former is just for testing purposes.
+            Log.e("CHECKPOINT 1", "released");
+            JSONObject uncompressed = scoutJSON;
             String headerKey = getHeaderKey(uncompressed.keys());
             JSONObject uncompressedUnderHeaderKey = new JSONObject(uncompressed.getString(headerKey));
             JSONObject compressed = new JSONObject();
-            Iterator<?> uncompressedKeys = uncompressedUnderHeaderKey.keys();
+            Iterator<?> uncompressedKeys= uncompressedUnderHeaderKey.keys();
             while (uncompressedKeys.hasNext()) {
+                Log.e("CHECKPOINT 2", "released");
                 String key = (String) uncompressedKeys.next();
                 if(!Constants.nestedKeys.contains(key)){
+                    Log.e("CHECKPOINT 3", "released");
                     if(!Constants.unnestedKeyWithArrayValue.contains(key)){
                         if (Constants.compressValues.containsKey(uncompressedUnderHeaderKey.get(key).toString())){
+                            Log.e("CHECKPOINT 4", "released");
                             if(uncompressedUnderHeaderKey.get(key).toString().equals("true") || uncompressedUnderHeaderKey.get(key).toString().equals("false")){
+                                Log.e("CHECKPOINT 5", "released");
                                 compressed.put(Constants.compressKeys.get(key), Double.parseDouble(Constants.compressValues.get(uncompressedUnderHeaderKey.get(key).toString())));
                             }else{
                                 compressed.put(Constants.compressKeys.get(key), Constants.compressValues.get(uncompressedUnderHeaderKey.get(key).toString()));
@@ -952,6 +1047,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 String nestedKey = Constants.nestedKeys.get(i);
                 if(!nestedKey.equals("climb")) {
                     if (uncompressedUnderHeaderKey.has(nestedKey)) {
+                        Log.e("nestedKey", nestedKey);
                         JSONArray keyWithNestedKeys = uncompressedUnderHeaderKey.getJSONArray(nestedKey);
                         for (int j = 0; j < keyWithNestedKeys.length(); ++j){
                             JSONObject compressedJ1 = new JSONObject();
@@ -970,40 +1066,49 @@ public boolean onCreateOptionsMenu(Menu menu) {
                                 }
                             }
                             listOfDicts.put(compressedJ1);
+                            Log.e("????", "reached");
                             compressed.put(Constants.compressKeys.get(nestedKey), listOfDicts);
+                            Log.e("#####", "reached");
                         }
                     }
                 }else{
                     //CLIMB DATA HAS DOUBLE NESTED KEYS
-                    for (int k = 0; k < uncompressedUnderHeaderKey.getJSONArray(nestedKey).length(); ++k){
-                        JSONObject compressedJ2 = new JSONObject();
-                        JSONObject climbData = uncompressedUnderHeaderKey.getJSONArray(nestedKey).getJSONObject(k);
-                        JSONObject tempCompressed = new JSONObject();
-                        String climbTitle = getHeaderKey(climbData.keys());
-                        JSONObject climbDetails = new JSONObject(climbData.get(climbTitle).toString());
-                        Iterator<?> j1Keys = climbDetails.keys();
-                        while (j1Keys.hasNext()) {
-                            String key = (String) j1Keys.next();
-                            if (Constants.compressValues.containsKey(climbDetails.get(key).toString())) {
-                                if(climbDetails.get(key).toString().equals("true") || climbDetails.get(key).toString().equals("false")){
-                                    compressedJ2.put(Constants.compressKeys.get(key), Double.parseDouble(Constants.compressValues.get(climbDetails.get(key).toString())));
-                                }else{
-                                    compressedJ2.put(Constants.compressKeys.get(key), Constants.compressValues.get(climbDetails.get(key).toString()));
+                    if(uncompressedUnderHeaderKey.has(nestedKey)){
+                        Log.e("nestedKey", nestedKey);
+                        try{
+                            for (int k = 0; k < uncompressedUnderHeaderKey.getJSONArray(nestedKey).length(); ++k){
+                                JSONObject compressedJ2 = new JSONObject();
+                                JSONObject climbData = uncompressedUnderHeaderKey.getJSONArray(nestedKey).getJSONObject(k);
+                                JSONObject tempCompressed = new JSONObject();
+                                String climbTitle = getHeaderKey(climbData.keys());
+                                JSONObject climbDetails = new JSONObject(climbData.get(climbTitle).toString());
+                                Iterator<?> j1Keys = climbDetails.keys();
+                                while (j1Keys.hasNext()) {
+                                    String key = (String) j1Keys.next();
+                                    if (Constants.compressValues.containsKey(climbDetails.get(key).toString())) {
+                                        if(climbDetails.get(key).toString().equals("true") || climbDetails.get(key).toString().equals("false")){
+                                            compressedJ2.put(Constants.compressKeys.get(key), Double.parseDouble(Constants.compressValues.get(climbDetails.get(key).toString())));
+                                        }else{
+                                            compressedJ2.put(Constants.compressKeys.get(key), Constants.compressValues.get(climbDetails.get(key).toString()));
+                                        }
+                                    } else {
+                                        compressedJ2.put(Constants.compressKeys.get(key), Double.parseDouble(climbDetails.get(key).toString()));
+                                    }
                                 }
-                            } else {
-                                compressedJ2.put(Constants.compressKeys.get(key), Double.parseDouble(climbDetails.get(key).toString()));
+                                tempCompressed.put(Constants.compressKeys.get(climbTitle), compressedJ2);
+                                listOfDicts.put(tempCompressed);
+                                compressed.put(Constants.compressKeys.get(nestedKey), listOfDicts);
                             }
+                        }catch(JSONException e){
+                            e.printStackTrace();
                         }
-                        tempCompressed.put(Constants.compressKeys.get(climbTitle), compressedJ2);
-                        listOfDicts.put(tempCompressed);
-                        compressed.put(Constants.compressKeys.get(nestedKey), listOfDicts);
                     }
-
                 }
             }
             compressedData = headerKey + "|" + compressed.toString().substring(1, compressed.toString().length()-1).replace("\"", "").replace(" ", "");
             Log.e("FINAL", compressedData.toString());
         } catch (JSONException JE) {
+            JE.printStackTrace();
             Log.e("CHECKPOINT", "SOMETHING WENT WRONG");
         }
         return compressedData;

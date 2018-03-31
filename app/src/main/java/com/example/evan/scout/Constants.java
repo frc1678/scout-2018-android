@@ -110,7 +110,7 @@ public class Constants {
             "opponentPlatformIntakeTele"
 
     ));
-
+//
     public static final String scoutdata = "{\n" +
             "\t\"1678Q15-12\": {\n" +
             "\t\t\"numCubesFumbledAuto\": 0,\n" +
@@ -220,6 +220,7 @@ public class Constants {
     public static Map<String, String> compressKeys = new HashMap<String, String>() {{
         //New constants
         put("layer", "J");
+        put("scaleAttemptAuto", "$");
         put("numCubesFumbledAuto", "F");
         put("didMakeAutoRun", "V");
         put("scoutName", "e");
@@ -279,5 +280,6 @@ public class Constants {
         put("left", "N");
         put("true", "1");
         put("false", "0");
+        put("assisted", "^");
     }};
 }
