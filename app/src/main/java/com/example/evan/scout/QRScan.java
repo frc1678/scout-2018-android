@@ -79,16 +79,16 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
             if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) >= Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
                 qrString = prevQrString;
             }else if(!qrString.contains("\\|")){
-                Utils.makeToast(this, "Wrong QR Code!");
+                Utils.makeToast(this, "Wrong QR Code! Has no Pipe!");
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);
             }else if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("\\|"))) <= 0){
-                Utils.makeToast(this, "Wrong QR Code!");
+                Utils.makeToast(this, "Wrong QR Code! Invalid Cycle!");
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);
             }
         }catch(Exception e){
-            Utils.makeToast(this, "Wrong QR Code!");
+            Utils.makeToast(this, "Wrong QR Code! Just Wrong!");
             intent.putExtra("qrObtained", false);
             startActivity(intent);
         }

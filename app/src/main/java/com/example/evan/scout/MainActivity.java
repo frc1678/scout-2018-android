@@ -79,6 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.evan.scout.backgroundTimer.offset;
 import static com.example.evan.scout.bgLoopThread.scoutName;
 //
 public class MainActivity extends AppCompatActivity {
@@ -137,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView QRImage;
 
     Handler handler;
-    public static int offset;
 
     //set the context
     private final MainActivity context = this;
@@ -167,7 +167,9 @@ public class MainActivity extends AppCompatActivity {
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        bgTimer = new backgroundTimer(context);
+        if(backgroundTimer.timerReady){
+            bgTimer = new backgroundTimer(context);
+        }
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
@@ -230,6 +232,10 @@ public class MainActivity extends AppCompatActivity {
         mainMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
+        if(!backgroundTimer.timerReady) {
+            menu.findItem(R.id.beginTimerButton).setEnabled(false);
+        }
+
         return true;
     }
 
@@ -252,25 +258,23 @@ public class MainActivity extends AppCompatActivity {
             final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
             final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
             Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
-            offset = 0;
             plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    offset = offset + 1;
-                    timeView.setText(String.valueOf(bgTimer.updatedTime));
-
-                    Log.e("test",""+offset);
+                    if(backgroundTimer.offsetAllowed){
+                        offset = offset + 1;
+                        timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                    }
                 }
             });
 
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    offset = offset - 1;
-
-                    timeView.setText(String.valueOf(bgTimer.updatedTime));
-
-                    Log.e("test",""+offset);
+                    if(backgroundTimer.offsetAllowed){
+                        offset = offset - 1;
+                        timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                    }
                 }
             });
 
@@ -282,17 +286,17 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
 
 
-                    if (bgTimer.timerActivity.equals("auto")){
+                    if (backgroundTimer.timerActivity.equals("auto")){
                         timerActivityView.setText("Auto");
-                    }
-                    if (bgTimer.timerActivity.equals("tele")){
+                    }else if (backgroundTimer.timerActivity.equals("tele")){
                         timerActivityView.setText("Tele");
+                    }else if (backgroundTimer.timerActivity.equals("FTB")){
+                        timerActivityView.setText("FTB");
                     }
                     // float updatedTime = backgroundTimer.getUpdatedTime();
                     //bgTimer.currentOffset = offset;
-                    timeView.setText(String.valueOf(bgTimer.updatedTime));
-                    handler.postDelayed(this, 10);
-
+                    timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                    handler.postDelayed(this, 100);
                 } // This is your code
             };
             handler.post(runnable);
@@ -306,9 +310,11 @@ public class MainActivity extends AppCompatActivity {
             resetButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    bgTimer.stopTimer();
+                    backgroundTimer.offsetAllowed = false;
                     offset = 0;
                     bgTimer.timerReady = true;
+                    bgTimer.matchTimer.cancel();
+                    bgTimer.matchTimer = null;
                     item.setTitle("");
                     startTimer.setEnabled(true);
                     dialog.dismiss();
