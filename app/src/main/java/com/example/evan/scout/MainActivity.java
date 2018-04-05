@@ -61,6 +61,8 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import org.jcodec.containers.mp4.boxes.Edit;
+import org.jcodec.movtool.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -112,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
     public static backgroundTimer bgTimer;
 
     public File matchDir;
+
+    String dialogColor;
 
     Spinner spinner;
     ArrayAdapter<CharSequence> spinnerAdapter;
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         if(QRScan.qrString.equals("")){
             QRScan.qrString = sharedPreferences.getString("qrString", "");
         }
-        mode = sharedPreferences.getString("mode", "Auto");
+        mode = sharedPreferences.getString("mode", "");
         if(!sharedPreferences.contains("scoutNumber")) {
             Log.e("no previous", "scout number");
             setScoutNumber();
@@ -199,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Last Scout name used", scoutName);
         }
         alertScout();
+        bgLT = new bgLoopThread(context, this);
 
                     matchNumberEditText = (EditText)findViewById(R.id.matchNumEditText);
                     previousMatchNumberTextView = (TextView) findViewById(R.id.previousMatchNumTextView);
@@ -212,17 +217,16 @@ public class MainActivity extends AppCompatActivity {
                         matchNumberEditText.setText(String.valueOf(matchNumber));
                     }
 
-        bgLT = new bgLoopThread(context, this);
         if(mode.equals("QR") || getIntent().getBooleanExtra("qrObtained", false)){
-            Log.e("BACKUPED!!!!", mode);
-            bgLT.backup();
-        }else{
-            bgLT.automate();
+            Log.e("QRED!!!!", mode);
+            bgLT.qrData();
         }
 
         updateListView();
         listenForResendClick();
         setTitle("Scout");
+
+        matchNumTextListenerSetter();
     }
 
     @Override
@@ -258,12 +262,13 @@ public class MainActivity extends AppCompatActivity {
             final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
             final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
             Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+
             plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(backgroundTimer.offsetAllowed){
+                    if(!backgroundTimer.stopTimer){
                         offset = offset + 1;
-                        timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
                     }
                 }
             });
@@ -273,12 +278,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     if(backgroundTimer.offsetAllowed){
                         offset = offset - 1;
-                        timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
                     }
                 }
             });
-
-
 
             handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = new Runnable() {
@@ -295,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // float updatedTime = backgroundTimer.getUpdatedTime();
                     //bgTimer.currentOffset = offset;
-                    timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                    timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
                     handler.postDelayed(this, 100);
                 } // This is your code
             };
@@ -307,20 +310,22 @@ public class MainActivity extends AppCompatActivity {
                     handler.removeCallbacks(runnable);
                 }
             });
+
             resetButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    backgroundTimer.offsetAllowed = false;
                     offset = 0;
                     bgTimer.timerReady = true;
                     bgTimer.matchTimer.cancel();
-                    bgTimer.matchTimer = null;
+                    //bgTimer.matchTimer = null;
+                    item.setEnabled(false);
                     item.setTitle("");
                     startTimer.setEnabled(true);
                     dialog.dismiss();
                     handler.removeCallbacks(runnable);
                 }
             });
+
             dialog.setContentView(dialogLayout);
             dialog.show();
         }
@@ -342,16 +347,94 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if(id == R.id.mainAutomate){
-            bgLT.automate();
-        }
-
         if(id == R.id.QR){
             mode = "QR";
             spfe.putString("mode", "QR");
             spfe.commit();
             Intent intent = new Intent(this, QRScan.class);
             startActivity(intent);
+        }
+
+        if(id == R.id.backup){
+            mode = "backup";
+            spfe.putString("mode", "backup");
+            spfe.commit();
+            bgLT.backup();
+        }
+
+        if(id == R.id.override){
+            final Dialog dialog = new Dialog(context);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.override_dialog, null);
+            TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+            titleTV.setText("Override Dialog");
+            dialogColor = "none";
+
+            final Button redButton = (Button) dialogLayout.findViewById(R.id.redButton);
+            final Button blueButton = (Button) dialogLayout.findViewById(R.id.blueButton);
+
+            redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+            redButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogColor = "red";
+                    redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                    blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+                }
+            });
+
+            blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+            blueButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogColor = "blue";
+                    redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+                    blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                }
+            });
+
+            final EditText teamNumEditText = (EditText) dialogLayout.findViewById(R.id.dialogTeamNumEditText);
+            teamNumEditText.setEnabled(true);
+
+            Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
+            doneButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Integer teamNum = -1;
+                    try{teamNum = Integer.parseInt(teamNumEditText.getText().toString());}catch(Exception e){e.printStackTrace(); teamNum = -1;}
+                    if(teamNum <= 0){
+                        Utils.makeToast(context, "Please Input Valid Team Number!");
+                    }else if(teamNum > 0){
+                        teamNumber = teamNum;
+                        DataManager.addZeroTierJsonData("teamNumber", teamNum);
+                        updateTeamEditText(teamNum);
+
+                        if(dialogColor.equals("red")){
+                            allianceColor = "red";
+                            updateAllianceColor();
+                            dialog.dismiss();
+                        }else if(dialogColor.equals("blue")){
+                            allianceColor = "blue";
+                            updateAllianceColor();
+                            dialog.dismiss();
+                        }else if(dialogColor.equals("none")){
+                            Utils.makeToast(context, "Please Input Valid Alliance Color!");
+                        }
+                    }
+                }
+            });
+
+            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.setContentView(dialogLayout);
+            dialog.show();
         }
 
         return true;
@@ -866,9 +949,7 @@ public class MainActivity extends AppCompatActivity {
                                 Utils.makeToast(context, "Please Input a Valid Scout Name");
                             }
                             if(mode.equals("QR")){
-                                bgLT.backup();
-                            }else if(mode.equals("Auto")){
-                                bgLT.automate();
+                                bgLT.qrData();
                             }
                         }
                     }
@@ -947,5 +1028,29 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception er){
             Log.e("QrGenerate",er.getMessage());
         }
+    }
+
+    public void matchNumTextListenerSetter(){
+        matchNumberEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence Register, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                try{
+                    Log.e("ZZZZZZZZZZZZZZZZ", "ZZZZZZZZZZZZZZZZZZ");
+                    matchNumber = Integer.parseInt(s.toString());
+                    spfe.putInt("matchNumber", matchNumber);
+                    spfe.commit();
+                    DataManager.addZeroTierJsonData("matchNumber", matchNumber);
+
+                    bgLT.qrData();
+                }catch(NullPointerException ne){
+                }catch (NumberFormatException nf){
+                }
+            }
+        });
     }
 }

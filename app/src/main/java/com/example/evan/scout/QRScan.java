@@ -72,30 +72,41 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
     }
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
+        boolean dontlogsuccess = false;
         Intent intent = new Intent(this, MainActivity.class);
         qrString = text;
         String prevQrString = MainActivity.sharedPreferences.getString("qrString", "");
         try{
-            if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) >= Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
+            Log.e("CANCERCANCERY", prevQrString);
+            Log.e("CANCERCANCER1", prevQrString.substring(0, prevQrString.indexOf("|")));
+            Log.e("CANCERCANCER2", qrString.substring(0, qrString.indexOf("|")));
+            if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) > Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
+                Utils.makeToast(this, "WRONG CYCLE NUMBER!");
                 qrString = prevQrString;
-            }else if(!qrString.contains("\\|")){
-                Utils.makeToast(this, "Wrong QR Code! Has no Pipe!");
+                dontlogsuccess = true;
+            }else if(!qrString.contains("|")){
+                Log.e("HAS NO PIPE", "NO PIPE");
+                Utils.makeToast(this, "NO PIPE!");
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);
-            }else if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("\\|"))) <= 0){
-                Utils.makeToast(this, "Wrong QR Code! Invalid Cycle!");
+            }else if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) <= 0){
+                Log.e("INVALID CYCLE NUM!", prevQrString.substring(0, prevQrString.indexOf("\\|")));
+                Utils.makeToast(this, "INVALID CYCLE NUM!");
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);
             }
+            Log.e("CYCLENUMBER!!!", Integer.parseInt(qrString.substring(0, qrString.indexOf("|"))) + "");
         }catch(Exception e){
-            Utils.makeToast(this, "Wrong QR Code! Just Wrong!");
-            intent.putExtra("qrObtained", false);
-            startActivity(intent);
+            Utils.makeToast(this, "FAIL SCAN!");
+            e.printStackTrace();
         }
         Log.e("QRSTRING", qrString+"");
         MainActivity.spfe.putString("qrString", qrString);
         MainActivity.spfe.commit();
         intent.putExtra("qrObtained", true);
+        if(!dontlogsuccess){
+            Utils.makeToast(this, "SUCCESS SCAN");
+        }
         startActivity(intent);
     }
 

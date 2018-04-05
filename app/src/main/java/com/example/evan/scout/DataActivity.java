@@ -819,12 +819,13 @@ public boolean onCreateOptionsMenu(Menu menu) {
             final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
             final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
             Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+
             plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(!backgroundTimer.stopTimer){
                         offset = offset + 1;
-                        timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
                     }
                 }
             });
@@ -834,12 +835,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 public void onClick(View view) {
                     if(backgroundTimer.offsetAllowed){
                         offset = offset - 1;
-                        timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
                     }
                 }
             });
-
-
 
             handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = new Runnable() {
@@ -853,7 +852,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                         timerActivityView.setText("FTB");
                     }
 
-                    timeView.setText(String.valueOf(backgroundTimer.dialogTime));
+                    timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
                     handler.postDelayed(this, 100);
                 } // This is your code
             };
@@ -865,19 +864,22 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     handler.removeCallbacks(runnable);
                 }
             });
+
             resetButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     offset = 0;
                     bgTimer.timerReady = true;
                     bgTimer.matchTimer.cancel();
-                    bgTimer.matchTimer = null;
+                    //bgTimer.matchTimer = null;
+                    item.setEnabled(false);
                     item.setTitle("");
                     startTimer.setEnabled(true);
                     dialog.dismiss();
                     handler.removeCallbacks(runnable);
                 }
             });
+
             dialog.setContentView(dialogLayout);
             dialog.show();
         }

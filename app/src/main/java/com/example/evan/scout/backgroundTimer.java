@@ -80,7 +80,7 @@ public class backgroundTimer extends Thread{
                     offset = 0f;
                     timerReady = true;
                     matchTimer.cancel();
-                    matchTimer = null;
+//                    matchTimer = null;
                 }
             }
             @Override
