@@ -15,16 +15,13 @@ import static java.lang.Long.valueOf;
  */
 public class backgroundTimer extends Thread{
     public Menu currentMenu;
-    public static float offset;
     public static boolean timerReady = true;
     public int showTime;
     public static float updatedTime;
     public static float trackedTime;
     public static float dialogTime;
-    public static boolean stopTimer = false;
     public CountDownTimer matchTimer;
     public static String timerActivity;
-    public static boolean offsetAllowed = true;
 
     Activity context;
     public backgroundTimer(Activity context){
@@ -35,20 +32,15 @@ public class backgroundTimer extends Thread{
         startTimer();
     }
     private void startTimer(){
-        offset = 0f;
         trackedTime = 0f;
         updatedTime = 0f;
-        stopTimer = false;
         matchTimer = new CountDownTimer(400000, 10) {
             @Override
             public void onTick(long millisUntilFinished) {
                 float countDownTime = (400000f - millisUntilFinished)/1000f;
-                Log.e("REORTY", countDownTime+"");
-                trackedTime = countDownTime + offset;
+                trackedTime = countDownTime;
                 if (trackedTime <= 0f) {
-                    offsetAllowed = false;
                 }else if ((trackedTime >= 0f) && (trackedTime <= 15f)){
-                    offsetAllowed = true;
                     updatedTime = trackedTime;
                     dialogTime = Float.parseFloat(String.format("%.2f", updatedTime));
                     timerActivity = "auto";
@@ -56,7 +48,6 @@ public class backgroundTimer extends Thread{
                     MenuItem timerView = currentMenu.findItem(R.id.timerView);
                     timerView.setTitle("AutoTime: "+showTime+" / 15");
                 }else if((trackedTime >= 15f) && (trackedTime <= 150f)){
-                    offsetAllowed = true;
                     timerActivity = "tele";
                     updatedTime = trackedTime - 15f;
                     if((105f <= updatedTime) && (updatedTime <= 135f)){
@@ -72,15 +63,18 @@ public class backgroundTimer extends Thread{
                         timerView.setTitle("TeleTime: "+showTime+" / 135");
                     }
                 }else if(trackedTime >= 150f){
-                    offsetAllowed = false;
                     updatedTime = 135f;
                     showTime = (int) (updatedTime - 105f);
                     MenuItem timerView = currentMenu.findItem(R.id.timerView);
                     timerView.setTitle("FTB: "+showTime+" / 30");
-                    offset = 0f;
                     timerReady = true;
-                    matchTimer.cancel();
-//                    matchTimer = null;
+                    trackedTime = 0;
+                    showTime = 0;
+                    updatedTime = 0;
+                    if(matchTimer != null){
+                        matchTimer.cancel();
+                        matchTimer = null;
+                    }
                 }
             }
             @Override

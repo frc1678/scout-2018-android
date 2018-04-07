@@ -81,7 +81,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.evan.scout.backgroundTimer.offset;
 import static com.example.evan.scout.bgLoopThread.scoutName;
 //
 public class MainActivity extends AppCompatActivity {
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     //the current match number
     public static int matchNumber;
 
-    public static String mode = "automate";
+    public static String mode = "";
 
     //boolean if the schedule has been overridden
     public boolean overridden = false;
@@ -250,85 +249,85 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id == R.id.timerView){
-            final Dialog dialog = new Dialog(context);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            final LinearLayout dialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
-            final TextView timeView = (TextView) dialogLayout.findViewById(R.id.TimerEditView);
-            final TextView timerActivityView = (TextView) dialogLayout.findViewById(R.id.TimerActivityView);
-            final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
-            final Button minusButton = (Button) dialogLayout.findViewById(R.id.TimerMinusButton);
-            final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
-            final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
-            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
-
-            plusButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(!backgroundTimer.stopTimer){
-                        offset = offset + 1;
-                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
-                    }
-                }
-            });
-
-            minusButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(backgroundTimer.offsetAllowed){
-                        offset = offset - 1;
-                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
-                    }
-                }
-            });
-
-            handler = new Handler(Looper.getMainLooper());
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-
-
-                    if (backgroundTimer.timerActivity.equals("auto")){
-                        timerActivityView.setText("Auto");
-                    }else if (backgroundTimer.timerActivity.equals("tele")){
-                        timerActivityView.setText("Tele");
-                    }else if (backgroundTimer.timerActivity.equals("FTB")){
-                        timerActivityView.setText("FTB");
-                    }
-                    // float updatedTime = backgroundTimer.getUpdatedTime();
-                    //bgTimer.currentOffset = offset;
-                    timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
-                    handler.postDelayed(this, 100);
-                } // This is your code
-            };
-            handler.post(runnable);
-            cancelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    handler.removeCallbacks(runnable);
-                }
-            });
-
-            resetButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    offset = 0;
-                    bgTimer.timerReady = true;
-                    bgTimer.matchTimer.cancel();
-                    //bgTimer.matchTimer = null;
-                    item.setEnabled(false);
-                    item.setTitle("");
-                    startTimer.setEnabled(true);
-                    dialog.dismiss();
-                    handler.removeCallbacks(runnable);
-                }
-            });
-
-            dialog.setContentView(dialogLayout);
-            dialog.show();
-        }
+//        if(id == R.id.timerView){
+//            final Dialog dialog = new Dialog(context);
+//            dialog.setCanceledOnTouchOutside(false);
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            final LinearLayout dialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+//            final TextView timeView = (TextView) dialogLayout.findViewById(R.id.TimerEditView);
+//            final TextView timerActivityView = (TextView) dialogLayout.findViewById(R.id.TimerActivityView);
+//            final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
+//            final Button minusButton = (Button) dialogLayout.findViewById(R.id.TimerMinusButton);
+//            final Button plusButton = (Button) dialogLayout.findViewById(R.id.TimerPlusButton);
+//            final Button resetButton = (Button) dialogLayout.findViewById(R.id.resetButton);
+//            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+//
+//            plusButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if(!backgroundTimer.stopTimer){
+//                        offset = offset + 1;
+//                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
+//                    }
+//                }
+//            });
+//
+//            minusButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if(backgroundTimer.offsetAllowed){
+//                        offset = offset - 1;
+//                        timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
+//                    }
+//                }
+//            });
+//
+//            handler = new Handler(Looper.getMainLooper());
+//            final Runnable runnable = new Runnable() {
+//                @Override
+//                public void run() {
+//
+//
+//                    if (backgroundTimer.timerActivity.equals("auto")){
+//                        timerActivityView.setText("Auto");
+//                    }else if (backgroundTimer.timerActivity.equals("tele")){
+//                        timerActivityView.setText("Tele");
+//                    }else if (backgroundTimer.timerActivity.equals("FTB")){
+//                        timerActivityView.setText("FTB");
+//                    }
+//                    // float updatedTime = backgroundTimer.getUpdatedTime();
+//                    //bgTimer.currentOffset = offset;
+//                    timeView.setText(String.valueOf(Math.round(backgroundTimer.dialogTime)));
+//                    handler.postDelayed(this, 100);
+//                } // This is your code
+//            };
+//            handler.post(runnable);
+//            cancelButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    dialog.dismiss();
+//                    handler.removeCallbacks(runnable);
+//                }
+//            });
+//
+//            resetButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    offset = 0;
+//                    bgTimer.timerReady = true;
+//                    bgTimer.matchTimer.cancel();
+//                    //bgTimer.matchTimer = null;
+//                    item.setEnabled(false);
+//                    item.setTitle("");
+//                    startTimer.setEnabled(true);
+//                    dialog.dismiss();
+//                    handler.removeCallbacks(runnable);
+//                }
+//            });
+//
+//            dialog.setContentView(dialogLayout);
+//            dialog.show();
+//        }
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
