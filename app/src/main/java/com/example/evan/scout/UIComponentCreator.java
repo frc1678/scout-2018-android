@@ -45,7 +45,6 @@ import java.util.Map;
 
 import static android.content.Context.DEVICE_POLICY_SERVICE;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static com.example.evan.scout.MainActivity.bgTimer;
 import static java.lang.String.valueOf;
 
 //class that creates all the ui components I need like togglebuttons, etc.  Also stores all buttons in list to be accessed later
@@ -404,7 +403,7 @@ public class UIComponentCreator {
                         }
                     });
                     if(DataActivity.activityName.equals("auto")){
-                        if(bgTimer.timerReady == false) {
+                        if(backgroundTimer.timerReady == false) {
                             dialog.setContentView(dialogLayout);
                             dialog.show();
                         }else{
@@ -700,7 +699,7 @@ public class UIComponentCreator {
                     });
 
                     if(DataActivity.activityName.equals("auto")){
-                        if(bgTimer.timerReady == false) {
+                        if(backgroundTimer.timerReady == false) {
                             dialog.setContentView(dialogLayout);
                             dialog.show();
                         }else{
@@ -876,7 +875,7 @@ public class UIComponentCreator {
                         }
                     });
                     if(DataActivity.activityName.equals("auto")){
-                        if(bgTimer.timerReady == false) {
+                        if(backgroundTimer.timerReady == false) {
                             dialog.setContentView(dialogLayout);
                             dialog.show();
                         }else{
