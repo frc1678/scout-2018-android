@@ -10,53 +10,7 @@
         android:textSize="25dp"
         android:gravity="center_horizontal"
         android:id="@+id/scaleSuccessDialogTitle"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scaleOwnershipLayout"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/scaleSuccessDialogTitle">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:paddingLeft="10sp"
-            android:text="Ownership:"
-            android:id="@+id/scaleOwnershipView" />
-    </LinearLayout>
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/scaleOwnershipLayout"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/scaleOwnershipRadioGroup"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:text="Opponent Owned"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/scaleOwnedRadio"
-            android:padding="5dp"
-            android:textSize="25dp"
-            android:paddingRight="5dp"
-            android:clickable="true"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:text="Balanced"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/scaleBalancedRadio"
-            android:padding="5dp"
-            android:paddingRight="5dp"
-            android:clickable="true"
-            android:textSize="25dp"
-            android:layout_weight="1" />
-    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,6 +47,7 @@
             android:textSize="25dp"
             android:paddingRight="5dp"
             android:clickable="true"
+            android:background="@drawable/radio_style"
             android:layout_weight="1" />
 
         <RadioButton
@@ -104,6 +59,7 @@
             android:paddingRight="5dp"
             android:clickable="true"
             android:textSize="25dp"
+            android:background="@drawable/radio_style"
             android:layout_weight="1" />
 
         <RadioButton
@@ -115,6 +71,7 @@
             android:paddingRight="5dp"
             android:clickable="true"
             android:textSize="25dp"
+            android:background="@drawable/radio_style"
             android:layout_weight="1" />
     </RadioGroup>
 
