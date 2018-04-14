@@ -442,6 +442,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                                         RadioButton centerStartPosition = radioCreator.getRadioButton("startingPosition", "center", ViewGroup.LayoutParams.MATCH_PARENT, 60);
                                                         RadioButton leftStartPosition = radioCreator.getRadioButton("startingPosition", "left", ViewGroup.LayoutParams.MATCH_PARENT, 60);
 
+
                                                         rightStartPosition.setId(R.id.right); //START
                                                         centerStartPosition.setId(R.id.center);
                                                         leftStartPosition.setId(R.id.left);

@@ -8,6 +8,7 @@ import android.app.admin.SystemUpdatePolicy;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -95,8 +96,10 @@ public class UIComponentCreator {
 
     public RadioButton getRadioButton (String radioFBName, String radioFBValue,int width,int height){
         RadioButton radioButton = new RadioButton(context);
-        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, height, 1f));
+        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         radioButton.setTextSize(radioButton.getTextSize() * 1f);
+        radioButton.setBackgroundResource(R.drawable.radio_style);
+        radioButton.setPadding(0, 15, 0, 15);
         radioViews.add(radioButton);
         currentComponent++;
         return radioButton;
@@ -216,33 +219,7 @@ public class UIComponentCreator {
                     String colorString = colorOfSwitch.substring(0,1).toUpperCase() + colorOfSwitch.substring(1);
                     titleTV.setText(colorString + " Switch Attempt");
 
-                    final RadioGroup switchOwnershipRG = (RadioGroup) dialogLayout.findViewById(R.id.switchOwnershipRadioGroup);
 
-                    RadioButton ownedRadioButton = (RadioButton) dialogLayout.findViewById(R.id.switchOwnedRadio);
-                    ownedRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(status != "opponentOwned"){
-                                status = "opponentOwned";
-                            }else{
-                                switchOwnershipRG.clearCheck();
-                                status = null;
-                            }
-                        }
-                    });
-
-                    RadioButton balancedRadioButton = (RadioButton) dialogLayout.findViewById(R.id.switchBalancedRadio);
-                    balancedRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(status != "balanced"){
-                                status = "balanced";
-                            }else{
-                                switchOwnershipRG.clearCheck();
-                                status = null;
-                            }
-                        }
-                    });
 
                     Button successButton = (Button) dialogLayout.findViewById(R.id.successButton);
                     successButton.setOnClickListener(new View.OnClickListener() {
@@ -261,9 +238,37 @@ public class UIComponentCreator {
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.dialogTitle);
                             successTitleTV.setText(name);
 
+                            final RadioGroup switchOwnershipRG = (RadioGroup) successDialogLayout.findViewById(R.id.switchOwnershipRadioGroup);
+
+                            RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchOwnedRadio);
+                            ownedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(status != "opponentOwned"){
+                                        status = "opponentOwned";
+                                    }else{
+                                        switchOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
+                                }
+                            });
+
+                            RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchBalancedRadio);
+                            balancedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(status != "balanced"){
+                                        status = "balanced";
+                                    }else{
+                                        switchOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
+                                }
+                            });
 
 
-                            RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer1Radio);
+
+                            RadioButton layer1RadioButton = (RadioButton) switchOwnershipRG.findViewById(R.id.switchLayer1Radio);
                             layer1RadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -532,33 +537,7 @@ public class UIComponentCreator {
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.scaleDialogTitle);
                     titleTV.setText(name);
 
-                    final RadioGroup scaleOwnershipRG = (RadioGroup) dialogLayout.findViewById(R.id.scaleOwnershipRadioGroup);
 
-                    RadioButton ownedRadioButton = (RadioButton) dialogLayout.findViewById(R.id.scaleOwnedRadio);
-                    ownedRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(status != "opponentOwned"){
-                                status = "opponentOwned";
-                            }else{
-                                scaleOwnershipRG.clearCheck();
-                                status = null;
-                            }
-                        }
-                    });
-
-                    RadioButton balancedRadioButton = (RadioButton) dialogLayout.findViewById(R.id.scaleBalancedRadio);
-                    balancedRadioButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(status != "balanced"){
-                                status = "balanced";
-                            }else{
-                                scaleOwnershipRG.clearCheck();
-                                status = null;
-                            }
-                        }
-                    });
 
                     Button success = (Button) dialogLayout.findViewById(R.id.scaleSuccessButton);
                     success.setOnClickListener(new View.OnClickListener() {
@@ -576,6 +555,33 @@ public class UIComponentCreator {
                             TextView successTitleTV = (TextView) successDialogLayout.findViewById(R.id.scaleSuccessDialogTitle);
                             successTitleTV.setText(name);
 
+                            final RadioGroup scaleOwnershipRG = (RadioGroup) successDialogLayout.findViewById(R.id.scaleOwnershipRadioGroup);
+
+                            RadioButton ownedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleOwnedRadio);
+                            ownedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(status != "opponentOwned"){
+                                        status = "opponentOwned";
+                                    }else{
+                                        scaleOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
+                                }
+                            });
+
+                            RadioButton balancedRadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleBalancedRadio);
+                            balancedRadioButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(status != "balanced"){
+                                        status = "balanced";
+                                    }else{
+                                        scaleOwnershipRG.clearCheck();
+                                        status = null;
+                                    }
+                                }
+                            });
 
 
                             RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleLayer1Radio);
