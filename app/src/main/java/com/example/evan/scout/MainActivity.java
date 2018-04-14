@@ -83,6 +83,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.evan.scout.backgroundTimer.offset;
+import static com.example.evan.scout.backgroundTimer.showTime;
 import static com.example.evan.scout.bgLoopThread.scoutName;
 //
 public class MainActivity extends AppCompatActivity {
@@ -112,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
     //boolean if the schedule has been overridden
     public boolean overridden = false;
 
+    public static backgroundTimer bgTimer;
+
     public File matchDir;
 
     String dialogColor;
@@ -137,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
     //Shared Preference for scoutNumber
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor spfe;
+
+    Handler handler;
 
     ImageView QRImage;
 
@@ -254,110 +260,194 @@ public class MainActivity extends AppCompatActivity {
             item.setEnabled(false);
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.setScoutIDButton) {
-            setScoutNumber();
-            return true;
-        }
+        if(id == R.id.timerView) {
+            final Dialog timerDialog = new Dialog(context);
+            timerDialog.setCanceledOnTouchOutside(true);
+            timerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            final LinearLayout timerDialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+            final TextView timerActivityView = (TextView) timerDialogLayout.findViewById(R.id.TimerActivityView);
+            final TextView timeView = (TextView) timerDialogLayout.findViewById(R.id.TimerEditView);
+            final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
+            final Button minusButton = (Button) timerDialogLayout.findViewById(R.id.TimerMinusButton);
+            final Button plusButton = (Button) timerDialogLayout.findViewById(R.id.TimerPlusButton);
+            final Button resetButton = (Button) timerDialogLayout.findViewById(R.id.resetButton);
+            Button cancelButton = (Button) timerDialogLayout.findViewById(R.id.cancelButton);
 
-        if(id == R.id.currentScout){
-            if(id == R.id.currentScout){
-                alertScout();
-            }
-        }
-
-        if(id == R.id.QR){
-            mode = "QR";
-            spfe.putString("mode", "QR");
-            spfe.commit();
-            Intent intent = new Intent(this, QRScan.class);
-            startActivity(intent);
-        }
-
-        if(id == R.id.backup){
-            mode = "backup";
-            spfe.putString("mode", "backup");
-            spfe.commit();
-            bgLT.backup();
-        }
-
-        if(id == R.id.override){
-            final Dialog dialog = new Dialog(context);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.override_dialog, null);
-            TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
-            titleTV.setText("Override Dialog");
-            dialogColor = "none";
-
-            final Button redButton = (Button) dialogLayout.findViewById(R.id.redButton);
-            final Button blueButton = (Button) dialogLayout.findViewById(R.id.blueButton);
-
-            redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
-            redButton.setOnClickListener(new View.OnClickListener() {
+            plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    dialogColor = "red";
-                    redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
-                    blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
-                }
-            });
-
-            blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
-            blueButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogColor = "blue";
-                    redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
-                    blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
-                }
-            });
-
-            final EditText teamNumEditText = (EditText) dialogLayout.findViewById(R.id.dialogTeamNumEditText);
-            teamNumEditText.setEnabled(true);
-
-            Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
-            doneButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Integer teamNum = -1;
-                    try{teamNum = Integer.parseInt(teamNumEditText.getText().toString());}catch(Exception e){e.printStackTrace(); teamNum = -1;}
-                    if(teamNum <= 0){
-                        Utils.makeToast(context, "Please Input Valid Team Number!");
-                    }else if(teamNum > 0){
-                        teamNumber = teamNum;
-                        DataManager.addZeroTierJsonData("teamNumber", teamNum);
-                        updateTeamEditText(teamNum);
-
-                        if(dialogColor.equals("red")){
-                            allianceColor = "red";
-                            updateAllianceColor();
-                            dialog.dismiss();
-                        }else if(dialogColor.equals("blue")){
-                            allianceColor = "blue";
-                            updateAllianceColor();
-                            dialog.dismiss();
-                        }else if(dialogColor.equals("none")){
-                            Utils.makeToast(context, "Please Input Valid Alliance Color!");
-                        }
+                public void onClick(View view) {
+                    if (!backgroundTimer.stopTimer) {
+                        offset = offset + 1;
+                        timeView.setText(String.valueOf(showTime));
                     }
                 }
             });
 
-            Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
-            cancelButton.setOnClickListener(new View.OnClickListener() {
+            minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
+                public void onClick(View view) {
+                    if(!(bgTimer.updatedTime < 1 && bgTimer.timerActivity == "Auto")) {
+                        offset = offset - 1;
+                        timeView.setText(String.valueOf(showTime));
+                    }
                 }
             });
 
-            dialog.setContentView(dialogLayout);
-            dialog.show();
+            handler = new Handler(Looper.getMainLooper());
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    //float updatedTime = backgroundTimer.getUpdatedTime();
+                    //bgTimer.currentOffset = offset;
+                    timerActivityView.setText(bgTimer.timerActivity);
+
+                    timeView.setText(String.valueOf(showTime));
+                    handler.postDelayed(this, 100);
+                } // This is your code
+            };
+            handler.post(runnable);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    timerDialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+
+            resetButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    offset = 0;
+                    bgTimer.timerReady = true;
+                    if(bgTimer.matchTimer != null) {
+                        bgTimer.matchTimer.cancel();
+                    }
+                    bgTimer.matchTimer = null;
+                    item.setEnabled(false);
+                    item.setTitle("");
+                    startTimer.setEnabled(true);
+                    timerDialog.dismiss();
+                    handler.removeCallbacks(runnable);
+                }
+            });
+
+            timerDialog.setContentView(timerDialogLayout);
+            timerDialog.show();
         }
 
-        return true;
-    }
+        if(id == R.id.beginTimerButton && bgTimer.timerReady) {
+            bgTimer.setMatchTimer();
+            item.setEnabled(false);
+        }
+
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.setScoutIDButton) {
+                setScoutNumber();
+                return true;
+            }
+
+            if (id == R.id.currentScout) {
+                if (id == R.id.currentScout) {
+                    alertScout();
+                }
+            }
+
+            if (id == R.id.QR) {
+                mode = "QR";
+                spfe.putString("mode", "QR");
+                spfe.commit();
+                Intent intent = new Intent(this, QRScan.class);
+                startActivity(intent);
+            }
+
+            if (id == R.id.backup) {
+                mode = "backup";
+                spfe.putString("mode", "backup");
+                spfe.commit();
+                bgLT.backup();
+            }
+
+            if (id == R.id.override) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                RelativeLayout dialogLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.override_dialog, null);
+                TextView titleTV = (TextView) dialogLayout.findViewById(R.id.dialogTitle);
+                titleTV.setText("Override Dialog");
+                dialogColor = "none";
+
+                final Button redButton = (Button) dialogLayout.findViewById(R.id.redButton);
+                final Button blueButton = (Button) dialogLayout.findViewById(R.id.blueButton);
+
+                redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+                redButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogColor = "red";
+                        redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_RED));
+                        blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+                    }
+                });
+
+                blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+                blueButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogColor = "blue";
+                        redButton.setBackgroundColor(Color.parseColor(Constants.COLOR_GREY));
+                        blueButton.setBackgroundColor(Color.parseColor(Constants.COLOR_BLUE));
+                    }
+                });
+
+                final EditText teamNumEditText = (EditText) dialogLayout.findViewById(R.id.dialogTeamNumEditText);
+                teamNumEditText.setEnabled(true);
+
+                Button doneButton = (Button) dialogLayout.findViewById(R.id.doneButton);
+                doneButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Integer teamNum = -1;
+                        try {
+                            teamNum = Integer.parseInt(teamNumEditText.getText().toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            teamNum = -1;
+                        }
+                        if (teamNum <= 0) {
+                            Utils.makeToast(context, "Please Input Valid Team Number!");
+                        } else if (teamNum > 0) {
+                            teamNumber = teamNum;
+                            DataManager.addZeroTierJsonData("teamNumber", teamNum);
+                            updateTeamEditText(teamNum);
+
+                            if (dialogColor.equals("red")) {
+                                allianceColor = "red";
+                                updateAllianceColor();
+                                dialog.dismiss();
+                            } else if (dialogColor.equals("blue")) {
+                                allianceColor = "blue";
+                                updateAllianceColor();
+                                dialog.dismiss();
+                            } else if (dialogColor.equals("none")) {
+                                Utils.makeToast(context, "Please Input Valid Alliance Color!");
+                            }
+                        }
+                    }
+                });
+
+                Button cancelButton = (Button) dialogLayout.findViewById(R.id.cancelButton);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.setContentView(dialogLayout);
+                dialog.show();
+            }
+            return true;
+        }
 
     //display dialog to set scout number
     private void setScoutNumber() {
