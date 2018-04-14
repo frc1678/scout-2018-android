@@ -84,6 +84,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.evan.scout.backgroundTimer.offset;
+import static com.example.evan.scout.backgroundTimer.showTime;
 import static com.example.evan.scout.bgLoopThread.scoutName;
 //
 public class MainActivity extends AppCompatActivity {
@@ -264,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
             timerDialog.setCanceledOnTouchOutside(true);
             timerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             final LinearLayout timerDialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+            final TextView timerActivityView = (TextView) timerDialogLayout.findViewById(R.id.TimerActivityView);
             final TextView timeView = (TextView) timerDialogLayout.findViewById(R.id.TimerEditView);
             final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
             final Button minusButton = (Button) timerDialogLayout.findViewById(R.id.TimerMinusButton);
@@ -276,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     if (!backgroundTimer.stopTimer) {
                         offset = offset + 1;
-                        timeView.setText(String.valueOf(Math.round(backgroundTimer.updatedTime + offset)));
+                        timeView.setText(String.valueOf(showTime));
                     }
                 }
             });
@@ -284,9 +286,9 @@ public class MainActivity extends AppCompatActivity {
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (backgroundTimer.offsetAllowed && backgroundTimer.updatedTime + offset > 1) {
+                    if(!(bgTimer.updatedTime < 1 && bgTimer.timerActivity == "Auto")) {
                         offset = offset - 1;
-                        timeView.setText(String.valueOf(Math.round(backgroundTimer.updatedTime + offset)));
+                        timeView.setText(String.valueOf(showTime));
                     }
                 }
             });
@@ -297,7 +299,9 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     //float updatedTime = backgroundTimer.getUpdatedTime();
                     //bgTimer.currentOffset = offset;
-                    timeView.setText(String.valueOf(Math.round(backgroundTimer.updatedTime + offset)));
+                    timerActivityView.setText(bgTimer.timerActivity);
+
+                    timeView.setText(String.valueOf(showTime));
                     handler.postDelayed(this, 100);
                 } // This is your code
             };
@@ -332,8 +336,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
-            Menu menu = bgTimer.currentMenu;
-            menu.findItem(R.id.timerView).setEnabled(true);
             bgTimer.setMatchTimer();
             item.setEnabled(false);
         }

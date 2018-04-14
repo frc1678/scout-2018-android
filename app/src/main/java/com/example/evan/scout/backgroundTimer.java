@@ -17,6 +17,7 @@ import static java.lang.Long.valueOf;
  */
 public class backgroundTimer extends Thread{
     public static Menu currentMenu;
+    public static String timerActivity;
     public static boolean timerReady = true;
     public static int showTime;
     public static float updatedTime;
@@ -37,6 +38,8 @@ public class backgroundTimer extends Thread{
 
     public static void startTimer(){
         Log.e("TIMERCALLED","CALLED START TIMER!!!!!");
+        Menu menu = currentMenu;
+        menu.findItem(R.id.timerView).setEnabled(true);
         offset = 0f;
         updatedTime = 0f;
         matchTimer = new CountDownTimer(150000, 10) {
@@ -45,16 +48,18 @@ public class backgroundTimer extends Thread{
                 if(matchTimer != null){
                         float MUF = millisUntilFinished;
                         float tempTime = (150000 - millisUntilFinished)/1000f;
-                        if(updatedTime + offset <= 15){
-                            updatedTime = Float.parseFloat(String.format("%.2f", tempTime)) + offset;
+                        if(tempTime + offset <= 15){
+                            timerActivity = "Auto";
+                            updatedTime = Float.parseFloat(String.format("%.2f", tempTime + offset));
                             showTime = (int) updatedTime;
                             MenuItem timerView = currentMenu.findItem(R.id.timerView);
-                            timerView.setTitle("AutoTime: "+(showTime + (int) offset)+" / 15");
-                        }else if(updatedTime + offset <= 150){
-                            updatedTime = Float.parseFloat(String.format("%.2f", tempTime)) + offset;
+                            timerView.setTitle("AutoTime: "+(showTime)+" / 15");
+                        }else if(tempTime + offset <= 150){
+                            timerActivity = "Tele";
+                            updatedTime = Float.parseFloat(String.format("%.2f", tempTime + offset - 15f));
                             showTime = (int) updatedTime;
                             MenuItem timerView = currentMenu.findItem(R.id.timerView);
-                            timerView.setTitle("TeleTime: "+(showTime + (int) offset)+" / 135");
+                            timerView.setTitle("TeleTime: "+(showTime)+" / 135");
                         }
                 }
             }

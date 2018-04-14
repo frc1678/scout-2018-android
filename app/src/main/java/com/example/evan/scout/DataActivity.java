@@ -72,6 +72,7 @@ import java.util.concurrent.TimeUnit;
 import static com.example.evan.scout.MainActivity.bgTimer;
 import static com.example.evan.scout.MainActivity.matchNumber;
 import static com.example.evan.scout.backgroundTimer.offset;
+import static com.example.evan.scout.backgroundTimer.showTime;
 
 public abstract class DataActivity extends AppCompatActivity {
     public abstract String activityName();
@@ -813,9 +814,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
         if(id == R.id.timerView) {
             final Dialog timerDialog = new Dialog(context);
-            timerDialog.setCanceledOnTouchOutside(false);
+            timerDialog.setCanceledOnTouchOutside(true);
             timerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             final LinearLayout timerDialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
+            final TextView timerActivityView = (TextView) timerDialogLayout.findViewById(R.id.TimerActivityView);
             final TextView timeView = (TextView) timerDialogLayout.findViewById(R.id.TimerEditView);
             final MenuItem startTimer = (MenuItem) bgTimer.currentMenu.findItem(R.id.beginTimerButton);
             final Button minusButton = (Button) timerDialogLayout.findViewById(R.id.TimerMinusButton);
@@ -828,7 +830,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 public void onClick(View view) {
                     if (!backgroundTimer.stopTimer) {
                         offset = offset + 1;
-                        timeView.setText(String.valueOf(Math.round(backgroundTimer.updatedTime + offset)));
+                        timeView.setText(String.valueOf(showTime));
                     }
                 }
             });
@@ -836,9 +838,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (backgroundTimer.offsetAllowed) {
+                    if(!(bgTimer.updatedTime < 1 && bgTimer.timerActivity == "Auto")) {
                         offset = offset - 1;
-                        timeView.setText(String.valueOf(Math.round(backgroundTimer.updatedTime + offset)));
+                        timeView.setText(String.valueOf(showTime));
                     }
                 }
             });
@@ -849,7 +851,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 public void run() {
                     //float updatedTime = backgroundTimer.getUpdatedTime();
                     //bgTimer.currentOffset = offset;
-                    timeView.setText(String.valueOf(Math.round(backgroundTimer.updatedTime + offset)));
+                    timerActivityView.setText(bgTimer.timerActivity);
+
+                    timeView.setText(String.valueOf(showTime));
                     handler.postDelayed(this, 100);
                 } // This is your code
             };
@@ -865,17 +869,22 @@ public boolean onCreateOptionsMenu(Menu menu) {
             resetButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    offset = 0;
-                    bgTimer.timerReady = true;
-                    if(bgTimer.matchTimer != null) {
-                        bgTimer.matchTimer.cancel();
+                    if(activityName.equals("auto")) {
+                        offset = 0;
+                        bgTimer.timerReady = true;
+                        if(bgTimer.matchTimer != null) {
+                            bgTimer.matchTimer.cancel();
+                        }
+                        bgTimer.matchTimer = null;
+                        item.setEnabled(false);
+                        item.setTitle("");
+                        startTimer.setEnabled(true);
+                        timerDialog.dismiss();
+                        handler.removeCallbacks(runnable);
                     }
-                    bgTimer.matchTimer = null;
-                    item.setEnabled(false);
-                    item.setTitle("");
-                    startTimer.setEnabled(true);
-                    timerDialog.dismiss();
-                    handler.removeCallbacks(runnable);
+                    else {
+                        Utils.makeToast(context, "Cannot Reset Timer on Tele Screen!");
+                    }
                 }
             });
 
