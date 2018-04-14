@@ -130,6 +130,8 @@ public class UIComponentCreator {
             titleTV.setText(name);
 
             final TextView valueTV = (TextView) counterLayout.findViewById(R.id.value);
+
+
             try {
                 if ((DataActivity.saveAutoData && DataActivity.activityName.equals("auto")) || (DataActivity.saveTeleData && DataActivity.activityName.equals("tele"))) {
                     valueTV.setText(DataManager.collectedData.getString(counterFBname));

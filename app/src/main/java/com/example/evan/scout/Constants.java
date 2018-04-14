@@ -17,6 +17,7 @@ public class Constants {
     public static int numOpponentPlatformIntakeTele = 0;
     public static int numSpilledCubesAuto = 0;
     public static int numSpilledCubesTele = 0;
+    public static int totalNumScaleFoul = 0;
     public static int numExchageInput = 0;
     public static int numGroundPortalIntakeTele=0;
     public static int numHumanPortalIntakeTele= 0;
@@ -47,6 +48,7 @@ public class Constants {
             put("numReturnIntake", "Return Intake");
             put("numSpilledCubesAuto", "Cubes Spilled");
             put("numSpilledCubesTele", "Cubes Spilled");
+            put("totalNumScaleFoul","Scale Fouls");
             //start positions
             put("startingPositionLeft", "Left");
             put("startingPositionCenter", "Center");
