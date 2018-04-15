@@ -71,7 +71,11 @@ public class UIComponentCreator {
         Button button = new Button(context);
         button.setLayoutParams(new LinearLayout.LayoutParams(width, height, 1f));
         if (componentNames != null) {
-            button.setText(componentNames.get(currentComponent));
+            try{
+                button.setText(componentNames.get(currentComponent));
+            }catch(IndexOutOfBoundsException e){
+                e.printStackTrace();
+            }
         }
         button.setTextSize(button.getTextSize() * textScale);
         button.setSingleLine(true);
@@ -113,6 +117,86 @@ public class UIComponentCreator {
         return componentViews;
     }
 
+    public static class UIVaultCreator extends UIComponentCreator{
+        private Activity context;
+
+        public UIVaultCreator(Activity context, List<String> componentNames){
+            super(context, componentNames);
+            this.context = context;
+        }
+
+        public Button addVaultButton(final LinearLayout p_vaultLayout ){
+            final Button vaultButton = getBasicButton(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            vaultButton.setText("VAULT");
+
+            vaultButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    p_vaultLayout.removeAllViews();
+                    p_vaultLayout.addView(addSpecialVaultLayout(p_vaultLayout));
+                }
+            });
+
+            return vaultButton;
+        }
+
+        public RelativeLayout addSpecialVaultLayout(final LinearLayout p_vaultLayout){
+            RelativeLayout specialCounterLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.special_vault_layout, null);
+            TextView titleTV = (TextView) specialCounterLayout.findViewById(R.id.counterTitle);
+            titleTV.setText("Vault");
+
+            final TextView valueTV = (TextView) specialCounterLayout.findViewById(R.id.value);
+            try {
+                valueTV.setText(String.valueOf(DataManager.collectedData.getInt("vault")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                valueTV.setText(DataManager.collectedData.getString("vault"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Button minus = (Button) specialCounterLayout.findViewById(R.id.minus);
+            minus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int value = Integer.parseInt(valueTV.getText().toString());
+                    if (value > 0) {
+                        value--;
+                    }
+                    valueTV.setText(String.valueOf(value));
+                    DataManager.addZeroTierJsonData("vault", value);
+                }
+            });
+            Log.e("counterB", minus.getText().toString());
+
+            Button plus = (Button) specialCounterLayout.findViewById(R.id.plus);
+            plus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int value = Integer.parseInt(valueTV.getText().toString());
+                    value++;
+                    valueTV.setText(String.valueOf(value));
+                    DataManager.addZeroTierJsonData("vault", value);
+                }
+            });
+
+            Button done = (Button) specialCounterLayout.findViewById(R.id.doneButton);
+            done.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    p_vaultLayout.removeAllViews();
+                    p_vaultLayout.addView(addVaultButton(p_vaultLayout));
+                }
+            });
+
+            super.componentViews.add(valueTV);
+
+            return specialCounterLayout;
+        }
+    }
+
     public static class UICounterCreator extends UIComponentCreator {
         private String name;
         private Activity context;
@@ -123,6 +207,75 @@ public class UIComponentCreator {
             currentCounterComponent = 0;
             this.context = context;
             name = "";
+        }
+
+        public LinearLayout addVaultButton(final LinearLayout p_vaultLayout){
+            final Button vaultButton = getBasicButton(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+            vaultButton.setText("VAULT");
+            p_vaultLayout.addView(vaultButton);
+            final Button doneButton = getBasicButton(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+
+            RelativeLayout specialCounterLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.counter, null);
+            TextView titleTV = (TextView) specialCounterLayout.findViewById(R.id.counterTitle);
+            titleTV.setText("Vault");
+
+            final TextView valueTV = (TextView) specialCounterLayout.findViewById(R.id.value);
+            try {
+                valueTV.setText(String.valueOf(DataManager.collectedData.getInt("vault")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                valueTV.setText(DataManager.collectedData.getString("vault"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Button minus = (Button) specialCounterLayout.findViewById(R.id.minus);
+            minus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int value = Integer.parseInt(valueTV.getText().toString());
+                    if (value > 0) {
+                        value--;
+                    }
+                    valueTV.setText(String.valueOf(value));
+                    DataManager.addZeroTierJsonData("vault", value);
+                }
+            });
+            Log.e("counterB", minus.getText().toString());
+
+            Button plus = (Button) specialCounterLayout.findViewById(R.id.plus);
+            plus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int value = Integer.parseInt(valueTV.getText().toString());
+                    value++;
+                    valueTV.setText(String.valueOf(value));
+                    DataManager.addZeroTierJsonData("vault", value);
+                }
+            });
+
+            vaultButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    p_vaultLayout.removeAllViews();
+                    p_vaultLayout.addView(addCounter("vault"));
+                    p_vaultLayout.addView(doneButton);
+                    doneButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            p_vaultLayout.removeAllViews();
+                            p_vaultLayout.addView(vaultButton);
+                        }
+                    });
+                }
+            });
+
+            currentCounterComponent++;
+            super.componentViews.add(valueTV);
+
+            return p_vaultLayout;
         }
 
         public RelativeLayout addCounter(String counterFBname) {
