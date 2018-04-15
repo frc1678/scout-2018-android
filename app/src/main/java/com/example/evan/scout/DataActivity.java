@@ -676,27 +676,30 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         if(numSendClicks >= 2){
-            DataManager.qrData = new JSONObject();
-            DataManager.qrData.put(MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber, DataManager.collectedData);
-            String jsonString = DataManager.qrData.toString();
-            Map<String, Object> jsonMap = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, Object>>() {}.getType());
-            Log.e("SUBTITLE", DataManager.subTitle);
-            Log.e("JSONMAP", jsonString);
-            String qrScoutData = finalCompressedScoutData(DataManager.qrData);
-            DataManager.addZeroTierJsonData("qrScoutData", qrScoutData);
-            MainActivity.spfe.putString("qrScoutData", qrScoutData);
-            MainActivity.spfe.commit();
-
             new Thread() {
                 @Override
                 public void run() {
                     if((activityName() == "tele")) {
                         DataManager.addZeroTierJsonData("vault", DataManager.vaultDataArray);
                         DataManager.resetVaultArray();
-                        if(MainActivity.mode != null){
-                            DataManager.addZeroTierJsonData("mode", MainActivity.mode);
-                            DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
+//                        if(MainActivity.mode != null){
+//                            DataManager.addZeroTierJsonData("mode", MainActivity.mode);
+//                            DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
+//                        }TODO add this in later
+
+                        DataManager.qrData = new JSONObject();
+                        try {
+                            DataManager.qrData.put(MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber, DataManager.collectedData);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                        String jsonString = DataManager.qrData.toString();
+
+                        String qrScoutData = finalCompressedScoutData(DataManager.qrData);
+                        DataManager.addZeroTierJsonData("qrScoutData", qrScoutData);
+                        MainActivity.spfe.putString("qrScoutData", qrScoutData);
+                        MainActivity.spfe.commit();
+
                         Log.e("TOTALJSON", DataManager.collectedData.toString());
                         try {
                             file = null;
