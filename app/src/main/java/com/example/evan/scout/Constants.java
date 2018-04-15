@@ -267,9 +267,9 @@ public class Constants {
         put("time", "?");
         put("vault", "+");
         put("cubes", "<");
-        put("cycleNumber", ">");
+        put("cycle", ">");
+        put("mode", "!");
     }};
-
 
     //replace with new datapoints
     public static Map<String, String> compressValues = new HashMap<String, String>() {{
@@ -286,5 +286,8 @@ public class Constants {
         put("true", "1");
         put("false", "0");
         put("assisted", "^");
+        put("QR", "*");
+        put("backup", "(");
+        put("override", ")");
     }};
 }

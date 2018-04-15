@@ -682,10 +682,10 @@ public abstract class DataActivity extends AppCompatActivity {
                     if((activityName() == "tele")) {
                         DataManager.addZeroTierJsonData("vault", DataManager.vaultDataArray);
                         DataManager.resetVaultArray();
-//                        if(MainActivity.mode != null){
-//                            DataManager.addZeroTierJsonData("mode", MainActivity.mode);
-//                            DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
-//                        }TODO add this in later
+                        if(MainActivity.mode != null){
+                            DataManager.addZeroTierJsonData("mode", MainActivity.mode);
+                            DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
+                        }
 
                         DataManager.qrData = new JSONObject();
                         try {
@@ -1057,6 +1057,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 String key = (String) uncompressedKeys.next();
                 if(!Constants.nestedKeys.contains(key)){
                     Log.e("CHECKPOINT 3", "released");
+                    if(key.equals("mode")){
+                        Log.e("Mode compressed", Constants.compressKeys.get(key));
+                    }
                     if(!Constants.unnestedKeyWithArrayValue.contains(key)){
                         if (Constants.compressValues.containsKey(uncompressedUnderHeaderKey.get(key).toString())){
                             Log.e("CHECKPOINT 4", "released");
