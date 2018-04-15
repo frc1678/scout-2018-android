@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/vaultDialogTitle"
+        android:text="Vault Dialog!"
+        android:gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/exchangeInput"
+        android:text="Exchange Input"
+        android:layout_below="@+id/vaultDialogTitle"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/exchangeInputLayout"
+        android:layout_below="@+id/exchangeInput">
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:text="-"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/minus" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/value" />
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
+            android:text="+"
+            android:gravity="center"
+            android:id="@+id/plus" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/groundPortalIntake"
+        android:text="Ground Portal Intake"
+        android:layout_below="@+id/exchangeInputLayout"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/groundPortalIntakeLayout"
+        android:layout_below="@+id/groundPortalIntake">
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:text="-"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/minus2" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/value2" />
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
+            android:text="+"
+            android:gravity="center"
+            android:id="@+id/plus2" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/humanPortalIntake"
+        android:text="Human Portal Intake"
+        android:layout_below="@+id/groundPortalIntakeLayout"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/humanPortalIntakeLayout"
+        android:layout_below="@+id/humanPortalIntake">
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:text="-"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/minus3" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/value3" />
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
+            android:text="+"
+            android:gravity="center"
+            android:id="@+id/plus3" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/groundPyramidIntake"
+        android:text="Ground Pyramid Intake"
+        android:layout_below="@+id/humanPortalIntakeLayout"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/groundPyramidIntakeLayout"
+        android:layout_below="@+id/groundPyramidIntake">
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:text="-"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/minus4" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/value4" />
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
+            android:text="+"
+            android:gravity="center"
+            android:id="@+id/plus4" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/elevatedPyramidIntake"
+        android:text="Elevated Pyramid Intake"
+        android:layout_below="@+id/groundPyramidIntakeLayout"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/elevatedPyramidIntakeLayout"
+        android:layout_below="@+id/elevatedPyramidIntake">
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:text="-"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/minus5" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/value5" />
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
+            android:text="+"
+            android:gravity="center"
+            android:id="@+id/plus5" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:id="@+id/groundIntake"
+        android:text="Ground Intake"
+        android:layout_below="@+id/elevatedPyramidIntakeLayout"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/groundIntakeLayout"
+        android:layout_below="@+id/groundIntake">
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:text="-"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/minus6" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/value6" />
+        <Button
+            android:layout_width="90sp"
+            android:layout_height="45sp"
+            android:textSize="20sp"
+            android:text="+"
+            android:gravity="center"
+            android:id="@+id/plus6" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/cancelLayout"
+        android:layout_below="@+id/groundIntakeLayout">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/doneButton"/>
+    </LinearLayout>
+</RelativeLayout>

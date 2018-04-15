@@ -10,8 +10,8 @@ public class TeleopActivity extends DataActivity {
         return formatList(Arrays.asList("didGetIncapacitated", "didGetDisabled"));
     }
     public List<String> getCounterData() {
-        return formatList(Arrays.asList("numCubesFumbledTele", "numSpilledCubesTele", "numGroundIntakeTele", "totalNumScaleFoul",
-                "numExchangeInput", "numReturnIntake", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele"));
+        return formatList(Arrays.asList("numCubesFumbledTele", "numSpilledCubesTele", "numGroundIntakeTele",
+                "totalNumScaleFoul", "numReturnIntake", "numGroundPortalIntakeTele", "numHumanPortalIntakeTele"));
     }
     public List<String> getSwitchData() { return formatList(Arrays.asList("allianceSwitchAttemptTele", "opponentSwitchAttemptTele")); }
     public List<String> getScaleData() { return formatList(Arrays.asList("scaleAttemptTele")); }
@@ -24,6 +24,7 @@ public class TeleopActivity extends DataActivity {
     public Integer getToggleXML() { return R.id.teleToggleLayout; }
     public Integer getCounterOneXML() { return R.id.teleCounterLayoutOne; }
     public Integer getCounterTwoXML() { return R.id.teleCounterLayoutTwo; }
+    public Integer getVaultXML() { return R.id.vaultArea; }
     public Integer getAttemptOneXML() { return R.id.teleAttemptLayoutOne; }
     public Integer getAttemptTwoXML() { return R.id.teleAttemptLayoutTwo; }
     public Integer getRadioXML() { return null; }
