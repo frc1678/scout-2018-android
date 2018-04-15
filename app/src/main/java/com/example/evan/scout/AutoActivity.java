@@ -21,6 +21,7 @@ public class AutoActivity extends DataActivity {
     public Integer getToggleXML() { return R.id.autoToggleLayout; }
     public Integer getCounterOneXML() { return R.id.autoCounterLayout; }
     public Integer getCounterTwoXML() { return null; }
+    public Integer getVaultXML() { return null; }
     public Integer getAttemptOneXML() { return R.id.autoAttemptLayout; }
     public Integer getAttemptTwoXML() { return null; }
     public Integer getRadioXML() { return R.id.autoStartPositionLayout;}

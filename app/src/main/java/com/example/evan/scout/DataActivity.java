@@ -87,6 +87,7 @@ public abstract class DataActivity extends AppCompatActivity {
     public abstract Integer getToggleXML();
     public abstract Integer getCounterOneXML();
     public abstract Integer getCounterTwoXML();
+    public abstract Integer getVaultXML();
     public abstract Integer getAttemptOneXML();
     public abstract Integer getAttemptTwoXML();
     public abstract Integer getRadioXML();
@@ -124,6 +125,7 @@ public abstract class DataActivity extends AppCompatActivity {
     private UIComponentCreator.UIScaleCreator scaleCreator;
     private UIComponentCreator.UIPyramidCreator pyramidCreator;
     private UIComponentCreator.UIEndGameButtonCreator endGameCreator;
+    private UIComponentCreator.UIVaultCreator vaultCreator;
     private Boolean readyForNextActivity = false;
     private final Object readyForNextActivityLock = new Object();
     DatabaseReference databaseReference;
@@ -496,6 +498,10 @@ public abstract class DataActivity extends AppCompatActivity {
                                             }else if(activityName().equals("tele")){
                                                 LinearLayout counterLayoutOne = (LinearLayout) findViewById(getCounterOneXML());
                                                 LinearLayout counterLayoutTwo = (LinearLayout) findViewById(getCounterTwoXML());
+                                                LinearLayout vaultLayout = (LinearLayout) findViewById(getVaultXML());
+                                                List<String> vaultNames = new ArrayList<>();
+                                                vaultCreator = new UIComponentCreator.UIVaultCreator(this, vaultNames);
+                                                vaultLayout.addView(vaultCreator.addVaultButton(vaultLayout));
                                                 List<String> counterNames = new ArrayList<>();
                                                 counterCreator = new UIComponentCreator.UICounterCreator(this, counterNames);
                                                 for (int i = 0; i < 4; i++) {
@@ -513,17 +519,22 @@ public abstract class DataActivity extends AppCompatActivity {
                                                     }
                                                 }
                                                 for (int i = 4; i < getCounterData().size(); i++) {
-                                                    counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
-                                                    counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
-                                                    TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
-                                                    try {
-                                                        if(saveTeleData){
-                                                            numTextView.setText(DataManager.collectedData.get(getCounterData().get(i))+"");
-                                                        }else {
-                                                            numTextView.setText(0+"");
+                                                    if(getCounterData().get(i).toLowerCase().equals("vault")){
+
+                                                    }else{
+                                                        counterNames.add(Constants.KEYS_TO_TITLES.get(getCounterData().get(i)));
+                                                        counterLayoutTwo.addView(counterCreator.addCounter(getCounterData().get(i)));
+                                                        TextView numTextView = (TextView) counterCreator.getComponentViews().get(i);
+
+                                                        try {
+                                                            if(saveTeleData){
+                                                                numTextView.setText(DataManager.collectedData.get(getCounterData().get(i))+"");
+                                                            }else {
+                                                                numTextView.setText(0+"");
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
                                                         }
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
                                                     }
                                                 }
                                             }

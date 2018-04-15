@@ -40,7 +40,7 @@ public class Constants {
             //counters
             put("numCubesFumbledAuto", "Cubes Fumbled");
             put("numCubesFumbledTele", "Cubes Fumbled");
-            put("numExchangeInput", "Exchange Input");
+            put("vault", "Vault");
             put("numGroundIntakeTele", "Ground Intake");
             put("numGroundPortalIntakeTele", "Ground Portal Intake");
             put("numHumanPortalIntakeTele", "Human Portal Intake");
