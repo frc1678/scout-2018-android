@@ -30,6 +30,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,10 @@ public class Utils {
     }
 
     private static Gson gson = new Gson();
-    public static String serializeClass(Object object) throws JsonParseException {return gson.toJson(object);}
+    public static String serializeClass(Object object) throws ConcurrentModificationException {
+        Object t_object = object;
+        return new Gson().toJson(t_object);
+    }
     public static Object deserializeClass(String serializedClass, Class<?> clazz) throws  JsonParseException {
         return gson.fromJson(serializedClass, clazz);
     }

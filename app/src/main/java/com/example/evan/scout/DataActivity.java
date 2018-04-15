@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -690,6 +691,13 @@ public abstract class DataActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if((activityName() == "tele")) {
+                        DataManager.addZeroTierJsonData("vault", DataManager.vaultDataArray);
+                        DataManager.resetVaultArray();
+                        if(MainActivity.mode != null){
+                            DataManager.addZeroTierJsonData("mode", MainActivity.mode);
+                            DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
+                        }
+                        Log.e("TOTALJSON", DataManager.collectedData.toString());
                         try {
                             file = null;
                             //make the directory of the file

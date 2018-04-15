@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     public Menu mainMenu;
+    public static MenuItem modeItem;
 
     //the id of the scout.  1-3 is red, 4+ is blue
     public static int scoutNumber;
@@ -225,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
         if(mode.equals("QR") || getIntent().getBooleanExtra("qrObtained", false)){
             Log.e("QRED!!!!", mode);
             bgLT.qrData();
+        }else if(mode.equals("backup")){
+            bgLT.backup();
         }
 
         updateListView();
@@ -241,7 +244,12 @@ public class MainActivity extends AppCompatActivity {
         mainMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
+        modeItem = menu.findItem(R.id.modeItem);
+        mode = sharedPreferences.getString("mode", mode);
+        modeItem.setTitle("▓ " + mode + " ▓");
+
         if(!backgroundTimer.timerReady) {
+            menu.findItem(R.id.timerView).setEnabled(false);
             menu.findItem(R.id.beginTimerButton).setEnabled(false);
         }
 
@@ -337,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == R.id.beginTimerButton && bgTimer.timerReady) {
             bgTimer.setMatchTimer();
+            mainMenu.findItem(R.id.timerView).setEnabled(true);
             item.setEnabled(false);
         }
 
@@ -424,10 +433,18 @@ public class MainActivity extends AppCompatActivity {
                                 allianceColor = "red";
                                 updateAllianceColor();
                                 dialog.dismiss();
+                                mode = "override";
+                                spfe.putString("mode", mode);
+                                spfe.commit();
+                                modeItem.setTitle("▓ Override ▓");
                             } else if (dialogColor.equals("blue")) {
                                 allianceColor = "blue";
                                 updateAllianceColor();
                                 dialog.dismiss();
+                                mode = "override";
+                                spfe.putString("mode", mode);
+                                spfe.commit();
+                                modeItem.setTitle("▓ Override ▓");
                             } else if (dialogColor.equals("none")) {
                                 Utils.makeToast(context, "Please Input Valid Alliance Color!");
                             }

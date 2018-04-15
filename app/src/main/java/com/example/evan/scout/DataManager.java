@@ -63,6 +63,9 @@ public class DataManager {
     public static JSONObject autoPyramidDataList = new JSONObject();
     public static JSONObject telePyramidDataList = new JSONObject();
 
+    public static JSONArray vaultDataArray = new JSONArray();
+    public static Integer totalCubesVaulted = 0;
+
     public static void addZeroTierJsonData(String key0, Object value0){
         addToCollectedData(key0, null, value0);
     }
@@ -156,6 +159,12 @@ public class DataManager {
         autoAllianceSwitchDataArray = new JSONArray();
         autoAllianceSwitchDataList = new ArrayList<>();
     }
+
+    public static void resetVaultArray(){
+        vaultDataArray = new JSONArray();
+        totalCubesVaulted = 0;
+    }
+
     public static void resetClimbData(){
         climbDataArray = new JSONArray();
         climbDataList = new ArrayList<>();

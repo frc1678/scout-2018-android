@@ -51,6 +51,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.example.evan.scout.MainActivity.allianceColor;
+import static com.example.evan.scout.MainActivity.mode;
+import static com.example.evan.scout.MainActivity.modeItem;
+import static com.example.evan.scout.MainActivity.sharedPreferences;
 import static com.example.evan.scout.MainActivity.spfe;
 
 /**
@@ -63,6 +66,7 @@ public class bgLoopThread extends Thread {
     Activity context;
     String tmp_scoutName;
     public static String scoutLetter = "";
+    public static int cycleNumber;
     public String previousLetter = "";
     private boolean substitute = false;
     Integer sprRanking;
@@ -208,14 +212,10 @@ public class bgLoopThread extends Thread {
         useQR();
 
         obtainQRData();
-
-        MainActivity.spfe.putString("mode", "QR");
-        MainActivity.spfe.commit();
-        MainActivity.mode = "QR";
     }
 
     public void useQR(){
-        String qrString = MainActivity.sharedPreferences.getString("qrString", "");
+        String qrString = sharedPreferences.getString("qrString", "");
         Log.e("QRSTRING", qrString);
         if(!qrString.equals("")){
             try{
@@ -227,7 +227,7 @@ public class bgLoopThread extends Thread {
                     substitute = false;
                 }else if(!qrString.contains(scoutLetter)){
                     Log.e("MEMEMEME", "FRACKFRACK");
-                    previousLetter = MainActivity.sharedPreferences.getString("previousLetter", "");
+                    previousLetter = sharedPreferences.getString("previousLetter", "");
                     if(!previousLetter.equals("")){
                         scoutLetter = previousLetter;
                     }else{
@@ -368,9 +368,13 @@ public class bgLoopThread extends Thread {
                                         }else{
                                             toasts("SUCCESS QR DATA!");
                                         }
-                                        MainActivity.mode = "QR";
+                                        mode = "QR";
                                         MainActivity.spfe.putString("mode", "QR");
                                         MainActivity.spfe.commit();
+                                        mode = sharedPreferences.getString("mode", mode);
+                                        if(modeItem != null){
+                                            modeItem.setTitle("▓ " + mode + " ▓");
+                                        }
                                     } catch (JSONException e) {
                                         toasts("FAIL QR DATA!");
                                         e.printStackTrace();
@@ -453,6 +457,13 @@ public class bgLoopThread extends Thread {
                                         main.teamNumber = scoutJson.getInt("team");
                                         main.updateTeamEditText(scoutJson.getInt("team"));
                                         toasts("Successful Backup!");
+                                        MainActivity.spfe.putString("mode", "backup");
+                                        MainActivity.spfe.commit();
+                                        mode = "backup";
+                                        mode = sharedPreferences.getString("mode", mode);
+                                        if(modeItem != null){
+                                            modeItem.setTitle("▓ " + mode + " ▓");
+                                        }
                                     } catch (JSONException e) {
                                         toasts("Fail Backup!");
                                         e.printStackTrace();

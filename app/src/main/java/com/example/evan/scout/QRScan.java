@@ -80,6 +80,7 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
             Log.e("CANCERCANCERY", prevQrString);
             Log.e("CANCERCANCER1", prevQrString.substring(0, prevQrString.indexOf("|")));
             Log.e("CANCERCANCER2", qrString.substring(0, qrString.indexOf("|")));
+            bgLoopThread.cycleNumber = Integer.parseInt(qrString.substring(0, qrString.indexOf("|")));
             if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) > Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
                 Utils.makeToast(this, "WRONG CYCLE NUMBER!");
                 qrString = prevQrString;
@@ -98,6 +99,7 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
             Log.e("CYCLENUMBER!!!", Integer.parseInt(qrString.substring(0, qrString.indexOf("|"))) + "");
         }catch(Exception e){
             Utils.makeToast(this, "FAIL SCAN!");
+            dontlogsuccess = true;
             e.printStackTrace();
         }
         Log.e("QRSTRING", qrString+"");
