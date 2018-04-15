@@ -8,6 +8,7 @@ import android.app.admin.SystemUpdatePolicy;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -95,8 +96,10 @@ public class UIComponentCreator {
 
     public RadioButton getRadioButton (String radioFBName, String radioFBValue,int width,int height){
         RadioButton radioButton = new RadioButton(context);
-        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, height, 1f));
+        radioButton.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         radioButton.setTextSize(radioButton.getTextSize() * 1f);
+        radioButton.setBackgroundResource(R.drawable.radio_style);
+        radioButton.setPadding(0, 15, 0, 15);
         radioViews.add(radioButton);
         currentComponent++;
         return radioButton;
@@ -216,6 +219,8 @@ public class UIComponentCreator {
                     String colorString = colorOfSwitch.substring(0,1).toUpperCase() + colorOfSwitch.substring(1);
                     titleTV.setText(colorString + " Switch Attempt");
 
+
+
                     Button successButton = (Button) dialogLayout.findViewById(R.id.successButton);
                     successButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -261,7 +266,9 @@ public class UIComponentCreator {
                                 }
                             });
 
-                            RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.switchLayer1Radio);
+
+
+                            RadioButton layer1RadioButton = (RadioButton) switchOwnershipRG.findViewById(R.id.switchLayer1Radio);
                             layer1RadioButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -530,6 +537,8 @@ public class UIComponentCreator {
                     TextView titleTV = (TextView) dialogLayout.findViewById(R.id.scaleDialogTitle);
                     titleTV.setText(name);
 
+
+
                     Button success = (Button) dialogLayout.findViewById(R.id.scaleSuccessButton);
                     success.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -573,6 +582,7 @@ public class UIComponentCreator {
                                     }
                                 }
                             });
+
 
                             RadioButton layer1RadioButton = (RadioButton) successDialogLayout.findViewById(R.id.scaleLayer1Radio);
                             layer1RadioButton.setOnClickListener(new View.OnClickListener() {
@@ -1667,7 +1677,7 @@ public class UIComponentCreator {
                     @Override
                     public void onClick(View v) {
                         parkButton.setText("Park");
-                        if (DataManager.climbDataArray.length() != 0) {
+                        if (DataManager.climbDataArray.length() != 0  && parkButton.isChecked()) {
                             Utils.makeToast(context, "YOU HAVE A CLIMB ENTRY ALREADY!!!");
                         }
                         DataManager.addZeroTierJsonData("didPark", parkButton.isChecked());

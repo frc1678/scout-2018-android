@@ -62,13 +62,14 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="Done"
-            android:id="@+id/doneButton"/>
+            android:text="Cancel"
+            android:id="@+id/cancelButton"/>
         <Button
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="Cancel"
-            android:id="@+id/cancelButton"/>
+            android:text="Done"
+            android:id="@+id/doneButton"/>
+
     </LinearLayout>
 </RelativeLayout>
