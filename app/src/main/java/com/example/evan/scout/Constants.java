@@ -101,6 +101,7 @@ public class Constants {
             "allianceSwitchAttemptAuto",
             "climb",
             "opponentSwitchAttemptTele",
+            "vault",
             "scaleAttemptTele",
             "scaleAttemptAuto"
     ));
@@ -263,6 +264,10 @@ public class Constants {
         put("teamNumber", "b");
         put("numElevatedPyramidIntakeTele", "R");
         put("numElevatedPyramidIntakeAuto", "H");
+        put("time", "?");
+        put("vault", "+");
+        put("cubes", "<");
+        put("cycleNumber", ">");
     }};
 
 
