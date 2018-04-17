@@ -132,6 +132,7 @@ public abstract class DataActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
 
     Handler handler;
+    Dialog timerDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -687,13 +688,16 @@ public abstract class DataActivity extends AppCompatActivity {
                             DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
                         }
 
+                        if(timerDialog != null && timerDialog.isShowing()){
+                            timerDialog.dismiss();
+                        }
+
                         DataManager.qrData = new JSONObject();
                         try {
                             DataManager.qrData.put(MainActivity.teamNumber + "Q" + MainActivity.matchNumber + "-" + MainActivity.scoutNumber, DataManager.collectedData);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        String jsonString = DataManager.qrData.toString();
 
                         String qrScoutData = finalCompressedScoutData(DataManager.qrData);
                         DataManager.addZeroTierJsonData("qrScoutData", qrScoutData);
@@ -769,11 +773,7 @@ public abstract class DataActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, clazz);
         intent.putExtras(this.intent);
-        try {
-            intent.putExtra("previousData", Utils.serializeClass(DataManager.collectedData));
-        } catch (JsonParseException jpe) {
-            intent.putExtra("previousData", (String)null);
-        }
+
         intent.putExtra("matchName", "Q" + Integer.toString(this.intent.getIntExtra("matchNumber", -1))
                 + "_" + Integer.toString(this.intent.getIntExtra("teamNumber", -1)));
         return intent;
@@ -836,7 +836,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
         int id = item.getItemId();
 
         if(id == R.id.timerView) {
-            final Dialog timerDialog = new Dialog(context);
+            timerDialog = new Dialog(context);
             timerDialog.setCanceledOnTouchOutside(true);
             timerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             final LinearLayout timerDialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.timer_edit_dialog, null);
@@ -959,17 +959,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 backgroundTimer.stopTimer();
                 if(backgroundTimer.matchTimer != null){
                     backgroundTimer.matchTimer.cancel();
-                    backgroundTimer.matchTimer = new CountDownTimer(0, 100) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-
-                        }
-
-                        @Override
-                        public void onFinish() {
-
-                        }
-                    }.start();
                 }
                 //added
                 int tempMatchNum = sharedPreferences.getInt("matchNumber", matchNumber) + 1;
@@ -996,9 +985,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                         public void onClick(DialogInterface dialog, int which) {
                             saveAutoData = true;
                             Intent intent = prepareIntent(getPreviousActivityClass());
-                            if (getPreviousActivityClass() == MainActivity.class) {
-                                intent.putExtra("previousData", (String) null);
-                            }
                             startActivity(intent);
                         }
                     })
@@ -1019,9 +1005,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                             DataManager.resetTeleSwitchData();
                             DataManager.resetTelePyramidData();
                             Intent intent = prepareIntent(getPreviousActivityClass());
-                            if (getPreviousActivityClass() == MainActivity.class) {
-                                intent.putExtra("previousData", (String) null);
-                            }
                             startActivity(intent);
                         }
                     })
@@ -1032,9 +1015,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
                             saveAutoData = true;
                             saveTeleData = true;
                             Intent intent = prepareIntent(getPreviousActivityClass());
-                            if (getPreviousActivityClass() == MainActivity.class) {
-                                intent.putExtra("previousData", (String) null);
-                            }
                             startActivity(intent);
                         }
                     })

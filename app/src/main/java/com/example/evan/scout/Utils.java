@@ -96,14 +96,14 @@ public class Utils {
         }
     }
 
-    private static Gson gson = new Gson();
-    public static String serializeClass(Object object) throws ConcurrentModificationException {
-        Object t_object = object;
-        return new Gson().toJson(t_object);
-    }
-    public static Object deserializeClass(String serializedClass, Class<?> clazz) throws  JsonParseException {
-        return gson.fromJson(serializedClass, clazz);
-    }
+//    public static String serializeClass(Object object) throws ConcurrentModificationException {
+//        Object t_object = object;
+//        Gson gson = new Gson();
+//        return gson.to
+//    }
+//    public static Object deserializeClass(String serializedClass, Class<?> clazz) throws  JsonParseException {
+//        return gson.fromJson(serializedClass, clazz);
+//    }
 
     public static void toastText(final String text, final int duration) {
         try {
