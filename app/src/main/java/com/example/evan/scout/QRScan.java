@@ -80,9 +80,6 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
             Log.e("CANCERCANCERY", prevQrString);
             Log.e("CANCERCANCER1", prevQrString.substring(0, prevQrString.indexOf("|")));
             Log.e("CANCERCANCER2", qrString.substring(0, qrString.indexOf("|")));
-            bgLoopThread.cycleNumber = Integer.parseInt(qrString.substring(0, qrString.indexOf("|")));
-            MainActivity.spfe.putInt("cycle", bgLoopThread.cycleNumber);
-            MainActivity.spfe.commit();
             if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) > Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
                 Utils.makeToast(this, "WRONG CYCLE NUMBER!");
                 qrString = prevQrString;
@@ -109,6 +106,9 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         MainActivity.spfe.commit();
         intent.putExtra("qrObtained", true);
         if(!dontlogsuccess){
+            bgLoopThread.cycleNumber = Integer.parseInt(qrString.substring(0, qrString.indexOf("|")));
+            MainActivity.spfe.putInt("cycle", bgLoopThread.cycleNumber);
+            MainActivity.spfe.commit();
             Utils.makeToast(this, "SUCCESS SCAN");
         }
         startActivity(intent);

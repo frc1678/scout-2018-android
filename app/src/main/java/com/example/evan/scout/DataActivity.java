@@ -247,6 +247,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         if (DataManager.vaultOpen){
                                             incap.setChecked(!incap.isChecked());
+                                            Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
                                         }else{
                                             disabled.setChecked(false);
                                             DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
@@ -259,6 +260,7 @@ public abstract class DataActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         if(DataManager.vaultOpen){
                                             disabled.setChecked(!disabled.isChecked());
+                                            Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
                                         }else{
                                             incap.setChecked(false);
                                             DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());

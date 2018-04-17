@@ -214,11 +214,11 @@ public class UIComponentCreator {
                             startTime = 0f;
                             endTime = 0f;
                             firstPlusClicked = false;
-                            DataManager.vaultOpen = false;
                         }
                     }
                     p_vaultLayout.removeAllViews();
                     p_vaultLayout.addView(addVaultButton(p_vaultLayout));
+                    DataManager.vaultOpen = false;
                 }
             });
 
@@ -595,19 +595,19 @@ public class UIComponentCreator {
                     });
                     if(DataActivity.activityName.equals("auto")){
                         if(backgroundTimer.timerReady == false) {
-                            if(!DataManager.vaultOpen){
-                                dialog.setContentView(dialogLayout);
-                                dialog.show();
-                            }else{
-                                Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
-                            }
+                            dialog.setContentView(dialogLayout);
+                            dialog.show();
                         }else{
                             Utils.makeToast(context, "PLEASE START THE TIMER!");
                         }
                     }
                     if(DataActivity.activityName.equals("tele")){
-                        dialog.setContentView(dialogLayout);
-                        dialog.show();
+                        if(!DataManager.vaultOpen){
+                            dialog.setContentView(dialogLayout);
+                            dialog.show();
+                        }else{
+                            Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
+                        }
                     }
                 }
             });
@@ -899,19 +899,19 @@ public class UIComponentCreator {
 
                     if(DataActivity.activityName.equals("auto")){
                         if(backgroundTimer.timerReady == false) {
-                            if(!DataManager.vaultOpen){
-                                dialog.setContentView(dialogLayout);
-                                dialog.show();
-                            }else{
-                                Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
-                            }
+                            dialog.setContentView(dialogLayout);
+                            dialog.show();
                         }else{
                             Utils.makeToast(context, "PLEASE START THE TIMER!");
                         }
                     }
                     if(DataActivity.activityName.equals("tele")){
-                        dialog.setContentView(dialogLayout);
-                        dialog.show();
+                        if(!DataManager.vaultOpen){
+                            dialog.setContentView(dialogLayout);
+                            dialog.show();
+                        }else{
+                            Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
+                        }
                     }
                 }
             });
@@ -1881,6 +1881,7 @@ public class UIComponentCreator {
                         }else{
                             parkButton.setChecked(!parkButton.isChecked());
                             Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
+                            parkButton.setText("Park");
                         }
                     }
                 });
