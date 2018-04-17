@@ -65,6 +65,7 @@ public class DataManager {
 
     public static JSONArray vaultDataArray = new JSONArray();
     public static Integer totalCubesVaulted = 0;
+    public static boolean vaultOpen = false;
 
     public static void addZeroTierJsonData(String key0, Object value0){
         addToCollectedData(key0, null, value0);

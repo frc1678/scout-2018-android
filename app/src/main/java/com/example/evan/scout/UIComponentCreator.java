@@ -142,6 +142,7 @@ public class UIComponentCreator {
             vaultButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    DataManager.vaultOpen = true;
                     startTime = 0f;
                     endTime = 0f;
                     firstPlusClicked = false;
@@ -154,11 +155,8 @@ public class UIComponentCreator {
             return vaultButton;
         }
 
-        public RelativeLayout addSpecialVaultLayout(final LinearLayout p_vaultLayout){
-            RelativeLayout specialCounterLayout = (RelativeLayout) context.getLayoutInflater().inflate(R.layout.special_vault_layout, null);
-            TextView titleTV = (TextView) specialCounterLayout.findViewById(R.id.counterTitle);
-            titleTV.setText("Vault");
-
+        public LinearLayout addSpecialVaultLayout(final LinearLayout p_vaultLayout){
+            LinearLayout specialCounterLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.special_vault_layout, null);
             final TextView valueTV = (TextView) specialCounterLayout.findViewById(R.id.value);
             try {
                 valueTV.setText(String.valueOf(totalCubesVaulted));
@@ -216,6 +214,7 @@ public class UIComponentCreator {
                             startTime = 0f;
                             endTime = 0f;
                             firstPlusClicked = false;
+                            DataManager.vaultOpen = false;
                         }
                     }
                     p_vaultLayout.removeAllViews();
@@ -596,7 +595,7 @@ public class UIComponentCreator {
                     });
                     if(DataActivity.activityName.equals("auto")){
                         if(backgroundTimer.timerReady == false) {
-                            if(!UIVaultCreator.firstPlusClicked){
+                            if(!DataManager.vaultOpen){
                                 dialog.setContentView(dialogLayout);
                                 dialog.show();
                             }else{
@@ -900,7 +899,7 @@ public class UIComponentCreator {
 
                     if(DataActivity.activityName.equals("auto")){
                         if(backgroundTimer.timerReady == false) {
-                            if(!UIVaultCreator.firstPlusClicked){
+                            if(!DataManager.vaultOpen){
                                 dialog.setContentView(dialogLayout);
                                 dialog.show();
                             }else{
@@ -1266,7 +1265,7 @@ public class UIComponentCreator {
                 endButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!UIVaultCreator.firstPlusClicked){
+                        if(!DataManager.vaultOpen){
                             Log.e("JSONARRAYFTB ENTRY", DataManager.climbDataArray.toString());
 
                             if(DataManager.climbDataArray.length() == 0) {
@@ -1874,7 +1873,7 @@ public class UIComponentCreator {
                     @Override
                     public void onClick(View v) {
                         parkButton.setText("Park");
-                        if(!UIVaultCreator.firstPlusClicked){
+                        if(!DataManager.vaultOpen){
                             if (DataManager.climbDataArray.length() != 0  && parkButton.isChecked()) {
                                 Utils.makeToast(context, "YOU HAVE A CLIMB ENTRY ALREADY!!!");
                             }

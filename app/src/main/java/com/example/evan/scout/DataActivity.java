@@ -245,17 +245,25 @@ public abstract class DataActivity extends AppCompatActivity {
                                 incap.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        disabled.setChecked(false);
-                                        DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
-                                        DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
+                                        if (DataManager.vaultOpen){
+                                            incap.setChecked(!incap.isChecked());
+                                        }else{
+                                            disabled.setChecked(false);
+                                            DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
+                                            DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
+                                        }
                                     }
                                 });
                                 disabled.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        incap.setChecked(false);
-                                        DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
-                                        DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
+                                        if(DataManager.vaultOpen){
+                                            disabled.setChecked(!disabled.isChecked());
+                                        }else{
+                                            incap.setChecked(false);
+                                            DataManager.addZeroTierJsonData("didGetIncapacitated", incap.isChecked());
+                                            DataManager.addZeroTierJsonData("didGetDisabled", disabled.isChecked());
+                                        }
                                     }
                                 });
                                 toggleLayout.addView(incap);
@@ -685,7 +693,8 @@ public abstract class DataActivity extends AppCompatActivity {
                         DataManager.resetVaultArray();
                         if(MainActivity.mode != null){
                             DataManager.addZeroTierJsonData("mode", MainActivity.mode);
-                            DataManager.addZeroTierJsonData("cycle", bgLoopThread.cycleNumber);
+                            int t_cycleNum = MainActivity.sharedPreferences.getInt("cycle", bgLoopThread.cycleNumber);
+                            DataManager.addZeroTierJsonData("cycle", t_cycleNum);
                         }
 
                         if(timerDialog != null && timerDialog.isShowing()){

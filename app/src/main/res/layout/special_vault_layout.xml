@@ -1,59 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:textSize="15sp"
-        android:id="@+id/counterTitle"
-        android:gravity="center"/>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/counterBody"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_below="@+id/counterTitle">
-
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:orientation="horizontal">
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="0.6"
-            android:text="-"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:id="@+id/minus" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/doneButton"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:padding="10sp"
-            android:text="0"
-            android:id="@+id/value" />
+            android:text="DONE"
+            android:layout_below="@+id/counterTitle"
+            android:layout_alignParentStart="true" />
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0.6"
-            android:textSize="20sp"
-            android:text="+"
+            android:id="@+id/counterBody"
             android:gravity="center"
-            android:id="@+id/plus" />
-    </LinearLayout>
+            android:layout_weight="0.5"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@+id/doneButton"
+            android:layout_below="@+id/counterTitle">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:padding="10sp"
+                android:text="0"
+                android:id="@+id/value" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/doneButton"
-        android:text="DONE"
-        android:layout_below="@+id/counterBody"/>
-</RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:id="@+id/plusAndMinus">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:text="+"
+                    android:gravity="center"
+                    android:id="@+id/plus" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:id="@+id/minus" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
