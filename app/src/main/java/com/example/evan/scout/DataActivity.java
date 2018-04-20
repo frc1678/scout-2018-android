@@ -138,6 +138,7 @@ public abstract class DataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DataManager.vaultOpen = false;
         sent = false;
 
         //check for whether they want to save data
@@ -783,10 +784,7 @@ public abstract class DataActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Intent intent = new Intent(this, clazz);
-        intent.putExtras(this.intent);
 
-        intent.putExtra("matchName", "Q" + Integer.toString(this.intent.getIntExtra("matchNumber", -1))
-                + "_" + Integer.toString(this.intent.getIntExtra("teamNumber", -1)));
         return intent;
     }
 
@@ -1001,35 +999,39 @@ public boolean onCreateOptionsMenu(Menu menu) {
                     })
                     .show();
         }else if(activityName() == "tele"){
-            new AlertDialog.Builder(this)
-                    .setTitle("Save Data?")
-                    .setMessage("Do you want to save this data?")
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            DataManager.resetTeleOpponentPlatformArrays();
-                            DataManager.resetTeleAlliancePlatformArrays();
-                            rejected = true;
-                            saveAutoData = true;
-                            saveTeleData = false;
-                            DataManager.resetTeleScaleData();
-                            DataManager.resetTeleSwitchData();
-                            DataManager.resetTelePyramidData();
-                            Intent intent = prepareIntent(getPreviousActivityClass());
-                            startActivity(intent);
-                        }
-                    })
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            rejected = false;
-                            saveAutoData = true;
-                            saveTeleData = true;
-                            Intent intent = prepareIntent(getPreviousActivityClass());
-                            startActivity(intent);
-                        }
-                    })
-                    .show();
+            if(!DataManager.vaultOpen){
+                new AlertDialog.Builder(this)
+                        .setTitle("Save Data?")
+                        .setMessage("Do you want to save this data?")
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DataManager.resetTeleOpponentPlatformArrays();
+                                DataManager.resetTeleAlliancePlatformArrays();
+                                rejected = true;
+                                saveAutoData = true;
+                                saveTeleData = false;
+                                DataManager.resetTeleScaleData();
+                                DataManager.resetTeleSwitchData();
+                                DataManager.resetTelePyramidData();
+                                Intent intent = prepareIntent(getPreviousActivityClass());
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                rejected = false;
+                                saveAutoData = true;
+                                saveTeleData = true;
+                                Intent intent = prepareIntent(getPreviousActivityClass());
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+            }else if(DataManager.vaultOpen){
+                Utils.makeToast(context, "PLEASE CLICK DONE FOR THE VAULT!");
+            }
         }
     }
 

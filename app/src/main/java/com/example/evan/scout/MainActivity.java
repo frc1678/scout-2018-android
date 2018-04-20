@@ -160,20 +160,6 @@ public class MainActivity extends AppCompatActivity {
         }
         databaseReference = FirebaseDatabase.getInstance().getReference();
         hsp = new HighSecurityPassword(context, context);
-        if(!DataActivity.saveAutoData){
-            DataManager.collectedData = new JSONObject();
-            DataManager.resetAutoSwitchData();
-            DataManager.resetTeleSwitchData();
-            DataManager.resetAutoPyramidData();
-            DataManager.resetTelePyramidData();
-            DataManager.resetAutoScaleData();
-            DataManager.resetTeleScaleData();
-            DataManager.resetAutoAlliancePlatformArrays();
-            DataManager.resetTeleAlliancePlatformArrays();
-            DataManager.resetTeleOpponentPlatformArrays();
-            DataManager.resetClimbData();
-            Utils.resetAllDataNull();
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -235,6 +221,20 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Scout");
 
         matchNumTextListenerSetter();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(!sharedPreferences.getString("qrScoutData", "").equals("")){
+            Log.e("QRLOGDATA", sharedPreferences.getString("qrScoutData", ""));
+            openQRDialog(sharedPreferences.getString("qrScoutData", ""));
+        }
     }
 
     @Override
@@ -515,114 +515,96 @@ public class MainActivity extends AppCompatActivity {
         if(allianceColor != "blue" && allianceColor != "red"){
             Utils.makeToast(context, "Please Input Alliance Color, Current Color is: " + allianceColor);
         }else if(allianceColor == "blue" || allianceColor == "red"){
-            if (overridden) {
-                //if the schedule has been overridden we will use the values that the user has set
-                teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
-                if (teamNumber == -1) {
-                    Toast.makeText(getBaseContext(), "Please set your team number and try again",
+            teamNumberTextView = (TextView) findViewById(R.id.teamNumTextView);
+            if (teamNumber == -1) {
+                Toast.makeText(getBaseContext(), "Please set your team number and try again",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                if (teamNumberTextView.getText().toString().equals("")) { //START
+                    Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
+                        Toast.LENGTH_LONG).show();
+                } else {
+                    teamNumber = Integer.parseInt(teamNumberTextView.getText().toString());
+                } //END
+                EditText matchNumEditText = (EditText) findViewById(R.id.matchNumEditText);
+                if (matchNumEditText.getText().toString().equals("")) {
+                    Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    if (teamNumberTextView.getText().toString().equals("")) { //START
-                        Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
-                            Toast.LENGTH_LONG).show();
-                    } else {
-                        teamNumber = Integer.parseInt(teamNumberTextView.getText().toString());
-                    } //END
-                    EditText matchNumEditText = (EditText) findViewById(R.id.matchNumEditText);
-                    if (matchNumEditText.getText().toString().equals("")) {
-                        Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
+                    matchNumber = Integer.parseInt(matchNumEditText.getText().toString());
+                    if (scoutNumber <= 0) {
+                        setScoutNumber();
+                        Toast.makeText(getBaseContext(), "Please set your number and try again",
                                 Toast.LENGTH_LONG).show();
                     } else {
-                        matchNumber = Integer.parseInt(matchNumEditText.getText().toString());
-                        if (scoutNumber <= 0) {
-                            setScoutNumber();
-                            Toast.makeText(getBaseContext(), "Please set your number and try again",
+                        Log.e("MATCHNUMBER1", matchNumber+"");
+                        DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
+                        if (matchNumber <= 0) {
+                            matchNumberEditText.setText(String.valueOf(matchNumber));
+                            Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            Log.e("MATCHNUMBER1", matchNumber+"");
+                            Log.e("MATCHNUMBER2", matchNumber+"");
                             DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
-                            if (matchNumber <= 0) {
-                                matchNumberEditText.setText(String.valueOf(matchNumber));
-                                Toast.makeText(getBaseContext(), "Make sure your match is set and try again",
+                            if (teamNumber <= 0) {
+                                Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
                                         Toast.LENGTH_LONG).show();
                             } else {
-                                Log.e("MATCHNUMBER2", matchNumber+"");
-                                DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
-                                if (teamNumber <= 0) {
-                                    Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
-                                            Toast.LENGTH_LONG).show();
-                                } else {
-                                    try {
-                                        if (!scoutName.equals("(No Name Selected)")) {
-                                            matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
-                                            String ovrrdTeamStr = ((TextView) findViewById(R.id.teamNumTextView)).getText().toString();
-                                            Intent intent = new Intent(this, AutoActivity.class);
-                                            if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
-                                                Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
-                                                if(ovrrdTeamNum > 0) {
-                                                    matchNumber = Integer.parseInt(matchNumberEditText.getText().toString());
-                                                    Log.e("matchnumber", String.valueOf(matchNumber));
-                                                    DataManager.subTitle = ovrrdTeamNum + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
-                                                    DataManager.addZeroTierJsonData("scoutName", scoutName);
-                                                    intent.putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
-                                                            .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
-                                                    intent.setAction("returningNoSavedData");
-                                                    spfe.putBoolean("overridden", overridden);
-                                                    spfe.putInt("teamNumber", teamNumber);
-                                                    spfe.putInt("matchNumber", matchNumber);
-                                                    spfe.putString("allianceColor", allianceColor);
-                                                    spfe.commit();
-                                                    DataManager.addZeroTierJsonData("teamNumber", teamNumber);
-                                                    DataManager.addZeroTierJsonData("matchNumber", matchNumber);
-                                                    if(backgroundTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
-                                                    startActivity(intent);
-                                                } else {
-                                                    Toast.makeText(getBaseContext(), "Choose a Valid Team", Toast.LENGTH_SHORT).show();
+                                try {
+                                    if (!scoutName.equals("(No Name Selected)")) {
+                                        matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
+                                        String ovrrdTeamStr = ((TextView) findViewById(R.id.teamNumTextView)).getText().toString();
+                                        Intent intent = new Intent(this, AutoActivity.class);
+                                        if(ovrrdTeamStr != null && !ovrrdTeamStr.equals("")) {
+                                            Integer ovrrdTeamNum = Integer.parseInt(ovrrdTeamStr);
+                                            if(ovrrdTeamNum > 0) {
+                                                if(!DataActivity.saveAutoData){
+                                                    DataManager.collectedData = new JSONObject();
+                                                    DataManager.resetAutoSwitchData();
+                                                    DataManager.resetTeleSwitchData();
+                                                    DataManager.resetAutoPyramidData();
+                                                    DataManager.resetTelePyramidData();
+                                                    DataManager.resetAutoScaleData();
+                                                    DataManager.resetTeleScaleData();
+                                                    DataManager.resetAutoAlliancePlatformArrays();
+                                                    DataManager.resetTeleAlliancePlatformArrays();
+                                                    DataManager.resetTeleOpponentPlatformArrays();
+                                                    DataManager.resetClimbData();
+                                                    Utils.resetAllDataNull();
                                                 }
+                                                matchNumber = Integer.parseInt(matchNumberEditText.getText().toString());
+                                                Log.e("matchnumber", String.valueOf(matchNumber));
+                                                DataManager.subTitle = ovrrdTeamNum + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
+                                                DataManager.addZeroTierJsonData("scoutName", scoutName);
+                                                intent.putExtra("matchNumber", matchNumber).putExtra("overridden", overridden)
+                                                        .putExtra("teamNumber", ovrrdTeamNum).putExtra("scoutName", scoutName).putExtra("scoutNumber", scoutNumber);
+                                                intent.setAction("returningNoSavedData");
+                                                spfe.putBoolean("overridden", overridden);
+                                                spfe.putInt("teamNumber", teamNumber);
+                                                spfe.putInt("matchNumber", matchNumber);
+                                                spfe.putString("allianceColor", allianceColor);
+                                                spfe.commit();
+                                                DataManager.addZeroTierJsonData("teamNumber", teamNumber);
+                                                DataManager.addZeroTierJsonData("matchNumber", matchNumber);
+                                                if(backgroundTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
+
+                                                startActivity(intent);
                                             } else {
                                                 Toast.makeText(getBaseContext(), "Choose a Valid Team", Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(getBaseContext(), "Input a Valid Name",
-                                                    Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getBaseContext(), "Choose a Valid Team", Toast.LENGTH_SHORT).show();
                                         }
-                                    } catch (NullPointerException npe) {
+                                    } else {
                                         Toast.makeText(getBaseContext(), "Input a Valid Name",
                                                 Toast.LENGTH_SHORT).show();
                                     }
+                                } catch (NullPointerException npe) {
+                                    Toast.makeText(getBaseContext(), "Input a Valid Name",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
-                    }
-                }
-            } else {
-                if (scoutNumber <= 0) {
-                    setScoutNumber();
-                    Toast.makeText(getBaseContext(), "Please set your number and try again",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Log.e("MATCHNUMBER4", matchNumber+"");
-                    DataManager.subTitle = teamNumber + "Q" + matchNumber + "-" + scoutNumber;
-                    if (teamNumber <= 0) {
-                        Toast.makeText(getBaseContext(), "Make sure your team is set and try again",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-
-                        Intent intent = new Intent(this, AutoActivity.class);
-                        matchNumberEditText = (EditText) findViewById(R.id.matchNumEditText);
-                        Log.e("MATCHNUMBER5", matchNumber+"");
-                        DataManager.subTitle = teamNumber + "Q" + matchNumberEditText.getText().toString() + "-" + scoutNumber;
-                        DataManager.addZeroTierJsonData("scoutName", scoutName);
-                        intent.setAction("returningNoSavedData");
-                        spfe.putString("scoutName", scoutName);
-                        spfe.putInt("teamNumber", teamNumber);
-                        spfe.putInt("matchNumber", matchNumber);
-                        spfe.putString("allianceColor", allianceColor);
-                        spfe.commit();
-                        DataManager.addZeroTierJsonData("teamNumber", teamNumber);
-                        DataManager.addZeroTierJsonData("matchNumber", matchNumber);
-                        if(backgroundTimer.timerReady){     Utils.makeToast(context, "REMEMBER TO CLICK START TIMER!");}
-                        startActivity(intent);
                     }
                 }
             }
@@ -981,7 +963,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+                .create();
+        scoutNameAlertDialog.show();
         scoutNameAlertDialog.setCanceledOnTouchOutside(false);
     }
 

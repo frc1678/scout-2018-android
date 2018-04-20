@@ -318,8 +318,6 @@ public class bgLoopThread extends Thread {
         if (!tmp_scoutName.equals("(No Name Selected)")) {
             updateMatchNumber();
             if(MainActivity.matchNumber >= 1){
-                main.spfe.putInt("matchNumber", MainActivity.matchNumber);
-                main.spfe.commit();
                 Log.e("SCOUTNAME!!!22", tmp_scoutName);
                 if (!bluetoothDir.exists()) {
                     bluetoothDir.mkdir();
@@ -416,8 +414,6 @@ public class bgLoopThread extends Thread {
         if (MainActivity.scoutNumber >= 1 && MainActivity.scoutNumber <= 18) {
             updateMatchNumber();
             if(MainActivity.matchNumber >= 1){
-                main.spfe.putInt("matchNumber", MainActivity.matchNumber);
-                main.spfe.commit();
                 if (!bluetoothDir.mkdir()) {
                     Log.i("File Info", "Failed to make Directory. Unimportant");
                     Log.e("No Files", "No Files from Bluetooth");
@@ -534,14 +530,11 @@ public class bgLoopThread extends Thread {
     }
 
     public void updateMatchNumber() {
-        main.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(Integer.parseInt(main.matchNumberEditText.getText().toString()) >= 1){
-                    MainActivity.matchNumber = Integer.parseInt(main.matchNumberEditText.getText().toString());
-                }
-            }
-        });
+        try{
+            MainActivity.matchNumber = MainActivity.sharedPreferences.getInt("matchNumber", MainActivity.matchNumber);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void destroyDuplicates() {

@@ -8,6 +8,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
+import android.net.ParseException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -77,9 +78,6 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         qrString = text;
         String prevQrString = MainActivity.sharedPreferences.getString("qrString", "");
         try{
-            Log.e("CANCERCANCERY", prevQrString);
-            Log.e("CANCERCANCER1", prevQrString.substring(0, prevQrString.indexOf("|")));
-            Log.e("CANCERCANCER2", qrString.substring(0, qrString.indexOf("|")));
             if(Integer.parseInt(prevQrString.substring(0, prevQrString.indexOf("|"))) > Integer.parseInt(qrString.substring(0, qrString.indexOf("|")))){
                 Utils.makeToast(this, "WRONG CYCLE NUMBER!");
                 qrString = prevQrString;
@@ -96,10 +94,13 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
                 startActivity(intent);
             }
             Log.e("CYCLENUMBER!!!", Integer.parseInt(qrString.substring(0, qrString.indexOf("|"))) + "");
-        }catch(Exception e){
-            Utils.makeToast(this, "FAIL SCAN!");
+        }catch (ParseException e){
+            e.printStackTrace();
+        }catch(IndexOutOfBoundsException e){
             dontlogsuccess = true;
             e.printStackTrace();
+        }catch (NullPointerException ne){
+            Utils.makeToast(this, "FAIL SCAN!");
         }
         Log.e("QRSTRING", qrString+"");
         MainActivity.spfe.putString("qrString", qrString);

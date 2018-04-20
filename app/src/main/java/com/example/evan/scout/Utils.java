@@ -154,9 +154,6 @@ public class Utils {
         DataManager.autoScaleDataArray = new JSONArray();
         DataManager.teleScaleDataArray = new JSONArray();
 
-        DataManager.addZeroTierJsonData("teamNumber", 0);
-        DataManager.addZeroTierJsonData("matchNumber", 0);
-        DataManager.addZeroTierJsonData("scoutName", null);
         DataManager.addZeroTierJsonData("allianceSwitchAttemptAuto", null);
         DataManager.addZeroTierJsonData("allianceSwitchAttemptTele", null);
         DataManager.addZeroTierJsonData("opponentSwitchAttemptTele", null);
