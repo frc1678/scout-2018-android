@@ -34,7 +34,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static java.lang.String.valueOf;
 
 /**
- * Created by HiBye300 on 3/10/2018.
+ * Created by Citrus Circuits Scout Programmers on 3/10/2018.
  */
 
 public class ClimbListAdapter extends BaseAdapter {

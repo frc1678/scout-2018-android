@@ -32,7 +32,6 @@ public class ScoutApplication extends Application implements Application.Activit
         currentActivity = activity;
     }
 
-    //do nothing
     public void onActivityResumed(Activity activity) {}
     public void onActivityStopped(Activity activity) {}
     public void onActivityPaused(Activity activity) {}

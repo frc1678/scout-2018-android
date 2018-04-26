@@ -20,14 +20,14 @@ import android.widget.TextView;
 import java.io.File;
 
 /**
- * Created by Calvin on 2/20/18.
+ * Created by Citrus Circuits Scout Programmers on 2/20/18.
  */
 
 public class HighSecurityPassword {
     private Activity context;
     private MainActivity mainActivity;
     private File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scout_data");
-    private final String ultraPass = "meme";
+    private final String ultraPass = "0877876578765787657"; //TODO Ask Calvin
 
     public HighSecurityPassword(Activity context, MainActivity mainActivity){
         this.context = context;
@@ -39,7 +39,6 @@ public class HighSecurityPassword {
         passwordDialog.setCanceledOnTouchOutside(false);
         passwordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         LinearLayout passwordDialogLayout = (LinearLayout) context.getLayoutInflater().inflate(R.layout.password_dialog, null);
-        //Set Dialog Title
         final EditText passwordEditText1 = (EditText) passwordDialogLayout.findViewById(R.id.passwordInput);
 
         Button enterButton = (Button) passwordDialogLayout.findViewById(R.id.checkPasswordButton);
@@ -57,11 +56,11 @@ public class HighSecurityPassword {
                                     mainActivity.searchBar.setFocusable(false);
                                     mainActivity.updateListView();
                                     mainActivity.searchBar.setFocusableInTouchMode(true);
-                                    Utils.makeToast(context, "YOU ARE PRETTY GOOD AT HACKING I HAVE TO ADMIT...");
+                                    Utils.makeToast(context, "YOU ARE PRETTY GOOD AT HACKING I HAVE TO ADMIT..."); //TODO Ask Calvin
                                     passwordDialog.dismiss();
                                 }
                             }else{
-                                Utils.makeToast(context, "Shoo! Shoo! The password is wrong! Go Away!");
+                                Utils.makeToast(context, "Shoo! Shoo! The password is wrong! Go Away!"); //TODO Ask Calvin
                             }
                         } catch (Exception e) {
                             Log.e("ERROR", "ERROR");

@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Calvin on 7/14/17.
+ * Created by Citrus Circuits Scout Programmers on 7/14/17.
  */
 
 public class Utils {
@@ -95,15 +95,6 @@ public class Utils {
             variableToBeSet.set(parent, value);
         }
     }
-
-//    public static String serializeClass(Object object) throws ConcurrentModificationException {
-//        Object t_object = object;
-//        Gson gson = new Gson();
-//        return gson.to
-//    }
-//    public static Object deserializeClass(String serializedClass, Class<?> clazz) throws  JsonParseException {
-//        return gson.fromJson(serializedClass, clazz);
-//    }
 
     public static void toastText(final String text, final int duration) {
         try {
@@ -207,20 +198,4 @@ public class Utils {
         }
         return  tempObject;
     }
-
-//    public static ArrayList convertJSONArrayToList(JSONArray jArray, List<String> listKeys){
-//        ArrayList<HashMap<String, Object>> listdata = new ArrayList<>();
-//        if (jArray != null) {
-//            for (int i=0;i<jArray.length();i++){
-//                try {
-//                    JSONObject jObject = jArray.getJSONObject(i);
-//                    for(int j = 0;j < listKeys.size();j++)
-//                    listdata.add(listKeys.get(j), jArray.get(listKeys.get(i)));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return listdata;
-//    }
 }
