@@ -162,10 +162,6 @@ public class MainActivity extends AppCompatActivity {
         hsp = new HighSecurityPassword(context, context);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-//        IntentFilter filter = new IntentFilter("TIMERDONE");
-//        this.registerReceiver(timerReceiver, filter);
-
         if(DataManager.subTitle != null){Log.e("subTitle", DataManager.subTitle);}
         //get the scout number from shared preferences, otherwise ask the user to set it
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
@@ -305,13 +301,11 @@ public class MainActivity extends AppCompatActivity {
             final Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    //float updatedTime = backgroundTimer.getUpdatedTime();
-                    //bgTimer.currentOffset = offset;
                     timerActivityView.setText(bgTimer.timerActivity);
 
                     timeView.setText(String.valueOf(showTime));
                     handler.postDelayed(this, 100);
-                } // This is your code
+                }
             };
             handler.post(runnable);
             cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -633,7 +627,7 @@ public class MainActivity extends AppCompatActivity {
                 final String[] nameOfResendMatch = name.split("Q");
 
                 String content = readFile(fileName);
-                Log.e("XXXX","XXXX");
+                Log.e("xxxx","XXXX");
                 JSONObject scoutData;
                 String qrScoutData = "";
                 try {
@@ -690,7 +684,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("Test 2", "assign file data to Json");
                     JSONObject scoutData = dataPoints.get(j);
                     try {
-                        //TODO im assuming here that scoutnum doesnt change
                         keyName = scoutData.getString("teamNumber")+"Q"+scoutData.getString("matchNumber")+"-"+scoutNumber;
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -732,7 +725,6 @@ public class MainActivity extends AppCompatActivity {
     public void getScoutData(View view) {
         searchBar = (EditText) findViewById(R.id.searchEditText);
         searchBar.setFocusable(false);
-        //listenForFileListClick();
         updateListView();
         searchBar.setFocusableInTouchMode(true);
     }
@@ -915,8 +907,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setSelection(((ArrayAdapter<String>)spinner.getAdapter()).getPosition(scoutName));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             public void onItemSelected(AdapterView<?> parent, View view, int position, long arg3){
-//                    String sOptions= parent.getItemAtPosition(position).toString();
-//                    Toast.makeText(MainActivity.this, sOptions, Toast.LENGTH_LONG).show();
+
             }
             public void onNothingSelected(AdapterView<?> parent){
 
@@ -1047,7 +1038,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 try{
-                    Log.e("ZZZZZZZZZZZZZZZZ", "ZZZZZZZZZZZZZZZZZZ");
                     matchNumber = Integer.parseInt(s.toString());
                     spfe.putInt("matchNumber", matchNumber);
                     spfe.commit();
@@ -1060,11 +1050,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private class timerReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            bgTimer = new backgroundTimer(MainActivity.this);
-//        }
-//    }
 }

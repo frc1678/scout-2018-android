@@ -557,7 +557,7 @@ public class UIComponentCreator {
                                 status = "owned";
                             }
                             switchValues.add(null);
-                            switchValues.add(null); //Added
+                            switchValues.add(null);
 
                             JSONObject tempData = Utils.returnJSONObject(switchKeys, switchValues);
                             try {
@@ -859,7 +859,7 @@ public class UIComponentCreator {
                             endTime = backgroundTimer.getUpdatedTime();
                             didSucceed = false;
 
-                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer"); //Changed
+                            List<String> scaleKeys = Arrays.asList("didSucceed", "startTime", "endTime", "status", "layer");
                             List<Object> scaleValues = new ArrayList<>();
                             scaleValues.clear();
                             scaleValues.add(didSucceed);
@@ -1481,7 +1481,6 @@ public class UIComponentCreator {
 
                                                         }
                                                     });
-                                                    //added cancel
                                                     Button cancel = (Button) alDialogLayout.findViewById(R.id.cancelButton);
                                                     cancel.setOnClickListener(new View.OnClickListener() {
                                                         @Override
@@ -1493,8 +1492,8 @@ public class UIComponentCreator {
                                                     activeLiftDialog.setContentView(alDialogLayout);
                                                     activeLiftDialog.show();
                                                 } else {
-                                                    Log.e("TIMEITMETIEMTEITEMI", startTime + "");
-                                                    Log.e("TIMEITMETIEMTEITEMI", endTime + "");
+                                                    Log.e("TIME", startTime + "");
+                                                    Log.e("TIME", endTime + "");
                                                     endValues.add(0, didSucceed);
                                                     endValues.add(1, startTime);
                                                     endValues.add(2, endTime);
@@ -1733,15 +1732,15 @@ public class UIComponentCreator {
 
                                                                 DataManager.climbDataList.add(dataSpace);
                                                                 activeLiftDialog.dismiss();
-                                                                climbTypeDialog.dismiss(); //added
-                                                                dialog.dismiss(); //added
+                                                                climbTypeDialog.dismiss();
+                                                                dialog.dismiss();
                                                             } else
                                                                 Utils.makeToast(context, "Please Input a Climb Type");
 
                                                         }
 
                                                     });
-                                                    //added cancel
+
                                                     Button cancel = (Button) alDialogLayout.findViewById(R.id.cancelButton);
                                                     cancel.setOnClickListener(new View.OnClickListener() {
                                                         @Override

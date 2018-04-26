@@ -7,25 +7,6 @@ import java.util.Map;
 
 public class Constants {
     public static final Map<String, String> KEYS_TO_TITLES;
-    public static int numCubesFumbledAuto = 0;
-    public static int numCubesFumbledTele = 0;
-    public static int numGroundIntakeTele= 0;
-    public static int numPortalIntakeTele = 0;
-    public static int numAlliancePlatformIntakeAuto = 0;
-    public static int numAlliancePlatformIntakeTele = 0;
-    public static int numOpponentPlatformIntakeAuto= 0;
-    public static int numOpponentPlatformIntakeTele = 0;
-    public static int numSpilledCubesAuto = 0;
-    public static int numSpilledCubesTele = 0;
-    public static int numExchageInput = 0;
-    public static int numGroundPortalIntakeTele=0;
-    public static int numHumanPortalIntakeTele= 0;
-    public static int numGroundPyramidIntakeAuto= 0;
-    public static int numnGroundPyramidIntakeTele= 0;
-    public static int numElevatedPyramidIntakeAuto= 0;
-    public static int numElevatedPyramidIntakeTele= 0;
-    public static int numReturnIntake= 0;
-    public static int totalNumScaleFoul = 0;
     public static final String COLOR_GREEN = "#00c610";
     public static final String COLOR_RED = "#F9613F";
     public static final String COLOR_BLUE = "#53A4F7";
@@ -76,7 +57,6 @@ public class Constants {
             put("scaleAttemptTele", "Scale");
             put("startingPosition", "Starting Position");
             put("climb", "Climbs");
-            //put("opponentSwitchAttemptAuto", "Opponent Switch Attempt Auto");
         }};
 
         //convert constant syntax

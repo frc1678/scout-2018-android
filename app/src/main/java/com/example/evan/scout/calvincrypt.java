@@ -13,7 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class calvincrypt {
     private static final String ALGORITHM = "CAL";
-    private static final String KEY = "calvingoat123";
+    private static final String KEY = "1678rocks";
 
     public static String encrypt(String value) throws Exception
     {

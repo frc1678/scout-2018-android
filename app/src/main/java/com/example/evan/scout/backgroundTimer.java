@@ -24,7 +24,6 @@ public class backgroundTimer extends Thread{
     public static boolean stopTimer = false;
     public static CountDownTimer matchTimer = null;
     public static float offset;
-    public static boolean offsetAllowed = true;
 
     public backgroundTimer(){
 
@@ -70,86 +69,9 @@ public class backgroundTimer extends Thread{
         }.start();
     }
 
-//    public static void startTimerTele(){
-//        Log.e("TIMERCALLED","CALLED tele START TIMER!!!!!");
-//        updatedTime = 0f;
-//        matchTimer = new CountDownTimer(135000, 10) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                if(matchTimer != null) {
-//                    if(stopTimer){
-//                        matchTimer.cancel();
-//                        matchTimer = null;
-//
-////                    Intent timerIntent = new Intent("TIMERDONE");
-////                    context.sendBroadcast(timerIntent);
-//                    }else {
-//                        float MUF = millisUntilFinished;
-//                        updatedTime = (135000f - MUF)/1000f;
-//                        updatedTime = Float.parseFloat(String.format("%.2f", updatedTime));
-//                        showTime = (int) updatedTime;
-//                        MenuItem timerView = currentMenu.findItem(R.id.timerView);
-//                        timerView.setTitle("TeleTime: "+showTime+" / 135");
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFinish() {}
-//        };
-//        matchTimer.start();
-//    }
-
     public static float getUpdatedTime(){
         return updatedTime;
     }
-
-//    public void initiateTimer(){
-//        trackedTime = 0f;
-//        updatedTime = 0f;
-//        timerReady = false;
-//        if(matchTimer == null){
-//            Log.e("TIMERMADE!!!", "TIMERMADE!!!");
-//            matchTimer = new CountDownTimer(400000, 10) {
-//                @Override
-//                public void onTick(long millisUntilFinished) {
-//                    float countDownTime = (400000f - millisUntilFinished)/1000f;
-//                    trackedTime = countDownTime;
-//                    if (trackedTime <= 0f) {
-//                    }else if ((trackedTime >= 0f) && (trackedTime <= 15f)){
-//                        updatedTime = trackedTime;
-//                        dialogTime = Float.parseFloat(String.format("%.2f", updatedTime));
-//                        timerActivity = "auto";
-//                        showTime = (int) updatedTime;
-//                        MenuItem timerView = currentMenu.findItem(R.id.timerView);
-//                        timerView.setTitle("AutoTime: "+showTime+" / 15");
-//                    }else if((trackedTime >= 15f) && (trackedTime <= 150f)){
-//                        timerActivity = "tele";
-//                        updatedTime = trackedTime - 15f;
-//                        if((105f <= updatedTime) && (updatedTime <= 135f)){
-//                            timerActivity = "FTB";
-//                            dialogTime = Float.parseFloat(String.format("%.2f", updatedTime - 105f));
-//                            showTime = (int) (updatedTime - 105f);
-//                            MenuItem timerView = currentMenu.findItem(R.id.timerView);
-//                            timerView.setTitle("FTB: "+showTime+" / 30");
-//                        }else if(updatedTime <=105f){
-//                            dialogTime = Float.parseFloat(String.format("%.2f", updatedTime));
-//                            showTime = (int) updatedTime;
-//                            MenuItem timerView = currentMenu.findItem(R.id.timerView);
-//                            timerView.setTitle("TeleTime: "+showTime+" / 135");
-//                        }
-//                    }else if(trackedTime >= 150f){
-//                        destroyTimer();
-//                    }
-//                }
-//                @Override
-//                public void onFinish() {
-//                }
-//            };
-//        }else{
-//            Utils.makeToast(context, "Duplicate Instance of Timer!");
-//        }
-//    }
 
     public static void stopTimer(){
         try{
