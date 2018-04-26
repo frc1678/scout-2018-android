@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     //the database declaration
     private DatabaseReference databaseReference;
 
-    public static String allianceColor;
+    public static String allianceColor = "not found";
     public static String capAllianceColor;
 
     private ActionBar actionBar;
@@ -508,7 +508,6 @@ public class MainActivity extends AppCompatActivity {
                 .show();
         scoutIDAlertDialog.setCanceledOnTouchOutside(false);
     }
-
 
     //starts next activity and adds all the name and match and such
     public void startScout(View view) {
@@ -983,7 +982,6 @@ public class MainActivity extends AppCompatActivity {
                 qrDialog.dismiss();
                 spfe.putString("qrScoutData", "");
                 spfe.commit();
-                Log.e("CANCER", "CANCER");
             }
         });
 

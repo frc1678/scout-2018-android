@@ -76,7 +76,6 @@ public class SwitchListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Log.e("RANNNNN", "RANNNNN");
         final int inversePosition = dataList.size() - position - 1;
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.switch_list_cv, null);

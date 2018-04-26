@@ -42,35 +42,14 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
         // Use this function to enable/disable Torch
         qrCodeReader.setTorchEnabled(true);
 
-//        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-//        try {
-//            for(String cameraId:manager.getCameraIdList()){
-//                CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
-//                Integer facing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
-//                if(facing== CameraMetadata.LENS_FACING_BACK) {
-//                    // Use this function to set back camera preview
-//                    qrCodeReader.setBackCamera();
-//                }
-//                if(facing== CameraMetadata.LENS_FACING_FRONT) {
-//                    // Use this function to set back camera preview
-//                    qrCodeReader.setFrontCamera();
-//                }
-//            }
-//        } catch (CameraAccessException e) {
-//            e.printStackTrace();
-//        }
-
-//        if(Camera.getNumberOfCameras() >= 2){
         if(MainActivity.scoutNumber <= 6){
             qrCodeReader.setFrontCamera();
         }else if(MainActivity.scoutNumber >= 7){
             qrCodeReader.setFrontCamera();
             qrCodeReader.setBackCamera();
         }
-//        }else if(Camera.getNumberOfCameras() <= 1){
-//            qrCodeReader.setFrontCamera();
-//        }
     }
+
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         boolean dontlogsuccess = false;

@@ -371,7 +371,7 @@ public class UIComponentCreator {
             currentSwitchComponent = 0;
             switchSuccess = false;
             this.context = context;
-            name = "LOL";
+            name = "";
         }
 
         public void resetSwitchComponent(){     currentSwitchComponent = 0; }
@@ -986,7 +986,7 @@ public class UIComponentCreator {
             numElevatedPyramidIntake = 0;
             numGroundPyramidIntake = 0;
             this.context = context;
-            name = "LOL";
+            name = "";
         }
 
         public void resetPyramidComponent(){     currentPyramidComponent = 0; }

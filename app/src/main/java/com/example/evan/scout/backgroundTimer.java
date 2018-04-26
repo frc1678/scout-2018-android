@@ -152,7 +152,6 @@ public class backgroundTimer extends Thread{
 //    }
 
     public static void stopTimer(){
-        Log.e("ANGRYANGRY", matchTimer.toString());
         try{
             stopTimer = true;
             timerReady = true;

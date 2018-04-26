@@ -664,9 +664,6 @@ public abstract class DataActivity extends AppCompatActivity {
         for (int i = 0; i < currentTextViews.size(); i++) {
             if(currentTextViews.get(i) != null){
                 try {
-                    Log.e("TITT", currentTextViews.size()+"");
-                    Log.e("TITT", getCounterData().size()+"");
-                    Log.e(getCounterData().get(i)+"TITT" , ((TextView) currentTextViews.get(i)).getText().toString());
                     DataManager.addZeroTierJsonData(getCounterData().get(i), Integer.parseInt(((TextView) currentTextViews.get(i)).getText().toString()));
                 } catch (Exception e) {
                     Log.e("Data Error", "Failed to add counter" + Integer.toString(i) + " num to Data");
@@ -1104,9 +1101,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                                 }
                             }
                             listOfDicts.put(compressedJ1);
-                            Log.e("????", "reached");
                             compressed.put(Constants.compressKeys.get(nestedKey), listOfDicts);
-                            Log.e("#####", "reached");
                         }
                     }
                 }else{
