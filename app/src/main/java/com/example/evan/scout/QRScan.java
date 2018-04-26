@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
 /**
- * Created by sam on 3/27/18.
+ * Created by Citrus Circuits Scout Programmers on 3/27/18.
  */
 public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -72,7 +72,7 @@ public class QRScan extends AppCompatActivity implements QRCodeReaderView.OnQRCo
                 intent.putExtra("qrObtained", false);
                 startActivity(intent);
             }
-            Log.e("CYCLENUMBER!!!", Integer.parseInt(qrString.substring(0, qrString.indexOf("|"))) + "");
+            Log.e("CYCLENUMBER!", Integer.parseInt(qrString.substring(0, qrString.indexOf("|"))) + "");
         }catch (ParseException e){
             e.printStackTrace();
         }catch(IndexOutOfBoundsException e){

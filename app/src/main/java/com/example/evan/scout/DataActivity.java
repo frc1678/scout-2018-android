@@ -674,12 +674,12 @@ public abstract class DataActivity extends AppCompatActivity {
         }
 
         if(activityName().equals("auto")){
-            Log.e("COLLECTEDDATA!!!", DataManager.alliancePlatformTakenAuto.toString());
+            Log.e("COLLECTEDDATA", DataManager.alliancePlatformTakenAuto.toString());
             DataManager.addZeroTierJsonData("alliancePlatformIntakeAuto", DataManager.alliancePlatformTakenAuto);
-            Log.e("COLLECTEDDATA!!!", DataManager.collectedData.toString());
+            Log.e("COLLECTEDDATA", DataManager.collectedData.toString());
         }else if(activityName().equals("tele")){
-            Log.e("COLLECTEDDATA!!!TT", DataManager.alliancePlatformTakenTele.toString());
-            Log.e("COLLECTEDDATA!!!TT", DataManager.opponentPlatformTakenTele.toString());
+            Log.e("COLLECTEDDATA", DataManager.alliancePlatformTakenTele.toString());
+            Log.e("COLLECTEDDATA", DataManager.opponentPlatformTakenTele.toString());
             DataManager.addZeroTierJsonData("alliancePlatformIntakeTele", DataManager.alliancePlatformTakenTele);
             DataManager.addZeroTierJsonData("opponentPlatformIntakeTele", DataManager.opponentPlatformTakenTele);
         }
@@ -929,7 +929,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
         }
 
         if (item.getItemId() == R.id.buttonNext) {
-            Log.e("COLLECTEDDATA!!!", DataManager.collectedData.toString());
+            Log.e("COLLECTEDDATA", DataManager.collectedData.toString());
             rejected = false;
 
             synchronized (readyForNextActivityLock) {

@@ -57,7 +57,7 @@ import static com.example.evan.scout.MainActivity.sharedPreferences;
 import static com.example.evan.scout.MainActivity.spfe;
 
 /**
- * Created by sam on 1/3/16.
+ * Created by Citrus Circuits Scout Programmers on 1/3/16.
  */
 public class bgLoopThread extends Thread {
     public static String scoutName;
@@ -111,7 +111,7 @@ public class bgLoopThread extends Thread {
                     sprRanking = qrString.indexOf(scoutLetter) - qrString.indexOf("|");
                     substitute = true;
                 }else{
-                    toasts("Current scout name Isn't in this match, Sorry.");
+                    toasts("Current scout name isn't in this match, sorry.");
                 }
             }catch (NullPointerException ne){
                 ne.printStackTrace();
@@ -124,7 +124,7 @@ public class bgLoopThread extends Thread {
     public void getLetter(){
         try {
             tmp_scoutName = DataManager.collectedData.getString("scoutName");
-            Log.e("SCOUTNAME!!!", tmp_scoutName);
+            Log.e("SCOUTNAME", tmp_scoutName);
         } catch (JSONException e) {
             tmp_scoutName = "(No Name Selected)";
             e.printStackTrace();
@@ -152,7 +152,7 @@ public class bgLoopThread extends Thread {
             for(File tmpFile : files){
                 if(tmpFile != null){
                     if(tmpFile.getName().equals("QRAssignments.txt")){
-                        Log.e("BACKUPFILENAME!!!", tmpFile.getName());
+                        Log.e("BACKUPFILENAME", tmpFile.getName());
                         final String content = readFile(tmpFile.getPath());
 
                         try {
@@ -184,7 +184,7 @@ public class bgLoopThread extends Thread {
     public void obtainQRData(){
         try {
             tmp_scoutName = DataManager.collectedData.getString("scoutName");
-            Log.e("SCOUTNAME!!!", tmp_scoutName);
+            Log.e("SCOUTNAME", tmp_scoutName);
         } catch (JSONException e) {
             tmp_scoutName = "(No Name Selected)";
             e.printStackTrace();
@@ -192,7 +192,7 @@ public class bgLoopThread extends Thread {
         if (!tmp_scoutName.equals("(No Name Selected)")) {
             updateMatchNumber();
             if(MainActivity.matchNumber >= 1){
-                Log.e("SCOUTNAME!!!22", tmp_scoutName);
+                Log.e("SCOUTNAME", tmp_scoutName);
                 if (!bluetoothDir.exists()) {
                     bluetoothDir.mkdir();
                     Log.i("File Info", "Failed to make Directory. Unimportant");
@@ -214,7 +214,7 @@ public class bgLoopThread extends Thread {
                 for(File tmpFile : files){
                     if(tmpFile != null){
                         if(tmpFile.getName().equals("QRAssignments.txt")){
-                            Log.e("QR File Name!!!", tmpFile.getName());
+                            Log.e("QR File Name", tmpFile.getName());
                             final String content = readFile(tmpFile.getPath());
 
                             main.runOnUiThread(new Runnable() {
@@ -304,7 +304,7 @@ public class bgLoopThread extends Thread {
                 for(File tmpFile : files){
                     if(tmpFile != null){
                         if(tmpFile.getName().equals("backupAssignments.txt")){
-                            Log.e("BACKUPFILENAME!!!", tmpFile.getName());
+                            Log.e("BACKUPFILENAME", tmpFile.getName());
                             final String content = readFile(tmpFile.getPath());
 
                             main.runOnUiThread(new Runnable() {
@@ -424,7 +424,7 @@ public class bgLoopThread extends Thread {
 
         for(File tmpFile : files){
             Integer duplicateMark = tmpFile.getName().toString().indexOf("-");
-            Log.e("DUPLICATEMARK!", duplicateMark+"");
+            Log.e("DUPLICATEMARK", duplicateMark+"");
             if(duplicateMark != -1 && (duplicateMark == 2 || duplicateMark == 3)){
                 DeleteRecursive(tmpFile);
             }else{
