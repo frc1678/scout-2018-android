@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:paddingLeft="10sp"
+            android:text="Ground Intakes"
+            android:layout_above = "@+id/elevatedCounter"
+            android:id="@+id/dab" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation= "horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id = "@+id/GroundCounter">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-1"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:id="@+id/groundMinusButton" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:padding="10sp"
+                android:text="0"
+                android:id="@+id/groundNumberView" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="+1"
+                android:gravity="center"
+                android:id="@+id/groundPlusButton" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:paddingLeft="10sp"
+            android:text="Elevated Intakes"
+            android:layout_above = "@+id/elevatedCounter"
+            android:id="@+id/switchOwnershipView" />
+        <LinearLayout
+            android:id="@+id/elevatedCounter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/ElevatedMinusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="-1"
+                android:textSize="20dp" />
+            <TextView
+                android:id="@+id/elevatedNumberView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10sp"
+                android:text="0"
+                android:textSize="30sp" />
+            <Button
+                android:id="@+id/elevatedPlusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="+1"
+                android:textSize="20dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation= "horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id = "@+id/Buttons">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:text="Cancel"
+                android:layout_weight="1"
+                android:id="@+id/cancelButton"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:text="Save"
+                android:layout_weight="1"
+                android:id="@+id/saveButton"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+
+
+

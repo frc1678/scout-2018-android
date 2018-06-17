@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Scout</string>
+    <string name="space">                             </string>
+    <string name="name_prompt">Choose a Name</string>
+    <string-array name="name_arrays">
+        <item>(No Name Selected)</item>
+        <item>Aakash</item>
+        <item>Aidan</item>
+        <item>Amanda</item>
+        <item>Anoushka</item>
+        <item>Asha</item>
+        <item>Calvin</item>
+        <item>Carl</item>
+        <item>Carter</item>
+        <item>David</item>
+        <item>Emily</item>
+        <item>Erik</item>
+        <item>Ethan</item>
+        <item>Freddy</item>
+        <item>Hanson</item>
+        <item>Jack</item>
+        <item>Janet</item>
+        <item>Jon</item>
+        <item>Justin</item>
+        <item>Kenny</item>
+        <item>Lasthenia</item>
+        <item>Lyra</item>
+        <item>Rolland</item>
+        <item>Sam</item>
+        <item>Stephen</item>
+        <item>Teo</item>
+        <item>Tim</item>
+        <item>Zachary</item>
+        <item>Zatara</item>
+        <item>Zoe</item>
+        <item>Backup1</item>
+        <item>Backup2</item>
+        <item>Backup3</item>
+        <item>Backup4</item>
+        <item>Backup5</item>
+
+    </string-array>
+</resources>

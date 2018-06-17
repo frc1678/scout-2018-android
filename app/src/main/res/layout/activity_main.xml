@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/infoLayout"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true">
+
+        <TextView
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/previousMatchTitleView"
+            android:text = "Previous Match: "
+            android:textSize="20sp"
+            android:textColor="#9e9e9e"
+            android:textAlignment="center"
+            android:layout_above="@+id/matchTitleView" />
+
+        <TextView
+            android:layout_marginBottom="20dp"
+            android:layout_toRightOf="@id/previousMatchTitleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/previousMatchNumTextView"
+            android:text = "0"
+            android:textSize="20sp"
+            android:textColor="#9e9e9e"
+            android:textAlignment="center"
+            android:layout_above="@+id/matchTitleView"/>
+
+        <TextView
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/matchTitleView"
+            android:text = "This Match: "
+            android:textSize="30sp"
+            android:textColor="#7c7c7c"
+            android:textAlignment="center"
+            android:layout_above="@+id/teamTitleView" />
+
+        <EditText
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="4"
+            android:maxLength="3"
+            android:inputType="number"
+            android:id="@+id/matchNumEditText"
+            android:text = "1"
+            android:textSize="30sp"
+            android:textColor="#000000"
+            android:textAlignment="center"
+            android:layout_above="@+id/teamTitleView"
+            android:layout_toEndOf="@+id/matchTitleView" />
+
+        <TextView
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/teamTitleView"
+            android:text = "Team: "
+            android:textSize="30sp"
+            android:textColor="#7c7c7c"
+            android:textAlignment="center"
+            android:layout_above="@+id/scoutButton" />
+
+        <TextView
+            android:layout_toRightOf="@id/teamTitleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/teamNumTextView"
+            android:text = "0000"
+            android:textSize="30sp"
+            android:textColor="#000000"
+            android:textAlignment="center"
+            android:layout_above="@+id/scoutButton"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="SCOUT"
+            android:textSize="20sp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:onClick="startScout"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/scoutButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="100dp"/>
+    </RelativeLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:id="@+id/listLayout"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_weight="1">-->
+
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/webView"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentEnd="true" />-->
+    <!--</RelativeLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/resendListLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/view_files_received"
+            android:layout_width="fill_parent"
+            android:layout_height="330dp"
+            android:layout_above="@+id/resendAll"
+            android:layout_below="@+id/searchEditText"
+            android:isScrollContainer="false" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="6dp"
+            android:onClick="getScoutData"
+            android:text="scout data"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/resendAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="resendAllClicked"
+            android:text="Resend All"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/passwordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:onClick="checkPass"
+            android:text="Clear"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/button"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/button"
+            android:hint="Search: " />
+
+    </RelativeLayout>
+
+</LinearLayout>

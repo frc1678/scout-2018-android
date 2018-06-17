@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="match_parent"
+    android:id="@+id/activeLiftDialogLayout">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:id="@+id/dialogTitle"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkLayout"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/dialogTitle">
+
+        <CheckBox
+            android:text="Scouted Robot Did Climb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pdidClimbRadio"
+            android:padding="5dp"
+            android:textSize="23dp"
+            android:paddingRight="5dp"
+            android:layout_weight="1" />
+
+        <CheckBox
+            android:id="@+id/passistLifts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:layout_below="@+id/pdidClimbRadio"
+            android:text="Assist Lift"
+            android:textSize="23dp" />
+
+        <CheckBox
+            android:id="@+id/ppassiveLifts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/passistLifts"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:text="Passive Lift"
+            android:textSize="23dp" />
+
+        <CheckBox
+            android:text="Failed To Lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/failedToLift"
+            android:layout_below="@id/ppassiveLifts"
+            android:padding="5dp"
+            android:paddingRight="5dp"
+            android:textSize="23dp"
+            android:layout_weight="1" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Robots Lifted"
+        android:id="@+id/robotsLiftedTextView"
+        android:layout_below="@+id/checkLayout"
+        android:textSize="20dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nbLayout"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/robotsLiftedTextView">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="-1"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:id="@+id/minusButton" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:padding="10sp"
+            android:text="0"
+            android:id="@+id/numberView" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="20dp"
+            android:text="+1"
+            android:gravity="center"
+            android:id="@+id/plusButton" />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/doneLine"
+        android:layout_below="@+id/nbLayout">
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FAA2A8"
+            android:text="Cancel"
+            android:id="@+id/cancelButton"/>
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:backgroundTint="#BBEDC5"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/doneButton"/>
+<!--canel button added-->
+
+
+    </LinearLayout>
+</RelativeLayout>

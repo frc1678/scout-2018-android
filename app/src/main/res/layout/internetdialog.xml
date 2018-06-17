@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/internetDialogLayout"
+    android:orientation="horizontal"
+    android:minWidth="5dp"
+    android:minHeight="10dp"
+    >
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:id="@+id/internetDialogTitle"
+        style="@style/style_failure"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/internetDialogTitle"
+        android:id="@+id/messageTextViewInternet"
+        style="@style/style_failure"/>
+    />
+    <Button
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/okButton"
+        android:layout_below="@+id/messageTextViewInternet"
+        />
+
+</RelativeLayout>

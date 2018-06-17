@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title=""
+        android:id="@+id/timerView"
+        app:showAsAction="always"/>
+    <item
+        android:title="Start Timer"
+        android:id="@+id/beginTimerButton"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title=""
+        android:id="@+id/teamNumTextView"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/buttonNext"
+        android:title="Teleop"
+        app:showAsAction="always"/>
+</menu>
